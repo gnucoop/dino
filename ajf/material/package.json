@@ -1,0 +1,125 @@
+{
+  "name": "@ajf/material",
+  "version": "0.0.0-PLACEHOLDER",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gnucoop/ajf.git"
+  },
+  "keywords": [],
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/gnucoop/ajf/issues"
+  },
+  "homepage": "https://github.com/gnucoop/ajf#readme",
+  "peerDependencies": {
+    "@ajf/core": "0.0.0-PLACEHOLDER",
+    "@angular/animations": "0.0.0-NGF",
+    "@angular/cdk": "0.0.0-NGC",
+    "@angular/common": "0.0.0-NGF",
+    "@angular/core": "0.0.0-NGF",
+    "@angular/forms": "0.0.0-NGF",
+    "@angular/material": "0.0.0-NGF",
+    "@angular/platform-browser": "0.0.0-NGF",
+    "ngx-quill": "0.0.0-NGX-QUILL",
+    "quill": "0.0.0-QUILL"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "module": "fesm2022/ajf-material.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "esm2022": "./esm2022/ajf-material.mjs",
+      "esm": "./esm2022/ajf-material.mjs",
+      "default": "./fesm2022/ajf-material.mjs"
+    },
+    "./audio": {
+      "types": "./audio/index.d.ts",
+      "esm2022": "./esm2022/audio/ajf-material-audio.mjs",
+      "esm": "./esm2022/audio/ajf-material-audio.mjs",
+      "default": "./fesm2022/ajf-material-audio.mjs"
+    },
+    "./barcode": {
+      "types": "./barcode/index.d.ts",
+      "esm2022": "./esm2022/barcode/ajf-material-barcode.mjs",
+      "esm": "./esm2022/barcode/ajf-material-barcode.mjs",
+      "default": "./fesm2022/ajf-material-barcode.mjs"
+    },
+    "./calendar": {
+      "types": "./calendar/index.d.ts",
+      "esm2022": "./esm2022/calendar/ajf-material-calendar.mjs",
+      "esm": "./esm2022/calendar/ajf-material-calendar.mjs",
+      "default": "./fesm2022/ajf-material-calendar.mjs"
+    },
+    "./checkbox-group": {
+      "types": "./checkbox-group/index.d.ts",
+      "esm2022": "./esm2022/checkbox-group/ajf-material-checkbox-group.mjs",
+      "esm": "./esm2022/checkbox-group/ajf-material-checkbox-group.mjs",
+      "default": "./fesm2022/ajf-material-checkbox-group.mjs"
+    },
+    "./form-builder": {
+      "types": "./form-builder/index.d.ts",
+      "esm2022": "./esm2022/form-builder/ajf-material-form-builder.mjs",
+      "esm": "./esm2022/form-builder/ajf-material-form-builder.mjs",
+      "default": "./fesm2022/ajf-material-form-builder.mjs"
+    },
+    "./forms": {
+      "types": "./forms/index.d.ts",
+      "esm2022": "./esm2022/forms/ajf-material-forms.mjs",
+      "esm": "./esm2022/forms/ajf-material-forms.mjs",
+      "default": "./fesm2022/ajf-material-forms.mjs"
+    },
+    "./geolocation": {
+      "types": "./geolocation/index.d.ts",
+      "esm2022": "./esm2022/geolocation/ajf-material-geolocation.mjs",
+      "esm": "./esm2022/geolocation/ajf-material-geolocation.mjs",
+      "default": "./fesm2022/ajf-material-geolocation.mjs"
+    },
+    "./image": {
+      "types": "./image/index.d.ts",
+      "esm2022": "./esm2022/image/ajf-material-image.mjs",
+      "esm": "./esm2022/image/ajf-material-image.mjs",
+      "default": "./fesm2022/ajf-material-image.mjs"
+    },
+    "./node-icon": {
+      "types": "./node-icon/index.d.ts",
+      "esm2022": "./esm2022/node-icon/ajf-material-node-icon.mjs",
+      "esm": "./esm2022/node-icon/ajf-material-node-icon.mjs",
+      "default": "./fesm2022/ajf-material-node-icon.mjs"
+    },
+    "./page-slider": {
+      "types": "./page-slider/index.d.ts",
+      "esm2022": "./esm2022/page-slider/ajf-material-page-slider.mjs",
+      "esm": "./esm2022/page-slider/ajf-material-page-slider.mjs",
+      "default": "./fesm2022/ajf-material-page-slider.mjs"
+    },
+    "./reports": {
+      "types": "./reports/index.d.ts",
+      "esm2022": "./esm2022/reports/ajf-material-reports.mjs",
+      "esm": "./esm2022/reports/ajf-material-reports.mjs",
+      "default": "./fesm2022/ajf-material-reports.mjs"
+    },
+    "./signature": {
+      "types": "./signature/index.d.ts",
+      "esm2022": "./esm2022/signature/ajf-material-signature.mjs",
+      "esm": "./esm2022/signature/ajf-material-signature.mjs",
+      "default": "./fesm2022/ajf-material-signature.mjs"
+    },
+    "./time": {
+      "types": "./time/index.d.ts",
+      "esm2022": "./esm2022/time/ajf-material-time.mjs",
+      "esm": "./esm2022/time/ajf-material-time.mjs",
+      "default": "./fesm2022/ajf-material-time.mjs"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "node --eval \"console.error('ERROR: Trying to publish a package that has been compiled by Ivy in full compilation mode. This is not allowed.\\nPlease delete and rebuild the package with Ivy partial compilation mode, before attempting to publish.\\n')\" && exit 1"
+  }
+}

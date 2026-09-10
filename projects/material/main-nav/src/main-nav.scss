@@ -1,8 +1,15 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
+// The top toolbar is positioned absolutely, so it takes no room in the flex
+// column and the sidenav content has to reserve its height by hand.
+$topbar-h: 65px;
+
 dino-main-nav {
   display: flex;
   flex-direction: column;
+  // Bounded on purpose: the shell is the only definite height in the tree, and
+  // without it every `height: 100%` in a routed page resolves against auto.
+  height: 100%;
   overflow: hidden;
 
   .mat-drawer {
@@ -180,14 +187,15 @@ dino-main-nav {
   }
 
   .mat-sidenav-container.dino-sidenav-container {
-    flex: 1 0 auto;
+    flex: 1 1 auto;
+    min-height: 0;
     padding-bottom: 10px;
   }
 
   .mat-sidenav-content.dino-sidenav-content {
-    top: 65px;
+    top: $topbar-h;
     overflow-x: hidden;
-    height: 100vh;
+    height: calc(100% - #{$topbar-h});
     padding: 5px;
     background-color: inherit;
     .dino-loading {
@@ -209,7 +217,7 @@ dino-main-nav {
     }
     &.dino-sidenav-content-not-scrollable {
       overflow-y: hidden;
-      height: 100% !important;
+      height: calc(100% - #{$topbar-h}) !important;
     }
   }
   // When the top toolbar is hidden (e.g. public survey routes), reclaim the

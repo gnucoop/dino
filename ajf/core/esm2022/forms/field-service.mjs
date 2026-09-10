@@ -1,0 +1,48 @@
+/**
+ * @license
+ * Copyright (C) Gnucoop soc. coop.
+ *
+ * This file is part of the Advanced JSON forms (ajf).
+ *
+ * Advanced JSON forms (ajf) is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * Advanced JSON forms (ajf) is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Advanced JSON forms (ajf).
+ * If not, see http://www.gnu.org/licenses/.
+ *
+ */
+import { componentsMap } from './utils/fields/fields-map';
+export class AjfFieldService {
+    constructor() {
+        this.componentsMap = componentsMap;
+    }
+    /**
+     * It allows to register custom fields inside an Ajf form.
+     * @param fieldType is the field type of the custom field. Values from 0 to 100 are reserved to
+     *     Ajf.
+     * @param component It is the custom component that implement an AjfBaseFieldComponent.
+     * @param readOnlyComponent It is the readonly custom component that implement an
+     *     AjfBaseFieldComponent.
+     * @createInstance The signature and return type of the method used for create Instance.
+     * @isFieldWithChoice If true, the field has choices.
+     */
+    registerCustomField(field) {
+        const { fieldType, component } = field;
+        if (fieldType < 100) {
+            throw new Error('Invalid custom field type, it must be greater than 100');
+        }
+        if (component == null) {
+            throw new Error('Invalid custom field component');
+        }
+        this.componentsMap[fieldType] = field;
+    }
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZmllbGQtc2VydmljZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL3Byb2plY3RzL2NvcmUvZm9ybXMvc3JjL2ZpZWxkLXNlcnZpY2UudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBb0JHO0FBU0gsT0FBTyxFQUFDLGFBQWEsRUFBQyxNQUFNLDJCQUEyQixDQUFDO0FBRXhELE1BQU0sT0FBZ0IsZUFBZTtJQUFyQztRQUNXLGtCQUFhLEdBQTBCLGFBQWEsQ0FBQztJQTRCaEUsQ0FBQztJQTFCQzs7Ozs7Ozs7O09BU0c7SUFDSCxtQkFBbUIsQ0FBQyxLQU1uQjtRQUNDLE1BQU0sRUFBQyxTQUFTLEVBQUUsU0FBUyxFQUFDLEdBQUcsS0FBSyxDQUFDO1FBQ3JDLElBQUksU0FBUyxHQUFHLEdBQUcsRUFBRSxDQUFDO1lBQ3BCLE1BQU0sSUFBSSxLQUFLLENBQUMsd0RBQXdELENBQUMsQ0FBQztRQUM1RSxDQUFDO1FBQ0QsSUFBSSxTQUFTLElBQUksSUFBSSxFQUFFLENBQUM7WUFDdEIsTUFBTSxJQUFJLEtBQUssQ0FBQyxnQ0FBZ0MsQ0FBQyxDQUFDO1FBQ3BELENBQUM7UUFDRCxJQUFJLENBQUMsYUFBYSxDQUFDLFNBQVMsQ0FBQyxHQUFHLEtBQUssQ0FBQztJQUN4QyxDQUFDO0NBQ0YiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEBsaWNlbnNlXG4gKiBDb3B5cmlnaHQgKEMpIEdudWNvb3Agc29jLiBjb29wLlxuICpcbiAqIFRoaXMgZmlsZSBpcyBwYXJ0IG9mIHRoZSBBZHZhbmNlZCBKU09OIGZvcm1zIChhamYpLlxuICpcbiAqIEFkdmFuY2VkIEpTT04gZm9ybXMgKGFqZikgaXMgZnJlZSBzb2Z0d2FyZTogeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yXG4gKiBtb2RpZnkgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgQWZmZXJvIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXNcbiAqIHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBlaXRoZXIgdmVyc2lvbiAzIG9mIHRoZSBMaWNlbnNlLFxuICogb3IgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi5cbiAqXG4gKiBBZHZhbmNlZCBKU09OIGZvcm1zIChhamYpIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsXG4gKiBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZlxuICogTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiBTZWUgdGhlIEdOVSBBZmZlcm9cbiAqIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy5cbiAqXG4gKiBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgQWZmZXJvIEdlbmVyYWwgUHVibGljIExpY2Vuc2VcbiAqIGFsb25nIHdpdGggQWR2YW5jZWQgSlNPTiBmb3JtcyAoYWpmKS5cbiAqIElmIG5vdCwgc2VlIGh0dHA6Ly93d3cuZ251Lm9yZy9saWNlbnNlcy8uXG4gKlxuICovXG5cbmltcG9ydCB7QWpmQ29udGV4dH0gZnJvbSAnQGFqZi9jb3JlL21vZGVscyc7XG5pbXBvcnQge1R5cGV9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuXG5pbXBvcnQge0FqZkJhc2VGaWVsZENvbXBvbmVudH0gZnJvbSAnLi9iYXNlLWZpZWxkJztcbmltcG9ydCB7QWpmRmllbGRJbnN0YW5jZX0gZnJvbSAnLi9pbnRlcmZhY2UvZmllbGRzLWluc3RhbmNlcy9maWVsZC1pbnN0YW5jZSc7XG5pbXBvcnQge0FqZkZpZWxkQ29tcG9uZW50c01hcH0gZnJvbSAnLi9pbnRlcmZhY2UvZmllbGRzL2ZpZWxkLWNvbXBvbmVudHMtbWFwJztcbmltcG9ydCB7QWpmRmllbGRJbnN0YW5jZUNyZWF0ZX0gZnJvbSAnLi91dGlscy9maWVsZHMtaW5zdGFuY2VzL2NyZWF0ZS1maWVsZC1pbnN0YW5jZSc7XG5pbXBvcnQge2NvbXBvbmVudHNNYXB9IGZyb20gJy4vdXRpbHMvZmllbGRzL2ZpZWxkcy1tYXAnO1xuXG5leHBvcnQgYWJzdHJhY3QgY2xhc3MgQWpmRmllbGRTZXJ2aWNlIHtcbiAgcmVhZG9ubHkgY29tcG9uZW50c01hcDogQWpmRmllbGRDb21wb25lbnRzTWFwID0gY29tcG9uZW50c01hcDtcblxuICAvKipcbiAgICogSXQgYWxsb3dzIHRvIHJlZ2lzdGVyIGN1c3RvbSBmaWVsZHMgaW5zaWRlIGFuIEFqZiBmb3JtLlxuICAgKiBAcGFyYW0gZmllbGRUeXBlIGlzIHRoZSBmaWVsZCB0eXBlIG9mIHRoZSBjdXN0b20gZmllbGQuIFZhbHVlcyBmcm9tIDAgdG8gMTAwIGFyZSByZXNlcnZlZCB0b1xuICAgKiAgICAgQWpmLlxuICAgKiBAcGFyYW0gY29tcG9uZW50IEl0IGlzIHRoZSBjdXN0b20gY29tcG9uZW50IHRoYXQgaW1wbGVtZW50IGFuIEFqZkJhc2VGaWVsZENvbXBvbmVudC5cbiAgICogQHBhcmFtIHJlYWRPbmx5Q29tcG9uZW50IEl0IGlzIHRoZSByZWFkb25seSBjdXN0b20gY29tcG9uZW50IHRoYXQgaW1wbGVtZW50IGFuXG4gICAqICAgICBBamZCYXNlRmllbGRDb21wb25lbnQuXG4gICAqIEBjcmVhdGVJbnN0YW5jZSBUaGUgc2lnbmF0dXJlIGFuZCByZXR1cm4gdHlwZSBvZiB0aGUgbWV0aG9kIHVzZWQgZm9yIGNyZWF0ZSBJbnN0YW5jZS5cbiAgICogQGlzRmllbGRXaXRoQ2hvaWNlIElmIHRydWUsIHRoZSBmaWVsZCBoYXMgY2hvaWNlcy5cbiAgICovXG4gIHJlZ2lzdGVyQ3VzdG9tRmllbGQoZmllbGQ6IHtcbiAgICBmaWVsZFR5cGU6IG51bWJlcjtcbiAgICBjb21wb25lbnQ6IFR5cGU8QWpmQmFzZUZpZWxkQ29tcG9uZW50PjtcbiAgICByZWFkT25seUNvbXBvbmVudD86IFR5cGU8QWpmQmFzZUZpZWxkQ29tcG9uZW50PjtcbiAgICBjcmVhdGVJbnN0YW5jZT86IChpbnN0YW5jZTogQWpmRmllbGRJbnN0YW5jZUNyZWF0ZSwgY29udGV4dDogQWpmQ29udGV4dCkgPT4gQWpmRmllbGRJbnN0YW5jZTtcbiAgICBpc0ZpZWxkV2l0aENob2ljZT86IGJvb2xlYW47XG4gIH0pOiB2b2lkIHtcbiAgICBjb25zdCB7ZmllbGRUeXBlLCBjb21wb25lbnR9ID0gZmllbGQ7XG4gICAgaWYgKGZpZWxkVHlwZSA8IDEwMCkge1xuICAgICAgdGhyb3cgbmV3IEVycm9yKCdJbnZhbGlkIGN1c3RvbSBmaWVsZCB0eXBlLCBpdCBtdXN0IGJlIGdyZWF0ZXIgdGhhbiAxMDAnKTtcbiAgICB9XG4gICAgaWYgKGNvbXBvbmVudCA9PSBudWxsKSB7XG4gICAgICB0aHJvdyBuZXcgRXJyb3IoJ0ludmFsaWQgY3VzdG9tIGZpZWxkIGNvbXBvbmVudCcpO1xuICAgIH1cbiAgICB0aGlzLmNvbXBvbmVudHNNYXBbZmllbGRUeXBlXSA9IGZpZWxkO1xuICB9XG59XG4iXX0=

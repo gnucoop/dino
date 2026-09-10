@@ -1,0 +1,1 @@
+{"version":3,"file":"data-widget.d.ts","sourceRoot":"","sources":["../../../../../projects/core/reports/src/interface/widgets/data-widget.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,UAAU,EAAC,MAAM,oBAAoB,CAAC;AAC9C,OAAO,EAAC,aAAa,EAAC,MAAM,eAAe,CAAC;AAE5C,MAAM,WAAW,aAAc,SAAQ,aAAa;IAClD,OAAO,EAAE,UAAU,EAAE,GAAG,UAAU,EAAE,EAAE,CAAC;CACxC"}

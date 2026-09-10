@@ -360,6 +360,8 @@ export const FRA: Translation = {
   'New Password': 'Nouveau mot de passe',
   'New User? Create new account': 'Nouvel utilisateur? Créer un nouveau compte',
   'Next': 'Suivant',
+  'Previous': 'Précédent',
+  'Continue': 'Continuer',
   'Next page': 'Page suivante',
   'No': 'Non',
   'No Forms were found': 'Aucune forme n\'a été trouvée',

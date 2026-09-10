@@ -1,19 +1,46 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
 dino-edit-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   font-size: 110%;
 
   .dino-edit-form-step-container {
     display: flex;
+    flex: 1 1 auto;
     align-items: center;
     justify-content: center;
-    position: relative;
-    min-height: 85vh;
-    @media only screen and (max-width: 992px) {
-      min-height: 80vh;
+    min-height: 0;
+    // The step is bounded now, and Material clips its content container, so this
+    // scrolls rather than disappearing when the selector is taller than the box.
+    overflow: auto;
+  }
+  // The box that holds the form renderer: it claims whatever the breadcrumbs and
+  // the two steppers leave, and hands it to <ajf-form>, which sizes its pages off
+  // a chain of `height: 100%`. Flexing rather than setting a height is what makes
+  // that chain resolve -- a flex item in a bounded column has a definite height,
+  // where a percentage against the auto-height hosts above would not. The
+  // `min-height: 0` lets it shrink past the renderer's own 420px floor instead of
+  // pushing the page over, and the absence of centring is deliberate: that is
+  // what used to leave the renderer adrift with gutters either side.
+  .dino-edit-form-renderer-container {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+
+    > ajf-form {
+      flex: 1 1 auto;
+      min-width: 0;
     }
   }
   .mat-stepper-horizontal {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
     background-color: transparent !important;
     .mat-horizontal-stepper-content .mat-stepper-previous {
       display: none;
@@ -45,182 +72,29 @@ dino-edit-form {
       display: none;
     }
   }
+  .mat-horizontal-stepper-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
   .mat-horizontal-content-container {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
     padding: 0px 4px 4px;
-    @media only screen and (max-height: 900px) {
-      padding-bottom: 5vh;
-    }
-    @media only screen and (max-height: 580px) {
-      padding-bottom: 15vh;
-    }
   }
-
-  .ajf-form-container {
-    .ajf-slider-container ajf-page-slider {
-      max-height: 87.5%;
-      overflow-y: scroll;
-      overflow-x: hidden;
-      @media only screen and (max-width: 992px) {
-        height: 97.5% !important;
-        max-height: 97.5%;
-      }
-    }
-    .ajf-slider-container .ajf-page-slider-content .ajf-page-slider-body .ajf-page-slider-item-content,
-    .mat-toolbar-single-row {
-      padding: 0px;
-      height: auto;
-    }
-    .ajf-page-slider-content {
-      overflow-x: hidden;
-    }
-    .mat-toolbar {
-      background: transparent;
-      &:not(.ajf-toolbar) {
-        .ajf-spacer {
-          display: none;
-        }
-      }
-
-      &.ajf-btn-strip {
-        .mat-mdc-button.ajf-topbar-button {
-          margin-right: 0px;
-          background-color: transparent;
-          color: rgba(120, 120, 120, 0.63);
-          flex: 1 0 auto;
-          transition: all ease-in-out 0.25s;
-          -webkit-transition: all ease-in-out 0.25s;
-          &:hover {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #fff;
-          }
-        }
-      }
-      span {
-        flex: 1 1 auto;
-        text-align: center;
-      }
-      &:not(.ajf-btn-strip, .ajf-toolbar) {
-        display: flex;
-        align-content: center;
-        .mat-mdc-button {
-          display: none;
-        }
-      }
-    }
-    .ajf-field-entry label {
-      font-weight: bold;
-    }
-
-    .ajf-form-page {
-      .mat-mdc-card.ajf-field-entry {
-        min-width: unset !important;
-      }
-      .mat-mdc-card:not(.ajf-field-entry) {
-        margin: 0px !important;
-        margin-bottom: 10px !important;
-        max-width: 100%;
-        display: flex;
-        background: transparent;
-        .ajf-field-entry {
-          > p {
-            display: none;
-          }
-          display: flex;
-          flex-flow: column wrap;
-          justify-content: flex-start;
-          /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
-          label,
-          span:not(.mat-ripple, .mat-button-focus-overlay, .mat-mdc-select-min-line, .mat-mdc-select-value-text) {
-            max-width: 80vw;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-            &::-webkit-scrollbar {
-              display: none;
-            }
-          }
-          ajf-checkbox-group-item {
-            flex: 1 0 auto;
-            display: flex;
-            flex-flow: row wrap;
-          }
-          .mat-mdc-radio-button,
-          ajf-checkbox-group-item .mat-mdc-button {
-            .mat-icon {
-              color: mat-css-vars.mat-css-color-accent(300);
-            }
-            padding: 10px;
-            flex: 1 0 auto;
-            min-height: auto;
-            align-items: stretch;
-            background-color: #fff;
-            border: 1px solid rgba(200, 199, 204, 0.7);
-            border-radius: 2px;
-            margin-top: 10px;
-            margin-right: 10px;
-            line-height: 1.6em;
-            label {
-              font-weight: normal;
-            }
-            .mat-radio-ripple {
-              display: none;
-            }
-          }
-          ajf-field {
-            margin-top: 5px;
-            margin-bottom: 10px;
-            /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
-            .mat-select-min-line,
-            .mat-mdc-select-min-line {
-              display: inline-block;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .ajf-left-bar {
-    display: none !important;
-  }
-
-  .ajf-slider-container {
-    .ajf-info-box.ajf-error {
-      visibility: hidden;
-    }
-  }
-
-  .ajf-toolbar {
-    margin-bottom: 12px;
+  // Only the step on screen: Material hides the others with `height: 0`, and a
+  // height of ours here would be specific enough to override that.
+  .mat-horizontal-stepper-content:not(.mat-horizontal-stepper-content-inactive) {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
   }
 
   .mat-mdc-progress-spinner {
     position: absolute;
     top: 40%;
     left: 50%;
-  }
-
-  .mat-mdc-card.ajf-field-entry {
-    border-left-color: mat-css-vars.mat-css-color-accent(300) !important;
-    .mat-mdc-card-actions {
-      left: 0px;
-    }
-    .mat-mdc-select-arrow {
-      svg {
-        height: 32px;
-        width: 32px;
-      }
-    }
-    .mat-mdc-select {
-      .mat-mdc-select-value {
-        position: relative;
-        box-shadow: 0px 5px 5px -5px rgba(0, 0, 0, 0.2);
-        .mat-mdc-select-min-line {
-          white-space: pre-line;
-          max-width: 95%;
-          overflow: auto;
-          text-overflow: ellipsis;
-        }
-      }
-    }
   }
 }

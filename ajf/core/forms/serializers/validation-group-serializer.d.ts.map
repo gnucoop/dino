@@ -1,0 +1,1 @@
+{"version":3,"file":"validation-group-serializer.d.ts","sourceRoot":"","sources":["../../../../projects/core/forms/src/serializers/validation-group-serializer.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,kBAAkB,EAAC,MAAM,0CAA0C,CAAC;AAG5E;;GAEG;AACH,qBAAa,4BAA4B;IACvC,MAAM,CAAC,QAAQ,CAAC,KAAK,EAAE,OAAO,CAAC,kBAAkB,CAAC,GAAG,kBAAkB;CAGxE"}

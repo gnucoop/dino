@@ -25,11 +25,14 @@ import {
   AjfFormActionEvent,
   AjfFormSerializer,
   AjfFormRendererService,
+  AjfSlideInstance,
 } from '@ajf/core/forms';
-import {AjfFormRenderer} from '@ajf/material/forms';
+import {AjfPageSlider} from '@ajf/core/page-slider';
+import {AjfCurrentSlidePipe, AjfFormRenderer} from '@ajf/material/forms';
 import {Location} from '@angular/common';
 import {UntypedFormGroup} from '@angular/forms';
 import {
+  AfterViewChecked,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -72,14 +75,17 @@ const retryBtn = 'TRY AGAIN';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class EditPublicForm implements OnDestroy {
+export class EditPublicForm implements AfterViewChecked, OnDestroy {
   /**
    * If true, the content of the Ajf Form Fields is centered
    */
   @Input() centeredFieldsContent: boolean = false;
 
   /**
-   * The max number of columns on which the Ajf Form Fields are spread
+   * @deprecated No longer passed to the renderer: the restyled AJF form lays a
+   * field out as a row of label, control and hint, so a form is always a single
+   * column. Kept so that existing templates still compile. The multi-column
+   * layout of the search filters is its own, in `dino-search-filters-widget`.
    */
   @Input() maxColumns: 1 | 2 | 3 = 1;
 
@@ -159,6 +165,12 @@ export class EditPublicForm implements OnDestroy {
   readonly slidesNum$: Observable<number>;
 
   /**
+   * The label of the slide (section) currently on screen, for the heading under
+   * the progress bar. Null on a slide with no label of its own.
+   */
+  readonly currentSlideLabel$: Observable<string | null>;
+
+  /**
    * True when the currently shown slide has no validation errors (all its
    * mandatory questions are filled). Used to gate the "Avanti" button.
    */
@@ -183,6 +195,12 @@ export class EditPublicForm implements OnDestroy {
   private _formRenderer?: AjfFormRenderer;
 
   /**
+   * The same renderer as an observable, so the slide heading can follow it: the
+   * instance only arrives once the view has been checked.
+   */
+  private readonly _formRenderer$ = new BehaviorSubject<AjfFormRenderer | null>(null);
+
+  /**
    * The host element of the <ajf-form>, used to observe intra-slide scrolling.
    */
   private _formHost?: HTMLElement;
@@ -193,23 +211,62 @@ export class EditPublicForm implements OnDestroy {
   private _sliderSub: Subscription = Subscription.EMPTY;
 
   /**
+   * The page slider `_sliderSub` is subscribed to, so that the wiring is
+   * attempted until the slider exists and redone when it is replaced.
+   */
+  private _wiredSlider?: AjfPageSlider;
+
+  /**
    * Teardown for the scroll-hint listeners (scroll + resize observers).
    */
   private _scrollHintTeardown: () => void = () => {};
 
   @ViewChild('formContainer') set formRenderer(fr: AjfFormRenderer | undefined) {
     this._formRenderer = fr;
-    this._sliderSub.unsubscribe();
-    if (fr && fr.formSlider) {
-      this.currentSlide$.next(fr.formSlider.currentPage ?? 0);
-      this._sliderSub = fr.formSlider.pageScrollFinish.subscribe(() => {
-        this.currentSlide$.next(fr.formSlider.currentPage ?? 0);
-        this._cdr.markForCheck();
-        // Content and scroll extent change when the section changes.
-        this._recomputeScrollHint();
-      });
-      this._triggerInitialValidation();
+    this._formRenderer$.next(fr ?? null);
+    if (fr == null) {
+      this._sliderSub.unsubscribe();
+      this._sliderSub = Subscription.EMPTY;
+      this._wiredSlider = undefined;
+      return;
     }
+    this._wireSlider();
+  }
+
+  ngAfterViewChecked(): void {
+    this._wireSlider();
+  }
+
+  /**
+   * Subscribes to the page slider's paging, once there is a slider to subscribe
+   * to.
+   *
+   * The renderer creates its slider inside an `*ngIf` on its own `slides`
+   * observable, so on the check that hands this component the renderer,
+   * `formSlider` is still undefined. Wiring only from the @ViewChild setter
+   * would therefore silently never happen, leaving `currentSlide$` -- and with
+   * it the progress bar, the slide heading and the footer buttons -- pinned to
+   * the first slide. Hence the retry on every check, guarded by the slider that
+   * is already wired so a rebuild (a language change) re-subscribes and every
+   * other check does nothing.
+   */
+  private _wireSlider(): void {
+    const slider = this._formRenderer?.formSlider;
+    if (slider == null || slider === this._wiredSlider) {
+      return;
+    }
+    this._wiredSlider = slider;
+    this._sliderSub.unsubscribe();
+    // The slider reports -1 until its first page settles.
+    const page = () => Math.max(0, slider.currentPage ?? 0);
+    this.currentSlide$.next(page());
+    this._sliderSub = slider.pageScrollFinish.subscribe(() => {
+      this.currentSlide$.next(page());
+      this._cdr.markForCheck();
+      // Content and scroll extent change when the section changes.
+      this._recomputeScrollHint();
+    });
+    this._triggerInitialValidation();
   }
 
   @ViewChild('formContainer', {read: ElementRef}) set formContainerEl(
@@ -291,6 +348,28 @@ export class EditPublicForm implements OnDestroy {
     this.progress$ = combineLatest([this.currentSlide$, this.slidesNum$]).pipe(
       map(([current, total]) =>
         total > 0 ? Math.min(100, Math.round(((current + 1) / total) * 100)) : 0,
+      ),
+      shareReplay(1),
+    );
+
+    // Which slide a page index lands on is not a division: a repeating slide
+    // holds one page per repetition, and a start message takes a page of its
+    // own. Rather than keep a second copy of that arithmetic in step with the
+    // renderer's, resolve it with the very pipe the renderer uses.
+    const currentSlide = new AjfCurrentSlidePipe();
+    this.currentSlideLabel$ = combineLatest([this._formRenderer$, this.currentSlide$]).pipe(
+      switchMap(([fr, page]) =>
+        (fr ? fr.slides : obsOf([] as AjfSlideInstance[])).pipe(
+          map(slides => {
+            const cur = currentSlide.transform(
+              slides,
+              page,
+              fr?.hasStartMessage ?? false,
+              fr?.hasEndMessage ?? false,
+            );
+            return cur.slide?.node?.label ?? null;
+          }),
+        ),
       ),
       shareReplay(1),
     );

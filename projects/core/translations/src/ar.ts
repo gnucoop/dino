@@ -352,6 +352,8 @@ export const AR: Translation = {
   'New Password': 'كلمة مرور جديدة',
   'New User? Create new account': 'مستخدم جديد؟ إنشاء حساب جديد',
   'Next': 'التالي',
+  'Previous': 'السابق',
+  'Continue': 'متابعة',
   'Next page': 'الصفحة التالية',
   'No': 'لا',
   'No Forms were found': 'لم يتم العثور على نماذج',

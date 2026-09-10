@@ -93,10 +93,10 @@ export const ENG: Translation = {
   'No fields found': 'No fields found',
   'Repetition': 'Repetition',
   'DISMISS': 'DISMISS',
-  // Public survey footer navigation ('Forward' maps to "Next" but is a distinct
-  // key so the shared 'Next' translation is left untouched).
+  // The public survey footer navigates with the shared 'Previous' / 'Next'
+  // keys; only 'Send' and 'Powered by' are its own. ('Back' is the import
+  // form's.)
   'Back': 'Back',
-  'Forward': 'Next',
   'Send': 'Send',
   'Powered by': 'Powered by',
   "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
@@ -382,6 +382,8 @@ export const ENG: Translation = {
   'New Password': 'New Password',
   'New User? Create new account': 'New User? Create new account',
   'Next': 'Next',
+  'Previous': 'Previous',
+  'Continue': 'Continue',
   'Next page': 'Next page',
   'No': 'No',
   'No Forms were found': 'No Forms were found',

@@ -120,7 +120,10 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
   @Input() centeredFieldsContent: boolean = false;
 
   /**
-   * The max number of columns on which the Ajf Form Fields are spread
+   * @deprecated No longer passed to the renderer: the restyled AJF form lays a
+   * field out as a row of label, control and hint, so a form is always a single
+   * column. Kept so that existing templates still compile. The multi-column
+   * layout of the search filters is its own, in `dino-search-filters-widget`.
    */
   @Input() maxColumns: 1 | 2 | 3 = 1;
 

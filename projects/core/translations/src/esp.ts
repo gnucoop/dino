@@ -381,6 +381,8 @@ export const ESP: Translation = {
   'New Password': 'Nueva contraseña',
   'New User? Create new account': 'Nuevo usuario? Crear una cuenta nueva',
   'Next': 'Siguiente',
+  'Previous': 'Anterior',
+  'Continue': 'Continuar',
   'Next page': 'Página siguiente',
   'No': 'No',
   'No Forms were found': 'No se encontraron formas',

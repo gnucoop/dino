@@ -380,6 +380,8 @@ export const PRT: Translation = {
   'New Password': 'Nova Senha',
   'New User? Create new account': 'Novo usuário? Crie uma nova conta',
   'Next': 'Próximo',
+  'Previous': 'Anterior',
+  'Continue': 'Continuar',
   'Next page': 'Próxima página',
   'No': 'Não',
   'No Forms were found': 'Nenhuma forma foi encontrada',

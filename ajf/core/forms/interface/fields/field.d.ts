@@ -1,0 +1,43 @@
+/**
+ * @license
+ * Copyright (C) Gnucoop soc. coop.
+ *
+ * This file is part of the Advanced JSON forms (ajf).
+ *
+ * Advanced JSON forms (ajf) is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * Advanced JSON forms (ajf) is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Advanced JSON forms (ajf).
+ * If not, see http://www.gnu.org/licenses/.
+ *
+ */
+import { AjfBarcodeField } from './barcode-field';
+import { AjfBooleanField } from './boolean-field';
+import { AjfDateRangeField } from './date-range-field';
+import { AjfDateInputField } from './date-input-field';
+import { AjfEmptyField } from './empty-field';
+import { AjfFileField } from './file-field';
+import { AjfFieldWithChoices } from './field-with-choices';
+import { AjfFormulaField } from './formula-field';
+import { AjfGeolocationField } from './geolocation-field';
+import { AjfImageField } from './image-field';
+import { AjfMultipleChoiceField } from './multiple-choice-field';
+import { AjfNumberField } from './number-field';
+import { AjfRangeField } from './range-field';
+import { AjfSignatureField } from './signature-field';
+import { AjfSingleChoiceField } from './single-choice-field';
+import { AjfStringField } from './string-field';
+import { AjfTableField } from './table-field';
+import { AjfTextField } from './text-field';
+import { AjfTimeField } from './time-field';
+import { AjfAudioField } from './audio-field';
+export type AjfField<T = any> = AjfAudioField | AjfBarcodeField | AjfBooleanField | AjfDateRangeField | AjfDateInputField | AjfEmptyField | AjfFieldWithChoices<T> | AjfFileField | AjfFormulaField | AjfGeolocationField | AjfImageField | AjfMultipleChoiceField<T> | AjfNumberField | AjfRangeField | AjfSignatureField | AjfSingleChoiceField<T> | AjfStringField | AjfTableField | AjfTextField | AjfTimeField;
+//# sourceMappingURL=field.d.ts.map

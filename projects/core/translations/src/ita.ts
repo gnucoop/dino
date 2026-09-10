@@ -94,10 +94,10 @@ export const ITA: Translation = {
   'No fields found': 'Nessun campo trovato',
   'Repetition': 'Ripetizione',
   'DISMISS': 'CHIUDI',
-  // Public survey footer navigation ('Forward' is a survey-specific key to avoid
-  // overriding the shared 'Next' → 'Continua').
+  // The public survey footer navigates with the shared 'Previous' / 'Next'
+  // keys; only 'Send' and 'Powered by' are its own. ('Back' is the import
+  // form's.)
   'Back': 'Indietro',
-  'Forward': 'Avanti',
   'Send': 'Invia',
   'Powered by': 'Powered by',
   "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
@@ -365,7 +365,9 @@ export const ITA: Translation = {
   'New App version ready!': 'Nuova versione dell\'App disponibile!',
   'New Password': 'Nuova password',
   'New User? Create new account': 'Nuovo Utente? Crea un nuovo account',
-  'Next': 'Continua',
+  'Next': 'Successiva',
+  'Previous': 'Precedente',
+  'Continue': 'Continua',
   'Next page': 'Pagina successiva',
   'No': 'No',
   'No Forms were found': 'Non sono stati trovati form',

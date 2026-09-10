@@ -1,0 +1,1 @@
+{"version":3,"file":"formula-field.d.ts","sourceRoot":"","sources":["../../../../../projects/core/forms/src/interface/fields/formula-field.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,YAAY,EAAC,MAAM,cAAc,CAAC;AAC1C,OAAO,EAAC,YAAY,EAAC,MAAM,cAAc,CAAC;AAE1C;;GAEG;AACH,MAAM,WAAW,eAAgB,SAAQ,YAAY;IACnD,SAAS,EAAE,YAAY,CAAC,OAAO,CAAC;CACjC"}

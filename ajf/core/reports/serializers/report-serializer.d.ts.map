@@ -1,0 +1,1 @@
+{"version":3,"file":"report-serializer.d.ts","sourceRoot":"","sources":["../../../../projects/core/reports/src/serializers/report-serializer.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,SAAS,EAAC,MAAM,6BAA6B,CAAC;AAKtD,qBAAa,mBAAmB;IAC9B,MAAM,CAAC,QAAQ,CAAC,IAAI,EAAE,OAAO,CAAC,SAAS,CAAC,GAAG,SAAS;CAWrD"}
