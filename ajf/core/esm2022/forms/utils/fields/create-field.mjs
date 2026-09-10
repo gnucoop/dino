@@ -1,0 +1,45 @@
+/**
+ * @license
+ * Copyright (C) Gnucoop soc. coop.
+ *
+ * This file is part of the Advanced JSON forms (ajf).
+ *
+ * Advanced JSON forms (ajf) is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * Advanced JSON forms (ajf) is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Advanced JSON forms (ajf).
+ * If not, see http://www.gnu.org/licenses/.
+ *
+ */
+import { AjfFieldType } from '../../interface/fields/field-type';
+import { AjfNodeType } from '../../interface/nodes/node-type';
+import { createNode } from '../nodes/create-node';
+/**
+ * It creates an AjfField.
+ * If size is not defined apply 'normal'.
+ * If defaultValue is not defined apply null.
+ * If editable is not defined return true if field type is'nt formula or table
+ */
+export function createField(field) {
+    const node = createNode({ ...field, nodeType: AjfNodeType.AjfField });
+    const editable = field.editable != null
+        ? field.editable
+        : field.fieldType !== AjfFieldType.Formula && field.fieldType !== AjfFieldType.Table;
+    return {
+        ...node,
+        ...field,
+        nodeType: AjfNodeType.AjfField,
+        editable,
+        defaultValue: field.defaultValue != null ? field.defaultValue : null,
+        size: field.size || 'normal',
+    };
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY3JlYXRlLWZpZWxkLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vcHJvamVjdHMvY29yZS9mb3Jtcy9zcmMvdXRpbHMvZmllbGRzL2NyZWF0ZS1maWVsZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7R0FvQkc7QUFJSCxPQUFPLEVBQUMsWUFBWSxFQUFDLE1BQU0sbUNBQW1DLENBQUM7QUFDL0QsT0FBTyxFQUFDLFdBQVcsRUFBQyxNQUFNLGlDQUFpQyxDQUFDO0FBQzVELE9BQU8sRUFBZ0IsVUFBVSxFQUFDLE1BQU0sc0JBQXNCLENBQUM7QUFLL0Q7Ozs7O0dBS0c7QUFDSCxNQUFNLFVBQVUsV0FBVyxDQUFnQyxLQUFxQjtJQUM5RSxNQUFNLElBQUksR0FBRyxVQUFVLENBQUMsRUFBQyxHQUFHLEtBQUssRUFBRSxRQUFRLEVBQUUsV0FBVyxDQUFDLFFBQVEsRUFBQyxDQUFDLENBQUM7SUFDcEUsTUFBTSxRQUFRLEdBQ1osS0FBSyxDQUFDLFFBQVEsSUFBSSxJQUFJO1FBQ3BCLENBQUMsQ0FBQyxLQUFLLENBQUMsUUFBUTtRQUNoQixDQUFDLENBQUMsS0FBSyxDQUFDLFNBQVMsS0FBSyxZQUFZLENBQUMsT0FBTyxJQUFJLEtBQUssQ0FBQyxTQUFTLEtBQUssWUFBWSxDQUFDLEtBQUssQ0FBQztJQUN6RixPQUFPO1FBQ0wsR0FBRyxJQUFJO1FBQ1AsR0FBRyxLQUFLO1FBQ1IsUUFBUSxFQUFFLFdBQVcsQ0FBQyxRQUFRO1FBQzlCLFFBQVE7UUFDUixZQUFZLEVBQUUsS0FBSyxDQUFDLFlBQVksSUFBSSxJQUFJLENBQUMsQ0FBQyxDQUFDLEtBQUssQ0FBQyxZQUFZLENBQUMsQ0FBQyxDQUFDLElBQUk7UUFDcEUsSUFBSSxFQUFFLEtBQUssQ0FBQyxJQUFJLElBQUksUUFBUTtLQUN4QixDQUFDO0FBQ1QsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGxpY2Vuc2VcbiAqIENvcHlyaWdodCAoQykgR251Y29vcCBzb2MuIGNvb3AuXG4gKlxuICogVGhpcyBmaWxlIGlzIHBhcnQgb2YgdGhlIEFkdmFuY2VkIEpTT04gZm9ybXMgKGFqZikuXG4gKlxuICogQWR2YW5jZWQgSlNPTiBmb3JtcyAoYWpmKSBpcyBmcmVlIHNvZnR3YXJlOiB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3JcbiAqIG1vZGlmeSBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBBZmZlcm8gR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhc1xuICogcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIGVpdGhlciB2ZXJzaW9uIDMgb2YgdGhlIExpY2Vuc2UsXG4gKiBvciAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLlxuICpcbiAqIEFkdmFuY2VkIEpTT04gZm9ybXMgKGFqZikgaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCxcbiAqIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mXG4gKiBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuIFNlZSB0aGUgR05VIEFmZmVyb1xuICogR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLlxuICpcbiAqIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBBZmZlcm8gR2VuZXJhbCBQdWJsaWMgTGljZW5zZVxuICogYWxvbmcgd2l0aCBBZHZhbmNlZCBKU09OIGZvcm1zIChhamYpLlxuICogSWYgbm90LCBzZWUgaHR0cDovL3d3dy5nbnUub3JnL2xpY2Vuc2VzLy5cbiAqXG4gKi9cblxuaW1wb3J0IHtBamZCYXNlRmllbGR9IGZyb20gJy4uLy4uL2ludGVyZmFjZS9maWVsZHMvYmFzZS1maWVsZCc7XG5pbXBvcnQge0FqZkZpZWxkfSBmcm9tICcuLi8uLi9pbnRlcmZhY2UvZmllbGRzL2ZpZWxkJztcbmltcG9ydCB7QWpmRmllbGRUeXBlfSBmcm9tICcuLi8uLi9pbnRlcmZhY2UvZmllbGRzL2ZpZWxkLXR5cGUnO1xuaW1wb3J0IHtBamZOb2RlVHlwZX0gZnJvbSAnLi4vLi4vaW50ZXJmYWNlL25vZGVzL25vZGUtdHlwZSc7XG5pbXBvcnQge0FqZk5vZGVDcmVhdGUsIGNyZWF0ZU5vZGV9IGZyb20gJy4uL25vZGVzL2NyZWF0ZS1ub2RlJztcblxuZXhwb3J0IHR5cGUgQWpmRmllbGRDcmVhdGUgPSBPbWl0PEFqZk5vZGVDcmVhdGUsICdub2RlVHlwZSc+ICZcbiAgUGljazxBamZCYXNlRmllbGQsICdmaWVsZFR5cGUnPiAmXG4gIFBhcnRpYWw8QWpmQmFzZUZpZWxkPjtcbi8qKlxuICogSXQgY3JlYXRlcyBhbiBBamZGaWVsZC5cbiAqIElmIHNpemUgaXMgbm90IGRlZmluZWQgYXBwbHkgJ25vcm1hbCcuXG4gKiBJZiBkZWZhdWx0VmFsdWUgaXMgbm90IGRlZmluZWQgYXBwbHkgbnVsbC5cbiAqIElmIGVkaXRhYmxlIGlzIG5vdCBkZWZpbmVkIHJldHVybiB0cnVlIGlmIGZpZWxkIHR5cGUgaXMnbnQgZm9ybXVsYSBvciB0YWJsZVxuICovXG5leHBvcnQgZnVuY3Rpb24gY3JlYXRlRmllbGQ8VCBleHRlbmRzIEFqZkZpZWxkID0gQWpmRmllbGQ+KGZpZWxkOiBBamZGaWVsZENyZWF0ZSk6IFQge1xuICBjb25zdCBub2RlID0gY3JlYXRlTm9kZSh7Li4uZmllbGQsIG5vZGVUeXBlOiBBamZOb2RlVHlwZS5BamZGaWVsZH0pO1xuICBjb25zdCBlZGl0YWJsZSA9XG4gICAgZmllbGQuZWRpdGFibGUgIT0gbnVsbFxuICAgICAgPyBmaWVsZC5lZGl0YWJsZVxuICAgICAgOiBmaWVsZC5maWVsZFR5cGUgIT09IEFqZkZpZWxkVHlwZS5Gb3JtdWxhICYmIGZpZWxkLmZpZWxkVHlwZSAhPT0gQWpmRmllbGRUeXBlLlRhYmxlO1xuICByZXR1cm4ge1xuICAgIC4uLm5vZGUsXG4gICAgLi4uZmllbGQsXG4gICAgbm9kZVR5cGU6IEFqZk5vZGVUeXBlLkFqZkZpZWxkLFxuICAgIGVkaXRhYmxlLFxuICAgIGRlZmF1bHRWYWx1ZTogZmllbGQuZGVmYXVsdFZhbHVlICE9IG51bGwgPyBmaWVsZC5kZWZhdWx0VmFsdWUgOiBudWxsLFxuICAgIHNpemU6IGZpZWxkLnNpemUgfHwgJ25vcm1hbCcsXG4gIH0gYXMgVDtcbn1cbiJdfQ==

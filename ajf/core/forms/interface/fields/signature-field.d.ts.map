@@ -1,0 +1,1 @@
+{"version":3,"file":"signature-field.d.ts","sourceRoot":"","sources":["../../../../../projects/core/forms/src/interface/fields/signature-field.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,YAAY,EAAC,MAAM,cAAc,CAAC;AAC1C,OAAO,EAAC,YAAY,EAAC,MAAM,cAAc,CAAC;AAE1C;;GAEG;AACH,MAAM,WAAW,iBAAkB,SAAQ,YAAY;IACrD,SAAS,EAAE,YAAY,CAAC,SAAS,CAAC;CACnC"}

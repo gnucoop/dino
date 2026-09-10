@@ -38,12 +38,23 @@ dino-search-filters-widget {
         align-items: center;
         align-content: center;
         text-align: right;
+        // Hue 50 is a light tint whatever the theme, so the dark theme needs its
+        // mirror hue: left alone, the bar stays pale while the text around it
+        // flips to near-white.
         background-color: mat-css-vars.mat-css-color-primary(50);
+        @include mat-css-vars.mat-css-dark-theme-global {
+          background-color: mat-css-vars.mat-css-color-primary(900);
+        }
         .dino-create-filter-button {
           &[disabled="true"]{
             background-color: mat-css-vars.mat-css-color-accent(50);
+            color: mat-css-vars.mat-css-contrast-color-accent(50);
           }
           background-color: mat-css-vars.mat-css-color-accent(300);
+          // The background is a fixed hue, so the label has to be pinned to that
+          // hue's contrast colour rather than left to Material, which computes it
+          // from the theme (accent 500 in light, near-white in dark).
+          color: mat-css-vars.mat-css-contrast-color-accent(300);
           padding: 0 8px;
           span {
             display: flex;
@@ -84,6 +95,8 @@ dino-search-filters-widget {
     }
   }
   ajf-field {
+    margin-bottom: 15px;
+
     .mat-mdc-radio-group {
       display: flex;
       flex-flow: column wrap;

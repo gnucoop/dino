@@ -48,8 +48,8 @@
   "private": true,
   "dependencies": {
     "@ajf/calendars": "^18.4.1",
-    "@ajf/core": "^18.4.1",
-    "@ajf/material": "^18.4.1",
+    "@ajf/core": "file:./ajf/core",
+    "@ajf/material": "file:./ajf/material",
     "@ajf/icons": "1.0.0",
     "@angular/animations": "^18.2.13",
     "@angular/cdk": "^18.2.14",

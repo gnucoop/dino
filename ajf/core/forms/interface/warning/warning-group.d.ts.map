@@ -1,0 +1,1 @@
+{"version":3,"file":"warning-group.d.ts","sourceRoot":"","sources":["../../../../../projects/core/forms/src/interface/warning/warning-group.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,UAAU,EAAC,MAAM,WAAW,CAAC;AAErC,MAAM,WAAW,eAAe;IAC9B,QAAQ,CAAC,EAAE,UAAU,CAAC;IACtB,UAAU,EAAE,UAAU,EAAE,CAAC;CAC1B"}

@@ -1,0 +1,49 @@
+/**
+ * @license
+ * Copyright (C) Gnucoop soc. coop.
+ *
+ * This file is part of the Advanced JSON forms (ajf).
+ *
+ * Advanced JSON forms (ajf) is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * Advanced JSON forms (ajf) is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Advanced JSON forms (ajf).
+ * If not, see http://www.gnu.org/licenses/.
+ *
+ */
+import { evaluateExpression } from '@ajf/core/models';
+import { nodeInstanceCompleteName } from '../nodes-instances/node-instance-complete-name';
+/**
+ * It upodates AjfRepeatingNodeInstance reps and it returns oldReps.
+ */
+export function updateRepsNum(instance, context) {
+    const oldReps = instance.reps || 0;
+    context = context || {};
+    if (instance.node.formulaReps == null) {
+        const ctxReps = context[nodeInstanceCompleteName(instance)];
+        if (ctxReps != null) {
+            instance.reps = ctxReps;
+        }
+        else if (oldReps == 0) {
+            instance.reps = 1;
+        }
+    }
+    else {
+        let newReps = evaluateExpression(instance.node.formulaReps.formula, context);
+        if (newReps !== oldReps) {
+            instance.reps = newReps;
+        }
+    }
+    instance.canAdd = instance.node.maxReps === 0 || instance.reps < instance.node.maxReps;
+    instance.canRemove = instance.node.minReps === 0 || instance.reps > instance.node.minReps;
+    return oldReps;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXBkYXRlLXJlcHMtbnVtLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vcHJvamVjdHMvY29yZS9mb3Jtcy9zcmMvdXRpbHMvc2xpZGVzLWluc3RhbmNlcy91cGRhdGUtcmVwcy1udW0udHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBb0JHO0FBRUgsT0FBTyxFQUFhLGtCQUFrQixFQUFDLE1BQU0sa0JBQWtCLENBQUM7QUFHaEUsT0FBTyxFQUFDLHdCQUF3QixFQUFDLE1BQU0sZ0RBQWdELENBQUM7QUFFeEY7O0dBRUc7QUFDSCxNQUFNLFVBQVUsYUFBYSxDQUFDLFFBQWtDLEVBQUUsT0FBb0I7SUFDcEYsTUFBTSxPQUFPLEdBQVcsUUFBUSxDQUFDLElBQUksSUFBSSxDQUFDLENBQUM7SUFDM0MsT0FBTyxHQUFHLE9BQU8sSUFBSSxFQUFFLENBQUM7SUFDeEIsSUFBSSxRQUFRLENBQUMsSUFBSSxDQUFDLFdBQVcsSUFBSSxJQUFJLEVBQUUsQ0FBQztRQUN0QyxNQUFNLE9BQU8sR0FBRyxPQUFPLENBQUMsd0JBQXdCLENBQUMsUUFBUSxDQUFDLENBQUMsQ0FBQztRQUM1RCxJQUFJLE9BQU8sSUFBSSxJQUFJLEVBQUUsQ0FBQztZQUNwQixRQUFRLENBQUMsSUFBSSxHQUFHLE9BQU8sQ0FBQztRQUMxQixDQUFDO2FBQU0sSUFBSSxPQUFPLElBQUksQ0FBQyxFQUFFLENBQUM7WUFDeEIsUUFBUSxDQUFDLElBQUksR0FBRyxDQUFDLENBQUM7UUFDcEIsQ0FBQztJQUNILENBQUM7U0FBTSxDQUFDO1FBQ04sSUFBSSxPQUFPLEdBQUcsa0JBQWtCLENBQUMsUUFBUSxDQUFDLElBQUksQ0FBQyxXQUFXLENBQUMsT0FBTyxFQUFFLE9BQU8sQ0FBQyxDQUFDO1FBQzdFLElBQUksT0FBTyxLQUFLLE9BQU8sRUFBRSxDQUFDO1lBQ3hCLFFBQVEsQ0FBQyxJQUFJLEdBQUcsT0FBTyxDQUFDO1FBQzFCLENBQUM7SUFDSCxDQUFDO0lBQ0QsUUFBUSxDQUFDLE1BQU0sR0FBRyxRQUFRLENBQUMsSUFBSSxDQUFDLE9BQU8sS0FBSyxDQUFDLElBQUksUUFBUSxDQUFDLElBQUksR0FBRyxRQUFRLENBQUMsSUFBSSxDQUFDLE9BQU8sQ0FBQztJQUN2RixRQUFRLENBQUMsU0FBUyxHQUFHLFFBQVEsQ0FBQyxJQUFJLENBQUMsT0FBTyxLQUFLLENBQUMsSUFBSSxRQUFRLENBQUMsSUFBSSxHQUFHLFFBQVEsQ0FBQyxJQUFJLENBQUMsT0FBTyxDQUFDO0lBQzFGLE9BQU8sT0FBTyxDQUFDO0FBQ2pCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEBsaWNlbnNlXG4gKiBDb3B5cmlnaHQgKEMpIEdudWNvb3Agc29jLiBjb29wLlxuICpcbiAqIFRoaXMgZmlsZSBpcyBwYXJ0IG9mIHRoZSBBZHZhbmNlZCBKU09OIGZvcm1zIChhamYpLlxuICpcbiAqIEFkdmFuY2VkIEpTT04gZm9ybXMgKGFqZikgaXMgZnJlZSBzb2Z0d2FyZTogeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yXG4gKiBtb2RpZnkgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgQWZmZXJvIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXNcbiAqIHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBlaXRoZXIgdmVyc2lvbiAzIG9mIHRoZSBMaWNlbnNlLFxuICogb3IgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi5cbiAqXG4gKiBBZHZhbmNlZCBKU09OIGZvcm1zIChhamYpIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsXG4gKiBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZlxuICogTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiBTZWUgdGhlIEdOVSBBZmZlcm9cbiAqIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy5cbiAqXG4gKiBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgQWZmZXJvIEdlbmVyYWwgUHVibGljIExpY2Vuc2VcbiAqIGFsb25nIHdpdGggQWR2YW5jZWQgSlNPTiBmb3JtcyAoYWpmKS5cbiAqIElmIG5vdCwgc2VlIGh0dHA6Ly93d3cuZ251Lm9yZy9saWNlbnNlcy8uXG4gKlxuICovXG5cbmltcG9ydCB7QWpmQ29udGV4dCwgZXZhbHVhdGVFeHByZXNzaW9ufSBmcm9tICdAYWpmL2NvcmUvbW9kZWxzJztcblxuaW1wb3J0IHtBamZSZXBlYXRpbmdOb2RlSW5zdGFuY2V9IGZyb20gJy4uLy4uL2ludGVyZmFjZS9ub2Rlcy1pbnN0YW5jZXMvcmVwZWF0aW5nLW5vZGUtaW5zdGFuY2UnO1xuaW1wb3J0IHtub2RlSW5zdGFuY2VDb21wbGV0ZU5hbWV9IGZyb20gJy4uL25vZGVzLWluc3RhbmNlcy9ub2RlLWluc3RhbmNlLWNvbXBsZXRlLW5hbWUnO1xuXG4vKipcbiAqIEl0IHVwb2RhdGVzIEFqZlJlcGVhdGluZ05vZGVJbnN0YW5jZSByZXBzIGFuZCBpdCByZXR1cm5zIG9sZFJlcHMuXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiB1cGRhdGVSZXBzTnVtKGluc3RhbmNlOiBBamZSZXBlYXRpbmdOb2RlSW5zdGFuY2UsIGNvbnRleHQ/OiBBamZDb250ZXh0KTogbnVtYmVyIHtcbiAgY29uc3Qgb2xkUmVwczogbnVtYmVyID0gaW5zdGFuY2UucmVwcyB8fCAwO1xuICBjb250ZXh0ID0gY29udGV4dCB8fCB7fTtcbiAgaWYgKGluc3RhbmNlLm5vZGUuZm9ybXVsYVJlcHMgPT0gbnVsbCkge1xuICAgIGNvbnN0IGN0eFJlcHMgPSBjb250ZXh0W25vZGVJbnN0YW5jZUNvbXBsZXRlTmFtZShpbnN0YW5jZSldO1xuICAgIGlmIChjdHhSZXBzICE9IG51bGwpIHtcbiAgICAgIGluc3RhbmNlLnJlcHMgPSBjdHhSZXBzO1xuICAgIH0gZWxzZSBpZiAob2xkUmVwcyA9PSAwKSB7XG4gICAgICBpbnN0YW5jZS5yZXBzID0gMTtcbiAgICB9XG4gIH0gZWxzZSB7XG4gICAgbGV0IG5ld1JlcHMgPSBldmFsdWF0ZUV4cHJlc3Npb24oaW5zdGFuY2Uubm9kZS5mb3JtdWxhUmVwcy5mb3JtdWxhLCBjb250ZXh0KTtcbiAgICBpZiAobmV3UmVwcyAhPT0gb2xkUmVwcykge1xuICAgICAgaW5zdGFuY2UucmVwcyA9IG5ld1JlcHM7XG4gICAgfVxuICB9XG4gIGluc3RhbmNlLmNhbkFkZCA9IGluc3RhbmNlLm5vZGUubWF4UmVwcyA9PT0gMCB8fCBpbnN0YW5jZS5yZXBzIDwgaW5zdGFuY2Uubm9kZS5tYXhSZXBzO1xuICBpbnN0YW5jZS5jYW5SZW1vdmUgPSBpbnN0YW5jZS5ub2RlLm1pblJlcHMgPT09IDAgfHwgaW5zdGFuY2UucmVwcyA+IGluc3RhbmNlLm5vZGUubWluUmVwcztcbiAgcmV0dXJuIG9sZFJlcHM7XG59XG4iXX0=

@@ -34,13 +34,12 @@
           [setCurrentFormStatus]="null"
           [setIsPipeline]="isPipeline|async"
         ></dino-pipeline-stepper>
-        <div class="dino-create-form-step-container" tourAnchor="create-form">
+        <div class="dino-create-form-renderer-container" tourAnchor="create-form">
           <ajf-form
             #formContainer
             [form]="(form|async)!"
             [saveDisabled]="(isSaveDisabled|async) === true"
             [topBar]="(isPipeline|async) === false"
-            [maxColumns]="(breakpointObserver.extrasmall|async) === true ? 1 : maxColumns"
             [centeredFieldsContent]="centeredFieldsContent"
             (formAction)="onFormAction($event)"
           ></ajf-form>
@@ -55,13 +54,12 @@
       [setCurrentFormStatus]="null"
       [setIsPipeline]="isPipeline|async"
     ></dino-pipeline-stepper>
-    <div class="dino-create-form-step-container">
+    <div class="dino-create-form-renderer-container">
       <ajf-form
         #formContainer
         [form]="(form|async)!"
         [saveDisabled]="(isSaveDisabled|async) === true"
         [topBar]="(isPipeline|async) === false"
-        [maxColumns]="(breakpointObserver.extrasmall|async) === true ? 1 : maxColumns"
         [centeredFieldsContent]="centeredFieldsContent"
         (formAction)="onFormAction($event)"
       ></ajf-form>

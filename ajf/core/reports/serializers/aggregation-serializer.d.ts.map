@@ -1,0 +1,1 @@
+{"version":3,"file":"aggregation-serializer.d.ts","sourceRoot":"","sources":["../../../../projects/core/reports/src/serializers/aggregation-serializer.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,cAAc,EAAC,MAAM,sCAAsC,CAAC;AAGpE,qBAAa,wBAAwB;IACnC,MAAM,CAAC,QAAQ,CAAC,IAAI,EAAE,OAAO,CAAC,cAAc,CAAC,GAAG,cAAc;CAM/D"}

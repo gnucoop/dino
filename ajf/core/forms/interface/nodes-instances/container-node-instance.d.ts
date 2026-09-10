@@ -1,0 +1,37 @@
+/**
+ * @license
+ * Copyright (C) Gnucoop soc. coop.
+ *
+ * This file is part of the Advanced JSON forms (ajf).
+ *
+ * Advanced JSON forms (ajf) is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * Advanced JSON forms (ajf) is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with Advanced JSON forms (ajf).
+ * If not, see http://www.gnu.org/licenses/.
+ *
+ */
+import { AjfBaseNodeInstance } from './base-node-instance';
+import { AjfNodeInstance } from './node-instance';
+/**
+ * An AjfNodeInstance that contains other AjfNodeInstances.
+ */
+export interface AjfContainerNodeInstance extends AjfBaseNodeInstance {
+    /**
+     * The children NodeInstances
+     */
+    nodes: AjfNodeInstance[];
+    /**
+     * A list of all the descendants NodeInstances, flattened in a single array
+     */
+    flatNodes: AjfNodeInstance[];
+}
+//# sourceMappingURL=container-node-instance.d.ts.map

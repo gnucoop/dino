@@ -1,0 +1,1 @@
+{"version":3,"file":"create-aggregation.d.ts","sourceRoot":"","sources":["../../../../../projects/core/reports/src/utils/aggregation/create-aggregation.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAC,cAAc,EAAC,MAAM,yCAAyC,CAAC;AAGvE,MAAM,MAAM,oBAAoB,GAAG,OAAO,CAAC,cAAc,CAAC,CAAC;AAE3D,wBAAgB,iBAAiB,CAAC,WAAW,EAAE,oBAAoB,GAAG,cAAc,CAKnF"}

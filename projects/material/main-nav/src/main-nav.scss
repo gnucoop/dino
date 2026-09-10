@@ -52,6 +52,10 @@ dino-main-nav {
 
   display: flex;
   flex-direction: column;
+  // Bounded on purpose: the shell is the only definite height in the tree, and
+  // without it every `height: 100%` in a routed page -- down to the form
+  // renderer, which sizes its pages off that chain -- resolves against auto.
+  height: 100%;
   overflow: hidden;
 
   &.dino-shell-compact {
@@ -569,7 +573,10 @@ dino-main-nav {
 
     &.dino-sidenav-content-not-scrollable {
       overflow-y: hidden;
-      height: 100% !important;
+      // Same arithmetic as the rule above: the content is offset by the top bar,
+      // so the bar's height has to come off its own, or the page runs past the
+      // viewport by exactly that much on a compact layout.
+      height: calc(100% - var(--dino-shell-topbar-height)) !important;
     }
   }
 

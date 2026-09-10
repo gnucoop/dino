@@ -34,7 +34,7 @@
           [setIsPipeline]="isPipeline|async"
           (position)="scrollToSlide($event)"
         ></dino-pipeline-stepper>
-        <div class="dino-edit-form-step-container">
+        <div class="dino-edit-form-renderer-container">
           <ajf-form
             #ajfFormRenderer
             [form]="(form|async)!"
@@ -42,7 +42,6 @@
             [topBar]="(isPipeline|async) === false"
             (formAction)="onFormAction($event)"
             [readonly]="isView|async"
-            [maxColumns]="(breakpointObserver.extrasmall|async) === true ? 1 : maxColumns"
             [centeredFieldsContent]="centeredFieldsContent"
           ></ajf-form>
         </div>
@@ -59,7 +58,7 @@
       [setIsPipeline]="isPipeline|async"
       (position)="scrollToSlide($event)"
     ></dino-pipeline-stepper>
-    <div class="dino-edit-form-step-container">
+    <div class="dino-edit-form-renderer-container">
       <ajf-form
         #ajfFormRenderer
         [form]="(form|async)!"
@@ -67,7 +66,6 @@
         [topBar]="(isPipeline|async) === false"
         (formAction)="onFormAction($event)"
         [readonly]="isView|async"
-        [maxColumns]="(breakpointObserver.extrasmall|async) === true ? 1 : maxColumns"
         [centeredFieldsContent]="centeredFieldsContent"
       ></ajf-form>
     </div>

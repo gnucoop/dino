@@ -1,0 +1,1 @@
+{"version":3,"file":"field-host.d.ts","sourceRoot":"","sources":["../../../projects/core/forms/src/field-host.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AAEH,OAAO,EAAY,gBAAgB,EAAC,MAAM,eAAe,CAAC;;AAE1D;;GAEG;AAEH,qBACa,YAAY;IACX,QAAQ,CAAC,gBAAgB,EAAE,gBAAgB;gBAAlC,gBAAgB,EAAE,gBAAgB;yCAD5C,YAAY;2CAAZ,YAAY;CAExB"}

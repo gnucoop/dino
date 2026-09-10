@@ -1,0 +1,46 @@
+import * as i0 from "@angular/core";
+import * as i1 from "./branch-line";
+import * as i2 from "./choices-origin-editor";
+import * as i3 from "./choices-origin-editor-dialog";
+import * as i4 from "./condition-editor";
+import * as i5 from "./condition-editor-dialog";
+import * as i6 from "./node-entry";
+import * as i7 from "./node-properties";
+import * as i8 from "./node-type-entry";
+import * as i9 from "./string-identifier-dialog";
+import * as i10 from "./validation-condition-editor-dialog";
+import * as i11 from "./warning-condition-editor-dialog";
+import * as i12 from "./form-builder";
+import * as i13 from "./node-type-filter.pipe";
+import * as i14 from "./node-type-groups.pipe";
+import * as i15 from "@ajf/material/node-icon";
+import * as i16 from "@angular/common";
+import * as i17 from "@angular/cdk/drag-drop";
+import * as i18 from "@angular/forms";
+import * as i19 from "@angular/material/autocomplete";
+import * as i20 from "@angular/material/button";
+import * as i21 from "@angular/material/card";
+import * as i22 from "@angular/material/checkbox";
+import * as i23 from "@angular/material/chips";
+import * as i24 from "@angular/material/dialog";
+import * as i25 from "@angular/material/form-field";
+import * as i26 from "@angular/material/icon";
+import * as i27 from "@angular/material/input";
+import * as i28 from "@angular/material/list";
+import * as i29 from "@angular/material/menu";
+import * as i30 from "@angular/material/select";
+import * as i31 from "ngx-mat-select-search";
+import * as i32 from "@angular/material/sidenav";
+import * as i33 from "@angular/material/slider";
+import * as i34 from "@angular/material/table";
+import * as i35 from "@angular/material/toolbar";
+import * as i36 from "@angular/material/tooltip";
+import * as i37 from "@ajf/core/transloco";
+import * as i38 from "@angular/material/expansion";
+import * as i39 from "@angular/material/slide-toggle";
+export declare class AjfFormBuilderModule {
+    static ɵfac: i0.ɵɵFactoryDeclaration<AjfFormBuilderModule, never>;
+    static ɵmod: i0.ɵɵNgModuleDeclaration<AjfFormBuilderModule, [typeof i1.AjfFbBranchLine, typeof i2.AjfFbChoicesOriginEditor, typeof i3.AjfFbChoicesOriginEditorDialog, typeof i4.AjfFbConditionEditor, typeof i5.AjfFbConditionEditorDialog, typeof i6.AjfFbNodeEntry, typeof i7.AjfFbNodeProperties, typeof i8.AjfFbNodeTypeEntry, typeof i9.AjfFbStringIdentifierDialogComponent, typeof i10.AjfFbValidationConditionEditorDialog, typeof i11.AjfFbWarningConditionEditorDialog, typeof i12.AjfFormBuilder, typeof i13.NodeTypeFilterPipe, typeof i14.NodeTypeGroupsPipe], [typeof i15.AjfNodeIconModule, typeof i16.CommonModule, typeof i17.DragDropModule, typeof i18.FormsModule, typeof i19.MatAutocompleteModule, typeof i20.MatButtonModule, typeof i21.MatCardModule, typeof i22.MatCheckboxModule, typeof i23.MatChipsModule, typeof i24.MatDialogModule, typeof i25.MatFormFieldModule, typeof i26.MatIconModule, typeof i27.MatInputModule, typeof i28.MatListModule, typeof i29.MatMenuModule, typeof i30.MatSelectModule, typeof i31.NgxMatSelectSearchModule, typeof i32.MatSidenavModule, typeof i33.MatSliderModule, typeof i34.MatTableModule, typeof i35.MatToolbarModule, typeof i36.MatTooltipModule, typeof i18.ReactiveFormsModule, typeof i37.AjfTranslocoModule, typeof i38.MatExpansionModule, typeof i39.MatSlideToggleModule], [typeof i12.AjfFormBuilder]>;
+    static ɵinj: i0.ɵɵInjectorDeclaration<AjfFormBuilderModule>;
+}
+//# sourceMappingURL=form-builder-module.d.ts.map

@@ -1,0 +1,7 @@
+// The routed component sits between the sidenav content and dino-edit-form, and
+// a custom element defaults to inline with an auto height: without this the
+// height chain from the shell stops right here.
+dinoapp-edit-form {
+  display: block;
+  height: 100%;
+}
