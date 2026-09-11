@@ -40,26 +40,38 @@ import {TranslocoService} from '@ajf/core/transloco';
 import {NetworkStatusService} from '@dino/core/auth';
 
 /**
- * Prompts the user to select a file from the filesystem.
+ * Prompts the user to select a file from the filesystem. Resolves with null
+ * when the picker is closed without choosing anything: browsers fire no change
+ * event in that case, so the dismissal is caught either from the `cancel` event
+ * or, where that is not supported, from the window getting the focus back.
  */
-function selectFile(accept: string): Promise<File> {
-  return new Promise((resolve, reject) => {
+function selectFile(accept: string): Promise<File | null> {
+  return new Promise(resolve => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = accept;
     input.style.display = 'none';
 
-    input.onchange = () => {
-      if (input.files && input.files.length > 0) {
-        resolve(input.files[0]);
-      } else {
-        reject(new Error('Nessun file selezionato.'));
+    let settled = false;
+    const settle = (file: File | null) => {
+      if (settled) {
+        return;
       }
+      settled = true;
+      window.removeEventListener('focus', onWindowFocus);
       input.remove();
+      resolve(file);
     };
+    // The focus comes back before the change event in some browsers, so give
+    // the selection a moment to arrive before calling it a dismissal.
+    const onWindowFocus = () => setTimeout(() => settle(null), 500);
+
+    input.onchange = () => settle(input.files && input.files.length > 0 ? input.files[0] : null);
+    input.oncancel = () => settle(null);
 
     document.body.appendChild(input);
     input.click();
+    window.addEventListener('focus', onWindowFocus, {once: true});
   });
 }
 
@@ -201,6 +213,9 @@ export class AudioRecorder implements OnDestroy {
     this.isLoadingFile = true;
     try {
       const file = await selectFile('.mp3,.wav,.ogg,.pdf,.jpeg,.jpg,.png,.webp');
+      if (file == null) {
+        return;
+      }
       this.blob.next(file);
       this.blobUrl.next(this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file)));
     } finally {
