@@ -21,7 +21,7 @@
  */
 
 import {Notification} from '@dino/core/notifications';
-import {format, isToday, isYesterday} from 'date-fns';
+import {format, isSameDay, isYesterday, subDays} from 'date-fns';
 
 /**
  * A notification as the shell reads it: the stored model plus whether the active user has
@@ -139,14 +139,20 @@ export function notificationAge(date: Date, now: Date = new Date()): Notificatio
 
 /**
  * The heading a notification belongs under.
+ *
+ * The day is decided against `now` rather than against the system clock: date-fns
+ * `isToday`/`isYesterday` read the real date and would ignore the instant the caller
+ * passed in, which left the headings untestable.
+ *
  * @param date When the notification was created
+ * @param now The instant the day is measured against
  * @returns The translation key of the day group
  */
-function groupLabel(date: Date): string {
-  if (isToday(date)) {
+function groupLabel(date: Date, now: Date): string {
+  if (isSameDay(date, now)) {
     return 'Today';
   }
-  if (isYesterday(date)) {
+  if (isSameDay(date, subDays(now, 1))) {
     return 'Yesterday';
   }
   return 'Earlier';
@@ -174,7 +180,7 @@ export function groupNotifications(
   const groups: NotificationGroup[] = [];
   for (const notification of notifications) {
     const date = new Date(notification.created_at);
-    const label = groupLabel(date);
+    const label = groupLabel(date, now);
     let group = groups[groups.length - 1];
     if (group == null || group.label !== label) {
       group = {label, entries: []};
