@@ -1,151 +1,183 @@
-<mat-card class="dino-audio-recorder-card">
-  <mat-card-header>
-    <mat-card-title>{{'Record your Form'|transloco}}</mat-card-title>
-    <mat-card-subtitle>{{'Dino AI will fill it for you'|transloco}}</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <ng-container *ngIf="(blobUrl|async) === null">
-      <h3>{{'Form Fields'|transloco}}</h3>
-      <mat-list class="dino-form-fields-summary">
-        <mat-list-item *ngFor="let item of formFields">
-          <span
-            matListItemTitle
-            [matTooltip]="item.description"
-            [ngClass]="item.description ? 'dino-with-description' : null"
-            >{{item.label|transloco|truncate:40}}
-            <mat-icon color="primary" *ngIf="item.description">info</mat-icon>
-          </span>
-        </mat-list-item>
-      </mat-list>
+<div class="dino-audio-recorder-header">
+  <div class="dino-audio-recorder-titles">
+    <h2 class="dino-audio-recorder-title">{{'Record your Form'|transloco}}</h2>
+    <p class="dino-audio-recorder-subtitle">{{'Dino AI will fill it for you'|transloco}}</p>
+  </div>
+  <span class="dino-audio-recorder-timer" *ngIf="isRecording" [class.dino-paused]="isPaused">
+    <span class="dino-audio-recorder-timer-dot"></span>
+    {{(recordedTime|async) ?? '0:00'}}
+  </span>
+</div>
+
+<mat-dialog-content class="dino-audio-recorder-content">
+  <!-- What the microphone is picking up right now. -->
+  <div class="dino-audio-recorder-levels" *ngIf="isRecording">
+    <span
+      class="dino-audio-recorder-level"
+      *ngFor="let level of audioLevels|async"
+      [style.height.%]="20 + level * 80"
+    ></span>
+  </div>
+
+  <ng-container *ngIf="(blobUrl|async) === null">
+    <div class="dino-audio-recorder-section">
+      <span class="dino-audio-recorder-overline">{{'Form Fields'|transloco}}</span>
+      <span class="dino-audio-recorder-section-count">
+        {{formFields.length}} {{'fields'|transloco}}
+      </span>
+    </div>
+
+    <mat-list class="dino-form-fields-summary">
+      <mat-list-item *ngFor="let item of formFields; let idx = index">
+        <span
+          matListItemTitle
+          [matTooltip]="item.description"
+          [ngClass]="item.description ? 'dino-with-description' : null"
+        >
+          <span class="dino-form-field-index">{{idx + 1|number:'2.0-0'}}</span>
+          {{item.label|transloco|truncate:40}}
+          <mat-icon color="primary" *ngIf="item.description">info</mat-icon>
+        </span>
+        <span matListItemMeta class="dino-form-field-type">{{item.type|transloco}}</span>
+      </mat-list-item>
+    </mat-list>
+
+    <p class="dino-audio-recorder-hint">
+      {{'Scroll to see all the fields. You can name them in any order.'|transloco}}
+    </p>
+  </ng-container>
+
+  <!-- Once something has been recorded or uploaded, it can be listened to,
+       downloaded and only then transcribed. -->
+  <div class="dino-audio-recorder-section" *ngIf="(blobUrl|async) !== null">
+    <span class="dino-audio-recorder-overline">{{'Your recording'|transloco}}</span>
+  </div>
+
+  <audio
+    *ngIf="!isRecording && mimetype().startsWith('audio') && (blobUrl|async) as sourceUrl"
+    controls
+    preload="metadata"
+    autoplay
+    class="dino-audio-element"
+  >
+    <source [src]="sourceUrl" type="audio/mp3" />
+  </audio>
+
+  <mat-icon class="pdf-icon" *ngIf="!isRecording && mimetype() === 'application/pdf'">
+    picture_as_pdf
+  </mat-icon>
+
+  <img
+    *ngIf="!isRecording && mimetype().startsWith('image')"
+    class="preview-image"
+    [src]="(blobUrl|async)"
+  />
+
+  <mat-form-field
+    class="dino-audio-recorder-transcription"
+    appearance="fill"
+    *ngIf="audioTranscription|async as transcription"
+  >
+    <textarea rows="3" disabled="true" matInput [value]="transcription"></textarea>
+  </mat-form-field>
+
+  <div class="dino-audio-recorder-progress" *ngIf="(isCommunicating|async) === true">
+    <mat-spinner [diameter]="24" [strokeWidth]="3" mode="indeterminate"></mat-spinner>
+    <span>{{'Dino AI is reading your recording…'|transloco}}</span>
+  </div>
+
+  <ng-container *ngIf="(isCommunicating|async) === false">
+    <!-- Nothing recorded yet: record, or bring your own file. -->
+    <ng-container *ngIf="!isRecording && (blobUrl|async) === null">
+      <button
+        mat-flat-button
+        color="primary"
+        class="dino-audio-recorder-button dino-audio-recorder-record"
+        (click)="startRecording()"
+      >
+        <mat-icon>mic</mat-icon>
+        {{'Record'|transloco}}
+      </button>
+
+      <div class="dino-audio-recorder-or"><span>{{'or'|transloco}}</span></div>
+
+      <div
+        class="dino-audio-recorder-dropzone"
+        [class.dino-audio-recorder-dropzone-over]="isDragOver"
+        (dragover)="dragOverFile($event, true)"
+        (dragleave)="dragOverFile($event, false)"
+        (drop)="dropFile($event)"
+      >
+        <span class="dino-audio-recorder-dropzone-label">
+          {{'Drag an audio file or a PDF here'|transloco}}
+        </span>
+        <button mat-stroked-button class="dino-audio-recorder-button" (click)="loadFile()">
+          {{'Upload a file'|transloco}}
+        </button>
+        <span class="dino-audio-recorder-dropzone-hint">
+          {{'MP3, WAV, OGG, PDF or image'|transloco}}
+        </span>
+      </div>
     </ng-container>
 
-    <div *ngIf="isRecording && (blobUrl|async) === null" class="dino-recording-time">
-      <button mat-fab extended>
-        {{(recordedTime|async) ?? '0:00'}}
-        <mat-icon>timer</mat-icon>
+    <!-- Recording. -->
+    <div class="dino-audio-recorder-actions" *ngIf="isRecording">
+      <button mat-stroked-button class="dino-audio-recorder-button" (click)="togglePause()">
+        <mat-icon>{{isPaused ? 'play_arrow' : 'pause'}}</mat-icon>
+        {{(isPaused ? 'Resume' : 'Pause')|transloco}}
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        class="dino-audio-recorder-button dino-audio-recorder-grow"
+        (click)="stopRecording()"
+      >
+        <mat-icon>stop_circle</mat-icon>
+        {{'Finish recording'|transloco}}
       </button>
     </div>
 
-    <audio
-      *ngIf="!isRecording && mimetype().startsWith('audio') && (blobUrl|async) as sourceUrl"
-      controls
-      preload="metadata"
-      autoplay
-      class="dino-audio-element"
-    >
-      <source [src]="sourceUrl" type="audio/mp3" />
-    </audio>
+    <!-- Recorded or uploaded: review it, then transcribe and fill. -->
+    <div class="dino-audio-recorder-actions" *ngIf="!isRecording && (blobUrl|async) !== null">
+      <button mat-stroked-button class="dino-audio-recorder-button" (click)="clearRecordedData()">
+        <mat-icon>delete</mat-icon>
+        {{'Delete'|transloco}}
+      </button>
 
-    <mat-icon class="pdf-icon" *ngIf="!isRecording && mimetype() === 'application/pdf'">
-      picture_as_pdf
-    </mat-icon>
+      <button mat-stroked-button class="dino-audio-recorder-button" (click)="download()">
+        <mat-icon>download</mat-icon>
+        {{'Download'|transloco}}
+      </button>
 
-    <img
-      *ngIf="!isRecording && mimetype().startsWith('image')"
-      class="preview-image"
-      [src]="(blobUrl|async)"
-    />
-
-    <mat-form-field *ngIf="audioTranscription|async as transcription">
-      <textarea rows="3" disabled="true" matInput [value]="transcription"></textarea>
-    </mat-form-field>
-  </mat-card-content>
-  <mat-card-actions>
-    <button
-      mat-fab
-      extended
-      color="primary"
-      *ngIf="!isRecording && (blobUrl|async) === null"
-      (click)="startRecording()"
-    >
-      {{'Record'|transloco}}
-      <mat-icon>mic</mat-icon>
-    </button>
-
-    <span *ngIf="!isRecording && (blobUrl|async) === null"> &nbsp; {{'or'|transloco}} &nbsp; </span>
-
-    <button
-      mat-fab
-      extended
-      color="primary"
-      *ngIf="!isRecording && (blobUrl|async) === null"
-      (click)="loadFile()"
-    >
-      {{'Upload a file'|transloco}}
-      <mat-icon>upload</mat-icon>
-    </button>
-
-    <button
-      mat-fab
-      extended
-      *ngIf="isRecording && (blobUrl|async) === null"
-      (click)="stopRecording()"
-    >
-      {{'Stop Recording'|transloco}}
-      <mat-icon>pause</mat-icon>
-    </button>
-
-    <button
-      mat-fab
-      extended
-      color="warn"
-      [disabled]="(isCommunicating|async) === true"
-      *ngIf="!isRecording && (blobUrl|async) !== null"
-      (click)="clearRecordedData()"
-    >
-      {{'Delete'|transloco}}
-      <mat-icon>delete</mat-icon>
-    </button>
-
-    <button
-      mat-fab
-      extended
-      color="accent"
-      [disabled]="(isCommunicating|async) === true"
-      *ngIf="!isRecording && (blobUrl|async) !== null"
-      (click)="download()"
-    >
-      {{'Download'|transloco}}
-      <mat-icon>download</mat-icon>
-    </button>
-
-    <button
-      mat-fab
-      extended
-      color="primary"
-      [disabled]="(isCommunicating|async) === true || (nss.isOnline$|async) === false"
-      *ngIf="!isRecording && (blobUrl|async) !== null && (audioTranscription|async) === null"
-      (click)="transcribe()"
-    >
-      {{'Transcribe'|transloco}}
-      <mat-icon *ngIf="(isCommunicating|async) === false; else communicatingSpinner"
-        >transcribe</mat-icon
+      <button
+        mat-flat-button
+        color="primary"
+        class="dino-audio-recorder-button dino-audio-recorder-grow"
+        [disabled]="(nss.isOnline$|async) === false"
+        *ngIf="(audioTranscription|async) === null"
+        (click)="transcribe()"
       >
-    </button>
+        <mat-icon>transcribe</mat-icon>
+        {{'Transcribe'|transloco}}
+      </button>
 
-    <button
-      mat-fab
-      extended
-      color="primary"
-      [disabled]="(isCommunicating|async) === true || (nss.isOnline$|async) === false"
-      *ngIf="(audioTranscription|async) !== null"
-      (click)="audioFormCompile()"
-    >
-      {{'Fill the Form'}}<mat-icon
-        *ngIf="(isCommunicating|async) === false; else communicatingSpinner"
-        >edit_note</mat-icon
+      <button
+        mat-flat-button
+        color="primary"
+        class="dino-audio-recorder-button dino-audio-recorder-grow"
+        [disabled]="(nss.isOnline$|async) === false"
+        *ngIf="(audioTranscription|async) !== null"
+        (click)="audioFormCompile()"
       >
-    </button>
-  </mat-card-actions>
+        <mat-icon>edit_note</mat-icon>
+        {{'Fill the Form'|transloco}}
+      </button>
+    </div>
+  </ng-container>
+</mat-dialog-content>
 
-  <ng-template #communicatingSpinner>
-    <mat-spinner
-      matSuffix
-      color="accent"
-      class="dino-communicating-spinner"
-      [strokeWidth]="4"
-      [diameter]="24"
-      mode="indeterminate"
-    ></mat-spinner>
-  </ng-template>
-</mat-card>
+<mat-dialog-actions align="end">
+  <button mat-button class="dino-audio-recorder-cancel" (click)="closeDialog()">
+    {{'Cancel'|transloco}}
+  </button>
+</mat-dialog-actions>

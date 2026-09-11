@@ -24,6 +24,11 @@ import {HttpClient} from '@angular/common/http';
 import {FormSchema} from '@dino/core/forms';
 import {PANDINO_SERVICE_CONFIG, PandinoConfig} from '@dino/core/data';
 /**
+ * How many microphone levels the recorder keeps and shows.
+ */
+const LEVELS_COUNT = 14;
+
+/**
  * Service that provides methods to record, reproduce and save audio from user mic input.
  * Audio can also be sent to Pandino API to be transcribed or to compile a Form.
  */
@@ -42,6 +47,16 @@ export class AudioRecorderService {
    */
   private interval: any;
   /**
+   * Audio graph used to read the microphone input level while recording
+   */
+  private _audioContext: AudioContext | null = null;
+  private _analyser: AnalyserNode | null = null;
+  private _levelsInterval: any;
+  /**
+   * The instant the recording was paused, used to keep the elapsed time honest
+   */
+  private _pausedTime: Date | null = null;
+  /**
    * Recorded audio starting time
    */
   private _startTime: Date | null = null;
@@ -58,6 +73,10 @@ export class AudioRecorderService {
    * Emits when recording fails
    */
   private _recordingFailed = new Subject<string>();
+  /**
+   * The most recent microphone input levels, from 0 to 1, oldest first
+   */
+  private _audioLevels = new BehaviorSubject<number[]>(new Array(LEVELS_COUNT).fill(0));
 
   constructor(
     @Inject(PANDINO_SERVICE_CONFIG) private _pandinoConfig: PandinoConfig,
@@ -72,6 +91,14 @@ export class AudioRecorderService {
 
   getRecordedTime(): Observable<string> {
     return this._recordingTime.asObservable();
+  }
+
+  /**
+   * The microphone input levels of the last seconds, from 0 to 1, oldest first.
+   * Emits a flat line when nothing is being recorded.
+   */
+  getAudioLevels(): Observable<number[]> {
+    return this._audioLevels;
   }
 
   recordingFailed(): Observable<string> {
@@ -182,12 +209,55 @@ export class AudioRecorderService {
     if (!this.recorder) return;
     this.recorder.start();
     this._startTime = new Date();
+    this._tickRecordingTime();
+    this._readAudioLevels();
+  }
+
+  /**
+   * Publishes the elapsed recording time every second.
+   */
+  private _tickRecordingTime(): void {
+    clearInterval(this.interval);
     this.interval = setInterval(() => {
       const currentTime = new Date();
       const diffTime = intervalToDuration({start: this._startTime!, end: currentTime});
-      const recordingTime = `${diffTime.minutes}:${diffTime.seconds!.toString().padStart(2, '0')}`;
+      const minutes = (diffTime.minutes ?? 0).toString().padStart(2, '0');
+      const recordingTime = `${minutes}:${diffTime.seconds!.toString().padStart(2, '0')}`;
       this._recordingTime.next(recordingTime);
     }, 1000);
+  }
+
+  /**
+   * Reads the microphone input level off the stream and publishes a rolling
+   * window of it, so that the recorder can show what it is picking up.
+   */
+  private _readAudioLevels(): void {
+    if (this.stream == null) {
+      return;
+    }
+    clearInterval(this._levelsInterval);
+    if (this._audioContext == null) {
+      const audioContext: AudioContext = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
+      this._audioContext = audioContext;
+      this._analyser = audioContext.createAnalyser();
+      this._analyser.fftSize = 512;
+      audioContext.createMediaStreamSource(this.stream).connect(this._analyser);
+    }
+    const analyser = this._analyser!;
+    const samples = new Uint8Array(analyser.fftSize);
+    this._levelsInterval = setInterval(() => {
+      analyser.getByteTimeDomainData(samples);
+      let sum = 0;
+      for (const sample of samples) {
+        const deviation = (sample - 128) / 128;
+        sum += deviation * deviation;
+      }
+      // The root mean square of the waveform is a decent stand-in for loudness;
+      // the factor spreads the quiet end of speech over the whole bar height.
+      const level = Math.min(1, Math.sqrt(sum / samples.length) * 3);
+      this._audioLevels.next([...this._audioLevels.value.slice(1), level]);
+    }, 120);
   }
 
   /**
@@ -216,6 +286,39 @@ export class AudioRecorderService {
   }
 
   /**
+   * Pauses the recording, freezing the elapsed time with it.
+   */
+  pauseRecording(): void {
+    if (this.recorder == null || this.recorder.state !== 'recording') {
+      return;
+    }
+    this.recorder.pause();
+    this._pausedTime = new Date();
+    clearInterval(this.interval);
+    clearInterval(this._levelsInterval);
+    this._audioLevels.next(new Array(LEVELS_COUNT).fill(0));
+  }
+
+  /**
+   * Resumes a paused recording. The time spent in pause does not count towards
+   * the elapsed time, so the start is moved forward by as much.
+   */
+  resumeRecording(): void {
+    if (this.recorder == null || this.recorder.state !== 'paused') {
+      return;
+    }
+    if (this._startTime != null && this._pausedTime != null) {
+      this._startTime = new Date(
+        this._startTime.getTime() + (new Date().getTime() - this._pausedTime.getTime()),
+      );
+    }
+    this._pausedTime = null;
+    this.recorder.resume();
+    this._tickRecordingTime();
+    this._readAudioLevels();
+  }
+
+  /**
    * Stops the recorder
    */
   stopRecording(): void {
@@ -231,7 +334,15 @@ export class AudioRecorderService {
     if (this.recorder) {
       this.recorder = null;
       clearInterval(this.interval);
+      clearInterval(this._levelsInterval);
+      this._analyser = null;
+      if (this._audioContext != null) {
+        this._audioContext.close();
+        this._audioContext = null;
+      }
+      this._audioLevels.next(new Array(LEVELS_COUNT).fill(0));
       this._startTime = null;
+      this._pausedTime = null;
       if (this.stream) {
         this.stream.getAudioTracks().forEach(track => track.stop());
         this.stream = null;
