@@ -340,8 +340,9 @@ export class DataService implements IDataService {
   /**
    * The timestamp (epoch milliseconds) of the last completed replication cycle,
    * or null if no cycle has ever completed on this device.
-   * Persisted in the local storage so it survives a page reload, and updated on
-   * every 'replicationCycleComplete' emission.
+   * Persisted in the local storage so it survives a page reload, updated on every
+   * 'replicationCycleComplete' emission and cleared on logout, along with the local
+   * database it describes.
    */
   readonly lastSyncAt: BehaviorSubject<number | null> = new BehaviorSubject<number | null>(null);
 
@@ -746,6 +747,7 @@ export class DataService implements IDataService {
       .pipe(
         switchMap(evt => {
           if (evt) {
+            this._clearLastSyncAt();
             // The error is swallowed here on purpose: letting it reach the
             // subscriber would terminate this subscription, and no later logout
             // would tear the database down at all.
@@ -2728,6 +2730,16 @@ export class DataService implements IDataService {
   private _storeLastSyncAt(timestamp: number): void {
     localStorage.setItem(LAST_SYNC_AT_STORAGE_KEY, String(timestamp));
     this.lastSyncAt.next(timestamp);
+  }
+
+  /**
+   * Forgets the last completed replication cycle and publishes the reset on 'lastSyncAt'.
+   * Called on logout, which destroys the local database the timestamp describes, so that
+   * the next account to sign in on this device does not inherit the previous one's time.
+   */
+  private _clearLastSyncAt(): void {
+    localStorage.removeItem(LAST_SYNC_AT_STORAGE_KEY);
+    this.lastSyncAt.next(null);
   }
 }
 
