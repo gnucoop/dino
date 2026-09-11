@@ -1,4 +1,31 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
 dino-form-metric-selector {
+  display: block;
+  // Every host centres this component inside a flex box, which would size it to
+  // its own content and leave the card far narrower than the room there is.
+  // Asking for the full width is what lets the max-widths below actually bind.
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  // The neutral palette of the selector: the theme colours carry the accents
+  // (primary button, focus, errors), while these greys draw the card, the
+  // fields and the secondary text. They are custom properties so that the dark
+  // theme only has to restate the five values below.
+  --dino-fms-card-bg: #ffffff;
+  --dino-fms-border: #dfe4ec;
+  --dino-fms-surface: #eef1f6;
+  --dino-fms-muted: #6b7a8d;
+  --dino-fms-strong: #16283c;
+
+  @include mat-css-vars.mat-css-dark-theme-global {
+    --dino-fms-card-bg: #232a33;
+    --dino-fms-border: #3a4552;
+    --dino-fms-surface: #2b3440;
+    --dino-fms-muted: #9aa7b6;
+    --dino-fms-strong: #eaf0f7;
+  }
+
   @media only screen and (max-width: 992px) {
     height: 75vh;
     overflow-y: scroll;
@@ -8,76 +35,299 @@ dino-form-metric-selector {
       display: none;
     }
   }
+
+  .dino-form-metric-selector-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 56px;
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    box-sizing: border-box;
+
+    @media only screen and (max-width: 992px) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 20px;
+      padding: 16px;
+    }
+
+    // Inside a dialog there is no side panel and the dialog draws the surface,
+    // so the card goes back to being plain content.
+    &.dino-form-metric-selector-dialog-container {
+      display: block;
+      max-width: none;
+      min-width: min(560px, 70vw);
+      padding: 0;
+
+      .dino-form-metric-selector-card {
+        max-width: none;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background-color: transparent;
+        box-shadow: none;
+      }
+    }
+  }
+
+  // The left column: what this step is for.
+  .dino-form-metric-selector-aside {
+    flex: 0 0 260px;
+    max-width: 260px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 12px;
+    box-sizing: border-box;
+
+    @media only screen and (max-width: 992px) {
+      flex: 1 1 auto;
+      max-width: none;
+      padding-top: 0;
+    }
+  }
+
+  .dino-form-metric-selector-overline {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--dino-fms-muted);
+  }
+
+  .dino-form-metric-selector-heading {
+    margin: 6px 0 10px;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--dino-fms-strong);
+  }
+
+  .dino-form-metric-selector-description {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--dino-fms-muted);
+  }
+
+  // The right column: the card holding the date, the status and the metrics.
+  .dino-form-metric-selector-card {
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 820px;
+    box-sizing: border-box;
+    padding: 24px;
+    border: 1px solid var(--dino-fms-border);
+    border-radius: 10px;
+    background-color: var(--dino-fms-card-bg);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+
+    @media only screen and (max-width: 992px) {
+      max-width: none;
+      padding: 16px;
+    }
+
+    > form + form {
+      margin-top: 18px;
+    }
+
+    mat-divider {
+      margin: 24px 0 16px;
+      border-top-color: var(--dino-fms-border);
+    }
+  }
+
   .dino-form-metric-selector-message,
   .dino-additional-selector-message {
-    margin-bottom: 15px;
+    &:not(:empty) {
+      margin-bottom: 16px;
+    }
   }
   .dino-additional-selector-message {
     text-align: center;
   }
-  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-  .mat-form-field-suffix .mat-icon {
-    display: inline-block !important;
-    margin-left: 15px;
-  }
-  .dino-add-metric-button {
-    opacity: 0.5;
-    transition: all 0.5s ease-in-out;
-    font-size: 32px;
+
+  // The creation date: a read-only summary of the value, with the picker
+  // attached to a transparent input stretched over the whole box, so the
+  // calendar opens anchored to the box and a click anywhere on it works.
+  .dino-form-date-selector-field {
     position: relative;
-    bottom: 2px;
-    &:hover {
-      opacity: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 8px 8px 16px;
+    border: 1px solid var(--dino-fms-border);
+    border-radius: 8px;
+    background-color: var(--dino-fms-surface);
+
+    .dino-form-date-selector-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
     }
-    cursor: pointer;
+
+    .dino-form-date-selector-text {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .dino-form-date-selector-label {
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--dino-fms-muted);
+    }
+
+    .dino-form-date-selector-value {
+      font-size: 17px;
+      line-height: 1.4;
+      color: var(--dino-fms-strong);
+    }
+
+    .dino-form-date-selector-change {
+      position: relative;
+      z-index: 1;
+      flex: 0 0 auto;
+      height: 36px;
+      border-radius: 6px;
+      font-size: 13px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
   }
-  .dino-form-metric-selector-container {
-    min-width: 80vw;
-    @media only screen and (max-width: 768px) {
-      min-width: 90vw;
+
+  // One metric per row: label and hint on top, then the field and the button
+  // that creates a new metric of that type.
+  .dino-form-metric-selector-row + .dino-form-metric-selector-row {
+    margin-top: 16px;
+  }
+
+  .dino-form-metric-selector-row-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+
+    .dino-form-metric-selector-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dino-fms-strong);
     }
-    &.dino-form-metric-selector-dialog-container {
-      min-width: unset;
-    }
-    .mat-mdc-form-field {
-      font-size: 115%;
-      margin: auto;
-      @media only screen and (max-width: 992px) {
-        font-size: 110%;
-      }
-    }
-    form {
-      .dino-form-metric-selector-field,
-      .dino-form-date-selector-field,
-      .dino-form-status-selector-field {
-        min-width: 60vw;
-        display: block;
-        .mat-datepicker-toggle {
-          position: relative;
-        }
-      }
-    }
-    @media only screen and (min-width: 991px) {
-      &:not(.dino-form-metric-selector-dialog-container) {
-        position: relative;
-        bottom: 50px;
+
+    .dino-form-metric-selector-hint {
+      flex: 0 1 auto;
+      font-size: 12px;
+      text-align: right;
+      color: var(--dino-fms-muted);
+
+      @media only screen and (max-width: 768px) {
+        display: none;
       }
     }
   }
+
+  .dino-form-metric-selector-row-control {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .dino-form-metric-selector-field,
+  .dino-form-status-selector-field {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    // The label lives above the field now, so the filled field is flattened
+    // into a plain rounded box: no floating label, no underline.
+    .mat-mdc-text-field-wrapper {
+      padding-left: 12px;
+      padding-right: 12px;
+      border: 1px solid var(--dino-fms-border);
+      border-radius: 8px;
+      background-color: var(--dino-fms-surface);
+    }
+
+    .mdc-line-ripple {
+      display: none;
+    }
+
+    .mat-mdc-form-field-infix {
+      min-height: 0;
+      padding: 11px 0;
+    }
+
+    .mat-mdc-form-field-icon-prefix,
+    .mat-mdc-form-field-icon-suffix {
+      color: var(--dino-fms-muted);
+
+      > .mat-icon {
+        padding: 0;
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .mat-mdc-form-field-icon-prefix > .mat-icon {
+      margin-right: 10px;
+    }
+
+    .mat-mdc-input-element,
+    .mat-mdc-select-value-text {
+      font-size: 15px;
+      color: var(--dino-fms-strong);
+    }
+
+    .mat-mdc-form-field-error {
+      font-size: 12px;
+      padding-top: 4px;
+    }
+  }
+
+  .dino-add-metric-button {
+    flex: 0 0 auto;
+    height: 48px;
+    border-radius: 8px;
+    padding: 0 14px;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+
+    .mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+    }
+  }
+
   .dino-go-to-data-button-container {
     display: flex;
     flex-flow: row wrap;
-    width: 100%;
-    justify-content: space-around;
+    justify-content: flex-end;
+    gap: 12px;
+
     .dino-go-to-data-button {
-      margin-top: 50px;
-      @media only screen and (max-width : 768px) {
-        margin-top: 20px;
-      }
-      padding: 30px;
-      min-width: 300px;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      letter-spacing: 0.03em;
       text-transform: uppercase;
-      font-size: 16px;
+
+      .mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
     }
   }
 }

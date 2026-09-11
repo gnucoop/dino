@@ -85,6 +85,20 @@ import {NetworkStatusService} from '@dino/core/auth';
 import {getCurrentLocale} from '@dino/core/langs';
 
 /**
+ * A Metric field displayed by the Form Metric Selector.
+ */
+export interface FormMetricSelectorField extends MetricFormField {
+  /**
+   * The label displayed above the field.
+   */
+  label: string;
+  /**
+   * True when the Metric must be set before moving on to the data step.
+   */
+  required: boolean;
+}
+
+/**
  * This component allows the selection and association of Metrics to the created or edited Form.
  */
 @Component({
@@ -196,6 +210,11 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   formDate: UntypedFormGroup;
 
   /**
+   * The creation date currently selected, displayed by the date field.
+   */
+  creationDate: Observable<Date | null>;
+
+  /**
    * The form creation date
    */
   formCreationDate: Observable<Date>;
@@ -203,7 +222,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**
    * The Selector form fields.
    */
-  formMetricsFields: Observable<MetricFormField[]>;
+  formMetricsFields: Observable<FormMetricSelectorField[]>;
 
   /**
    * All the metrics fields values
@@ -366,6 +385,9 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     this.formDate = new UntypedFormGroup({
       'created_at': new FormControl<Date>(new Date(), [Validators.required, NotNull]),
     });
+    this.creationDate = this.formDate.get('created_at')!.valueChanges.pipe(
+      startWith(this.formDate.get('created_at')!.value),
+    );
     this.formStatus = new UntypedFormGroup({
       'form_status_ref_id': new UntypedFormControl(null),
     });
@@ -436,12 +458,13 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     ]).pipe(
       //this._formSchemaAvailableMetrics.pipe(
       map(([optMetrics, availableMetrics, reqMetrics]) => {
-        const fmf: MetricFormField[] = [];
+        const fmf: FormMetricSelectorField[] = [];
         if (this._areaManager != null && this._isMetricAvailable(availableMetrics, 'area')) {
           const field = {
             fieldName: 'area',
             hint: `Thematic Area of the form`,
-            placeholder: 'Thematic Area' + (optMetrics && !reqMetrics.includes('area') ? '' : ' *'),
+            label: 'Thematic Area',
+            required: !optMetrics || reqMetrics.includes('area'),
             icon: 'volunteer_activism',
           };
           fmf.push(field);
@@ -451,8 +474,8 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'case',
             hint: `Case of the form`,
-            placeholder:
-              'Case management' + (optMetrics && !reqMetrics.includes('case') ? '' : ' *'),
+            label: 'Case management',
+            required: !optMetrics || reqMetrics.includes('case'),
             icon: 'people',
           };
           fmf.push(field);
@@ -463,7 +486,8 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'project',
             hint: `Project associated with the form`,
-            placeholder: 'Project' + (optMetrics && !reqMetrics.includes('project') ? '' : ' *'),
+            label: 'Project',
+            required: !optMetrics || reqMetrics.includes('project'),
             icon: 'assignment',
           };
           fmf.push(field);
@@ -477,7 +501,8 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'location',
             hint: `Location of the collected data`,
-            placeholder: 'Location' + (optMetrics && !reqMetrics.includes('location') ? '' : ' *'),
+            label: 'Location',
+            required: !optMetrics || reqMetrics.includes('location'),
             icon: 'place',
           };
           fmf.push(field);
@@ -491,8 +516,8 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           const field = {
             fieldName: 'organization',
             hint: `Organization associated with the form`,
-            placeholder:
-              'Organization' + (optMetrics && !reqMetrics.includes('organization') ? '' : ' *'),
+            label: 'Organization',
+            required: !optMetrics || reqMetrics.includes('organization'),
             icon: 'public',
           };
           fmf.push(field);

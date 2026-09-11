@@ -1,87 +1,339 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
+// The dialog is the card of the mockup: a plain white sheet with rounded
+// corners, sized so the list of the form fields has room to breathe.
+.dino-audio-recorder-dialog {
+  .mat-mdc-dialog-surface {
+    border-radius: 12px;
+  }
+  .mat-mdc-dialog-container {
+    --mdc-dialog-container-color: var(--dino-rec-surface, #ffffff);
+  }
+}
+
 dino-audio-recorder {
-  .dino-audio-recorder-card {
-    text-align: center;
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  // The neutral palette, restated once for the dark theme.
+  --dino-rec-surface: #ffffff;
+  --dino-rec-border: #dfe4ec;
+  --dino-rec-soft: #f4f6f9;
+  --dino-rec-muted: #6b7a8d;
+  --dino-rec-strong: #16283c;
+
+  @include mat-css-vars.mat-css-dark-theme-global {
+    --dino-rec-surface: #232a33;
+    --dino-rec-border: #3a4552;
+    --dino-rec-soft: #2b3440;
+    --dino-rec-muted: #9aa7b6;
+    --dino-rec-strong: #eaf0f7;
+  }
+
+  .dino-audio-recorder-header {
     display: flex;
-    flex-flow: column wrap;
-    min-width: 300px;
-    max-width: 450px;
-    .mat-mdc-card-header-text {
-      display: flex;
-      flex: 1 0 auto;
-      flex-flow: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 24px 24px 8px;
+  }
+
+  .dino-audio-recorder-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--dino-rec-strong);
+  }
+
+  .dino-audio-recorder-subtitle {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--dino-rec-muted);
+  }
+
+  // The elapsed time, marked as live by the blinking dot.
+  .dino-audio-recorder-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    padding: 4px 10px;
+    border: 1px solid mat-css-vars.mat-css-color-warn(200);
+    border-radius: 999px;
+    background-color: mat-css-vars.mat-css-color-warn(50);
+    color: mat-css-vars.mat-css-color-warn(700);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+
+    .dino-audio-recorder-timer-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: currentColor;
+      animation: dino-audio-recorder-blink 1.4s ease-in-out infinite;
     }
 
-    .mat-mdc-card-content {
-      min-height: 100px;
+    &.dino-paused .dino-audio-recorder-timer-dot {
+      animation: none;
+      opacity: 0.4;
+    }
+  }
+
+  .dino-audio-recorder-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 24px;
+  }
+
+  // The microphone levels of the last seconds, oldest on the left.
+  .dino-audio-recorder-levels {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    height: 56px;
+    margin: 8px 0 16px;
+    padding: 0 12px;
+    border: 1px solid var(--dino-rec-border);
+    border-radius: 8px;
+    background-color: var(--dino-rec-soft);
+
+    .dino-audio-recorder-level {
+      flex: 1 1 auto;
+      min-height: 6px;
+      border-radius: 3px;
+      background-color: mat-css-vars.mat-css-color-primary(500);
+      opacity: 0.45;
+      transition: height 0.12s linear;
+
+      &:nth-last-child(-n + 4) {
+        opacity: 1;
+      }
+    }
+  }
+
+  .dino-audio-recorder-section {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+
+  .dino-audio-recorder-overline {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--dino-rec-muted);
+  }
+
+  .dino-audio-recorder-section-count {
+    font-size: 12px;
+    color: var(--dino-rec-muted);
+  }
+
+  // The fields the recording is expected to cover.
+  .dino-form-fields-summary {
+    padding: 0;
+    max-height: 210px;
+    overflow-y: auto;
+    border: 1px solid var(--dino-rec-border);
+    border-radius: 8px;
+
+    // The app paints scrollbars with the accent colour, which is far too loud
+    // for a list sitting inside a dialog.
+    &::-webkit-scrollbar-thumb {
+      background: var(--dino-rec-border);
+    }
+
+    .mat-mdc-list-item {
+      height: auto;
+      min-height: 0;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--dino-rec-border);
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    .mat-mdc-list-item-unscoped-content {
       display: flex;
-      flex-flow: column wrap;
-      justify-content: center;
       align-items: center;
-      .dino-recording-time {
-        .mat-mdc-extended-fab {
-          font-size: 26px;
-          background-color: transparent;
-          color: rgba(var(--mat-sidenav-content-text-color));
-        }
-        opacity: 0.6;
+    }
+
+    .mat-mdc-list-item-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 0;
+      font-size: 14px;
+      color: var(--dino-rec-strong);
+
+      &.dino-with-description {
+        cursor: pointer;
       }
-      .dino-audio-element {
-        flex: 1 0 auto;
-        width: 100%;
-      }
-      .mat-mdc-form-field {
-        width: 100%;
-        margin-top: 10px;
-      }
-      .dino-form-fields-summary {
-        width: 100%;
-        max-height: 200px;
-        overflow-y: scroll;
-      }
-      .mat-mdc-list-item-title {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        &.dino-with-description {
-          cursor: pointer;
-        }
-        .mat-icon {
-          font-size: 18px;
-          width: 18px;
-          height: 18px;
-          align-self: center;
-          position: relative;
-          bottom: 1px;
-        }
+
+      .mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
       }
     }
 
-    .mat-mdc-card-actions {
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: space-around;
-      .mat-mdc-fab {
-        flex: 1 0 auto;
-        margin: 2px;
-        .dino-communicating-spinner {
-          margin-right: 4px;
-          height: 24px;
-          width: 24px;
-        }
-      }
+    .dino-form-field-index {
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      color: var(--dino-rec-muted);
     }
-    .pdf-icon {
-      color: #444;
-      font-size: 45px;
-      width: 45px;
-      height: 45px;
+
+    .dino-form-field-type {
+      font-size: 12px;
+      color: var(--dino-rec-muted);
     }
-    .preview-image {
-      height: 200px;
-      width: auto;
-      max-width: 100%;
-      max-height: auto;
-      margin: 15px;
+  }
+
+  .dino-audio-recorder-hint {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: var(--dino-rec-muted);
+  }
+
+  .dino-audio-recorder-button {
+    height: 44px;
+    border-radius: 8px;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
     }
+  }
+
+  .dino-audio-recorder-record {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  // The "or" rule between recording and uploading.
+  .dino-audio-recorder-or {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0;
+    font-size: 12px;
+    color: var(--dino-rec-muted);
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 1 1 auto;
+      border-top: 1px solid var(--dino-rec-border);
+    }
+  }
+
+  .dino-audio-recorder-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 16px;
+    border: 1px dashed var(--dino-rec-border);
+    border-radius: 8px;
+    text-align: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+
+    &.dino-audio-recorder-dropzone-over {
+      border-color: mat-css-vars.mat-css-color-primary(500);
+      background-color: mat-css-vars.mat-css-color-primary(50, 0.6);
+    }
+
+    .dino-audio-recorder-dropzone-label {
+      font-size: 13px;
+      color: var(--dino-rec-strong);
+    }
+
+    .dino-audio-recorder-dropzone-hint {
+      font-size: 11px;
+      color: var(--dino-rec-muted);
+    }
+
+    .dino-audio-recorder-button {
+      height: 36px;
+    }
+  }
+
+  .dino-audio-recorder-actions {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 10px;
+    margin-top: 20px;
+
+    .dino-audio-recorder-grow {
+      flex: 1 1 auto;
+    }
+  }
+
+  .dino-audio-recorder-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 24px 0 8px;
+    font-size: 13px;
+    color: var(--dino-rec-muted);
+  }
+
+  .dino-audio-element {
+    width: 100%;
+    margin: 4px 0 0;
+  }
+
+  .dino-audio-recorder-transcription {
+    width: 100%;
+    margin-top: 12px;
+  }
+
+  .pdf-icon {
+    align-self: center;
+    margin: 12px 0;
+    color: var(--dino-rec-muted);
+    font-size: 45px;
+    width: 45px;
+    height: 45px;
+  }
+
+  .preview-image {
+    align-self: center;
+    height: 200px;
+    width: auto;
+    max-width: 100%;
+    margin: 12px 0;
+  }
+
+  .mat-mdc-dialog-actions {
+    justify-content: flex-end;
+    padding: 12px 16px;
+    border-top: 1px solid var(--dino-rec-border);
+  }
+
+  .dino-audio-recorder-cancel {
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--dino-rec-muted);
+  }
+}
+
+@keyframes dino-audio-recorder-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
   }
 }

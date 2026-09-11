@@ -2,137 +2,195 @@
   class="dino-form-metric-selector-container"
   [class.dino-form-metric-selector-dialog-container]="context === 'bulkFormEdit' || context === 'shareUrl' "
 >
-  <div class="dino-additional-selector-message" *ngIf="context === 'bulkFormEdit'">
-    <ng-content select="[bulk-edit-message]"></ng-content>
-  </div>
-  <div class="dino-additional-selector-message" *ngIf="context === 'shareUrl'">
-    <ng-content select="[share-url-message]"></ng-content>
-  </div>
-  <br /><br />
-  <div class="dino-form-metric-selector-message">
-    <ng-content select="[metric-selector-message]"></ng-content>
-  </div>
-
-  <form [formGroup]="formDate" autocomplete="off" *ngIf="context !== 'shareUrl'">
-    <mat-form-field
-      class="dino-form-date-selector-field"
-      appearance="fill"
-      tourAnchor="metric-selector-creation-date"
-    >
-      <mat-label>{{'Creation Date'|transloco}}</mat-label>
-      <input
-        matInput
-        readonly
-        [matDatepicker]="pickerDate"
-        [formControlName]="'created_at'"
-        [placeholder]="'mm/dd/yyyy'"
-      />
-      <mat-datepicker-toggle matSuffix [for]="pickerDate"></mat-datepicker-toggle>
-      <mat-datepicker [xPosition]="'end'" #pickerDate></mat-datepicker>
-    </mat-form-field>
-  </form>
-  <form
-    *ngIf="(context === 'bulkFormEdit' || context === 'report') && availableStatuses && availableStatuses.length;"
-    [formGroup]="formStatus"
-    autocomplete="off"
+  <aside
+    class="dino-form-metric-selector-aside"
+    *ngIf="context === 'form' || context === 'report'"
   >
-    <mat-form-field class="dino-form-status-selector-field" tourAnchor="metric-selector-status">
-      <mat-label>{{'Select the Form Status'|transloco}}</mat-label>
-      <mat-select
-        #statusSelect
-        [formControlName]="'form_status_ref_id'"
-        [placeholder]="'Form status associated with the form'"
-      >
-        <mat-option [value]="null"></mat-option>
-        <mat-option *ngFor="let status of availableStatuses" [value]="status.id">
-          <span [ngStyle]="{'color': status.color ?? 'inherit'}"> {{status.label|transloco}}</span>
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </form>
-  <form [formGroup]="formMetrics" autocomplete="off">
-    <ng-container *ngFor="let field of formMetricsFields|async let idx = index">
-      <mat-form-field class="dino-form-metric-selector-field" appearance="fill">
+    <span class="dino-form-metric-selector-overline">{{'Step 1 of 2'|transloco}}</span>
+    <h2 class="dino-form-metric-selector-heading">
+      {{(context === 'report' ? 'Report metrics' : 'Form metrics')|transloco}}
+    </h2>
+    <p class="dino-form-metric-selector-description">
+      {{'These values decide how the submission is dated and grouped in reports and aggregations. Nothing here is part of the questionnaire itself.'|transloco}}
+    </p>
+  </aside>
+
+  <div class="dino-form-metric-selector-card">
+    <div class="dino-additional-selector-message" *ngIf="context === 'bulkFormEdit'">
+      <ng-content select="[bulk-edit-message]"></ng-content>
+    </div>
+    <div class="dino-additional-selector-message" *ngIf="context === 'shareUrl'">
+      <ng-content select="[share-url-message]"></ng-content>
+    </div>
+    <div class="dino-form-metric-selector-message">
+      <ng-content select="[metric-selector-message]"></ng-content>
+    </div>
+
+    <form [formGroup]="formDate" autocomplete="off" *ngIf="context !== 'shareUrl'">
+      <div class="dino-form-date-selector-field" tourAnchor="metric-selector-creation-date">
+        <mat-icon class="dino-form-metric-selector-field-icon">event</mat-icon>
+        <div class="dino-form-date-selector-text">
+          <span class="dino-form-date-selector-label">
+            {{'Creation Date'|transloco}}<span aria-hidden="true"> *</span>
+          </span>
+          <span class="dino-form-date-selector-value">{{(creationDate|async) | date}}</span>
+        </div>
+        <!-- The picker needs an input to attach to: it is kept transparent and stretched over
+             the whole box, so that the calendar opens anchored to it and a click anywhere on
+             the box opens the picker. -->
         <input
-          matInput
-          [formControlName]="field.fieldName"
-          [placeholder]="(field.placeholder ?? '')|transloco"
-          [matAutocomplete]="auto"
+          class="dino-form-date-selector-input"
+          readonly
+          [attr.aria-label]="'Creation Date'|transloco"
+          [matDatepicker]="pickerDate"
+          [formControlName]="'created_at'"
+          (click)="pickerDate.open()"
         />
-
-        <mat-icon
-          *ngIf="(isView|async) !== true && isMetricCreationAllowed(field.fieldName)"
-          matSuffix
-          color="primary"
-          class="dino-add-metric-button"
-          (click)="openCreateMetricDialog($event, field.fieldName)"
-          >add</mat-icon
+        <button
+          type="button"
+          mat-stroked-button
+          class="dino-form-date-selector-change"
+          (click)="pickerDate.open()"
         >
+          {{'Change'|transloco}}
+        </button>
+        <mat-datepicker [xPosition]="'end'" #pickerDate></mat-datepicker>
+      </div>
+    </form>
 
-        <mat-icon matSuffix>{{field.icon}}</mat-icon>
-
-        <mat-autocomplete
-          #auto="matAutocomplete"
-          [autoActiveFirstOption]="false"
-          [displayWith]="displayMetricName"
-        >
-          <mat-option
-            *ngFor="let option of formMetricsOptions[field.fieldName] | async"
-            [value]="{option, secondaryMetricFieldsDisplayed, metricType: field.fieldName}"
-            [ngClass]="'dino-option-level-' + (option.level ?? '0')"
+    <form
+      *ngIf="(context === 'bulkFormEdit' || context === 'report') && availableStatuses && availableStatuses.length;"
+      [formGroup]="formStatus"
+      autocomplete="off"
+    >
+      <div class="dino-form-metric-selector-row">
+        <div class="dino-form-metric-selector-row-header">
+          <span class="dino-form-metric-selector-label">{{'Form Status'|transloco}}</span>
+          <span class="dino-form-metric-selector-hint">
+            {{'Form status associated with the form'|transloco}}
+          </span>
+        </div>
+        <div class="dino-form-metric-selector-row-control">
+          <mat-form-field
+            class="dino-form-status-selector-field"
+            appearance="fill"
+            subscriptSizing="dynamic"
+            tourAnchor="metric-selector-status"
           >
-            {{displayMetricName({option, secondaryMetricFieldsDisplayed, metricType:
-            field.fieldName})}}
-          </mat-option>
-        </mat-autocomplete>
+            <mat-select
+              #statusSelect
+              [formControlName]="'form_status_ref_id'"
+              [placeholder]="'Select…'|transloco"
+            >
+              <mat-option [value]="null"></mat-option>
+              <mat-option *ngFor="let status of availableStatuses" [value]="status.id">
+                <span [ngStyle]="{'color': status.color ?? 'inherit'}"> {{status.label|transloco}}</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
 
-        <mat-error *ngIf="formMetrics.controls[field.fieldName].hasError('required')">
-          {{ 'Please enter a'|transloco}} {{field.fieldName}}
-        </mat-error>
+    <form [formGroup]="formMetrics" autocomplete="off">
+      <div class="dino-form-metric-selector-row" *ngFor="let field of formMetricsFields|async">
+        <div class="dino-form-metric-selector-row-header">
+          <span class="dino-form-metric-selector-label">
+            {{field.label|transloco}}<span *ngIf="field.required" aria-hidden="true"> *</span>
+          </span>
+          <span class="dino-form-metric-selector-hint">{{(field.hint ?? '')|transloco}}</span>
+        </div>
+        <div class="dino-form-metric-selector-row-control">
+          <mat-form-field
+            class="dino-form-metric-selector-field"
+            appearance="fill"
+            subscriptSizing="dynamic"
+          >
+            <mat-icon matIconPrefix class="dino-form-metric-selector-field-icon">
+              {{field.icon}}
+            </mat-icon>
 
-        <mat-error *ngIf="formMetrics.controls[field.fieldName].hasError('incorrect')">
-          {{ 'Please select a valid'|transloco}} {{field.fieldName|titlecase|transloco}}
-        </mat-error>
+            <input
+              matInput
+              [formControlName]="field.fieldName"
+              [placeholder]="'Select…'|transloco"
+              [attr.aria-label]="field.label|transloco"
+              [matAutocomplete]="auto"
+            />
 
-        <mat-hint>{{field.hint|transloco}}</mat-hint>
-      </mat-form-field>
+            <mat-icon matIconSuffix class="dino-form-metric-selector-field-arrow">
+              expand_more
+            </mat-icon>
+
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              [autoActiveFirstOption]="false"
+              [displayWith]="displayMetricName"
+            >
+              <mat-option
+                *ngFor="let option of formMetricsOptions[field.fieldName] | async"
+                [value]="{option, secondaryMetricFieldsDisplayed, metricType: field.fieldName}"
+                [ngClass]="'dino-option-level-' + (option.level ?? '0')"
+              >
+                {{displayMetricName({option, secondaryMetricFieldsDisplayed, metricType:
+                field.fieldName})}}
+              </mat-option>
+            </mat-autocomplete>
+
+            <mat-error *ngIf="formMetrics.controls[field.fieldName].hasError('required')">
+              {{ 'Please enter a'|transloco}} {{field.fieldName}}
+            </mat-error>
+
+            <mat-error *ngIf="formMetrics.controls[field.fieldName].hasError('incorrect')">
+              {{ 'Please select a valid'|transloco}} {{field.fieldName|titlecase|transloco}}
+            </mat-error>
+          </mat-form-field>
+
+          <button
+            *ngIf="(isView|async) !== true && isMetricCreationAllowed(field.fieldName)"
+            type="button"
+            mat-stroked-button
+            class="dino-add-metric-button"
+            (click)="openCreateMetricDialog($event, field.fieldName)"
+          >
+            <mat-icon>add</mat-icon>
+            {{'New'|transloco}}
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <ng-container *ngIf="context === 'form' || context === 'report'">
+      <mat-divider></mat-divider>
+      <div class="dino-go-to-data-button-container">
+        <button
+          *ngIf="context === 'form' && (isCreate|async) === true && isRecordAudioEnabled"
+          mat-stroked-button
+          [disabled]="(formMetrics.status === 'INVALID') || (nss.isOnline$|async) === false"
+          class="dino-go-to-data-button dino-transcribe-form-button"
+          (click)="openRecordAudioDialog()"
+        >
+          <mat-icon>mic</mat-icon>
+          {{('Transcribe the Form'|transloco)}}
+        </button>
+
+        <button
+          mat-flat-button
+          color="primary"
+          [disabled]="formMetrics.status === 'INVALID'"
+          class="dino-go-to-data-button dino-tour-interactive-anchor"
+          (click)="goToData()"
+          tourAnchor="go-to-data-button"
+        >
+          <ng-container *ngIf="context === 'form'">
+            {{((isView|async) !== true) ? ('Fill the Form'|transloco) : ('View the Form'|transloco)}}
+          </ng-container>
+          <ng-container *ngIf="context === 'report'">
+            {{((isView|async) !== true) ? ('Continue'|transloco) : ('View the Report'|transloco)}}
+          </ng-container>
+          <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+        </button>
+      </div>
     </ng-container>
-  </form>
-  <div class="dino-go-to-data-button-container" *ngIf="context === 'form'">
-    <button
-      mat-raised-button
-      color="primary"
-      [disabled]="formMetrics.status === 'INVALID'"
-      class="dino-go-to-data-button dino-tour-interactive-anchor"
-      (click)="goToData()"
-      tourAnchor="go-to-data-button"
-    >
-      {{((isView|async) !== true) ? ('Fill the Form'|transloco) : ('View the Form'|transloco)}}
-      <mat-icon>arrow_forward</mat-icon>
-    </button>
-
-    <button *ngIf="(isCreate|async) === true && isRecordAudioEnabled"
-      mat-raised-button
-      color="primary"
-      [disabled]="(formMetrics.status === 'INVALID') || (nss.isOnline$|async) === false"
-      class="dino-go-to-data-button"
-      (click)="openRecordAudioDialog()"
-    >
-      {{('Transcribe the Form'|transloco)}}
-      <mat-icon>mic</mat-icon>
-    </button>
-  </div>
-  <div class="dino-go-to-data-button-container" *ngIf="context === 'report'">
-    <button
-      mat-raised-button
-      color="primary"
-      [disabled]="formMetrics.status === 'INVALID'"
-      class="dino-go-to-data-button dino-tour-interactive-anchor"
-      (click)="goToData()"
-      tourAnchor="go-to-data-button"
-    >
-    {{((isView|async) !== true) ? ('Continue'|transloco) : ('View the Report'|transloco)}}
-    <mat-icon>arrow_forward</mat-icon>
-    </button>
   </div>
 </div>

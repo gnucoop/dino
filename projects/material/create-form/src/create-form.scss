@@ -13,7 +13,9 @@ dino-create-form {
   .dino-create-form-step-container {
     display: flex;
     flex: 1 1 auto;
-    align-items: center;
+    // The metric selector is a top-aligned card now, not a block to centre in
+    // whatever height the step happens to have.
+    align-items: flex-start;
     justify-content: center;
     min-height: 0;
     // The step is bounded now, and Material clips its content container, so this
@@ -50,27 +52,34 @@ dino-create-form {
       display: none;
     }
   }
+  // The two steps read as tabs: the inactive one sits on a tinted ground, the
+  // active one on the page surface with an underline marking it.
   .mat-horizontal-stepper-header-container {
     flex: 0 0 auto;
     border-bottom: 1px solid mat-css-vars.mat-css-color-primary(100);
     .mat-horizontal-stepper-header {
-      padding: 8px;
+      padding: 8px 20px;
       flex-direction: row;
       flex: 1 0 50%;
+      background-color: mat-css-vars.mat-css-color-primary(50, 0.5);
       &::before,
       &::after {
         visibility: hidden;
       }
       .mat-step-label {
         padding: 0px;
-        padding-left: 5px;
+        padding-left: 10px;
         text-align: left;
         .mat-step-text-label {
-          font-size: 16px;
+          font-size: 14px;
+          font-weight: 600;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
         }
       }
       &[aria-selected='true'] {
-        background-color: mat-css-vars.mat-css-color-primary(100, 0.3);
+        background-color: transparent;
+        box-shadow: inset 0 -3px 0 0 mat-css-vars.mat-css-color-primary(500);
       }
     }
     .mat-stepper-horizontal-line {

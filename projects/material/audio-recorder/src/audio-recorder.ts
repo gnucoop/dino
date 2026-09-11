@@ -64,6 +64,32 @@ function selectFile(accept: string): Promise<File> {
 }
 
 /**
+ * Human readable names of the Ajf field types, as shown in the list of the
+ * fields the recorder is listening for.
+ */
+const FIELD_TYPE_LABELS: {[fieldType: string]: string} = {
+  'string': 'text',
+  'text': 'long text',
+  'number': 'number',
+  'boolean': 'yes / no',
+  'singlechoice': 'single choice',
+  'multiplechoice': 'multiple choice',
+  'formula': 'formula',
+  'date': 'date',
+  'dateinput': 'date',
+  'time': 'time',
+  'table': 'table',
+  'geolocation': 'position',
+  'barcode': 'barcode',
+  'file': 'file',
+  'image': 'image',
+  'video': 'video',
+  'signature': 'signature',
+  'range': 'range',
+  'empty': 'note',
+};
+
+/**
  * Shows a list of active filters and allows their deletion.
  * Each single active filter is represented by a chip, with it's corrisponding name,
  * operator and value.
@@ -78,7 +104,19 @@ function selectFile(accept: string): Promise<File> {
 export class AudioRecorder implements OnDestroy {
   isLoadingFile = false;
   isRecording = false;
+  /**
+   * True while the recording is on hold.
+   */
+  isPaused = false;
+  /**
+   * True while a file is being dragged over the drop area.
+   */
+  isDragOver = false;
   recordedTime: Observable<string | null>;
+  /**
+   * The microphone input levels of the last seconds, drawn while recording.
+   */
+  audioLevels: Observable<number[]>;
   blobUrl: BehaviorSubject<SafeUrl | null> = new BehaviorSubject<SafeUrl | null>(null);
   blob: BehaviorSubject<TranscriptionFile | null> = new BehaviorSubject<TranscriptionFile | null>(
     null,
@@ -95,9 +133,9 @@ export class AudioRecorder implements OnDestroy {
   isCommunicating: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
-   * List of form fields (label and description)
+   * List of form fields (label, description and type)
    */
-  formFields: {label: string; description?: string | null}[] = [];
+  formFields: {label: string; description?: string | null; type: string}[] = [];
 
   /**
    * Subscribes to the AudioRecorderService recorded blob
@@ -129,6 +167,7 @@ export class AudioRecorder implements OnDestroy {
     });
 
     this.recordedTime = this._audioRecorderService.getRecordedTime();
+    this.audioLevels = this._audioRecorderService.getAudioLevels();
 
     this._blobSub = this._audioRecorderService
       .getRecordedBlob()
@@ -141,11 +180,12 @@ export class AudioRecorder implements OnDestroy {
 
     if (this._data.exampleData) {
       const exampleFieldKeys = Object.keys(this._data.exampleData.fieldLabels);
-      const exampleFields: {label: string; description?: string | null}[] = [];
+      const exampleFields: {label: string; description?: string | null; type: string}[] = [];
       for (let key of exampleFieldKeys) {
         const label = this._data.exampleData.fieldLabels[key];
         const description = this._data.exampleData.fieldDescriptions[key];
-        exampleFields.push({label, description});
+        const fieldType = this._data.exampleData.fieldTypes[key];
+        exampleFields.push({label, description, type: FIELD_TYPE_LABELS[fieldType] ?? fieldType});
       }
       this.formFields = exampleFields;
     }
@@ -169,6 +209,28 @@ export class AudioRecorder implements OnDestroy {
   }
 
   /**
+   * Takes the file dropped on the upload area.
+   */
+  dropFile(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver = false;
+    const file = event.dataTransfer?.files?.[0];
+    if (file == null) {
+      return;
+    }
+    this.blob.next(file);
+    this.blobUrl.next(this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file)));
+  }
+
+  /**
+   * Keeps the drop area highlighted while a file hovers over it.
+   */
+  dragOverFile(event: DragEvent, isOver: boolean): void {
+    event.preventDefault();
+    this.isDragOver = isOver;
+  }
+
+  /**
    * Returns the mimetype of the currently loaded file.
    */
   mimetype() {
@@ -185,8 +247,24 @@ export class AudioRecorder implements OnDestroy {
   startRecording() {
     if (!this.isRecording) {
       this.isRecording = true;
+      this.isPaused = false;
       this._audioRecorderService.startRecording();
     }
+  }
+
+  /**
+   * Puts the recording on hold, or picks it up again.
+   */
+  togglePause(): void {
+    if (!this.isRecording) {
+      return;
+    }
+    if (this.isPaused) {
+      this._audioRecorderService.resumeRecording();
+    } else {
+      this._audioRecorderService.pauseRecording();
+    }
+    this.isPaused = !this.isPaused;
   }
   /**
    * Aborts the recording and clears recorded audio.
@@ -203,6 +281,7 @@ export class AudioRecorder implements OnDestroy {
     if (this.isRecording) {
       this._audioRecorderService.stopRecording();
       this.isRecording = false;
+      this.isPaused = false;
     }
   }
 

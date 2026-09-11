@@ -38,15 +38,15 @@ describe('dino-form-metric-selector', {testIsolation: false}, () => {
     cy.get('dino-form-metric-selector .dino-form-date-selector-field input').should('exist');
   });
 
-  it('should show a datepicker toggle button', () => {
-    cy.get('dino-form-metric-selector mat-datepicker-toggle button').should('exist');
+  it('should show a button that changes the creation date', () => {
+    cy.get('dino-form-metric-selector .dino-form-date-selector-change').should('exist');
   });
 
-  it('should open a calendar panel when clicking the datepicker toggle', () => {
-    cy.get('dino-form-metric-selector mat-datepicker-toggle button').first().click({force: true});
+  it('should open a calendar panel when clicking the change button', () => {
+    cy.get('dino-form-metric-selector .dino-form-date-selector-change').first().click({force: true});
     cy.get('mat-datepicker-content').should('be.visible');
     cy.get('mat-calendar').should('exist');
-    cy.get('mat-datepicker-toggle button').first().click({force: true});
+    cy.get('body').type('{esc}');
   });
 
   it('should show at least one metric autocomplete field', () => {
