@@ -5,7 +5,7 @@ description: Manage organizations in Dino – view, add, edit, delete, and impor
 
 # Organizations
 
-The **Organizations** page lists all organizations configured in your Dino instance. Use this screen to view, add, edit, delete, and import organizations, as well as to manage the organizational hierarchy.
+The **Organizations** page lists all possible values of the metric organization. Organizations could be your project partners, or any entity that is involved in your activities. Use this screen to view, add, edit, delete, and import organizations, as well as to manage the organizational hierarchy.
 
 ![Main view of the Organizations page](../imgs/metrics/organizations.png)
 
@@ -16,7 +16,7 @@ By default, the table shows the following columns:
 - **Organization Name** – the name of the organization. This column is sortable.
 - **Parent Organization** – the name of the parent organization, if any.
 
-Additional columns (ID, Creation Date, Logo path, Website URL, Additional Attributes) are hidden but available when you customize the column display using the **View Week** icon (bottom right of the table header).
+Additional columns (ID, Creation Date, Logo path, Website URL, Additional Attributes) are hidden but available when you customize the column display using the **View columns** icon (bottom right of the table header).
 
 ## Row Actions
 
