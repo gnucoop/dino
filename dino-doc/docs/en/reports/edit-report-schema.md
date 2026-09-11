@@ -20,7 +20,7 @@ To create a new report schema:
 3. You are taken to the Edit Report Schema page.
 4. Enter a descriptive **Name** for your report.
 5. (Optional) Provide a **Description** to explain the report’s purpose.
-6. Configure the report’s data and layout using the available options.
+6. Import an XLSReport file
 7. Click **Save** to create the schema.
 
 ## Editing an Existing Report Schema
