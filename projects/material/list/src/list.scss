@@ -218,6 +218,10 @@ dino-list {
     cursor: pointer;
   }
 
+  mat-cell.mat-column-text {
+    gap: 6px;
+  }
+
   .mat-mdc-header-cell:not(:first-of-type):not(:last-of-type),
   mat-footer-cell,
   mat-cell:not(.mat-column-actions):not(.mat-column-select):not(.dino-expanded-cell) {
