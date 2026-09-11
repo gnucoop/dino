@@ -246,10 +246,10 @@
         </ng-template>
 
         <ng-template #singleCellTemplate
-          ><mat-icon *ngIf="header.column === 'text' && element.icon !== null"
+          ><mat-icon *ngIf="header.column === 'text' && element.icon"
             >{{element.icon}}</mat-icon
           >
-          <mat-icon *ngIf="header.column === 'text' && element.redirect_url!== null">link</mat-icon>
+          <mat-icon *ngIf="header.column === 'text' && element.redirect_url">link</mat-icon>
 
           <dino-list-cell
             [item]="element|dinoListCellValue:header:dataSource?.choices"
