@@ -42,14 +42,9 @@ import {DataService, InsertModel, MetricsService, PermissionContextService} from
 import {Notification, NotificationManager} from '@dino/core/notifications';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
-import {ShellContextService, ThemeService} from '@dino/material/core';
+import {buildInitials, ShellContextService, ThemeService} from '@dino/material/core';
 import {LangService} from '@dino/material/lang-selector';
-import {
-  groupNotifications,
-  NotificationEntry,
-  NotificationGroup,
-  ReadNotification,
-} from './notification-groups';
+import {groupNotifications, NotificationEntry, NotificationGroup} from './notification-groups';
 import {TranslocoService} from '@ngneat/transloco';
 import {RxError, RxTypeError} from 'rxdb';
 import {
@@ -761,7 +756,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     );
 
     this.userInitials = this.userDisplayName.pipe(
-      map(fullName => (fullName ? this._buildInitials(fullName) : null)),
+      map(fullName => (fullName ? buildInitials(fullName) : null)),
     );
 
     this.userRoleLabel = combineLatest([this.pcs.fullContext, this._adminRoles]).pipe(
@@ -1383,22 +1378,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
   private _endSessionAndGoToLogin(): void {
     this.authService.endSession();
     this._router.navigate([this.authService.authConfig.failedAuthRedirect]);
-  }
-
-  /**
-   * Builds the avatar initials for a user. No avatar image is stored for a user,
-   * so the first letters of the first two words of the full name are used instead.
-   * @param fullName The user full name
-   * @returns Up to two uppercase letters, or null if none could be extracted
-   */
-  private _buildInitials(fullName: string): string | null {
-    const initials = fullName
-      .split(/\s+/)
-      .filter(word => word.length > 0)
-      .slice(0, 2)
-      .map(word => word.charAt(0).toUpperCase())
-      .join('');
-    return initials.length > 0 ? initials : null;
   }
 
   /**
