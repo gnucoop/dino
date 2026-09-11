@@ -12,7 +12,7 @@ The **Thematic Areas** page (accessible from the Metrics section) lets you organ
 ## What You See
 
 - **Breadcrumbs** at the top show your current location in the application (e.g., **Metrics > Thematic Areas**).
-- The main table lists all thematic areas, displaying columns such as **Area Name**, **Parent Area**, and (if configured) other attributes. You can customize visible columns by clicking the **view_week** icon in the header.
+- The main table lists all thematic areas, displaying columns such as **Area Name**, **Parent Area**, and (if configured) other attributes. You can customize visible columns by clicking the **View Column** icon in the header.
 - A **search bar** and **filter panel** let you find areas by keyword, date range, or other metadata.
 - The **Export** button (cloud_download) allows you to download the current list as a file.
 - Two floating action buttons are available:

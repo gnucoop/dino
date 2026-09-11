@@ -5,7 +5,7 @@ description: Manage your projects in Dino. View, add, edit, delete, import, and 
 
 # Projects
 
-The **Projects** page in Dino lets you manage all your structured project records. You can view a sortable list of projects, add new ones, edit existing ones, delete them, import data in bulk, and export the list for offline analysis. The page also offers powerful filtering tools to quickly find the project you need.
+The **Projects** page in Dino lets you manage all values of the Project metric. This can be used to map your organization's projects or a program or collaborations with donors or any other kind of structured group of activities which is relevant to your work. You can view a sortable list of projects, add new ones, edit existing ones, delete them, import data in bulk, and export the list for offline analysis. The page also offers powerful filtering tools to quickly find the project you need.
 
 ![Main view of the Projects page](../imgs/metrics/projects.png)
 

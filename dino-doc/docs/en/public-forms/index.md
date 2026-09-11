@@ -7,7 +7,10 @@ description: How to access, fill out, and submit a public form in Dino without n
 
 Public forms allow anyone with a link to submit data to Dino without needing to log in or have an account. This is commonly used for surveys, registrations, or feedback collection. If you have received a public link to a form, you can use this page to complete it.
 
-Public form addresses follow the pattern `/f/` followed by a unique identifier (e.g., `https://your-dino-instance.com/f/abc123def`).
+Public form addresses follow the pattern `/f/` followed by a unique identifier (e.g., `https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a`). The identifier is the ID of the form schema. If any metric value is to be added to the form data, this can be included in the url using the following syntax (e.g. for the metric case): `https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a?case=a6408e72-c60c-4d54-ad2f-44fd4a90cdb2`
+where the metric value ID is again the ID of the metric assigned by Dino. 
+
+There is no need to remember this syntax since the link is generated automatically be Dino one you click on the share icon of the form schema. Once generated, the link can be shared by email, whatsapp or any other mechanism. 
 
 ---
 
