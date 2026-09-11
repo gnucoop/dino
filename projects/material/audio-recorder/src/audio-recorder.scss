@@ -1,21 +1,10 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
-// The dialog is the card of the mockup: a plain white sheet with rounded
-// corners, sized so the list of the form fields has room to breathe.
-.dino-audio-recorder-dialog {
-  .mat-mdc-dialog-surface {
-    border-radius: 12px;
-  }
-  .mat-mdc-dialog-container {
-    --mdc-dialog-container-color: var(--dino-rec-surface, #ffffff);
-  }
-}
-
-dino-audio-recorder {
-  display: block;
-  width: 100%;
-  max-width: 460px;
-  // The neutral palette, restated once for the dark theme.
+// The neutral palette of the recorder. It is declared on the dialog pane as
+// well as on the component, because Material gives the content component
+// `display: contents`: properties set on the host are dropped, and the dialog
+// container -- an ancestor -- cannot see custom properties declared below it.
+@mixin dino-audio-recorder-palette {
   --dino-rec-surface: #ffffff;
   --dino-rec-border: #dfe4ec;
   --dino-rec-soft: #f4f6f9;
@@ -29,6 +18,28 @@ dino-audio-recorder {
     --dino-rec-muted: #9aa7b6;
     --dino-rec-strong: #eaf0f7;
   }
+}
+
+// The dialog is the card of the mockup: a plain sheet with rounded corners,
+// wide enough that a field label, which is usually a whole question, has room
+// for a line or two.
+.dino-audio-recorder-dialog {
+  @include dino-audio-recorder-palette;
+  width: min(600px, 92vw);
+
+  .mat-mdc-dialog-surface {
+    border-radius: 12px;
+  }
+
+  .mat-mdc-dialog-container {
+    --mdc-dialog-container-color: var(--dino-rec-surface);
+  }
+}
+
+dino-audio-recorder {
+  @include dino-audio-recorder-palette;
+  display: block;
+  width: 100%;
 
   .dino-audio-recorder-header {
     display: flex;
@@ -164,13 +175,25 @@ dino-audio-recorder {
       align-items: center;
     }
 
-    .mat-mdc-list-item-title {
+    // Field labels are whole questions more often than not, so they wrap
+    // instead of being cut: Material would otherwise keep them on one line.
+    .mat-mdc-list-item-title,
+    .mdc-list-item__primary-text {
       display: flex;
-      align-items: center;
+      align-items: baseline;
       gap: 8px;
       padding: 10px 0;
       font-size: 14px;
+      line-height: 1.4;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
       color: var(--dino-rec-strong);
+
+      .dino-form-field-label {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
 
       &.dino-with-description {
         cursor: pointer;
@@ -184,13 +207,17 @@ dino-audio-recorder {
     }
 
     .dino-form-field-index {
+      flex: 0 0 auto;
       font-size: 12px;
       font-variant-numeric: tabular-nums;
       color: var(--dino-rec-muted);
     }
 
     .dino-form-field-type {
+      flex: 0 0 auto;
+      padding-left: 12px;
       font-size: 12px;
+      white-space: nowrap;
       color: var(--dino-rec-muted);
     }
   }
