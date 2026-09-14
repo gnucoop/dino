@@ -341,7 +341,7 @@
 </ng-template>
 
 <div class="dino-selection-actions" *ngIf="dataSource">
-  <div class="dino-selection-actions-left" *ngIf="bulkActions">
+  <div class="dino-selection-actions-left" *ngIf="selectionActionsAvailable">
     <span class="dino-selection-hint" *ngIf="!selection.hasValue()">
       <mat-icon>check_box_outline_blank</mat-icon>
       {{'Select one or more rows to see the available actions'|transloco}}
@@ -372,6 +372,8 @@
       </button>
     </ng-container>
 
+    <!-- More than one row selected, which only a list with bulk actions allows:
+         what can be performed on them all. -->
     <ng-template #bulkActionsTpl>
       <button
         *ngIf="bulkActionsAvailable?.includes('delete')"

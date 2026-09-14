@@ -394,6 +394,19 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   bulkDeleteAction?: (row: any) => void;
 
   /**
+   * Whether the selection row has anything to offer: the actions of a row live
+   * there and nowhere else, so it is displayed on a list without bulk actions
+   * too. It takes a list where a row can be selected - by its checkbox or by
+   * clicking it - and something to perform on the selection.
+   */
+  get selectionActionsAvailable(): boolean {
+    const selectable = this.bulkActions || this._onClickRowActions.includes('select');
+    const hasActions =
+      this.listRowActions.length > 0 || (this.bulkActions && !!this.bulkActionsAvailable?.length);
+    return selectable && hasActions;
+  }
+
+  /**
    * Non default table cell templates
    */
   private _cellTemplatesMap: {[column: string]: TemplateRef<any>} = {};
@@ -701,10 +714,11 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
-   * Selects all the currently displayed items
+   * Selects all the currently displayed items.
+   * A list without bulk actions selects one row at a time.
    */
   selectAll(): void {
-    if (this.dataSource == null) {
+    if (this.dataSource == null || !this.bulkActions) {
       return;
     }
     this.getDisplayedItems().forEach(row => this.selection.select(row));
@@ -830,7 +844,13 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
    */
   rowToggle(row: T): void {
     if (this._onClickRowActions.some(act => act === 'select')) {
-      this.selection.toggle(row);
+      if (this.bulkActions || this.selection.isSelected(row)) {
+        this.selection.toggle(row);
+      } else {
+        // Without the bulk actions there is nothing to perform on several rows
+        // at once: a click moves the selection instead of adding to it.
+        this.selection.setSelection(row);
+      }
     }
     if (this._onClickRowActions.some(act => act === 'expand')) {
       this.expansionRowsUpdate(row);
