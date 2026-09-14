@@ -334,6 +334,7 @@ export class FormsMapComponent implements AfterViewInit, OnDestroy {
     this._filtersService.clearModelFilters();
     this._filtersService.clearCustomFilters();
     this._filtersService.clearAdditionalBasicFilters();
+    this._filtersService.storageKey = null;
     if (this._map != null) {
       this._map.remove();
     }
