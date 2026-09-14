@@ -2002,6 +2002,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     }
     this._fts.clearModelFilters();
     this._fts.clearCustomFilters();
+    this._fts.storageKey = null;
     this._dialogSub.unsubscribe();
     this._selectionChangedSub.unsubscribe();
     this._dataSourceSub.unsubscribe();
