@@ -37,7 +37,15 @@ import {
   Subscription,
   throwError,
 } from 'rxjs';
-import {catchError, debounceTime, map, skip, take, withLatestFrom} from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  map,
+  shareReplay,
+  skip,
+  take,
+  withLatestFrom,
+} from 'rxjs/operators';
 
 import {
   DEFAULT_MODEL_KEYS,
@@ -317,6 +325,11 @@ export class FiltersService<T extends Model = Model> {
         return this._updateQueryString(transformedFilters);
       }),
       catchError(err => throwError(() => err) as Observable<string>),
+      // Encoding the filters also writes them in the url and stores them for
+      // the section: it has to happen once, and not once per subscriber. The
+      // reference count frees the chain when the section is left, so that the
+      // next one starts from its own filters and not from the last ones.
+      shareReplay({bufferSize: 1, refCount: true}),
     );
   }
 
