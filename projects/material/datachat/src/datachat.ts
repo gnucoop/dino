@@ -411,6 +411,13 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   private _agentReady = false;
 
   /**
+   * The User the live agent belongs to, kept from the moment the agent is
+   * created: destroying it also happens on logout, when the local data of the
+   * User is being destroyed and can no longer be read.
+   */
+  private _agentUser: {name: string; email: string} | null = null;
+
+  /**
    * The agent creation currently in flight, shared by the questions asked
    * while it is running.
    */
@@ -591,6 +598,8 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       const liveApiKey = this._session.apiKey;
       if (this._session.isAliveFor(this._schemaId) && liveApiKey != null) {
         this._agentAlive = true;
+        const live = this._session.liveSession;
+        this._agentUser = live != null ? {name: live.userName, email: live.userEmail} : null;
         this.apiKey.next(liveApiKey);
         return;
       }
@@ -1230,6 +1239,9 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     return combineLatest([this._udm.getActiveUserData(), this._exportedFile$]).pipe(
       switchMap(([activeUserData, exportedFile]) => {
         if (!activeUserData || !exportedFile) return obsOf(null);
+        // The agent belongs to this User from now on, and is destroyed in its
+        // name even when the local data is gone.
+        this._agentUser = {name: activeUserData.full_name, email: activeUserData.email};
         const headers = {
           'X-API-KEY': apiKey,
           'X-USER-NAME': activeUserData.full_name,
@@ -1324,23 +1336,17 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * @param apiKey The api key
    */
   private _destroyAgent(apiKey: string) {
-    this._udm
-      .getActiveUserData()
-      .pipe(
-        switchMap(activeUserData => {
-          if (!activeUserData) return obsOf(null);
-          const headers = {
-            'X-API-KEY': apiKey,
-            'X-USER-NAME': activeUserData.full_name,
-            'X-USER-EMAIL': activeUserData.email,
-          };
-          const url = `${this.baseDataChatAPIurl}/${
-            this.endpointUrls?.endEndpoint ?? 'enddatachat'
-          }`;
-          return this._http.post<any>(url, {}, {headers});
-        }),
-        take(1),
-      )
+    // The User is the one the agent was created for, not the one the local data
+    // holds: this also runs on logout, while that data is being destroyed.
+    const headers = {
+      'X-API-KEY': apiKey,
+      'X-USER-NAME': this._agentUser?.name ?? '',
+      'X-USER-EMAIL': this._agentUser?.email ?? '',
+    };
+    const url = `${this.baseDataChatAPIurl}/${this.endpointUrls?.endEndpoint ?? 'enddatachat'}`;
+    this._http
+      .post<any>(url, {}, {headers})
+      .pipe(take(1))
       .subscribe(res => {
         if (isDevMode()) {
           console.log(res);
@@ -1441,6 +1447,8 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           apiKey: this.apiKey.value,
           baseUrl: this.baseDataChatAPIurl ?? '',
           endEndpoint: this.endpointUrls?.endEndpoint ?? 'enddatachat',
+          userName: this._agentUser?.name ?? '',
+          userEmail: this._agentUser?.email ?? '',
         });
         if (!this._session.isInsideForm(this._nextUrl(), this._schemaId)) {
           this._session.endSession();
