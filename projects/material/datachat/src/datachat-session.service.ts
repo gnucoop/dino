@@ -23,9 +23,8 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable, isDevMode} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {AuthService} from '@dino/core/auth';
-import {UserDataManager} from '@dino/core/users';
-import {BehaviorSubject, of as obsOf} from 'rxjs';
-import {filter, switchMap, take} from 'rxjs/operators';
+import {BehaviorSubject} from 'rxjs';
+import {filter, take} from 'rxjs/operators';
 
 import {DataChatConversation, DataChatStore} from './datachat-store';
 import {DataChatQA} from './datachat.interfaces';
@@ -62,6 +61,14 @@ export interface DataChatLiveSession {
    * The name of the agent destruction endpoint
    */
   endEndpoint: string;
+  /**
+   * The name of the User the agent was created for
+   */
+  userName: string;
+  /**
+   * The email of the User the agent was created for
+   */
+  userEmail: string;
 }
 
 /**
@@ -89,6 +96,13 @@ export class DataChatSessionService {
   }
 
   /**
+   * The live agent a new chat inherits, with the User it was created for.
+   */
+  get liveSession(): DataChatLiveSession | null {
+    return this._live;
+  }
+
+  /**
    * The conversations of the currently open scope, most recent first.
    */
   readonly conversations: BehaviorSubject<DataChatConversation[]> = new BehaviorSubject<
@@ -113,7 +127,6 @@ export class DataChatSessionService {
 
   constructor(
     private _http: HttpClient,
-    private _udm: UserDataManager,
     private _router: Router,
     private _auth: AuthService,
     private _store: DataChatStore,
@@ -155,6 +168,10 @@ export class DataChatSessionService {
   /**
    * Destroys the live agent, if any. The stored conversations are kept:
    * they are permanent and are restored on the next visit.
+   *
+   * The User the agent belongs to is read from the session and not from the
+   * local data: the session also ends on logout, when that data is being
+   * destroyed, and an agent left alive keeps consuming the credits of the User.
    */
   endSession(): void {
     const session = this._live;
@@ -162,22 +179,14 @@ export class DataChatSessionService {
     if (session == null) {
       return;
     }
-    this._udm
-      .getActiveUserData()
-      .pipe(
-        switchMap(activeUserData => {
-          if (!activeUserData) {
-            return obsOf(null);
-          }
-          const headers = {
-            'X-API-KEY': session.apiKey,
-            'X-USER-NAME': activeUserData.full_name,
-            'X-USER-EMAIL': activeUserData.email,
-          };
-          return this._http.post<any>(`${session.baseUrl}/${session.endEndpoint}`, {}, {headers});
-        }),
-        take(1),
-      )
+    const headers = {
+      'X-API-KEY': session.apiKey,
+      'X-USER-NAME': session.userName,
+      'X-USER-EMAIL': session.userEmail,
+    };
+    this._http
+      .post<any>(`${session.baseUrl}/${session.endEndpoint}`, {}, {headers})
+      .pipe(take(1))
       .subscribe({
         next: res => {
           if (isDevMode()) {
