@@ -116,6 +116,10 @@ export const ENG: Translation = {
   'Apply import': 'Apply import',
   'Reuse existing metrics with the same name': 'Reuse existing metrics with the same name',
   'No fields found': 'No fields found',
+  'Rows not imported, metric not created': 'Rows not imported, metric not created',
+  'Result': 'Result',
+  'Ignore column': 'Ignore column',
+  'repeating': 'repeating',
   'Repetition': 'Repetition',
   'DISMISS': 'DISMISS',
   // Public survey footer navigation ('Forward' maps to "Next" but is a distinct
