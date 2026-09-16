@@ -26,10 +26,17 @@
           <div class="dino-imp-step" (click)="goToStep(2)">
             <div
               class="dino-imp-step-bar"
-              [class.dino-imp-step-bar-done]="step === 2"
+              [class.dino-imp-step-bar-done]="step >= 2"
             ></div>
             <div class="dino-imp-step-label" [class.dino-imp-step-label-active]="step === 2">
               2 · {{ 'Map fields' | transloco }}
+              <mat-icon *ngIf="step === 3" class="dino-imp-step-check">check</mat-icon>
+            </div>
+          </div>
+          <div class="dino-imp-step" (click)="goToStep(3)">
+            <div class="dino-imp-step-bar" [class.dino-imp-step-bar-done]="step === 3"></div>
+            <div class="dino-imp-step-label" [class.dino-imp-step-label-active]="step === 3">
+              3 · {{ 'Result' | transloco }}
             </div>
           </div>
         </div>
@@ -136,7 +143,7 @@
                   (selectionChange)="onMappingChange(mapping, $event.value)"
                   (openedChange)="onFieldSelectOpenedChange($event, mapping)"
                 >
-                  <mat-select-trigger>{{ fieldLabel(mapping.field) }}</mat-select-trigger>
+                  <mat-select-trigger>{{ fieldName(mapping.field) }}</mat-select-trigger>
                   <ng-container *ngIf="openedMapping === mapping; else selectedFieldOption">
                     <mat-option>
                       <ngx-mat-select-search
@@ -152,14 +159,14 @@
                       [matTooltip]="fieldLabel(field)"
                       matTooltipPosition="right"
                     >
-                      {{ fieldLabel(field) }}
+                      {{ fieldName(field) }}
                     </mat-option>
                     <mat-option [value]="ignoreFieldValue"
                       >{{ '— Ignore this column —' | transloco }}</mat-option
                     >
                   </ng-container>
                   <ng-template #selectedFieldOption>
-                    <mat-option [value]="mapping.field">{{ fieldLabel(mapping.field) }}</mat-option>
+                    <mat-option [value]="mapping.field">{{ fieldName(mapping.field) }}</mat-option>
                   </ng-template>
                 </mat-select>
                 <mat-error>{{ 'Field mapped to more than one column' | transloco }}</mat-error>
@@ -193,23 +200,83 @@
           </div>
         </div>
       </ng-container>
+
+      <!-- ===================== STEP 3 — result ===================== -->
+      <ng-container *ngIf="step === 3 && outcome && !isLoading">
+        <div class="dino-imp-outcome">
+          <div
+            class="dino-imp-outcome-head"
+            [class.dino-imp-outcome-ok]="outcome.status === 'success'"
+            [class.dino-imp-outcome-partial]="outcome.status === 'partial'"
+            [class.dino-imp-outcome-ko]="outcome.status === 'error'"
+          >
+            <mat-icon>{{
+              outcome.status === 'success'
+                ? 'check_circle'
+                : outcome.status === 'partial'
+                ? 'warning'
+                : 'error'
+            }}</mat-icon>
+            <span>{{ outcome.message }}</span>
+          </div>
+
+          <div class="dino-imp-outcome-warn" *ngFor="let warning of outcome.warnings">
+            <div class="dino-imp-outcome-warn-head">
+              <mat-icon>warning</mat-icon>
+              <span>{{ warning.label }} ({{ warning.count }})</span>
+            </div>
+            <ul class="dino-imp-outcome-list">
+              <li *ngFor="let item of warning.items">{{ item }}</li>
+            </ul>
+          </div>
+        </div>
+      </ng-container>
     </div>
   </div>
 
   <!-- footer action bar -->
   <div class="dino-imp-footer">
-    <button type="button" class="dino-imp-back" mat-raised-button color="accent" (click)="onBack()">
-      {{ 'Back' | transloco }}
-    </button>
-    <button
-      type="button"
-      class="dino-imp-apply"
-      mat-raised-button
-      color="primary"
-      [disabled]="step !== 2 || processing || duplicateFields.length > 0"
-      (click)="apply()"
-    >
-      {{ 'Apply import' | transloco }}
-    </button>
+    <ng-container *ngIf="step !== 3">
+      <button
+        type="button"
+        class="dino-imp-back"
+        mat-raised-button
+        color="accent"
+        (click)="onBack()"
+      >
+        {{ 'Back' | transloco }}
+      </button>
+      <button
+        type="button"
+        class="dino-imp-apply"
+        mat-raised-button
+        color="primary"
+        [disabled]="step !== 2 || processing || duplicateFields.length > 0"
+        (click)="apply()"
+      >
+        {{ 'Apply import' | transloco }}
+      </button>
+    </ng-container>
+    <ng-container *ngIf="step === 3">
+      <button
+        type="button"
+        class="dino-imp-back"
+        mat-raised-button
+        color="accent"
+        *ngIf="outcome && outcome.status === 'error'"
+        (click)="backToMapping()"
+      >
+        {{ 'Back' | transloco }}
+      </button>
+      <button
+        type="button"
+        class="dino-imp-apply"
+        mat-raised-button
+        color="primary"
+        (click)="closeOutcome()"
+      >
+        {{ 'Close' | transloco }}
+      </button>
+    </ng-container>
   </div>
 </div>

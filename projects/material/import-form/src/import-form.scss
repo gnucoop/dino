@@ -16,6 +16,12 @@
   --imp-text: #d4d9dd;
   --imp-muted: #99a0a7;
   --imp-faint: #7c848c;
+  --imp-ok-bg: #0d2b1e;
+  --imp-ok-fg: #6ce9a6;
+  --imp-warn-bg: #2e2110;
+  --imp-warn-fg: #fec84b;
+  --imp-ko-bg: #2e1513;
+  --imp-ko-fg: #fda29b;
 }
 
 dino-import-form {
@@ -30,6 +36,12 @@ dino-import-form {
   --imp-text: #2a3a45;
   --imp-muted: #64798a;
   --imp-faint: #8395a1;
+  --imp-ok-bg: #ecfdf3;
+  --imp-ok-fg: #067647;
+  --imp-warn-bg: #fffaeb;
+  --imp-warn-fg: #b54708;
+  --imp-ko-bg: #fef3f2;
+  --imp-ko-fg: #b42318;
 
   display: block;
   height: 100%;
@@ -446,6 +458,75 @@ dino-import-form {
   }
 
   // ---- Footer ---------------------------------------------------------------
+  // ---- Step 3: result -------------------------------------------------------
+  .dino-imp-outcome {
+    max-width: 780px;
+    margin-bottom: 26px;
+  }
+
+  .dino-imp-outcome-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+
+    .mat-icon {
+      flex: none;
+    }
+  }
+  .dino-imp-outcome-ok {
+    background: var(--imp-ok-bg);
+    color: var(--imp-ok-fg);
+  }
+  .dino-imp-outcome-partial {
+    background: var(--imp-warn-bg);
+    color: var(--imp-warn-fg);
+  }
+  .dino-imp-outcome-ko {
+    background: var(--imp-ko-bg);
+    color: var(--imp-ko-fg);
+  }
+
+  .dino-imp-outcome-warn {
+    border: 1px solid var(--imp-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+
+  .dino-imp-outcome-warn-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--imp-warn-fg);
+
+    .mat-icon {
+      flex: none;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .dino-imp-outcome-list {
+    margin: 10px 0 0;
+    padding-left: 28px;
+    font-size: 13px;
+    line-height: 1.7;
+    max-height: 240px;
+    overflow: auto;
+
+    li {
+      word-break: break-word;
+    }
+  }
+
   .dino-imp-footer {
     flex: none;
     height: 70px;
@@ -462,12 +543,4 @@ dino-import-form {
   .dino-imp-apply.mat-mdc-raised-button {
     border-radius: 8px;
   }
-}
-
-// Snackbar colors (global panels, rendered in an overlay outside the component).
-.dino-import-snack-success .mdc-snackbar__surface {
-  background-color: #067647 !important;
-}
-.dino-import-snack-error .mdc-snackbar__surface {
-  background-color: #b42318 !important;
 }
