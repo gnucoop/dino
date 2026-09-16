@@ -92,6 +92,10 @@ export const ITA: Translation = {
   'Reuse existing metrics with the same name':
     'Riutilizza le metriche esistenti con lo stesso nome',
   'No fields found': 'Nessun campo trovato',
+  'Rows not imported, metric not created': 'Righe non importate, metrica non creata',
+  'Result': 'Esito',
+  'Ignore column': 'Ignora colonna',
+  'repeating': 'ripetuto',
   'Repetition': 'Ripetizione',
   'DISMISS': 'CHIUDI',
   // Public survey footer navigation ('Forward' is a survey-specific key to avoid
@@ -538,7 +542,7 @@ export const ITA: Translation = {
   'filters': 'filtri',
   'forbidden deleting default key': 'impossibile eliminare una chiave di default',
   'forbidden: delete default translations': 'proibito: eliminare traduzioni di default',
-  'forms created': 'forme create',
+  'forms created': 'form creati',
   'key: "{{key}}" removed': 'chiave: "{{key}}" eliminata',
   'lang: {{language}} created': 'lingua: {{language}} creata',
   'lang: {{language}} updated': 'lingua: {{language}} aggiornata',

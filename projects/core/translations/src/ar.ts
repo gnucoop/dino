@@ -90,6 +90,10 @@ export const AR: Translation = {
   'Apply import': 'تطبيق الاستيراد',
   'Reuse existing metrics with the same name': 'إعادة استخدام المقاييس الموجودة بنفس الاسم',
   'No fields found': 'لم يتم العثور على حقول',
+  'Rows not imported, metric not created': 'صفوف لم يتم استيرادها، لم يتم إنشاء المقياس',
+  'Result': 'النتيجة',
+  'Ignore column': 'تجاهل العمود',
+  'repeating': 'متكرر',
   'Repetition': 'التكرار',
   'DISMISS': 'إغلاق',
   "An automatic report already exists for this form. To disable it, delete that report's schema and data.":

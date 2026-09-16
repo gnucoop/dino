@@ -92,6 +92,10 @@ export const FRA: Translation = {
   'Reuse existing metrics with the same name':
     'Réutiliser les métriques existantes portant le même nom',
   'No fields found': 'Aucun champ trouvé',
+  'Rows not imported, metric not created': 'Lignes non importées, métrique non créée',
+  'Result': 'Résultat',
+  'Ignore column': 'Ignorer la colonne',
+  'repeating': 'répété',
   'Repetition': 'Répétition',
   'DISMISS': 'FERMER',
   "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
@@ -529,7 +533,7 @@ export const FRA: Translation = {
   'filters': 'filtres',
   'forbidden deleting default key': 'interdit de supprimer la clé par défaut',
   'forbidden: delete default translations': 'interdit: supprimer les traductions par défaut',
-  'forms created': 'Formes créées',
+  'forms created': 'Formulaires créés',
   'key: "{{key}}" removed': 'clé: "{{key}}" retirée',
   'lang: {{language}} created': 'langue: {{language}} créé',
   'lang: {{language}} updated': 'langue: {{language}} mise à jour',

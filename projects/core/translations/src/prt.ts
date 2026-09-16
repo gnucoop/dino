@@ -92,6 +92,10 @@ export const PRT: Translation = {
   'Reuse existing metrics with the same name':
     'Reutilizar métricas existentes com o mesmo nome',
   'No fields found': 'Nenhum campo encontrado',
+  'Rows not imported, metric not created': 'Linhas não importadas, métrica não criada',
+  'Result': 'Resultado',
+  'Ignore column': 'Ignorar coluna',
+  'repeating': 'repetido',
   'Repetition': 'Repetição',
   'DISMISS': 'FECHAR',
   "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
