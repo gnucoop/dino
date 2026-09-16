@@ -116,6 +116,10 @@ export const ESP: Translation = {
   'Apply import': 'Aplicar importación',
   'Reuse existing metrics with the same name': 'Reutilizar métricas existentes con el mismo nombre',
   'No fields found': 'No se encontraron campos',
+  'Rows not imported, metric not created': 'Filas no importadas, métrica no creada',
+  'Result': 'Resultado',
+  'Ignore column': 'Ignorar columna',
+  'repeating': 'repetido',
   'Repetition': 'Repetición',
   'DISMISS': 'CERRAR',
   "An automatic report already exists for this form. To disable it, delete that report's schema and data.":

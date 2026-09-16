@@ -4,11 +4,12 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, MetricsService} from '@dino/core/data';
 import {FormDataManager, FormStatusManager} from '@dino/core/forms';
+import {ProjectManager} from '@dino/core/projects';
 import {UserData, UserDataManager} from '@dino/core/users';
 import {TranslocoModule} from '@ngneat/transloco';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxDocument} from 'rxdb';
-import {BehaviorSubject, of} from 'rxjs';
+import {BehaviorSubject, Observable, of} from 'rxjs';
 
 import {ImportForm} from './public_api';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
@@ -65,7 +66,7 @@ const userDataManagerMock = {
 } as unknown as UserDataManager;
 
 const formDataManagerMock = {
-  bulkCreate: (_: any[]) => {
+  bulkCreate: (_: any[]): Observable<{success: any[]; error: any[]}> => {
     return of({success: [], error: []});
   },
 };
@@ -79,6 +80,43 @@ const formStatusManagerMock = {
 const metricServiceManagerMock = {
   activeMetrics: new BehaviorSubject<{metricName: string}[]>([{metricName: 'project'}]),
 };
+
+/**
+ * A simplified project schema: name and code are mandatory, the parent
+ * properties are required by the schema but nullable, as in the real metrics.
+ */
+const projectCollectionSchema = {
+  properties: {
+    name: {type: 'string'},
+    parent_id: {type: ['string', 'null']},
+    parent_name: {type: ['string', 'null']},
+    code: {type: 'string'},
+  },
+  required: ['name', 'parent_id', 'parent_name', 'code'],
+};
+
+/**
+ * Projects already stored, returned by the metric lookup query.
+ */
+let storedProjects: {[key: string]: any}[] = [];
+
+/**
+ * The metrics passed to each bulk creation, one entry per tree level.
+ */
+let projectBulkCalls: {[key: string]: any}[][] = [];
+
+const projectManagerMock = {
+  collectionSchema: projectCollectionSchema,
+  query: (_: any) => of(storedProjects),
+  bulkCreate: (docs: {[key: string]: any}[]) => {
+    projectBulkCalls.push([...docs]);
+    const level = projectBulkCalls.length;
+    return of({
+      success: docs.map((doc, idx) => ({...doc, id: `project-${level}-${idx}`})),
+      error: [],
+    });
+  },
+} as unknown as ProjectManager;
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -107,6 +145,8 @@ describe('Import Forms', () => {
   let importForm: ImportForm;
 
   beforeEach(() => {
+    storedProjects = [];
+    projectBulkCalls = [];
     TestBed.configureTestingModule({
       imports: [BrowserAnimationsModule, TranslocoModule],
       providers: [
@@ -116,6 +156,7 @@ describe('Import Forms', () => {
         {provide: FormDataManager, useValue: formDataManagerMock},
         {provide: FormStatusManager, useValue: formStatusManagerMock},
         {provide: MetricsService, useValue: metricServiceManagerMock},
+        {provide: ProjectManager, useValue: projectManagerMock},
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: MAT_DIALOG_DATA, useValue: mockDialogData},
@@ -196,11 +237,285 @@ describe('Import Forms', () => {
       {column: 'q2', field: 'myTable__0__1'},
       {column: 'q3', field: 'myTable__1__0'},
     ];
-    const mappedRows = (importForm as any)._applyColumnMappings([
-      {q1: 'a', q2: 'b', q3: 'c'},
-    ]);
-    expect(mappedRows).toEqual([
-      {myTable__0__0: 'a', myTable__0__1: 'b', myTable__1__0: 'c'},
-    ]);
+    const mappedRows = (importForm as any)._applyColumnMappings([{q1: 'a', q2: 'b', q3: 'c'}]);
+    expect(mappedRows).toEqual([{myTable__0__0: 'a', myTable__0__1: 'b', myTable__1__0: 'c'}]);
+  });
+
+  it('should collect the parent references of the new metrics', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    const info = (importForm as any)._getMetricsToBeCreated(
+      [
+        {project_name: 'Child', project_parent_name: 'Parent', project_code: 'c2'},
+        {project_name: 'Other', project_parent_id: 'p-existing', project_code: 'c3'},
+      ],
+      ['project'],
+    );
+    expect(info.requiredParentNamesByType).toEqual({project: ['Parent']});
+    expect(info.requiredParentIdsByType).toEqual({project: ['p-existing']});
+  });
+
+  it('should create a metric parent defined by a later row of the same file', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
+      of({success: forms, error: []}),
+    );
+    const rows = [
+      {project_name: 'Child', project_parent_name: 'Parent', project_code: 'c2'},
+      {project_name: 'Parent', project_code: 'c1'},
+    ];
+    const info = (importForm as any)._getMetricsToBeCreated(rows, ['project']);
+    (importForm as any)._importFormDataRows(rows, info, false, []);
+
+    // One bulk creation per tree level: the parent first, then the child
+    expect(projectBulkCalls.length).toBe(2);
+    expect(projectBulkCalls[0].map(m => m['name'])).toEqual(['Parent']);
+    expect(projectBulkCalls[1].map(m => m['name'])).toEqual(['Child']);
+    expect(projectBulkCalls[1][0]['parent_id']).toBe('project-1-0');
+
+    const forms = bulkSpy.calls.mostRecent().args[0];
+    expect(forms.length).toBe(2);
+    expect(forms[0].project_ref_id).toBe('project-2-0');
+    expect(forms[1].project_ref_id).toBe('project-1-0');
+  });
+
+  it('should reuse a metric created by a previous row as parent, with the reuse flag on', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
+      of({success: forms, error: []}),
+    );
+    importForm.importForm.controls['reuseMetricName'].setValue(true);
+    (importForm as any)._metricMustBeUnique = true;
+    // Neither metric exists yet: the parent of the second row is the metric
+    // created by the first one
+    const rows = [
+      {project_name: 'Alpha', project_code: 'c1'},
+      {project_name: 'Beta', project_parent_name: 'Alpha', project_code: 'c2'},
+    ];
+    const info = (importForm as any)._getMetricsToBeCreated(rows, ['project']);
+    (importForm as any)._importFormDataRows(rows, info, false, []);
+
+    expect(projectBulkCalls.length).toBe(2);
+    expect(projectBulkCalls[0].map(m => m['name'])).toEqual(['Alpha']);
+    expect(projectBulkCalls[1].map(m => m['name'])).toEqual(['Beta']);
+    expect(projectBulkCalls[1][0]['parent_id']).toBe('project-1-0');
+    expect(projectBulkCalls[1][0]['parent_name']).toBe('Alpha');
+    // Both metrics were created: a clean success, with nothing to report
+    expect(importForm.outcome!.status).toBe('success');
+    expect(importForm.outcome!.warnings).toEqual([]);
+
+    const forms = bulkSpy.calls.mostRecent().args[0];
+    expect(forms[0].project_ref_id).toBe('project-1-0');
+    expect(forms[1].project_ref_id).toBe('project-2-0');
+  });
+
+  it('should fill in the parent name of a metric whose parent is referenced by id', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    storedProjects = [{id: 'p-existing', name: 'Stored parent'}];
+    const rows = [{project_name: 'Child', project_parent_id: 'p-existing', project_code: 'c2'}];
+    const info = (importForm as any)._getMetricsToBeCreated(rows, ['project']);
+    (importForm as any)._importFormDataRows(rows, info, false, []);
+
+    expect(projectBulkCalls.length).toBe(1);
+    expect(projectBulkCalls[0][0]['parent_name']).toBe('Stored parent');
+  });
+
+  it('should not import a row whose metric could not be created', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
+      of({success: forms, error: []}),
+    );
+    const rows = [
+      {project_name: 'Alpha', project_code: 'c1'},
+      {project_name: 'Child', project_parent_name: 'Missing', project_code: 'c2'},
+    ];
+    const info = (importForm as any)._getMetricsToBeCreated(rows, ['project']);
+    (importForm as any)._importFormDataRows(rows, info, false, []);
+
+    // Alpha has no parent and is created, Child is deferred and never created
+    expect(projectBulkCalls.length).toBe(1);
+    expect(projectBulkCalls[0].map(m => m['name'])).toEqual(['Alpha']);
+    // Only the row whose metric exists is imported: no form data with an empty metric
+    const forms = bulkSpy.calls.mostRecent().args[0];
+    expect(forms.length).toBe(1);
+    expect(forms[0].project_ref_id).toBe('project-1-0');
+    // The outcome is shown in the result step, not in a snackbar the user cannot read
+    expect(importForm.step).toBe(3);
+    // One row out of the two of the file made it: a partial import, not a success
+    expect(importForm.outcome!.status).toBe('partial');
+    expect(importForm.outcome!.message).toContain('1/2');
+    expect(importForm.outcome!.message).toContain('File partially imported');
+    expect(importForm.outcome!.message).not.toContain('File imported successfully');
+    const labels = importForm.outcome!.warnings.map(w => w.label);
+    expect(labels.some(l => l.includes('Metrics with invalid parent'))).toBe(true);
+    const skipped = importForm.outcome!.warnings.find(w =>
+      w.label.includes('Rows not imported, metric not created'),
+    );
+    // The second data row of the file is the third spreadsheet row
+    expect(skipped!.items).toEqual(['3: project "Child"']);
+    expect(skipped!.count).toBe(1);
+  });
+
+  it('should not leave the result step until the user closes it', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
+      of({success: forms, error: []}),
+    );
+    const importedSpy = jasmine.createSpy('imported');
+    importForm.imported.subscribe(importedSpy);
+    const rows = [
+      {project_name: 'Alpha', project_code: 'c1'},
+      {project_name: 'Child', project_parent_name: 'Missing', project_code: 'c2'},
+    ];
+    const info = (importForm as any)._getMetricsToBeCreated(rows, ['project']);
+    (importForm as any)._importFormDataRows(rows, info, false, []);
+
+    expect(importForm.step).toBe(3);
+    expect(importedSpy).not.toHaveBeenCalled();
+    importForm.closeOutcome();
+    expect(importedSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should show the result step also when everything is imported', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
+      of({success: forms, error: []}),
+    );
+    const importedSpy = jasmine.createSpy('imported');
+    importForm.imported.subscribe(importedSpy);
+    const rows = [{project_name: 'Alpha', project_code: 'c1'}];
+    const info = (importForm as any)._getMetricsToBeCreated(rows, ['project']);
+    (importForm as any)._importFormDataRows(rows, info, false, []);
+
+    expect(importForm.step).toBe(3);
+    expect(importForm.outcome!.status).toBe('success');
+    expect(importForm.outcome!.warnings).toEqual([]);
+    // Nothing was left out: the total is not repeated
+    expect(importForm.outcome!.message).toContain('1 ');
+    expect(importForm.outcome!.message).not.toContain('/');
+    // The wizard is left by hand, so that the result can be read
+    expect(importedSpy).not.toHaveBeenCalled();
+    importForm.closeOutcome();
+    expect(importedSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not import anything when no row can be linked to its metric', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
+      of({success: forms, error: []}),
+    );
+    const rows = [{project_name: 'Child', project_parent_name: 'Missing', project_code: 'c2'}];
+    const info = (importForm as any)._getMetricsToBeCreated(rows, ['project']);
+    (importForm as any)._importFormDataRows(rows, info, false, []);
+
+    expect(bulkSpy).not.toHaveBeenCalled();
+    expect(importForm.step).toBe(3);
+    expect(importForm.outcome!.status).toBe('error');
+    expect(importForm.outcome!.message).toContain('File not imported!');
+    expect(
+      importForm.outcome!.warnings.some(w =>
+        w.label.includes('Rows not imported, metric not created'),
+      ),
+    ).toBe(true);
+    // A failed import can be corrected without re-uploading the file
+    importForm.columnMappings = [{column: 'project_name', field: 'project_name'}];
+    importForm.backToMapping();
+    expect(importForm.step).toBe(2);
+    expect(importForm.outcome).toBeNull();
+  });
+
+  it('should still import a row that names no metric at all', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
+      of({success: forms, error: []}),
+    );
+    (importForm as any)._importFormData(
+      [{district: 'lamwo'}],
+      ['project'],
+      'dino_user_id',
+      false,
+      null,
+      [],
+    );
+    const forms = bulkSpy.calls.mostRecent().args[0];
+    expect(forms.length).toBe(1);
+    expect(forms[0].project_ref_id).toBeNull();
+  });
+
+  it('should import the dinoinvalid column as a boolean flag', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
+      of({success: forms, error: []}),
+    );
+    (importForm as any)._importFormData(
+      [
+        {dinoinvalid: 'TRUE', district: 'lamwo'},
+        {dinoinvalid: 'false', district: 'arua'},
+        {district: 'agago'},
+      ],
+      [],
+      'dino_user_id',
+      false,
+      null,
+      [],
+    );
+    const forms = bulkSpy.calls.mostRecent().args[0];
+    expect(forms[0].data).toEqual({dinoinvalid: true, district: 'lamwo'});
+    // Like the form editors, the flag is written only when the record is invalid
+    expect(forms[1].data).toEqual({district: 'arua'});
+    expect(forms[2].data).toEqual({district: 'agago'});
+  });
+
+  it('should ignore the metrics not declared by the form schema', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
+      of({success: forms, error: []}),
+    );
+    (importForm as any)._schemaMetrics = [];
+    expect((importForm as any)._activeMetrics).toEqual([]);
+    (importForm as any)._importFormData(
+      [{district: 'lamwo', project_id: 'b4f2598e'}],
+      (importForm as any)._activeMetrics,
+      'dino_user_id',
+      false,
+      null,
+      [],
+    );
+    expect(bulkSpy.calls.mostRecent().args[0][0].project_ref_id).toBeNull();
+  });
+
+  it('should show the field name and search it, with the label in the tooltip', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    // No dictionary is loaded in the tests: keep the key as the translation
+    spyOn((importForm as any)._ts, 'translate').and.callFake((key: string) => key);
+    (importForm as any)._fieldLabels = {district: '<b>District</b> of residence'};
+    importForm.availableFields = ['district', 'created_at'];
+
+    // The option shows the field key, the readable label goes in the tooltip
+    expect(importForm.fieldName('district')).toBe('district');
+    // The markup left by the rich text editor must not reach the tooltip
+    expect(importForm.fieldLabel('district')).toBe('District of residence');
+    // A Dino field has no schema label: it keeps its raw key on both
+    expect(importForm.fieldName('created_at')).toBe('created_at');
+    expect(importForm.fieldLabel('created_at')).toBe('created_at');
+
+    // The select search matches the field name, the value shown in the option
+    importForm.fieldFilterCtrl.setValue('distr');
+    expect(importForm.isFieldVisible('district')).toBe(true);
+    expect(importForm.isFieldVisible('created_at')).toBe(false);
+    // Not the label, which is only in the tooltip
+    importForm.fieldFilterCtrl.setValue('residence');
+    expect(importForm.isFieldVisible('district')).toBe(false);
   });
 });

@@ -112,6 +112,10 @@ export const UKR: Translation = {
   'Reuse existing metrics with the same name':
     'Повторно використовувати наявні метрики з тією самою назвою',
   'No fields found': 'Полів не знайдено',
+  'Rows not imported, metric not created': 'Рядки не імпортовано, метрику не створено',
+  'Result': 'Результат',
+  'Ignore column': 'Ігнорувати стовпець',
+  'repeating': 'повторюваний',
   'Repetition': 'Повторення',
   'DISMISS': 'ЗАКРИТИ',
   "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
