@@ -32,11 +32,13 @@ import {UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {
+  buildMetricLookupSelector,
   DataModelManager,
-  DataQueryOptions,
-  DataQuerySelector,
+  formatMetricNamesMessage,
   getValueFromRow,
+  importMetricTree,
   Metric,
+  MetricTreeResult,
 } from '@dino/core/data';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {UserGroupManager} from '@dino/core/users';
@@ -45,8 +47,6 @@ import {RxDocument, RxJsonSchema} from 'rxdb';
 import {
   catchError,
   combineLatest,
-  concatMap,
-  map,
   Observable,
   of as obsOf,
   Subscription,
@@ -258,33 +258,14 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
    * @returns the existing list of metrics by ids or names
    */
   private _getMetricsIfExist(metricIds: string[], metricNames: string[]): Observable<T[]> {
-    let metricsObs: Observable<T[]> = obsOf([]);
-    if (this._metricManager) {
-      const conditions: DataQuerySelector[] = [];
-
-      const metricSelector: DataQueryOptions = {
-        selector: {},
-      };
-      if (metricIds.length) {
-        conditions.push({id: {$in: [...new Set([...metricIds])]}});
-      }
-      if (metricNames.length) {
-        conditions.push({name: {$in: [...new Set([...metricNames])]}});
-      }
-      if (conditions.length) {
-        if (conditions.length > 1) {
-          metricSelector.selector = {$or: [...conditions]};
-        } else {
-          metricSelector.selector = conditions[0];
-        }
-      }
-      metricSelector.selector['is_deleted'] = {$ne: true};
-      metricsObs = this._metricManager.query(metricSelector).pipe(
-        take(1),
-        catchError(_ => obsOf([])),
-      );
+    const metricSelector = buildMetricLookupSelector(metricIds, metricNames);
+    if (this._metricManager == null || metricSelector == null) {
+      return obsOf([]);
     }
-    return metricsObs;
+    return this._metricManager.query(metricSelector).pipe(
+      take(1),
+      catchError(_ => obsOf([])),
+    );
   }
 
   /**
@@ -326,19 +307,16 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
       const newMetricNames: string[] = [];
       const requiredProps = this._getRequiredMetricProps(this._metricManager.collectionSchema);
       const props: {[key: string]: any} = this._metricManager.collectionSchema.properties;
-
-      delete props['id'];
-      delete props[`${this.metricName}_id`];
-
-      delete props['updated_at'];
-      delete props[`${this.metricName}_updated_at`];
-
-      if (this.metricName === 'case') {
-        delete props['case_code'];
-      }
-      if (this.metricName === 'project') {
-        delete props['project_code_auto'];
-      }
+      // Exclude the auto-generated props without mutating the shared collection schema
+      const notImportableProps = [
+        'id',
+        `${this.metricName}_id`,
+        'updated_at',
+        `${this.metricName}_updated_at`,
+        ...(this.metricName === 'case' ? ['case_code'] : []),
+        ...(this.metricName === 'project' ? ['project_code_auto'] : []),
+      ];
+      const propKeys = Object.keys(props).filter(prop => !notImportableProps.includes(prop));
 
       rows.forEach((row: {[key: string]: any}) => {
         let invalid = false;
@@ -356,7 +334,7 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
               newMetricNames.push(newMetricName);
 
               const missingFields = [];
-              for (let prop in props) {
+              for (let prop of propKeys) {
                 const propKey = `${this.metricName}_${prop}`;
                 if (requiredProps.includes(prop) || row[propKey]) {
                   if (prop === 'metric_data') {
@@ -428,47 +406,6 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
   }
 
   /**
-   * Fill in missing parent values in new metrics to be created. Split metrics by parent existence.
-   * @param newMetricsToFill
-   * @param existingMetrics
-   * @returns the ready-to-insert metrics and the deferred metrics with not-existing parent.
-   */
-  private _fillInMissingParentValues(
-    newMetricsToFill: T[],
-    existingMetrics: T[],
-  ): {readyToInsert: T[]; deferred: T[]} {
-    const readyToInsert: T[] = [];
-    const deferred: T[] = [];
-
-    for (let idx = 0; idx < newMetricsToFill.length; idx++) {
-      if (newMetricsToFill[idx].parent_id) {
-        // Found the parent metric by id and set the parent name
-        const parentMetric = existingMetrics.find(
-          doc => doc.id === newMetricsToFill[idx].parent_id,
-        );
-        if (parentMetric && parentMetric.name) {
-          newMetricsToFill[idx].parent_name = parentMetric.name;
-          readyToInsert.push(newMetricsToFill[idx]);
-        } else {
-          deferred.push(newMetricsToFill[idx]);
-        }
-      } else if (newMetricsToFill[idx].parent_name) {
-        // Found the parent metric by name and set the parent id
-        const parentMetric = existingMetrics.find(
-          doc => doc.name === newMetricsToFill[idx].parent_name,
-        );
-        if (parentMetric && parentMetric.id) {
-          newMetricsToFill[idx].parent_id = parentMetric.id;
-          readyToInsert.push(newMetricsToFill[idx]);
-        } else {
-          deferred.push(newMetricsToFill[idx]);
-        }
-      }
-    }
-    return {readyToInsert, deferred};
-  }
-
-  /**
    * Bulk create for all input metrics
    * @param newMetrics The list of the new metrics to be created
    * @returns
@@ -492,56 +429,29 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
   }
 
   /**
-   * Recursively imports a tree of metrics, with parent-child relationships.
-   * For each metric in input, it checks whether its parent already exists.
-   * If not, the parent will be created first.
-   *
-   * @param newMetricsWithParent
-   * @param existingMetrics
-   * @returns an object with:
-   *   success: Metrics successfully imported and linked.
-   *   error: Errors returned from the DB bulk insert operation.
-   *   deferred: Metrics that are waiting for their parent to be created first.
+   * Recursively imports a tree of metrics, with parent-child relationships:
+   * every pass creates the metrics whose parent is already known and retries the
+   * remaining ones, so that a parent defined by another row of the same file is
+   * resolved whatever the row order is.
+   * @param newMetricsWithParent the new metrics referencing a parent
+   * @param existingMetrics the metrics usable as parent
+   * @returns the created metrics, the db errors and the metrics with no parent
    */
   private _processTree(
     newMetricsWithParent: T[],
     existingMetrics: T[],
-  ): Observable<{success: RxDocument<T>[]; error: any[]; deferred: T[]}> {
-    if (newMetricsWithParent.length === 0) {
-      return obsOf({success: [], error: [], deferred: []});
+  ): Observable<MetricTreeResult<T>> {
+    if (this._metricManager == null) {
+      return obsOf({success: [], error: [], deferred: newMetricsWithParent});
     }
-
-    const {readyToInsert, deferred} = this._fillInMissingParentValues(
-      newMetricsWithParent,
-      existingMetrics,
-    );
-
-    if (readyToInsert.length === 0) {
-      // Nothing to insert, return deferred as unresolved
-      return obsOf({success: [], error: [], deferred});
-    }
-
-    return this._importMetrics(readyToInsert).pipe(
-      concatMap(bulkRes => {
-        const success = bulkRes?.success || [];
-        const error = bulkRes?.error || [];
-
-        if (error.length === 0 && success.length > 0) {
-          existingMetrics = existingMetrics.concat(success);
-          this._totalImportedMetrics += success.length;
-
-          return this._processTree(deferred, existingMetrics).pipe(
-            map(nextRes => ({
-              success: success.concat(nextRes.success),
-              error: error.concat(nextRes.error),
-              deferred: nextRes.deferred,
-            })),
-          );
-        } else {
-          return obsOf({success, error, deferred}); // propagate failed and unresolved
-        }
-      }),
-    );
+    return importMetricTree<T>(this._metricManager, newMetricsWithParent, existingMetrics, {
+      onCreated: created => (this._totalImportedMetrics += created.length),
+      onError: err =>
+        this._ehms.captureErrorMessage(
+          `Could not import new metrics: ${JSON.stringify(err)}`,
+          'error',
+        ),
+    });
   }
 
   /**
@@ -565,11 +475,11 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
     return firstBulkNoParent.pipe(
       switchMap(firstBulkRes => {
         if (firstBulkRes && firstBulkRes.error.length === 0) {
-          let bulkWithParent: Observable<{
-            success: RxDocument<T>[];
-            error: any[];
-            deferred: T[];
-          } | null> = obsOf({success: [], error: [], deferred: []});
+          let bulkWithParent: Observable<MetricTreeResult<T> | null> = obsOf({
+            success: [],
+            error: [],
+            deferred: [],
+          });
 
           if (firstBulkRes.success.length) {
             this._totalImportedMetrics = firstBulkRes.success.length;
@@ -686,18 +596,8 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
    * @param message the custom message
    * @returns the formatted message string
    */
-  private _getFormattedMessage(metrics: T[], message: string): string {
-    let importResMessage = '';
-    const maxIdsInResponse = 15;
-    let metricsNames = metrics.map(m => '\n' + m.name);
-    if (metricsNames.length) {
-      if (metricsNames.length > maxIdsInResponse) {
-        metricsNames = metricsNames.slice(0, maxIdsInResponse);
-        metricsNames.push('\nand more...');
-      }
-      importResMessage = `\n${message} (${metrics.length}):${metricsNames}\n`;
-    }
-    return importResMessage;
+  private _getFormattedMessage(metrics: {name?: any}[], message: string): string {
+    return formatMetricNamesMessage(metrics, message);
   }
 
   /**

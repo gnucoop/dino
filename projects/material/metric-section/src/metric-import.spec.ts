@@ -100,4 +100,29 @@ describe('Metric Import', () => {
     importMetrics.apply();
     expect(spyImportXlsx).toHaveBeenCalledTimes(1);
   });
+
+  it('should not strip the collection schema while reading the rows', async () => {
+    await fixtureImport.whenStable();
+    fixtureImport.detectChanges();
+    const manager = (importMetrics as any)._metricManager as AreaManager;
+    (importMetrics as any)._getMetricsToBeCreated([{area_name: 'AREA1', area_parent_name: 'ROOT'}]);
+    // The auto generated props must be filtered out, not deleted from the
+    // shared collection schema
+    expect(Object.keys(manager.collectionSchema.properties)).toContain('id');
+    expect(Object.keys(manager.collectionSchema.properties)).toContain('updated_at');
+  });
+
+  it('should split the rows by parent and collect the parent references', async () => {
+    await fixtureImport.whenStable();
+    fixtureImport.detectChanges();
+    const info = (importMetrics as any)._getMetricsToBeCreated([
+      {area_name: 'ROOT'},
+      {area_name: 'CHILD', area_parent_name: 'ROOT'},
+      {area_name: 'OTHER', area_parent_id: 'a-existing'},
+    ]);
+    expect(info.newMetrics.map((m: any) => m.name)).toEqual(['ROOT']);
+    expect(info.newMetricsWithParent.map((m: any) => m.name)).toEqual(['CHILD', 'OTHER']);
+    expect(info.requiredMetricParentNames).toEqual(['ROOT']);
+    expect(info.requiredMetricParentIds).toEqual(['a-existing']);
+  });
 });
