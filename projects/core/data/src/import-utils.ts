@@ -98,3 +98,19 @@ export function excelDateToJSDate(serial: number): string | number {
   }
   return serial;
 }
+
+/**
+ * Return the input value casted to a boolean flag.
+ * Accepts a real boolean, a number and the strings 'true', '1', 'yes', 'y' and 'x';
+ * anything else, an empty cell included, is false.
+ * @param rowValue the initial value found in xls/csv file
+ * @returns the boolean value
+ */
+export function getBooleanFromRow(rowValue: any): boolean {
+  if (typeof rowValue === 'boolean') return rowValue;
+  if (typeof rowValue === 'number') return rowValue !== 0;
+  if (typeof rowValue === 'string') {
+    return ['true', '1', 'yes', 'y', 'x'].includes(rowValue.trim().toLowerCase());
+  }
+  return false;
+}
