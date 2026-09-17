@@ -340,7 +340,7 @@ export const ESP: Translation = {
     'Archivo no importado! Error en las métricas de importación.',
   'File not imported! Errors in metrics with parents.':
     'Archivo no importado! Errores en métricas con los padres.',
-  'File not imported! This metrics are mandatory':
+  'File not imported! These metrics are mandatory':
     'Archivo no importado! Estas métricas son obligatorias',
   'File not imported: no valid metrics to import found in the file.':
     'Archivo no importado: no hay métricas válidas para importar encontradas en el archivo.',

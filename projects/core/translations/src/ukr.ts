@@ -25,7 +25,8 @@ import {Translation} from '@ngneat/transloco';
 export const UKR: Translation = {
   'This item cannot be removed': 'Цей елемент не можна видалити',
   'New translation': 'Новий переклад',
-  'Define the key and, if you want, translate it right away. You can complete the other languages later.': 'Визначте ключ і, якщо хочете, перекладіть його одразу. Інші мови можна доповнити пізніше.',
+  'Define the key and, if you want, translate it right away. You can complete the other languages later.':
+    'Визначте ключ і, якщо хочете, перекладіть його одразу. Інші мови можна доповнити пізніше.',
   'mandatory': 'обовʼязково',
   'Key example placeholder': 'напр. A filter on field "" already exists.',
   'Use': 'Використовуйте',
@@ -35,9 +36,11 @@ export const UKR: Translation = {
   'Source text': 'Текст оригіналу',
   'Translation {{language}}…': 'Переклад {{language}}…',
   'Save translation': 'Зберегти переклад',
-  'The languages left empty stay marked as missing.': 'Мови, залишені порожніми, лишаються позначеними як відсутні.',
+  'The languages left empty stay marked as missing.':
+    'Мови, залишені порожніми, лишаються позначеними як відсутні.',
   'All languages': 'Усі мови',
-  'Review, import and export the whole dictionary of a language.': 'Перегляньте, імпортуйте та експортуйте весь словник мови.',
+  'Review, import and export the whole dictionary of a language.':
+    'Перегляньте, імпортуйте та експортуйте весь словник мови.',
   'Available languages': 'Мови',
   'Search language…': 'Пошук мови…',
   'Search in file…': 'Пошук у файлі…',
@@ -46,7 +49,8 @@ export const UKR: Translation = {
   'Invalid JSON': 'Некоректний JSON',
   'Import file': 'Імпортувати файл',
   'values present': 'значень наявно',
-  'Read-only preview. Single translations are edited from the Translations page.': 'Попередній перегляд лише для читання. Переклади редагуються на сторінці Переклади.',
+  'Read-only preview. Single translations are edited from the Translations page.':
+    'Попередній перегляд лише для читання. Переклади редагуються на сторінці Переклади.',
   'Translations': 'Переклади',
   'keys': 'ключів',
   'complete': 'завершено',
@@ -304,7 +308,7 @@ export const UKR: Translation = {
   'File not imported! Error on import metrics.': 'Файл не імпортовано! Помилка при імпорті метрик.',
   'File not imported! Errors in metrics with parents.':
     'Файл не імпортовано! Помилки в метриках з батьківськими елементами.',
-  'File not imported! This metrics are mandatory':
+  'File not imported! These metrics are mandatory':
     "Файл не імпортовано! Ці метрики є обов'язковими",
   'File not imported: no valid metrics to import found in the file.':
     'Файл не імпортовано: у файлі не знайдено допустимих метрик для імпорту.',
@@ -403,7 +407,8 @@ export const UKR: Translation = {
   'Incorrect email and/or password': 'Невірна електронна пошта та/або пароль',
   'Incorrect password': 'Невірний пароль',
   'Initializing data': 'Ініціалізація даних',
-  'Insert a formula to filter metrics, using metric fields or attributes': 'Вставте формулу для фільтрації метрик, використовуючи поля або атрибути метрик. Використовуйте: attribute = \'val\' або attribute != true або attribute = false або date_start >= \'2024-04-2\'',
+  'Insert a formula to filter metrics, using metric fields or attributes':
+    "Вставте формулу для фільтрації метрик, використовуючи поля або атрибути метрик. Використовуйте: attribute = 'val' або attribute != true або attribute = false або date_start >= '2024-04-2'",
   'Invalid API Key': 'Недійсний ключ API',
   'Invalid email and/or password': 'Недійсні електронна пошта та/або пароль',
   'Invalid metrics': 'Недійсні метрики',
