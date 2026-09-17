@@ -457,25 +457,18 @@ dino-import-form {
     }
   }
 
-  // ---- Footer ---------------------------------------------------------------
   // ---- Step 3: result -------------------------------------------------------
-  .dino-imp-outcome {
-    max-width: 780px;
-    margin-bottom: 26px;
-  }
-
   .dino-imp-outcome-head {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 14px 16px;
-    border-radius: 10px;
-    margin-bottom: 18px;
+    gap: 12px;
+    padding: 16px 18px;
+    border-radius: 12px;
+    margin-bottom: 22px;
 
     .mat-icon {
       flex: none;
+      margin-top: 1px;
     }
   }
   .dino-imp-outcome-ok {
@@ -491,42 +484,104 @@ dino-import-form {
     color: var(--imp-ko-fg);
   }
 
-  .dino-imp-outcome-warn {
-    border: 1px solid var(--imp-border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    margin-bottom: 14px;
-  }
-
-  .dino-imp-outcome-warn-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
+  .dino-imp-outcome-title {
+    font-size: 17px;
     font-weight: 600;
+  }
+
+  .dino-imp-outcome-detail {
+    margin-top: 4px;
+    font-size: 14px;
+    opacity: 0.85;
+  }
+
+  // Counters
+  .dino-imp-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 26px;
+  }
+
+  .dino-imp-stat {
+    background: var(--imp-surface);
+    border: 1px solid var(--imp-border);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+
+  .dino-imp-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--imp-heading);
+  }
+  .dino-imp-stat-ok {
+    color: var(--imp-ok-fg);
+  }
+  .dino-imp-stat-warn {
     color: var(--imp-warn-fg);
-
-    .mat-icon {
-      flex: none;
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
-    }
+  }
+  .dino-imp-stat-ko {
+    color: var(--imp-ko-fg);
   }
 
-  .dino-imp-outcome-list {
-    margin: 10px 0 0;
-    padding-left: 28px;
+  .dino-imp-stat-label {
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--imp-faint);
+  }
+
+  // Groups of issues: the toolbar sits on top of the list, as in step 2
+  .dino-imp-issue-bar {
+    margin-top: 4px;
+  }
+
+  .dino-imp-issue-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--imp-heading);
+  }
+
+  .dino-imp-issue-count {
     font-size: 13px;
-    line-height: 1.7;
-    max-height: 240px;
-    overflow: auto;
+    color: var(--imp-muted);
+    white-space: nowrap;
+  }
 
-    li {
-      word-break: break-word;
+  .dino-imp-issue-table {
+    .dino-imp-table-head,
+    .dino-imp-row {
+      grid-template-columns: 96px minmax(0, 1fr);
     }
   }
 
+  .dino-imp-issue-text {
+    font-size: 14px;
+    color: var(--imp-text);
+    word-break: break-word;
+  }
+
+  .dino-imp-issue-values {
+    padding: 16px 22px;
+  }
+
+  .dino-imp-issue-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 8px 22px;
+  }
+
+  .dino-imp-issue-more {
+    padding: 12px 22px;
+    font-size: 13px;
+    color: var(--imp-faint);
+  }
+
+  // ---- Footer ---------------------------------------------------------------
   .dino-imp-footer {
     flex: none;
     height: 70px;

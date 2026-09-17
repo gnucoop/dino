@@ -350,14 +350,61 @@ describe('Import Forms', () => {
     expect(importForm.outcome!.message).toContain('1/2');
     expect(importForm.outcome!.message).toContain('File partially imported');
     expect(importForm.outcome!.message).not.toContain('File imported successfully');
-    const labels = importForm.outcome!.warnings.map(w => w.label);
-    expect(labels.some(l => l.includes('Metrics with invalid parent'))).toBe(true);
-    const skipped = importForm.outcome!.warnings.find(w =>
-      w.label.includes('Rows not imported, metric not created'),
-    );
+    // One single table: the reason travels with the row, there is no separate
+    // group listing the metrics with an invalid parent
+    expect(importForm.outcome!.warnings.length).toBe(1);
+    const skipped = importForm.outcome!.warnings[0];
+    expect(skipped.label).toContain('Rows not imported');
     // The second data row of the file is the third spreadsheet row
-    expect(skipped!.items).toEqual(['3: project "Child"']);
-    expect(skipped!.count).toBe(1);
+    expect(skipped.kind).toBe('rows');
+    expect(skipped.items).toEqual([
+      {row: 3, text: 'project "Child": en.metric with invalid parent'},
+    ]);
+    expect(skipped.count).toBe(1);
+    // The counters feed the tiles at the top of the result step
+    expect(importForm.outcome!.counts).toEqual({
+      fileRows: 2,
+      imported: 1,
+      rejected: 1,
+      metricsCreated: 1,
+    });
+    // The table and the counters already say it: no sentence repeating them
+    expect(importForm.outcome!.detail).toBeUndefined();
+  });
+
+  it('should group the missing references by category in the result step', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    const missing = (importForm as any)._checkIfMissingIds(
+      ['u1', 'u2'],
+      [{id: 'u1'}],
+      {project: ['p1', 'p2']},
+      [],
+      ['draft', 'closed'],
+      [{name: 'draft'}],
+    );
+    expect(missing).toBe(true);
+    const warnings = importForm.outcome!.warnings;
+    // One group per category, all of them kept: the user group used to be
+    // overwritten by the form status one
+    expect(warnings.length).toBe(3);
+    expect(warnings.every(w => w.kind === 'values')).toBe(true);
+    expect(warnings[0].items).toEqual([{text: 'u2'}]);
+    expect(warnings[1].label).toContain('project');
+    expect(warnings[1].items).toEqual([{text: 'p1'}, {text: 'p2'}]);
+    expect(warnings[2].items).toEqual([{text: 'closed'}]);
+  });
+
+  it('should cap a group and report how many entries are hidden', async () => {
+    await fixtureImportForm.whenStable();
+    fixtureImportForm.detectChanges();
+    const ids = Array.from({length: 14}, (_, i) => `id-${i}`);
+    (importForm as any)._checkIfMissingIds([], [], {project: ids}, [], [], []);
+    const group = importForm.outcome!.warnings[0];
+    // Ten per group, as in the mockup, but the count stays the real one
+    expect(group.count).toBe(14);
+    expect(group.items.length).toBe(10);
+    expect(importForm.hiddenItems(group)).toBe(4);
   });
 
   it('should not leave the result step until the user closes it', async () => {
@@ -419,11 +466,9 @@ describe('Import Forms', () => {
     expect(importForm.step).toBe(3);
     expect(importForm.outcome!.status).toBe('error');
     expect(importForm.outcome!.message).toContain('File not imported!');
-    expect(
-      importForm.outcome!.warnings.some(w =>
-        w.label.includes('Rows not imported, metric not created'),
-      ),
-    ).toBe(true);
+    expect(importForm.outcome!.warnings.some(w => w.label.includes('Rows not imported'))).toBe(
+      true,
+    );
     // A failed import can be corrected without re-uploading the file
     importForm.columnMappings = [{column: 'project_name', field: 'project_name'}];
     importForm.backToMapping();

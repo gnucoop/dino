@@ -11,9 +11,7 @@
       <div class="dino-imp-head">
         <div class="dino-imp-head-text">
           <h1 class="dino-imp-title">{{ 'Import form data' | transloco }}</h1>
-          <p class="dino-imp-subtitle">
-            {{ 'Match the columns in your file to the fields of the form.' | transloco }}
-          </p>
+          <p class="dino-imp-subtitle">{{ stepSubtitle }}</p>
         </div>
         <div class="dino-imp-stepper">
           <div class="dino-imp-step" (click)="back()">
@@ -24,10 +22,7 @@
             </div>
           </div>
           <div class="dino-imp-step" (click)="goToStep(2)">
-            <div
-              class="dino-imp-step-bar"
-              [class.dino-imp-step-bar-done]="step >= 2"
-            ></div>
+            <div class="dino-imp-step-bar" [class.dino-imp-step-bar-done]="step >= 2"></div>
             <div class="dino-imp-step-label" [class.dino-imp-step-label-active]="step === 2">
               2 · {{ 'Map fields' | transloco }}
               <mat-icon *ngIf="step === 3" class="dino-imp-step-check">check</mat-icon>
@@ -106,10 +101,7 @@
           <div class="dino-imp-toolbar-right">
             <div class="dino-imp-search">
               <mat-icon>search</mat-icon>
-              <input
-                [(ngModel)]="search"
-                [placeholder]="'Search columns…' | transloco"
-              />
+              <input [(ngModel)]="search" [placeholder]="'Search columns…' | transloco" />
             </div>
             <button type="button" class="dino-imp-automatch" (click)="autoMatch()">
               <mat-icon>auto_fix_high</mat-icon>{{ 'Auto-match' | transloco }}
@@ -190,9 +182,9 @@
 
             <!-- status -->
             <div class="dino-imp-col-status">
-              <span class="dino-imp-status dino-imp-status-{{ statusOf(mapping).kind }}">{{
-                statusOf(mapping).label
-              }}</span>
+              <span class="dino-imp-status dino-imp-status-{{ statusOf(mapping).kind }}"
+                >{{ statusOf(mapping).label }}</span
+              >
               <button type="button" class="dino-imp-ignore-btn" (click)="toggleIgnore(mapping)">
                 {{ (isIgnored(mapping) ? 'Restore' : 'Ignore') | transloco }}
               </button>
@@ -203,33 +195,93 @@
 
       <!-- ===================== STEP 3 — result ===================== -->
       <ng-container *ngIf="step === 3 && outcome && !isLoading">
-        <div class="dino-imp-outcome">
-          <div
-            class="dino-imp-outcome-head"
-            [class.dino-imp-outcome-ok]="outcome.status === 'success'"
-            [class.dino-imp-outcome-partial]="outcome.status === 'partial'"
-            [class.dino-imp-outcome-ko]="outcome.status === 'error'"
+        <div
+          class="dino-imp-outcome-head"
+          [class.dino-imp-outcome-ok]="outcome.status === 'success'"
+          [class.dino-imp-outcome-partial]="outcome.status === 'partial'"
+          [class.dino-imp-outcome-ko]="outcome.status === 'error'"
+        >
+          <mat-icon
+            >{{ outcome.status === 'success' ? 'check_circle' : outcome.status === 'partial' ?
+            'warning' : 'error' }}</mat-icon
           >
-            <mat-icon>{{
-              outcome.status === 'success'
-                ? 'check_circle'
-                : outcome.status === 'partial'
-                ? 'warning'
-                : 'error'
-            }}</mat-icon>
-            <span>{{ outcome.message }}</span>
-          </div>
-
-          <div class="dino-imp-outcome-warn" *ngFor="let warning of outcome.warnings">
-            <div class="dino-imp-outcome-warn-head">
-              <mat-icon>warning</mat-icon>
-              <span>{{ warning.label }} ({{ warning.count }})</span>
-            </div>
-            <ul class="dino-imp-outcome-list">
-              <li *ngFor="let item of warning.items">{{ item }}</li>
-            </ul>
+          <div class="dino-imp-outcome-head-text">
+            <div class="dino-imp-outcome-title">{{ outcome.message }}</div>
+            <div class="dino-imp-outcome-detail" *ngIf="outcome.detail">{{ outcome.detail }}</div>
           </div>
         </div>
+
+        <!-- counters -->
+        <div class="dino-imp-stats">
+          <div class="dino-imp-stat">
+            <div class="dino-imp-stat-value" [class.dino-imp-stat-ok]="outcome.counts.imported > 0">
+              {{ outcome.counts.imported }}
+            </div>
+            <div class="dino-imp-stat-label">{{ 'Rows imported' | transloco }}</div>
+          </div>
+          <div class="dino-imp-stat">
+            <div
+              class="dino-imp-stat-value"
+              [class.dino-imp-stat-warn]="outcome.counts.rejected > 0 && outcome.status === 'partial'"
+              [class.dino-imp-stat-ko]="outcome.counts.rejected > 0 && outcome.status === 'error'"
+            >
+              {{ outcome.counts.rejected }}
+            </div>
+            <div class="dino-imp-stat-label">{{ 'Rows rejected' | transloco }}</div>
+          </div>
+          <div class="dino-imp-stat">
+            <div class="dino-imp-stat-value">{{ outcome.counts.fileRows }}</div>
+            <div class="dino-imp-stat-label">{{ 'Rows in file' | transloco }}</div>
+          </div>
+          <div class="dino-imp-stat">
+            <div class="dino-imp-stat-value">{{ outcome.counts.metricsCreated }}</div>
+            <div class="dino-imp-stat-label">{{ 'Metrics created' | transloco }}</div>
+          </div>
+        </div>
+
+        <!-- one section per group of issues -->
+        <ng-container *ngFor="let warning of outcome.warnings">
+          <div class="dino-imp-toolbar dino-imp-issue-bar">
+            <div class="dino-imp-issue-title">{{ warning.label }}</div>
+            <div class="dino-imp-toolbar-right">
+              <span class="dino-imp-issue-count">{{ warning.count }}</span>
+              <div class="dino-imp-search" *ngIf="warning.kind === 'rows'">
+                <mat-icon>search</mat-icon>
+                <input
+                  [(ngModel)]="issueSearch"
+                  [placeholder]="'Search by row or error' | transloco"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- one row per file row -->
+          <div class="dino-imp-table dino-imp-issue-table" *ngIf="warning.kind === 'rows'">
+            <div class="dino-imp-table-head">
+              <div>{{ 'File row' | transloco }}</div>
+              <div>{{ 'Error' | transloco }}</div>
+            </div>
+            <div class="dino-imp-row" *ngFor="let item of filteredItems(warning)">
+              <div class="dino-imp-col-name">{{ item.row }}</div>
+              <div class="dino-imp-issue-text">{{ item.text }}</div>
+            </div>
+            <div class="dino-imp-issue-more" *ngIf="hiddenItems(warning)">
+              {{ 'and other {{n}}' | transloco: {n: hiddenItems(warning)} }}
+            </div>
+          </div>
+
+          <!-- a grid of identifiers -->
+          <div class="dino-imp-table dino-imp-issue-values" *ngIf="warning.kind === 'values'">
+            <div class="dino-imp-issue-grid">
+              <div class="dino-imp-col-name" *ngFor="let item of warning.items">
+                {{ item.text }}
+              </div>
+            </div>
+            <div class="dino-imp-issue-more" *ngIf="hiddenItems(warning)">
+              {{ 'and other {{n}}' | transloco: {n: hiddenItems(warning)} }}
+            </div>
+          </div>
+        </ng-container>
       </ng-container>
     </div>
   </div>
