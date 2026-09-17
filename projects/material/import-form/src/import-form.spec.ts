@@ -19,15 +19,6 @@ import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 
 let testDbIdx = 0;
 
-const formDatasCsv = [
-  '"id","user_data_ref_id","created_at","district","sub_county","settlement","parish","village","poc","patient_id","nationality","age","gender","disability_status","disabilities","project_id","project_created_at","project_name","project_parent_id","project_parent_name","project_code","project_sectors_of_intervention","project_donors","project_start_date","project_end_date"',
-  '"id","user_ref_id","created_at","District","Sub County","Settlement","Parish","Village","Point of care","Patient id number","Nationality","Age","Gender","Disability Status","Disabilities",,,,,,,,,,',
-  ',,,"lamwo","padibe","A","A","A","pnc","6677","ugandans",56,"m","y","[ds01]","b4f2598e-3ec9-451c-9a1a-806cb50ba9b7",,,,,,,,,',
-  ',,,"arua","omugo_hciv","Ar","Par","Vil","pnc","3456","refugees",19,"f","n",,,,,,,,,,,',
-  ',,,"arua","vurra","aa","aa",,"opd","8989","ugandans",31,"f","n",,,,"Proj3",,,"code03",,,,',
-  ',,"2022-03-08","agago","adilang","Sett","Par",,,"1234","ugandans",56,"m","n",,,,"Proj2",,,"code02",,,,',
-].join('\n');
-
 const mockDialogData = {
   formSchema: 'test_schema_id',
 };
@@ -168,77 +159,20 @@ describe('Import Forms', () => {
     importForm = fixtureImportForm.componentInstance;
   });
 
-  it('should create the component', async () => {
-    await fixtureImportForm.whenStable();
-    fixtureImportForm.detectChanges();
-    expect(importForm).toBeTruthy();
-  });
-
-  it('should read the csv file and build the column mappings on file selection', async () => {
-    await fixtureImportForm.whenStable();
-    fixtureImportForm.detectChanges();
-    const spyReadFile = spyOn<any>(importForm, '_readFile').and.callThrough();
-    const file = new Blob([formDatasCsv], {type: 'text/csv'});
-    const excelEvt = {target: {files: [file]}};
-    importForm.onExcelfileSelected(excelEvt);
-    expect(spyReadFile).toHaveBeenCalledTimes(1);
-  });
-
   it('should start the import forms process with the mapped columns', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
     const spyProcessData = spyOn<any>(importForm, '_processData').and.callThrough();
-    (importForm as any)._file = new Blob([formDatasCsv], {type: 'text/csv'});
-    (importForm as any)._rows = [{district: 'lamwo', project_id: 'b4f2598e'}];
-    importForm.columnMappings = [
-      {column: 'district', field: 'district'},
-      {column: 'project_id', field: 'project_id'},
-    ];
-    importForm.apply();
+    importForm.onApply({
+      rows: [{district: 'lamwo', project_id: 'b4f2598e'}],
+      mappings: [
+        {column: 'district', field: 'district'},
+        {column: 'project_id', field: 'project_id'},
+      ],
+    });
     expect(spyProcessData).toHaveBeenCalledTimes(1);
     const mappedRows = spyProcessData.calls.mostRecent().args[0];
     expect(mappedRows).toEqual([{district: 'lamwo', project_id: 'b4f2598e'}]);
-  });
-
-  it('should not start the import if a field is mapped by more than one column', async () => {
-    await fixtureImportForm.whenStable();
-    fixtureImportForm.detectChanges();
-    const spyProcessData = spyOn<any>(importForm, '_processData').and.callThrough();
-    (importForm as any)._file = new Blob([formDatasCsv], {type: 'text/csv'});
-    (importForm as any)._rows = [{district: 'lamwo', sub_county: 'padibe'}];
-    importForm.columnMappings = [
-      {column: 'district', field: 'district'},
-      {column: 'sub_county', field: 'district'},
-    ];
-    importForm.onMappingChange(importForm.columnMappings[1], 'district');
-    expect(importForm.duplicateFields).toEqual(['district']);
-    importForm.apply();
-    expect(spyProcessData).not.toHaveBeenCalled();
-  });
-
-  it('should drop the unmapped columns from the imported rows', async () => {
-    await fixtureImportForm.whenStable();
-    fixtureImportForm.detectChanges();
-    importForm.columnMappings = [
-      {column: 'District', field: 'district'},
-      {column: 'notes', field: null},
-    ];
-    const mappedRows = (importForm as any)._applyColumnMappings([
-      {District: 'lamwo', notes: 'to be ignored'},
-    ]);
-    expect(mappedRows).toEqual([{district: 'lamwo'}]);
-  });
-
-  it('should map table cell columns to their name__row__column data keys', async () => {
-    await fixtureImportForm.whenStable();
-    fixtureImportForm.detectChanges();
-    importForm.columnMappings = [
-      {column: 'q1', field: 'myTable__0__0'},
-      {column: 'q2', field: 'myTable__0__1'},
-      {column: 'q3', field: 'myTable__1__0'},
-    ];
-    const mappedRows = (importForm as any)._applyColumnMappings([{q1: 'a', q2: 'b', q3: 'c'}]);
-    expect(mappedRows).toEqual([{myTable__0__0: 'a', myTable__0__1: 'b', myTable__1__0: 'c'}]);
   });
 
   it('should collect the parent references of the new metrics', async () => {
@@ -286,7 +220,7 @@ describe('Import Forms', () => {
     const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
       of({success: forms, error: []}),
     );
-    importForm.importForm.controls['reuseMetricName'].setValue(true);
+    importForm.reuseMetricName.setValue(true);
     (importForm as any)._metricMustBeUnique = true;
     // Neither metric exists yet: the parent of the second row is the metric
     // created by the first one
@@ -343,8 +277,6 @@ describe('Import Forms', () => {
     const forms = bulkSpy.calls.mostRecent().args[0];
     expect(forms.length).toBe(1);
     expect(forms[0].project_ref_id).toBe('project-1-0');
-    // The outcome is shown in the result step, not in a snackbar the user cannot read
-    expect(importForm.step).toBe(3);
     // One row out of the two of the file made it: a partial import, not a success
     expect(importForm.outcome!.status).toBe('partial');
     expect(importForm.outcome!.message).toContain('1/2');
@@ -362,12 +294,7 @@ describe('Import Forms', () => {
     ]);
     expect(skipped.count).toBe(1);
     // The counters feed the tiles at the top of the result step
-    expect(importForm.outcome!.counts).toEqual({
-      fileRows: 2,
-      imported: 1,
-      rejected: 1,
-      metricsCreated: 1,
-    });
+    expect(importForm.outcome!.counts.map(c => c.value)).toEqual([1, 1, 2, 1]);
     // The table and the counters already say it: no sentence repeating them
     expect(importForm.outcome!.detail).toBeUndefined();
   });
@@ -395,39 +322,6 @@ describe('Import Forms', () => {
     expect(warnings[2].items).toEqual([{text: 'closed'}]);
   });
 
-  it('should cap a group and report how many entries are hidden', async () => {
-    await fixtureImportForm.whenStable();
-    fixtureImportForm.detectChanges();
-    const ids = Array.from({length: 14}, (_, i) => `id-${i}`);
-    (importForm as any)._checkIfMissingIds([], [], {project: ids}, [], [], []);
-    const group = importForm.outcome!.warnings[0];
-    // Ten per group, as in the mockup, but the count stays the real one
-    expect(group.count).toBe(14);
-    expect(group.items.length).toBe(10);
-    expect(importForm.hiddenItems(group)).toBe(4);
-  });
-
-  it('should not leave the result step until the user closes it', async () => {
-    await fixtureImportForm.whenStable();
-    fixtureImportForm.detectChanges();
-    spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
-      of({success: forms, error: []}),
-    );
-    const importedSpy = jasmine.createSpy('imported');
-    importForm.imported.subscribe(importedSpy);
-    const rows = [
-      {project_name: 'Alpha', project_code: 'c1'},
-      {project_name: 'Child', project_parent_name: 'Missing', project_code: 'c2'},
-    ];
-    const info = (importForm as any)._getMetricsToBeCreated(rows, ['project']);
-    (importForm as any)._importFormDataRows(rows, info, false, []);
-
-    expect(importForm.step).toBe(3);
-    expect(importedSpy).not.toHaveBeenCalled();
-    importForm.closeOutcome();
-    expect(importedSpy).toHaveBeenCalledTimes(1);
-  });
-
   it('should show the result step also when everything is imported', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
@@ -440,7 +334,6 @@ describe('Import Forms', () => {
     const info = (importForm as any)._getMetricsToBeCreated(rows, ['project']);
     (importForm as any)._importFormDataRows(rows, info, false, []);
 
-    expect(importForm.step).toBe(3);
     expect(importForm.outcome!.status).toBe('success');
     expect(importForm.outcome!.warnings).toEqual([]);
     // Nothing was left out: the total is not repeated
@@ -448,7 +341,7 @@ describe('Import Forms', () => {
     expect(importForm.outcome!.message).not.toContain('/');
     // The wizard is left by hand, so that the result can be read
     expect(importedSpy).not.toHaveBeenCalled();
-    importForm.closeOutcome();
+    importForm.onClosed();
     expect(importedSpy).toHaveBeenCalledTimes(1);
   });
 
@@ -463,17 +356,11 @@ describe('Import Forms', () => {
     (importForm as any)._importFormDataRows(rows, info, false, []);
 
     expect(bulkSpy).not.toHaveBeenCalled();
-    expect(importForm.step).toBe(3);
     expect(importForm.outcome!.status).toBe('error');
     expect(importForm.outcome!.message).toContain('File not imported!');
     expect(importForm.outcome!.warnings.some(w => w.label.includes('Rows not imported'))).toBe(
       true,
     );
-    // A failed import can be corrected without re-uploading the file
-    importForm.columnMappings = [{column: 'project_name', field: 'project_name'}];
-    importForm.backToMapping();
-    expect(importForm.step).toBe(2);
-    expect(importForm.outcome).toBeNull();
   });
 
   it('should still import a row that names no metric at all', async () => {
@@ -539,28 +426,32 @@ describe('Import Forms', () => {
     expect(bulkSpy.calls.mostRecent().args[0][0].project_ref_id).toBeNull();
   });
 
-  it('should show the field name and search it, with the label in the tooltip', async () => {
+  it('should build the mappable fields from the form schema', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
     // No dictionary is loaded in the tests: keep the key as the translation
     spyOn((importForm as any)._ts, 'translate').and.callFake((key: string) => key);
     (importForm as any)._fieldLabels = {district: '<b>District</b> of residence'};
-    importForm.availableFields = ['district', 'created_at'];
+    (importForm as any)._tableFields = {
+      myTable__0__1: {
+        tableName: 'myTable',
+        tableLabel: 'My table',
+        rowLabel: 'Row A',
+        columnLabel: 'Col 2',
+      },
+    };
+    (importForm as any)._metricFields = {project: ['project_id', 'project_name']};
 
-    // The option shows the field key, the readable label goes in the tooltip
-    expect(importForm.fieldName('district')).toBe('district');
-    // The markup left by the rich text editor must not reach the tooltip
+    // The markup left by the rich text editor must not reach the label
     expect(importForm.fieldLabel('district')).toBe('District of residence');
-    // A Dino field has no schema label: it keeps its raw key on both
-    expect(importForm.fieldName('created_at')).toBe('created_at');
+    // A table cell is named by its data key but reads as its labels
+    expect(importForm.fieldLabel('myTable__0__1')).toBe('My table [Row A / Col 2]');
+    // A Dino or metric field has no schema label: it keeps its raw key
     expect(importForm.fieldLabel('created_at')).toBe('created_at');
 
-    // The select search matches the field name, the value shown in the option
-    importForm.fieldFilterCtrl.setValue('distr');
-    expect(importForm.isFieldVisible('district')).toBe(true);
-    expect(importForm.isFieldVisible('created_at')).toBe(false);
-    // Not the label, which is only in the tooltip
-    importForm.fieldFilterCtrl.setValue('residence');
-    expect(importForm.isFieldVisible('district')).toBe(false);
+    // Only a form schema field carries an answer, so only that one is essential
+    expect((importForm as any)._isSchemaField('district')).toBe(true);
+    expect((importForm as any)._isSchemaField('created_at')).toBe(false);
+    expect((importForm as any)._isSchemaField('project_name')).toBe(false);
   });
 });

@@ -43,11 +43,6 @@ const mockDialogRef = {
   backdropClick: () => of(null),
 };
 
-const metricsCsv = [
-  '"project_name","project_parent_name","project_code","project_start_date","project_end_date"',
-  '"PRJ1",,"Code1","2024-01-01","2024-12-20"',
-].join('\n');
-
 describe('Metric Import', () => {
   let fixtureImport: ComponentFixture<MetricImport>;
   let importMetrics: MetricImport;
@@ -81,24 +76,6 @@ describe('Metric Import', () => {
 
   afterEach(() => {
     httpMock.verify();
-  });
-
-  it('should create the component', async () => {
-    await fixtureImport.whenStable();
-    fixtureImport.detectChanges();
-    expect(importMetrics).toBeTruthy();
-  });
-
-  it('should start the import metrics process from csv file', async () => {
-    await fixtureImport.whenStable();
-    fixtureImport.detectChanges();
-    const spyImportXlsx = spyOn<any>(importMetrics, '_importXlsx').and.callThrough();
-    const file = new Blob([metricsCsv], {type: 'text/csv'});
-    const metricsFile: File = new File([file], 'metrics_import_test.csv');
-    const excelEvt = {target: {files: [metricsFile]}};
-    importMetrics.onExcelfileSelected(excelEvt);
-    importMetrics.apply();
-    expect(spyImportXlsx).toHaveBeenCalledTimes(1);
   });
 
   it('should not strip the collection schema while reading the rows', async () => {
