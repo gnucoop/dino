@@ -116,6 +116,7 @@ export const PRT: Translation = {
   'Re-match all': 'Reassociar tudo',
   'Reset all the columns and match them again':
     'Redefine todas as colunas e as reassocia automaticamente',
+  'Map at least one form field to import': 'Associe ao menos um campo do formulário para importar',
   'Ignore column': 'Ignorar coluna',
   'repeating': 'repetido',
   'Repetition': 'Repetição',

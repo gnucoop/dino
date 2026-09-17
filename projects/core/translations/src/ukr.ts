@@ -115,6 +115,7 @@ export const UKR: Translation = {
   'Re-match all': 'Зіставити все заново',
   'Reset all the columns and match them again':
     'Скидає всі стовпці та зіставляє їх автоматично заново',
+  'Map at least one form field to import': 'Зіставте щонайменше одне поле форми для імпорту',
   'Ignore column': 'Ігнорувати стовпець',
   'repeating': 'повторюваний',
   'Repetition': 'Повторення',

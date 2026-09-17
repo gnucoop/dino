@@ -113,6 +113,7 @@ export const ENG: Translation = {
   'missing required fields: {{fields}}': 'missing required fields: {{fields}}',
   'Re-match all': 'Re-match all',
   'Reset all the columns and match them again': 'Reset all the columns and match them again',
+  'Map at least one form field to import': 'Map at least one form field to import',
   'Ignore column': 'Ignore column',
   'repeating': 'repeating',
   'Repetition': 'Repetition',

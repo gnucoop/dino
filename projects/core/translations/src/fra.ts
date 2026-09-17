@@ -118,6 +118,7 @@ export const FRA: Translation = {
   'Re-match all': 'Tout réassocier',
   'Reset all the columns and match them again':
     'Réinitialise toutes les colonnes et les réassocie automatiquement',
+  'Map at least one form field to import': 'Associez au moins un champ du formulaire pour importer',
   'Ignore column': 'Ignorer la colonne',
   'repeating': 'répété',
   'Repetition': 'Répétition',

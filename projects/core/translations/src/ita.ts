@@ -115,6 +115,7 @@ export const ITA: Translation = {
   'Re-match all': 'Riassocia tutto',
   'Reset all the columns and match them again':
     'Reimposta tutte le colonne e le riassocia automaticamente',
+  'Map at least one form field to import': 'Associa almeno un campo del modulo per importare',
   'Ignore column': 'Ignora colonna',
   'repeating': 'ripetuto',
   'Repetition': 'Ripetizione',
