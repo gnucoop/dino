@@ -26,7 +26,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   isDevMode,
@@ -34,18 +33,9 @@ import {
   OnInit,
   Optional,
   Output,
-  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import {
-  AbstractControl,
-  FormGroupDirective,
-  NgForm,
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
-} from '@angular/forms';
-import {ErrorStateMatcher} from '@angular/material/core';
+import {UntypedFormControl} from '@angular/forms';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {
@@ -75,144 +65,25 @@ import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {UserData, UserDataManager, UserGroupManager} from '@dino/core/users';
+import {
+  applyMappings,
+  ColumnMapping,
+  ImportField,
+  ImportIssue,
+  ImportOutcome,
+  ImportOutcomeStatus,
+  ImportWarning,
+  warningGroup,
+} from '@dino/material/import-wizard';
 import {format} from 'date-fns';
 import {RxDocument} from 'rxdb';
 import {forkJoin, Observable, of as obsOf, Subscription, zip} from 'rxjs';
 import {catchError, map, shareReplay, switchMap, take, withLatestFrom} from 'rxjs/operators';
 
 /**
- * The mapping between a file column and a target field
- */
-export interface ColumnMapping {
-  /**
-   * The column name found in the file
-   */
-  column: string;
-
-  /**
-   * The target field name. If null, the column will be ignored.
-   */
-  field: string | null;
-
-  /**
-   * The form control bound to the field select, used to drive the mat-error
-   * state when the field is mapped by more than one column.
-   */
-  control?: UntypedFormControl;
-
-  /**
-   * For a column mapped to a repeating-slide field, the repetition order chosen
-   * by the user. Columns of the same repeating field are sorted by this value
-   * and then compacted into contiguous indices (`field__0`, `field__1`, ...).
-   * Undefined for non-repeating fields.
-   */
-  repetition?: number;
-}
-
-/**
- * One entry of a result group: the file row it comes from, when known, and its text
- */
-export interface ImportIssue {
-  /**
-   * The row number in the imported file, when the entry belongs to one
-   */
-  row?: number;
-
-  /**
-   * The entry text: a reason, an identifier or a metric name
-   */
-  text: string;
-}
-
-/**
- * A group of related warnings shown in the import result step
- */
-export interface ImportWarning {
-  /**
-   * The localized label of the group
-   */
-  label: string;
-
-  /**
-   * The total number of warnings of this group, before the list is capped
-   */
-  count: number;
-
-  /**
-   * The warnings to be listed, capped
-   */
-  items: ImportIssue[];
-
-  /**
-   * How the group is rendered: one row per file row, or a grid of identifiers
-   */
-  kind: 'rows' | 'values';
-}
-
-/**
  * Why a metric could not be created, by metric type and metric name
  */
 export type MetricFailures = {[metricType: string]: {[metricName: string]: string}};
-
-/**
- * The counters shown at the top of the import result step
- */
-export interface ImportCounts {
-  /**
-   * The data rows of the file, the label header row excluded
-   */
-  fileRows: number;
-
-  /**
-   * The form data actually saved
-   */
-  imported: number;
-
-  /**
-   * The data rows that did not make it
-   */
-  rejected: number;
-
-  /**
-   * The metrics created, all types and all tree levels
-   */
-  metricsCreated: number;
-}
-
-/**
- * How an import ended: everything imported, only part of it, or nothing
- */
-export type ImportOutcomeStatus = 'success' | 'partial' | 'error';
-
-/**
- * The outcome of an import, shown in the last step of the wizard
- */
-export interface ImportOutcome {
-  /**
-   * How the import ended
-   */
-  status: ImportOutcomeStatus;
-
-  /**
-   * The headline message
-   */
-  message: string;
-
-  /**
-   * The explanation shown under the counters
-   */
-  detail?: string;
-
-  /**
-   * How many rows and metrics the import dealt with
-   */
-  counts: ImportCounts;
-
-  /**
-   * What could not be imported
-   */
-  warnings: ImportWarning[];
-}
 
 /**
  * The data passed to the Import Form dialog
@@ -271,7 +142,7 @@ interface MetricInfoInRows {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
+export class ImportForm implements OnInit, OnDestroy {
   /**
    * The id of the form schema the data will be imported into.
    */
@@ -295,58 +166,36 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   @Output() imported = new EventEmitter<void>();
 
   /**
-   * The current wizard step: 1 = upload file, 2 = map fields, 3 = result.
+   * The fields the file columns can be mapped onto, handed to the wizard.
    */
-  step: 1 | 2 | 3 = 1;
+  fields: ImportField[] = [];
 
   /**
-   * The outcome of the import, shown in the last step. Null until the import ends.
+   * The outcome of the import. Null until the pipeline ends.
    */
   outcome: ImportOutcome | null = null;
 
   /**
-   * Live search filter applied to the rows listed in the result step.
+   * True while the rows are being imported, to keep the wizard spinner up.
    */
-  issueSearch = '';
+  importing = false;
+
+  /**
+   * Whether an existing metric with the same name is reused instead of created.
+   */
+  readonly reuseMetricName = new UntypedFormControl(true);
 
   /**
    * The counters of the running import, filled in as the pipeline progresses and
    * snapshotted into the outcome. Kept on the component so that an import failing
    * early still reports the numbers it already knows.
    */
-  private _counts: Omit<ImportCounts, 'rejected'> = {fileRows: 0, imported: 0, metricsCreated: 0};
-
-  /**
-   * The name of the selected file, shown in the upload success chip.
-   */
-  fileName = '';
-
-  /**
-   * Live search filter applied to the mapping rows (by file column name or
-   * mapped field label).
-   */
-  search = '';
+  private _counts = {fileRows: 0, imported: 0, metricsCreated: 0};
 
   /**
    * Current status message of the Import Form
    */
   importStatus = '';
-
-  /**
-   * The Import dialog form group
-   */
-  readonly importForm: UntypedFormGroup;
-
-  /**
-   * The columns found in the selected file, each one with the mapped target
-   * field. A null field means the column will be ignored during import.
-   */
-  columnMappings: ColumnMapping[] = [];
-
-  /**
-   * All the available target fields for the column mapping
-   */
-  availableFields: string[] = [];
 
   /**
    * Maps each repeating-slide field (offered in the select as a single base
@@ -386,66 +235,9 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   private _schemaMetrics: string[] | null = null;
 
   /**
-   * Sentinel value used as the "Ignore column" select option. A non-null value
-   * is required so the mat-select shows the selected option (Angular Material
-   * treats a null value as no selection, leaving the trigger blank). It is
-   * mapped back to "no field" when the rows are imported.
-   */
-  readonly ignoreFieldValue = '__dino_ignore_column__';
-
-  /**
-   * Control bound to the search input used to filter the available fields
-   */
-  readonly fieldFilterCtrl = new UntypedFormControl('');
-
-  /**
-   * Fields mapped by more than one column
-   */
-  duplicateFields: string[] = [];
-
-  /**
-   * The column mapping whose field select is currently open. The full list of
-   * available field options is rendered only for this mapping: every other
-   * (closed) select renders just its selected option, so the dialog does not
-   * instantiate one mat-option per available field for every column at once.
-   */
-  openedMapping: ColumnMapping | null = null;
-
-  /**
-   * True while the selected file is being read and its columns parsed.
-   * Used to show a loading spinner.
-   */
-  isLoading: boolean = false;
-
-  /**
-   * Reference to the native file input, used to reset the selection
-   * when going back to the file selection step.
-   */
-  @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
-
-  /**
    * The Form schema object
    */
   private _formSchema: Observable<FormSchema | null>;
-
-  /**
-   * The selected file
-   */
-  private _file?: Blob;
-
-  /**
-   * The rows parsed from the selected file
-   */
-  private _rows: {[key: string]: any}[] = [];
-
-  /**
-   * True if the form is currently being processed.
-   * Defaults to true.
-   */
-  private _processing: boolean = true;
-  get processing(): boolean {
-    return this._processing;
-  }
 
   /**
    * Dino fields that should not be included in the data field
@@ -505,18 +297,12 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   private _validateDataSub: Subscription = Subscription.EMPTY;
 
   /**
-   * Subscribes to the form schema to build the column mappings
+   * Subscribes to the form schema to declare the mappable fields
    */
-  private _columnMappingsSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Subscribes to the field search input to filter the available fields
-   */
-  private _fieldFilterSub: Subscription = Subscription.EMPTY;
+  private _schemaSub: Subscription = Subscription.EMPTY;
 
   constructor(
     private _cdr: ChangeDetectorRef,
-    private _formBuilder: UntypedFormBuilder,
     private _formDataManager: FormDataManager,
     private _formSchemaManager: FormSchemaManager,
     private _udm: UserDataManager,
@@ -533,227 +319,78 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     @Optional() private _og: OrganizationManager | null,
   ) {
     this._formSchema = obsOf(null);
-
-    this.importForm = this._formBuilder.group({
-      reuseMetricName: [true],
-    });
-
-    this._fieldFilterSub = this.fieldFilterCtrl.valueChanges.subscribe(() =>
-      this._cdr.markForCheck(),
-    );
   }
 
   ngOnInit(): void {
-    if (this.formSchemaId) {
-      this._formSchema = this._formSchemaManager.get(this.formSchemaId).pipe(
-        map(doc => (doc == null ? null : (doc.toJSON() as FormSchema))),
-        shareReplay(1),
-      );
+    this._formSchema = this.formSchemaId
+      ? this._formSchemaManager.get(this.formSchemaId).pipe(
+          map(doc => (doc == null ? null : (doc.toJSON() as FormSchema))),
+          shareReplay(1),
+        )
+      : obsOf(null);
+    // The wizard needs the fields before the file is read, so the schema is
+    // resolved here instead of on file selection
+    this._schemaSub = this._formSchema.pipe(take(1)).subscribe(formSchema => {
+      this._schemaMetrics = this._importService.getSchemaMetrics(formSchema);
+      this._repeatingFields = this._importService.getRepeatingSlideFields(formSchema);
+      this._tableFields = this._importService.getTableFields(formSchema);
+      this._fieldLabels = this._importService.getFieldLabels(formSchema);
+      this._metricFields = this._importService.getMetricFields(formSchema);
+      this.fields = this._importService.getAvailableFields(formSchema).map(name => ({
+        name,
+        label: this.fieldLabel(name),
+        repeatable: this.isRepeatingField(name),
+        // Only a form schema field carries an answer: a file mapping just the
+        // Dino columns or the metric ones would create empty form data
+        essential: this._isSchemaField(name),
+      }));
+      this._cdr.markForCheck();
+    });
+  }
+
+  /**
+   * Starts the import with the rows and the mappings chosen in the wizard.
+   * @param request The parsed rows and the column mappings
+   */
+  onApply(request: {rows: {[key: string]: any}[]; mappings: ColumnMapping[]}): void {
+    this.importing = true;
+    this._metricMustBeUnique = this.reuseMetricName.value;
+    this._processData(this._applyColumnMappings(request.rows, request.mappings));
+  }
+
+  /**
+   * Leaves the wizard once the result has been read.
+   */
+  onClosed(): void {
+    if (this.outcome && this.outcome.status !== 'error') {
+      this.imported.emit();
     } else {
-      this._formSchema = obsOf(null);
+      this.cancelled.emit();
     }
+  }
+
+  /**
+   * Reports an unreadable file as an outcome, so it is shown in the result step.
+   */
+  onUnreadableFile(): void {
+    this._setImportStatus(this._ts.translate('File not imported! Could not read the file.'));
+  }
+
+  /**
+   * Whether a field belongs to the form schema, as opposed to the Dino columns
+   * and the metric ones.
+   * @param field The field name
+   */
+  private _isSchemaField(field: string): boolean {
+    if (this._importService.dinoImportFields.includes(field)) {
+      return false;
+    }
+    return !Object.keys(this._metricFields).some(metric =>
+      this._metricFields[metric].includes(field),
+    );
   }
 
   // ---- Wizard navigation & derived view data --------------------------------
-
-  /**
-   * The subtitle shown under the page title: what to do in the current step, or
-   * the name of the imported file once the wizard shows the result.
-   */
-  get stepSubtitle(): string {
-    if (this.step === 3) {
-      return this.fileName;
-    }
-    return this.step === 2
-      ? this._ts.translate('Match the columns in your file to the fields of the form.')
-      : this._ts.translate('Choose the file with the data to be imported.');
-  }
-
-  /**
-   * Navigates to a wizard step. Step 2 is reachable only once a file has been
-   * parsed (there are column mappings to show).
-   * @param step The target step
-   */
-  goToStep(step: 1 | 2 | 3): void {
-    if (step === 2 && !this.columnMappings.length) {
-      return;
-    }
-    if (step === 3 && this.outcome == null) {
-      return;
-    }
-    this.step = step;
-    this._cdr.markForCheck();
-  }
-
-  /**
-   * The mapping rows matching the current search filter (by file column name or
-   * mapped field label). Used to render the mapping table.
-   */
-  get filteredMappings(): ColumnMapping[] {
-    const q = this.search.trim().toLowerCase();
-    if (!q) {
-      return this.columnMappings;
-    }
-    return this.columnMappings.filter(
-      m =>
-        m.column.toLowerCase().includes(q) ||
-        (m.field ?? '').toLowerCase().includes(q) ||
-        this.fieldLabel(m.field).toLowerCase().includes(q),
-    );
-  }
-
-  /**
-   * Whether a mapping is ignored (explicitly skipped or mapped to the ignore
-   * sentinel).
-   * @param mapping The column mapping
-   */
-  isIgnored(mapping: ColumnMapping): boolean {
-    return mapping.field === this.ignoreFieldValue;
-  }
-
-  /**
-   * Whether a mapping targets a real field (mapped, not ignored).
-   * @param mapping The column mapping
-   */
-  isMapped(mapping: ColumnMapping): boolean {
-    return mapping.field != null && mapping.field !== this.ignoreFieldValue;
-  }
-
-  /**
-   * Summary counts shown as chips in the mapping toolbar.
-   */
-  get summary(): {total: number; mapped: number; ignored: number} {
-    let mapped = 0;
-    let ignored = 0;
-    this.columnMappings.forEach(m => {
-      if (this.isIgnored(m)) {
-        ignored++;
-      } else if (this.isMapped(m)) {
-        mapped++;
-      }
-    });
-    return {total: this.columnMappings.length, mapped, ignored};
-  }
-
-  /**
-   * The status pill descriptor for a mapping row.
-   * @param mapping The column mapping
-   */
-  statusOf(mapping: ColumnMapping): {label: string; kind: 'mapped' | 'unmapped' | 'ignored'} {
-    if (this.isIgnored(mapping)) {
-      return {label: this._ts.translate('Ignored'), kind: 'ignored'};
-    }
-    if (this.isMapped(mapping)) {
-      return {label: this._ts.translate('Mapped'), kind: 'mapped'};
-    }
-    return {label: this._ts.translate('Not mapped'), kind: 'unmapped'};
-  }
-
-  /**
-   * Toggles a column between ignored and unmapped.
-   * @param mapping The column mapping
-   */
-  toggleIgnore(mapping: ColumnMapping): void {
-    const nowIgnored = !this.isIgnored(mapping);
-    this.onMappingChange(mapping, nowIgnored ? this.ignoreFieldValue : null);
-    if (mapping.control) {
-      mapping.control.setValue(mapping.field);
-    }
-  }
-
-  /**
-   * Starts the column mapping over from the automatic proposal: every column is
-   * rebuilt as it was right after the file was read, which also restores the
-   * repeating-slide columns written as `field__<index>`, and the columns still
-   * uncovered are then guessed by name or label. Any manual choice is discarded.
-   */
-  autoMatch(): void {
-    this.columnMappings = this.columnMappings.map(mapping =>
-      this._buildColumnMapping(mapping.column),
-    );
-    this.openedMapping = null;
-    const normalize = (value: string): string =>
-      value
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, ' ')
-        .trim();
-    const isFree = (field: string): boolean =>
-      this.isRepeatingField(field) || !this.columnMappings.some(m => m.field === field);
-    this.columnMappings.forEach(mapping => {
-      if (mapping.field != null) {
-        return;
-      }
-      const src = mapping.column.toLowerCase();
-      const normalizedSrc = normalize(mapping.column);
-      // An exact match on the name or on the label first: with labels that are
-      // whole sentences a substring match alone is too noisy
-      const match =
-        this.availableFields.find(
-          f =>
-            isFree(f) &&
-            (normalize(f) === normalizedSrc || normalize(this.fieldLabel(f)) === normalizedSrc),
-        ) ??
-        this.availableFields.find(
-          f =>
-            isFree(f) &&
-            (src.includes(f.toLowerCase()) || src.includes(this.fieldLabel(f).toLowerCase())),
-        );
-      if (match) {
-        this.onMappingChange(mapping, match);
-        if (mapping.control) {
-          mapping.control.setValue(match);
-        }
-      }
-    });
-    this._updateDuplicateFields();
-    this._cdr.markForCheck();
-  }
-
-  /**
-   * Handles a file dropped onto the upload drop zone.
-   * @param event The drag drop event
-   */
-  onFileDrop(event: DragEvent): void {
-    event.preventDefault();
-    const file = event.dataTransfer?.files?.[0];
-    if (file) {
-      this._file = file;
-      this.fileName = file.name;
-      this._readFile(file);
-    }
-  }
-
-  /**
-   * Allows dropping by preventing the browser's default (open file) behavior.
-   * @param event The drag over event
-   */
-  onDragOver(event: DragEvent): void {
-    event.preventDefault();
-  }
-
-  /**
-   * Whether a field option matches the current search input, which is matched
-   * against the field name, the value shown in the option. Non matching options
-   * are hidden (not removed) so each select keeps its selected value even while
-   * another select is being filtered.
-   * @param field The field option
-   * @returns true if the option should be visible
-   */
-  isFieldVisible(field: string): boolean {
-    const search = (this.fieldFilterCtrl.value || '').toLowerCase().trim();
-    return !search || field.toLowerCase().includes(search);
-  }
-
-  /**
-   * Track the field options by their value so Angular reuses the mat-option
-   * DOM nodes while the user filters the list.
-   * @param _index The option index
-   * @param field The field option
-   * @returns The field itself as tracking key
-   */
-  trackByField(_index: number, field: string): string {
-    return field;
-  }
 
   /**
    * Whether the given field is a repeating-slide field (offered as a single
@@ -776,35 +413,11 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   }
 
   /**
-   * The field key shown in the select options and trigger. It is the key written
-   * by the export, so it is what the user matches the file columns against; the
-   * readable label is in the tooltip.
-   * @param field The field name (or the ignore sentinel / null)
-   * @returns The field key
-   */
-  fieldName(field: string | null): string {
-    if (field === this.ignoreFieldValue) {
-      return this._ts.translate('Ignore column');
-    }
-    if (field == null) {
-      return '';
-    }
-    // Keep the repeating marker: it explains the repetition input next to the row
-    return this.isRepeatingField(field) ? `${field} (${this._ts.translate('repeating')})` : field;
-  }
-
-  /**
-   * The readable label of a field, shown in the option tooltip.
-   * @param field The field name (or the ignore sentinel / null)
+   * The readable label of a field, handed to the wizard for the option tooltip.
+   * @param field The field name
    * @returns The localized, user facing label
    */
-  fieldLabel(field: string | null): string {
-    if (field === this.ignoreFieldValue) {
-      return this._ts.translate('Ignore column');
-    }
-    if (field == null) {
-      return '';
-    }
+  fieldLabel(field: string): string {
     if (this.isTableField(field)) {
       const cell = this._tableFields[field];
       const tableLabel = this._plainLabel(cell.tableLabel) || cell.tableName;
@@ -836,32 +449,6 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   }
 
   /**
-   * Update the repetition order of a column mapped to a repeating field.
-   * @param mapping The column mapping
-   * @param event The number input change event
-   */
-  onRepetitionChange(mapping: ColumnMapping, event: Event): void {
-    const value = parseInt((event.target as HTMLInputElement).value, 10);
-    mapping.repetition = isNaN(value) ? 0 : Math.max(0, value);
-    this._cdr.markForCheck();
-  }
-
-  /**
-   * Render the full field list for the opened select only, and reset the field
-   * search when it is closed, so its trigger keeps showing the selected value
-   * and the next dropdown opens with the full list.
-   * @param opened The select opened state
-   * @param mapping The column mapping owning the select
-   */
-  onFieldSelectOpenedChange(opened: boolean, mapping: ColumnMapping): void {
-    this.openedMapping = opened ? mapping : null;
-    if (!opened && this.fieldFilterCtrl.value) {
-      this.fieldFilterCtrl.setValue('');
-    }
-    this._cdr.markForCheck();
-  }
-
-  /**
    * Updates the status message of the Import Form
    * @param msg The message string
    */
@@ -873,24 +460,34 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   ): void {
     this.importStatus = msg;
     // The empty (clearing) message and the in-progress "Importing file..."
-    // message are not terminal: they keep the spinner visible.
+    // message are not terminal: they keep the spinner up.
     if (msg === '' || msg === this._ts.translate('Importing file...')) {
       this._cdr.markForCheck();
       return;
     }
-    this.isLoading = false;
-    this._processing = false;
-    // Every outcome is shown in the result step, and the wizard is left by hand:
-    // a snackbar would disappear while the page navigates away.
+    this.importing = false;
+    // Whatever did not make it was rejected, however early the import stopped
+    const rejected = this._counts.fileRows - this._counts.imported;
     this.outcome = {
       status,
       message: msg,
       detail: detail.length ? detail : undefined,
-      // Whatever did not make it was rejected, however early the import stopped
-      counts: {...this._counts, rejected: this._counts.fileRows - this._counts.imported},
+      counts: [
+        {
+          label: this._ts.translate('Rows imported'),
+          value: this._counts.imported,
+          tone: this._counts.imported > 0 ? 'ok' : undefined,
+        },
+        {
+          label: this._ts.translate('Rows rejected'),
+          value: rejected,
+          tone: rejected > 0 ? (status === 'error' ? 'ko' : 'warn') : undefined,
+        },
+        {label: this._ts.translate('Rows in file'), value: this._counts.fileRows},
+        {label: this._ts.translate('Metrics created'), value: this._counts.metricsCreated},
+      ],
       warnings,
     };
-    this.step = 3;
     this._cdr.markForCheck();
   }
 
@@ -908,9 +505,8 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     label: string,
     items: ImportIssue[],
     kind: 'rows' | 'values',
-    max: number = kind === 'rows' ? 50 : 10,
   ): ImportWarning {
-    return {label, count: items.length, items: items.slice(0, max), kind};
+    return warningGroup(label, items, kind);
   }
 
   /**
@@ -924,204 +520,6 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     return refused
       ? this._ts.translate('{{n}} rows not imported: refused on save', {n: refused})
       : '';
-  }
-
-  /**
-   * The entries of a group that are not listed because of the cap.
-   * @param warning The result group
-   * @returns How many entries are hidden
-   */
-  hiddenItems(warning: ImportWarning): number {
-    return warning.count - warning.items.length;
-  }
-
-  /**
-   * The rows of a group matching the result step search filter.
-   * @param warning The result group
-   * @returns The entries to be listed
-   */
-  filteredItems(warning: ImportWarning): ImportIssue[] {
-    const search = this.issueSearch.trim().toLowerCase();
-    if (!search) {
-      return warning.items;
-    }
-    return warning.items.filter(
-      item =>
-        item.text.toLowerCase().includes(search) ||
-        (item.row != null && `${item.row}`.includes(search)),
-    );
-  }
-
-  /**
-   * Leaves the wizard from the result step.
-   */
-  closeOutcome(): void {
-    if (this.outcome && this.outcome.status !== 'error') {
-      this.imported.emit();
-    } else {
-      this.cancelled.emit();
-    }
-  }
-
-  /**
-   * Goes back from the result step to the column mapping, keeping the parsed
-   * file, so that a failed import can be corrected and retried.
-   */
-  backToMapping(): void {
-    this.outcome = null;
-    this.importStatus = '';
-    this.step = this.columnMappings.length ? 2 : 1;
-    this._cdr.markForCheck();
-  }
-
-  /**
-   * Save the input file and read its columns to build the column mappings
-   * @param event The input file selection event
-   */
-  onExcelfileSelected(event: any): void {
-    if (event.target.files.length === 0) {
-      return;
-    }
-    this._file = event.target.files[0];
-    this.fileName = (this._file as File).name ?? '';
-    this._readFile(this._file as Blob);
-  }
-
-  /**
-   * Update the column mapping with the selected field
-   * @param mapping The column mapping to be updated
-   * @param field The selected target field
-   */
-  onMappingChange(mapping: ColumnMapping, field: string | null): void {
-    mapping.field = field;
-    if (this.isRepeatingField(field)) {
-      // Default the repetition order to the next free slot for this field, so
-      // mapping several columns to the same repeating field auto-numbers them
-      mapping.repetition = this.columnMappings.filter(m => m.field === field).length - 1;
-    } else {
-      mapping.repetition = undefined;
-    }
-    this._updateDuplicateFields();
-    this._cdr.markForCheck();
-  }
-
-  /**
-   * ErrorStateMatcher implementation: a field select is in error state when its
-   * selected field is mapped by more than one column.
-   * @param control The select form control
-   * @returns true if the control's field is a duplicate
-   */
-  isErrorState(
-    control: AbstractControl | null,
-    _form: FormGroupDirective | NgForm | null,
-  ): boolean {
-    return control != null && control.value != null && this.duplicateFields.includes(control.value);
-  }
-
-  /**
-   * Whether a field belongs to the form schema, as opposed to the Dino columns
-   * and the metric ones: a file mapping only those would create form data with
-   * no answer inside.
-   * @param field The field name
-   * @returns true if the field is a form schema field
-   */
-  private _isSchemaField(field: string): boolean {
-    if (this._importService.dinoImportFields.includes(field)) {
-      return false;
-    }
-    return !Object.keys(this._metricFields).some(metric =>
-      this._metricFields[metric].includes(field),
-    );
-  }
-
-  /**
-   * Whether the import can start: at least one column has to be mapped to a form
-   * schema field, or the file would only create form data with no answer, and no
-   * field can be mapped twice.
-   */
-  get canApply(): boolean {
-    if (this.duplicateFields.length) {
-      return false;
-    }
-    return this.columnMappings.some(
-      mapping => this.isMapped(mapping) && this._isSchemaField(mapping.field as string),
-    );
-  }
-
-  /**
-   * Why the import cannot start yet, shown next to the disabled Apply button.
-   */
-  get applyHint(): string {
-    if (this.duplicateFields.length) {
-      return this._ts.translate('Field mapped to more than one column');
-    }
-    return this.canApply ? '' : this._ts.translate('Map at least one form field to import');
-  }
-
-  /**
-   * Start processing the Xlsx file
-   */
-  apply(): void {
-    if (this._file == null || !this.canApply) {
-      return;
-    }
-    this._processing = true;
-    this.isLoading = true;
-    this._cdr.markForCheck();
-    this._metricMustBeUnique = this.importForm.controls['reuseMetricName'].value;
-    this._processData(this._applyColumnMappings(this._rows));
-  }
-
-  /**
-   * Go back to the file selection step, resetting the parsed file and the
-   * column mappings so the user can choose a different file.
-   */
-  back(): void {
-    this._file = undefined;
-    this.fileName = '';
-    this._rows = [];
-    this.columnMappings = [];
-    this.availableFields = [];
-    this._repeatingFields = {};
-    this._tableFields = {};
-    this._fieldLabels = {};
-    this._metricFields = {};
-    this._schemaMetrics = null;
-    this.outcome = null;
-    this.issueSearch = '';
-    this._counts = {fileRows: 0, imported: 0, metricsCreated: 0};
-    this.fieldFilterCtrl.setValue('');
-    this.search = '';
-    this.duplicateFields = [];
-    this.openedMapping = null;
-    this.isLoading = false;
-    this._processing = true;
-    this.step = 1;
-    this._setImportStatus('');
-    if (this.fileInput) {
-      // Clear the input value so re-selecting the same file fires the change event
-      this.fileInput.nativeElement.value = '';
-    }
-    this._cdr.markForCheck();
-  }
-
-  /**
-   * Footer "Back" action: from the mapping step return to the upload step;
-   * from the upload step leave the wizard.
-   */
-  onBack(): void {
-    if (this.step === 2) {
-      this.back();
-    } else {
-      this.cancel();
-    }
-  }
-
-  /**
-   * Leaves the wizard without importing (host navigates back to the list).
-   */
-  cancel(): void {
-    this.cancelled.emit();
   }
 
   /**
@@ -1940,91 +1338,6 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   }
 
   /**
-   * Convert the xls file into a json, read the file columns and build the
-   * column mappings, prefilled with the available fields with the same name
-   * @param file The Xlsx file to be read
-   */
-  private _readFile(file: Blob): void {
-    this._processing = true;
-    this.isLoading = true;
-    this._rows = [];
-    this.columnMappings = [];
-    this.availableFields = [];
-    this._fieldLabels = {};
-    this._metricFields = {};
-    this._schemaMetrics = null;
-    this.outcome = null;
-    this.issueSearch = '';
-    this._counts = {fileRows: 0, imported: 0, metricsCreated: 0};
-    this.duplicateFields = [];
-    this._setImportStatus('');
-    const fileReader = new FileReader();
-    fileReader.readAsArrayBuffer(file);
-    fileReader.onerror = () => {
-      this.isLoading = false;
-      this._processing = false;
-      this._cdr.markForCheck();
-    };
-    fileReader.onload = (e: any) => {
-      const bufferArray = e?.target.result;
-      let rows: {[key: string]: any}[];
-      let columns: string[];
-      try {
-        ({rows, columns} = this._importService.parseWorkbook(bufferArray));
-      } catch (err) {
-        if (isDevMode()) {
-          console.log('Could not read the import file:', err);
-        }
-        this.isLoading = false;
-        this._processing = false;
-        this._setImportStatus(this._ts.translate('File not imported! Could not read the file.'));
-        return;
-      }
-      this._rows = rows;
-      this._columnMappingsSub.unsubscribe();
-      this._columnMappingsSub = this._formSchema.pipe(take(1)).subscribe(formSchema => {
-        this._schemaMetrics = this._importService.getSchemaMetrics(formSchema);
-        this.availableFields = this._importService.getAvailableFields(formSchema);
-        this._repeatingFields = this._importService.getRepeatingSlideFields(formSchema);
-        this._tableFields = this._importService.getTableFields(formSchema);
-        this._fieldLabels = this._importService.getFieldLabels(formSchema);
-        this._metricFields = this._importService.getMetricFields(formSchema);
-        this.fieldFilterCtrl.setValue('');
-        this.columnMappings = columns.map(column => this._buildColumnMapping(column));
-        this._updateDuplicateFields();
-        this._processing = false;
-        this.isLoading = false;
-        // Advance to the mapping step now that the file has been parsed.
-        this.step = 2;
-        this._cdr.markForCheck();
-      });
-    };
-  }
-
-  /**
-   * Build the column mapping for a file column, pre-filling the target field
-   * when the column name matches an available field, or a repeating-slide field
-   * written as `base__<index>` (in which case the repetition order is taken
-   * from the index found in the column name).
-   * @param column The file column name
-   * @returns The column mapping
-   */
-  private _buildColumnMapping(column: string): ColumnMapping {
-    let field: string | null = null;
-    let repetition: number | undefined;
-    if (this.availableFields.includes(column)) {
-      field = column;
-    } else {
-      const repMatch = column.match(/^(.+)__(\d+)$/);
-      if (repMatch && this.isRepeatingField(repMatch[1])) {
-        field = repMatch[1];
-        repetition = +repMatch[2];
-      }
-    }
-    return {column, field, repetition, control: new UntypedFormControl(field)};
-  }
-
-  /**
    * Rename the row keys with the mapped field names, dropping the unmapped
    * columns. Columns mapped to a repeating-slide field are grouped by their
    * slide, ordered by the chosen repetition, and turned into contiguous
@@ -2033,16 +1346,18 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
    * @param rows The rows parsed from the file
    * @returns The rows with the mapped field names as keys
    */
-  private _applyColumnMappings(rows: {[key: string]: any}[]): {[key: string]: any}[] {
-    const directMappings = this.columnMappings.filter(
-      mapping =>
-        mapping.field != null &&
-        mapping.field !== this.ignoreFieldValue &&
-        !this.isRepeatingField(mapping.field),
+  private _applyColumnMappings(
+    rows: {[key: string]: any}[],
+    mappings: ColumnMapping[],
+  ): {[key: string]: any}[] {
+    // The plain rename is shared; the repeating slides are laid out here, since
+    // only the form schema knows how their repetitions have to be numbered
+    const mappedRows = applyMappings(rows, mappings, mapping =>
+      this.isRepeatingField(mapping.field),
     );
     // slide name -> field base -> the columns mapped to it, ordered by repetition
     const slides: {[slide: string]: {[base: string]: ColumnMapping[]}} = {};
-    this.columnMappings.forEach(mapping => {
+    mappings.forEach(mapping => {
       if (!this.isRepeatingField(mapping.field)) {
         return;
       }
@@ -2055,19 +1370,13 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
       Object.keys(slides[slide]).forEach(base => {
         slides[slide][base].sort(
           (a, b) =>
-            (a.repetition ?? 0) - (b.repetition ?? 0) ||
-            this.columnMappings.indexOf(a) - this.columnMappings.indexOf(b),
+            (a.repetition ?? 0) - (b.repetition ?? 0) || mappings.indexOf(a) - mappings.indexOf(b),
         );
       });
     });
 
-    return rows.map(row => {
-      const mappedRow: {[key: string]: any} = {};
-      directMappings.forEach(mapping => {
-        if (row[mapping.column] !== undefined) {
-          mappedRow[mapping.field as string] = row[mapping.column];
-        }
-      });
+    return rows.map((row, rowIdx) => {
+      const mappedRow: {[key: string]: any} = mappedRows[rowIdx];
       Object.keys(slides).forEach(slide => {
         const bases = slides[slide];
         const slots = Math.max(...Object.keys(bases).map(base => bases[base].length));
@@ -2099,21 +1408,6 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
       });
       return mappedRow;
     });
-  }
-
-  /**
-   * Update the list of the fields mapped by more than one column. Repeating
-   * fields are excluded: they are meant to be mapped by several columns.
-   */
-  private _updateDuplicateFields(): void {
-    const mappedFields = this.columnMappings
-      .map(mapping => mapping.field)
-      .filter(
-        field => field != null && field !== this.ignoreFieldValue && !this.isRepeatingField(field),
-      ) as string[];
-    this.duplicateFields = [
-      ...new Set(mappedFields.filter((field, idx) => mappedFields.indexOf(field) !== idx)),
-    ];
   }
 
   /**
@@ -2221,8 +1515,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   ngOnDestroy() {
     this._userDataSub.unsubscribe();
     this._validateDataSub.unsubscribe();
-    this._columnMappingsSub.unsubscribe();
-    this._fieldFilterSub.unsubscribe();
+    this._schemaSub.unsubscribe();
     this.cancelled.complete();
     this.imported.complete();
   }
