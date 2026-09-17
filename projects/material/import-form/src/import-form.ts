@@ -2157,7 +2157,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
               if (missingRequiredMetrics) {
                 this._setImportStatus(
                   `${this._ts.translate(
-                    'File not imported! This metrics are mandatory',
+                    'File not imported! These metrics are mandatory',
                   )}: ${requiredMetrics.join(',')}.`,
                 );
                 return obsOf([]);
