@@ -141,7 +141,6 @@ export const UGA: Translation = {
   'mapped': 'mapped',
   'ignored': 'ignored',
   'Search columns…': 'Search columns…',
-  'Auto-match': 'Auto-match',
   'File column': 'File column',
   'Form field': 'Form field',
   'Status': 'Status',

@@ -98,7 +98,6 @@ export const FRA: Translation = {
   'mapped': 'associées',
   'ignored': 'ignorées',
   'Search columns…': 'Rechercher des colonnes…',
-  'Auto-match': 'Association automatique',
   'File column': 'Colonne du fichier',
   'Form field': 'Champ du formulaire',
   'Status': 'Statut',
@@ -137,6 +136,9 @@ export const FRA: Translation = {
   'File not imported! Could not read the file.':
     'Fichier non importé ! Impossible de lire le fichier.',
   'missing required fields: {{fields}}': 'champs obligatoires manquants : {{fields}}',
+  'Re-match all': 'Tout réassocier',
+  'Reset all the columns and match them again':
+    'Réinitialise toutes les colonnes et les réassocie automatiquement',
   'Ignore column': 'Ignorer la colonne',
   'repeating': 'répété',
   'Repetition': 'Répétition',
