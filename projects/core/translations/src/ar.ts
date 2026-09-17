@@ -134,6 +134,7 @@ export const AR: Translation = {
   'missing required fields: {{fields}}': 'حقول مطلوبة ناقصة: {{fields}}',
   'Re-match all': 'إعادة الربط للكل',
   'Reset all the columns and match them again': 'يعيد ضبط جميع الأعمدة ويربطها تلقائياً من جديد',
+  'Map at least one form field to import': 'اربط حقلاً واحداً على الأقل من النموذج للاستيراد',
   'Ignore column': 'تجاهل العمود',
   'repeating': 'متكرر',
   'Repetition': 'التكرار',
