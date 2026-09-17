@@ -77,7 +77,6 @@ export const PRT: Translation = {
   'mapped': 'mapeadas',
   'ignored': 'ignoradas',
   'Search columns…': 'Pesquisar colunas…',
-  'Auto-match': 'Correspondência automática',
   'File column': 'Coluna do arquivo',
   'Form field': 'Campo do formulário',
   'Status': 'Status',
@@ -114,6 +113,9 @@ export const PRT: Translation = {
   'File not imported! Could not read the file.':
     'Arquivo não importado! Não foi possível ler o arquivo.',
   'missing required fields: {{fields}}': 'faltam campos obrigatórios: {{fields}}',
+  'Re-match all': 'Reassociar tudo',
+  'Reset all the columns and match them again':
+    'Redefine todas as colunas e as reassocia automaticamente',
   'Ignore column': 'Ignorar coluna',
   'repeating': 'repetido',
   'Repetition': 'Repetição',

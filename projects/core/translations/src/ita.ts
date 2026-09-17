@@ -77,7 +77,6 @@ export const ITA: Translation = {
   'mapped': 'associate',
   'ignored': 'ignorate',
   'Search columns…': 'Cerca colonne…',
-  'Auto-match': 'Associa automaticamente',
   'File column': 'Colonna del file',
   'Form field': 'Campo del modulo',
   'Status': 'Stato',
@@ -113,6 +112,9 @@ export const ITA: Translation = {
   'Field mapped to more than one column': 'Campo associato a più di una colonna',
   'File not imported! Could not read the file.': 'File non importato! Impossibile leggere il file.',
   'missing required fields: {{fields}}': 'campi obbligatori mancanti: {{fields}}',
+  'Re-match all': 'Riassocia tutto',
+  'Reset all the columns and match them again':
+    'Reimposta tutte le colonne e le riassocia automaticamente',
   'Ignore column': 'Ignora colonna',
   'repeating': 'ripetuto',
   'Repetition': 'Ripetizione',

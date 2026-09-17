@@ -77,7 +77,6 @@ export const ESP: Translation = {
   'mapped': 'asignadas',
   'ignored': 'ignoradas',
   'Search columns…': 'Buscar columnas…',
-  'Auto-match': 'Asociación automática',
   'File column': 'Columna del archivo',
   'Form field': 'Campo del formulario',
   'Status': 'Estado',
@@ -115,6 +114,9 @@ export const ESP: Translation = {
   'File not imported! Could not read the file.':
     '¡Archivo no importado! No se ha podido leer el archivo.',
   'missing required fields: {{fields}}': 'faltan campos obligatorios: {{fields}}',
+  'Re-match all': 'Reasociar todo',
+  'Reset all the columns and match them again':
+    'Restablece todas las columnas y las vuelve a asociar automáticamente',
   'Ignore column': 'Ignorar columna',
   'repeating': 'repetido',
   'Repetition': 'Repetición',
