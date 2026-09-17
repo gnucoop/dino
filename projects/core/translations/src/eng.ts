@@ -23,7 +23,8 @@ import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ENG: Translation = {
   'New translation': 'New translation',
-  'Define the key and, if you want, translate it right away. You can complete the other languages later.': 'Define the key and, if you want, translate it right away. You can complete the other languages later.',
+  'Define the key and, if you want, translate it right away. You can complete the other languages later.':
+    'Define the key and, if you want, translate it right away. You can complete the other languages later.',
   'mandatory': 'mandatory',
   'Key example placeholder': 'e.g. A filter on field "" already exists.',
   'Use': 'Use',
@@ -33,9 +34,11 @@ export const ENG: Translation = {
   'Source text': 'Source text',
   'Translation {{language}}…': 'Translation {{language}}…',
   'Save translation': 'Save translation',
-  'The languages left empty stay marked as missing.': 'The languages left empty stay marked as missing.',
+  'The languages left empty stay marked as missing.':
+    'The languages left empty stay marked as missing.',
   'All languages': 'All languages',
-  'Review, import and export the whole dictionary of a language.': 'Review, import and export the whole dictionary of a language.',
+  'Review, import and export the whole dictionary of a language.':
+    'Review, import and export the whole dictionary of a language.',
   'Available languages': 'Languages',
   'Search language…': 'Search language…',
   'Search in file…': 'Search in file…',
@@ -45,7 +48,8 @@ export const ENG: Translation = {
   'Invalid JSON': 'Invalid JSON',
   'Import file': 'Import file',
   'values present': 'values present',
-  'Read-only preview. Single translations are edited from the Translations page.': 'Read-only preview. Single translations are edited from the Translations page.',
+  'Read-only preview. Single translations are edited from the Translations page.':
+    'Read-only preview. Single translations are edited from the Translations page.',
   'Translations': 'Translations',
   'keys': 'keys',
   'complete': 'complete',
@@ -230,8 +234,10 @@ export const ENG: Translation = {
   'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
     'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard',
   'Choose your Action': 'Choose your Action',
-  'Some files were stored locally due to a temporary network problem. Click to sync these files.': 'Some files were stored locally due to a temporary network problem. Click to sync these files.',
-  'Some files could not be uploaded. Please retry.': 'Some files could not be uploaded. Please retry.',
+  'Some files were stored locally due to a temporary network problem. Click to sync these files.':
+    'Some files were stored locally due to a temporary network problem. Click to sync these files.',
+  'Some files could not be uploaded. Please retry.':
+    'Some files could not be uploaded. Please retry.',
   'Close': 'Close',
   'CLOSE': 'CLOSE',
   'Close the dialog and apply filters.': 'Close the dialog and apply filters.',
@@ -271,7 +277,8 @@ export const ENG: Translation = {
   'Do you want to': 'Do you want to',
   'Docx': 'Export Docx',
   'Document saved': 'Document saved',
-  'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.': 'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.',
+  'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.':
+    'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.',
   "Don't import metrics if name exists": "Don't import metrics if name exists",
   'Donors': 'Donors',
   'Download': 'Download',
@@ -312,7 +319,8 @@ export const ENG: Translation = {
   'File not imported! Error on import metrics.': 'File not imported! Error on import metrics.',
   'File not imported! Errors in metrics with parents.':
     'File not imported! Errors in metrics with parents.',
-  'File not imported! This metrics are mandatory': 'File not imported! This metrics are mandatory',
+  'File not imported! These metrics are mandatory':
+    'File not imported! These metrics are mandatory',
   'File not imported: no valid metrics to import found in the file.':
     'File not imported: no valid metrics to import found in the file.',
   'File not imported: only users with the admin role can import metrics.':
@@ -366,7 +374,8 @@ export const ENG: Translation = {
   'Incorrect email and/or password': 'Incorrect email and/or password',
   'Incorrect password': 'Incorrect password',
   'Initializing data': 'Initializing data',
-  'Insert a formula to filter metrics, using metric fields or attributes': 'Insert a formula to filter metrics, using metric fields or attributes. Use: attribute = \'val\' or attribute != true or attribute = false or date_start >= \'2024-04-2\'',
+  'Insert a formula to filter metrics, using metric fields or attributes':
+    "Insert a formula to filter metrics, using metric fields or attributes. Use: attribute = 'val' or attribute != true or attribute = false or date_start >= '2024-04-2'",
   'Invalid API Key': 'Invalid API Key',
   'Invalid email and/or password': 'Invalid email and/or password',
   'Invalid metrics': 'Invalid metrics',

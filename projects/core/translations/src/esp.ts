@@ -23,7 +23,8 @@ import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ESP: Translation = {
   'New translation': 'Nueva traducción',
-  'Define the key and, if you want, translate it right away. You can complete the other languages later.': 'Define la clave y, si quieres, tradúcela ahora. Puedes completar los demás idiomas más tarde.',
+  'Define the key and, if you want, translate it right away. You can complete the other languages later.':
+    'Define la clave y, si quieres, tradúcela ahora. Puedes completar los demás idiomas más tarde.',
   'mandatory': 'obligatoria',
   'Key example placeholder': 'p. ej. A filter on field "" already exists.',
   'Use': 'Usa',
@@ -33,9 +34,11 @@ export const ESP: Translation = {
   'Source text': 'Texto de origen',
   'Translation {{language}}…': 'Traducción {{language}}…',
   'Save translation': 'Guardar traducción',
-  'The languages left empty stay marked as missing.': 'Los idiomas que dejes vacíos quedan marcados como faltantes.',
+  'The languages left empty stay marked as missing.':
+    'Los idiomas que dejes vacíos quedan marcados como faltantes.',
   'All languages': 'Todos los idiomas',
-  'Review, import and export the whole dictionary of a language.': 'Revisa, importa y exporta el diccionario completo de un idioma.',
+  'Review, import and export the whole dictionary of a language.':
+    'Revisa, importa y exporta el diccionario completo de un idioma.',
   'Available languages': 'Idiomas',
   'Search language…': 'Buscar idioma…',
   'Search in file…': 'Buscar en el archivo…',
@@ -45,7 +48,8 @@ export const ESP: Translation = {
   'Invalid JSON': 'JSON no válido',
   'Import file': 'Importar archivo',
   'values present': 'valores presentes',
-  'Read-only preview. Single translations are edited from the Translations page.': 'Vista previa de solo lectura. Las traducciones se editan desde la página Traducciones.',
+  'Read-only preview. Single translations are edited from the Translations page.':
+    'Vista previa de solo lectura. Las traducciones se editan desde la página Traducciones.',
   'Translations': 'Traducciones',
   'keys': 'claves',
   'complete': 'completo',
@@ -88,8 +92,7 @@ export const ESP: Translation = {
   'Ignore': 'Ignorar',
   'Restore': 'Restaurar',
   'Apply import': 'Aplicar importación',
-  'Reuse existing metrics with the same name':
-    'Reutilizar métricas existentes con el mismo nombre',
+  'Reuse existing metrics with the same name': 'Reutilizar métricas existentes con el mismo nombre',
   'No fields found': 'No se encontraron campos',
   'Result': 'Resultado',
   'Rows imported': 'Filas importadas',
@@ -228,8 +231,10 @@ export const ESP: Translation = {
   'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
     'Elija las métricas a las que se referirá la Url del formulario público, si las hay, y luego copie la Url en su memoria',
   'Choose your Action': 'Elija su acción',
-  'Some files were stored locally due to a temporary network problem. Click to sync these files.': 'Algunos archivos se almacenaron localmente debido a un problema de red temporal. Haz clic para sincronizarlos.',
-  'Some files could not be uploaded. Please retry.': 'Algunos archivos no se pudieron subir. Por favor, inténtalo de nuevo.',
+  'Some files were stored locally due to a temporary network problem. Click to sync these files.':
+    'Algunos archivos se almacenaron localmente debido a un problema de red temporal. Haz clic para sincronizarlos.',
+  'Some files could not be uploaded. Please retry.':
+    'Algunos archivos no se pudieron subir. Por favor, inténtalo de nuevo.',
   'Close': 'Cerrar',
   'CLOSE': 'CERRAR',
   'Close the dialog and apply filters.': 'Cierra el cuadro de diálogo y aplica algunos filtros.',
@@ -244,7 +249,8 @@ export const ESP: Translation = {
   'Confirm Password': 'confirmar Contraseña',
   'Coordinates': 'Coordenadas',
   'Copy to Clipboard': 'Copia en memoria',
-  'Could not save the form. Please retry.': 'No se pudo guardar el formulario. Por favor, inténtalo de nuevo.',
+  'Could not save the form. Please retry.':
+    'No se pudo guardar el formulario. Por favor, inténtalo de nuevo.',
   'Create': 'Crear',
   'Create Filter': 'Crear Filtro',
   'Create Form': 'Crear formulario',
@@ -268,7 +274,8 @@ export const ESP: Translation = {
   'Do you want to': 'Quieres',
   'Docx': 'Exportar Docx',
   'Document saved': 'Documento guardado',
-  'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.': 'Documento guardado. Algunos archivos se almacenaron localmente debido a un problema de red temporal. Puedes sincronizarlos más tarde haciendo clic en el icono de carga.',
+  'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.':
+    'Documento guardado. Algunos archivos se almacenaron localmente debido a un problema de red temporal. Puedes sincronizarlos más tarde haciendo clic en el icono de carga.',
   "Don't import metrics if name exists": 'No hay métricas de importación si el nombre existe',
   'Donors': 'Donantes',
   'Download': 'Descargar',
@@ -312,7 +319,7 @@ export const ESP: Translation = {
     'Archivo no importado! Error en las métricas de importación.',
   'File not imported! Errors in metrics with parents.':
     'Archivo no importado! Errores en métricas con los padres.',
-  'File not imported! This metrics are mandatory':
+  'File not imported! These metrics are mandatory':
     'Archivo no importado! Estas métricas son obligatorias',
   'File not imported: no valid metrics to import found in the file.':
     'Archivo no importado: no hay métricas válidas para importar encontradas en el archivo.',
@@ -367,7 +374,8 @@ export const ESP: Translation = {
   'Incorrect email and/or password': 'Correo electrónico y/o contraseña incorrectos',
   'Incorrect password': 'Contraseña incorrecta',
   'Initializing data': 'Inicialización de datos',
-  'Insert a formula to filter metrics, using metric fields or attributes': 'Inserte una fórmula para filtrar métricas, utilizando campos o atributos de métricas. Use: attribute = \'val\' o attribute != true o attribute = false o date_start >= \'2024-04-2\'',
+  'Insert a formula to filter metrics, using metric fields or attributes':
+    "Inserte una fórmula para filtrar métricas, utilizando campos o atributos de métricas. Use: attribute = 'val' o attribute != true o attribute = false o date_start >= '2024-04-2'",
   'Invalid API Key': 'Clave de API no válida',
   'Invalid email and/or password': 'Correo electrónico y/o contraseña no válidos',
   'Invalid metrics': 'Métricas no válidas',
