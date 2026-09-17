@@ -98,7 +98,6 @@ export const UKR: Translation = {
   'mapped': 'зіставлено',
   'ignored': 'проігноровано',
   'Search columns…': 'Пошук стовпців…',
-  'Auto-match': 'Автозіставлення',
   'File column': 'Стовпець файлу',
   'Form field': 'Поле форми',
   'Select field…': 'Виберіть поле…',
@@ -134,6 +133,9 @@ export const UKR: Translation = {
   'Field mapped to more than one column': 'Поле зіставлено з більш ніж одним стовпцем',
   'File not imported! Could not read the file.': 'Файл не імпортовано! Не вдалося прочитати файл.',
   'missing required fields: {{fields}}': 'бракує обов’язкових полів: {{fields}}',
+  'Re-match all': 'Зіставити все заново',
+  'Reset all the columns and match them again':
+    'Скидає всі стовпці та зіставляє їх автоматично заново',
   'Ignore column': 'Ігнорувати стовпець',
   'repeating': 'повторюваний',
   'Repetition': 'Повторення',
