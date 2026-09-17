@@ -110,6 +110,21 @@ export interface ColumnMapping {
 }
 
 /**
+ * One entry of a result group: the file row it comes from, when known, and its text
+ */
+export interface ImportIssue {
+  /**
+   * The row number in the imported file, when the entry belongs to one
+   */
+  row?: number;
+
+  /**
+   * The entry text: a reason, an identifier or a metric name
+   */
+  text: string;
+}
+
+/**
  * A group of related warnings shown in the import result step
  */
 export interface ImportWarning {
@@ -124,9 +139,44 @@ export interface ImportWarning {
   count: number;
 
   /**
-   * The warnings to be listed
+   * The warnings to be listed, capped
    */
-  items: string[];
+  items: ImportIssue[];
+
+  /**
+   * How the group is rendered: one row per file row, or a grid of identifiers
+   */
+  kind: 'rows' | 'values';
+}
+
+/**
+ * Why a metric could not be created, by metric type and metric name
+ */
+export type MetricFailures = {[metricType: string]: {[metricName: string]: string}};
+
+/**
+ * The counters shown at the top of the import result step
+ */
+export interface ImportCounts {
+  /**
+   * The data rows of the file, the label header row excluded
+   */
+  fileRows: number;
+
+  /**
+   * The form data actually saved
+   */
+  imported: number;
+
+  /**
+   * The data rows that did not make it
+   */
+  rejected: number;
+
+  /**
+   * The metrics created, all types and all tree levels
+   */
+  metricsCreated: number;
 }
 
 /**
@@ -147,6 +197,16 @@ export interface ImportOutcome {
    * The headline message
    */
   message: string;
+
+  /**
+   * The explanation shown under the counters
+   */
+  detail?: string;
+
+  /**
+   * How many rows and metrics the import dealt with
+   */
+  counts: ImportCounts;
 
   /**
    * What could not be imported
@@ -240,10 +300,21 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   step: 1 | 2 | 3 = 1;
 
   /**
-   * The outcome of the import, shown in the last step. Null until the import ends
-   * with something the user has to read.
+   * The outcome of the import, shown in the last step. Null until the import ends.
    */
   outcome: ImportOutcome | null = null;
+
+  /**
+   * Live search filter applied to the rows listed in the result step.
+   */
+  issueSearch = '';
+
+  /**
+   * The counters of the running import, filled in as the pipeline progresses and
+   * snapshotted into the outcome. Kept on the component so that an import failing
+   * early still reports the numbers it already knows.
+   */
+  private _counts: Omit<ImportCounts, 'rejected'> = {fileRows: 0, imported: 0, metricsCreated: 0};
 
   /**
    * The name of the selected file, shown in the upload success chip.
@@ -478,6 +549,19 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   }
 
   // ---- Wizard navigation & derived view data --------------------------------
+
+  /**
+   * The subtitle shown under the page title: what to do in the current step, or
+   * the name of the imported file once the wizard shows the result.
+   */
+  get stepSubtitle(): string {
+    if (this.step === 3) {
+      return this.fileName;
+    }
+    return this.step === 2
+      ? this._ts.translate('Match the columns in your file to the fields of the form.')
+      : this._ts.translate('Choose the file with the data to be imported.');
+  }
 
   /**
    * Navigates to a wizard step. Step 2 is reachable only once a file has been
@@ -773,6 +857,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     msg: string,
     warnings: ImportWarning[] = [],
     status: ImportOutcomeStatus = 'error',
+    detail: string = '',
   ): void {
     this.importStatus = msg;
     // The empty (clearing) message and the in-progress "Importing file..."
@@ -785,22 +870,74 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     this._processing = false;
     // Every outcome is shown in the result step, and the wizard is left by hand:
     // a snackbar would disappear while the page navigates away.
-    this.outcome = {status, message: msg, warnings};
+    this.outcome = {
+      status,
+      message: msg,
+      detail: detail.length ? detail : undefined,
+      // Whatever did not make it was rejected, however early the import stopped
+      counts: {...this._counts, rejected: this._counts.fileRows - this._counts.imported},
+      warnings,
+    };
     this.step = 3;
     this._cdr.markForCheck();
   }
 
   /**
-   * Cap a warning list, so that a file failing on thousands of rows does not
-   * flood the result step.
-   * @param items The warnings to be listed
-   * @param max The maximum number of items to be listed
-   * @returns The capped list
+   * Build a result group, capping the listed entries so that a file failing on
+   * thousands of rows does not flood the result step. The count always reports
+   * the real total, so the template can show how many entries are not listed.
+   * @param label The localized group label
+   * @param items The entries of the group
+   * @param kind How the group is rendered
+   * @param max The maximum number of entries to be listed
+   * @returns The group
    */
-  private _cappedItems(items: string[], max: number = 50): string[] {
-    return items.length > max
-      ? [...items.slice(0, max), `${this._ts.translate('and more')}...`]
-      : items;
+  private _warningGroup(
+    label: string,
+    items: ImportIssue[],
+    kind: 'rows' | 'values',
+    max: number = kind === 'rows' ? 50 : 10,
+  ): ImportWarning {
+    return {label, count: items.length, items: items.slice(0, max), kind};
+  }
+
+  /**
+   * The sentence about the rows the database refused. Only those are worth a
+   * sentence: they cannot be traced back to a file row, so they are the one
+   * thing the counters and the table of rejected rows do not already say.
+   * @param refused How many rows the database refused
+   * @returns The localized sentence, empty when the database refused nothing
+   */
+  private _refusedDetail(refused: number): string {
+    return refused
+      ? this._ts.translate('{{n}} rows not imported: refused on save', {n: refused})
+      : '';
+  }
+
+  /**
+   * The entries of a group that are not listed because of the cap.
+   * @param warning The result group
+   * @returns How many entries are hidden
+   */
+  hiddenItems(warning: ImportWarning): number {
+    return warning.count - warning.items.length;
+  }
+
+  /**
+   * The rows of a group matching the result step search filter.
+   * @param warning The result group
+   * @returns The entries to be listed
+   */
+  filteredItems(warning: ImportWarning): ImportIssue[] {
+    const search = this.issueSearch.trim().toLowerCase();
+    if (!search) {
+      return warning.items;
+    }
+    return warning.items.filter(
+      item =>
+        item.text.toLowerCase().includes(search) ||
+        (item.row != null && `${item.row}`.includes(search)),
+    );
   }
 
   /**
@@ -898,6 +1035,8 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     this._fieldLabels = {};
     this._schemaMetrics = null;
     this.outcome = null;
+    this.issueSearch = '';
+    this._counts = {fileRows: 0, imported: 0, metricsCreated: 0};
     this.fieldFilterCtrl.setValue('');
     this.search = '';
     this.duplicateFields = [];
@@ -1242,7 +1381,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
    * @param userDataId the logged user data id
    * @param metricsIdByName
    * @param statusDictionary all available status for the schema
-   * @param warnings what could not be imported, shown in the result step
+   * @param failedByType why each metric could not be created, by type and name
    */
   private _importFormData(
     rows: {[key: string]: any}[],
@@ -1251,12 +1390,12 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     isAdmin: boolean,
     metricsIdByName: {[key: string]: {[key: string]: any}} | null,
     statuses: FormStatus[],
-    warnings: ImportWarning[] = [],
+    failedByType: MetricFailures = {},
   ): void {
     const forms: InsertModel<FormData>[] = [];
     // The rows naming a metric that could not be created nor linked: they are
     // not imported, so that no form data is saved with an empty metric
-    const skippedRows: string[] = [];
+    const skippedRows: ImportIssue[] = [];
     const createdAtKey = 'created_at';
     const userDataKey = 'user_data_ref_id';
 
@@ -1320,7 +1459,10 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
             // The row asked for a metric by name and it could not be created:
             // importing it with an empty metric would silently lose the value
             if (newItem[metric + '_ref_id'] === null && hasMetricName) {
-              unlinkedMetrics.push(`${metric} "${metricName}"`);
+              const reason =
+                failedByType[metric]?.[metricName as string] ??
+                this._ts.translate('metric not created');
+              unlinkedMetrics.push(`${metric} "${metricName}": ${reason}`);
             }
           } else {
             newItem[metric + '_ref_id'] = null;
@@ -1328,26 +1470,23 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
         });
         if (unlinkedMetrics.length) {
           // The header row is the first one of the file, so the imported rows start at 2
-          skippedRows.push(`${rowIdx + 2}: ${unlinkedMetrics.join(', ')}`);
+          skippedRows.push({row: rowIdx + 2, text: unlinkedMetrics.join(', ')});
           return;
         }
         forms.push(newItem as InsertModel<FormData>);
       }
     });
 
+    // Every non label row either became a form or was skipped, so this is the
+    // authoritative row count for this path, whoever called it
+    this._counts.fileRows = forms.length + skippedRows.length;
+
     const allWarnings = skippedRows.length
-      ? [
-          ...warnings,
-          {
-            label: this._ts.translate('Rows not imported, metric not created'),
-            count: skippedRows.length,
-            items: this._cappedItems(skippedRows),
-          },
-        ]
-      : warnings;
+      ? [this._warningGroup(this._ts.translate('Rows not imported'), skippedRows, 'rows')]
+      : [];
 
     if (!forms.length) {
-      this._setImportStatus(this._ts.translate('File not imported!'), allWarnings);
+      this._setImportStatus(this._ts.translate('File not imported!'), allWarnings, 'error');
       return;
     }
 
@@ -1374,10 +1513,14 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
             ? `${bulkRes.success.length}/${totalRows}`
             : `${bulkRes.success.length}`;
           const headline = partial ? 'File partially imported' : 'File imported successfully';
+          this._counts.imported = bulkRes.success.length;
           this._setImportStatus(
             `${this._ts.translate(headline)}: ${created} ${this._ts.translate('forms created')}!`,
             allWarnings,
             partial ? 'partial' : 'success',
+            partial
+              ? this._refusedDetail(forms.length - bulkRes.success.length)
+              : this._ts.translate('All the rows of the file have been saved.'),
           );
         } else {
           let errMsg = 'File not imported! ';
@@ -1390,7 +1533,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
               errMsg = errMsg + JSON.stringify(bulkRes?.error[0].msg?.parameters?.errors[0]);
             }
           }
-          this._setImportStatus(errMsg, allWarnings);
+          this._setImportStatus(errMsg, allWarnings, 'error', this._refusedDetail(forms.length));
         }
       });
   }
@@ -1468,12 +1611,12 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
    * case `code`, project `code_auto`). Nullable "required" props only need the
    * key to exist, so they are not enforced here.
    * @param newMetricsByType the metrics that will actually be created, by type
-   * @returns one error entry per metric missing mandatory fields, empty if valid
+   * @returns the reason, by type and metric name, of every metric that cannot be created
    */
-  private _getMissingRequiredMetricFields(newMetricsByType: {
+  private _getInvalidNewMetrics(newMetricsByType: {
     [key: string]: {[key: string]: any}[];
-  }): string[] {
-    const errors: string[] = [];
+  }): MetricFailures {
+    const failures: MetricFailures = {};
     Object.keys(newMetricsByType).forEach(metricType => {
       const manager = this._metricManagers[metricType];
       const metrics = newMetricsByType[metricType];
@@ -1508,11 +1651,14 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
         });
         if (missing.length) {
           const label = metric['name'] != null && `${metric['name']}`.length ? metric['name'] : '?';
-          errors.push(`${metricType} "${label}" (${missing.join(', ')})`);
+          failures[metricType] = failures[metricType] ?? {};
+          failures[metricType][label] = this._ts.translate('missing required fields: {{fields}}', {
+            fields: missing.join(', '),
+          });
         }
       });
     });
-    return errors;
+    return failures;
   }
 
   /**
@@ -1557,21 +1703,21 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
           // Only the metrics that will actually be created must carry all
           // their required fields: an already existing metric reused by name
           // is filtered out above, so the user does not have to re-enter them.
-          const missingRequired = this._getMissingRequiredMetricFields(newMetricsRequested);
-          if (missingRequired.length) {
-            this._setImportStatus(
-              `${this._ts.translate(
-                'File not imported! Missing required fields for new metrics',
-              )}: ${missingRequired.join('; ')}`,
+          // A metric missing one is not created, like a metric with an
+          // unresolvable parent: the rows naming it are reported one by one and
+          // the rest of the file is imported.
+          const failures = this._getInvalidNewMetrics(newMetricsRequested);
+          Object.keys(failures).forEach(metricType => {
+            newMetricsRequested[metricType] = newMetricsRequested[metricType].filter(
+              metric => failures[metricType][metric['name']] === undefined,
             );
-            return obsOf(null);
-          }
+          });
           const parentPoolByType: {[metricType: string]: any[]} = {};
           Object.keys(lookup).forEach(
             metricType => (parentPoolByType[metricType] = lookup[metricType].parentPool),
           );
           return this._importMetricTrees(newMetricsRequested, parentPoolByType).pipe(
-            map(created => ({created, lookup, requested: newMetricsRequested})),
+            map(created => ({created, lookup, requested: newMetricsRequested, failures})),
           );
         }),
         catchError(err => {
@@ -1592,7 +1738,9 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
         const userDataId = ud ? ud.id : null;
         const metricsError: string[] = [];
         const metricsIdByName: {[key: string]: {[key: string]: string}} = {};
-        const warnings: ImportWarning[] = [];
+        // Why each metric could not be created: a missing required field or an
+        // unresolvable parent. The rows naming them are reported one by one.
+        const failedByType: MetricFailures = deepCopy(r.failures);
 
         // The reused metrics go in first: the created ones must win on a name clash
         const reusedByType: {[metricType: string]: any[]} = {};
@@ -1617,16 +1765,16 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
             metricsError.push(metricType);
             return;
           }
+          this._counts.metricsCreated += res.success.length;
           res.success.forEach(metric =>
             this._addMetricDetails(metricType, metric, metricsIdByName),
           );
-          if (res.deferred.length) {
-            warnings.push({
-              label: `${this._ts.translate('Metrics with invalid parent')} (${metricType})`,
-              count: res.deferred.length,
-              items: this._cappedItems(res.deferred.map(metric => `${metric['name']}`)),
-            });
-          }
+          res.deferred.forEach(metric => {
+            failedByType[metricType] = failedByType[metricType] ?? {};
+            failedByType[metricType][`${metric['name']}`] = this._ts.translate(
+              'metric with invalid parent',
+            );
+          });
         });
 
         if (metricsError.length) {
@@ -1644,7 +1792,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
           isAdminUser,
           metricsIdByName,
           statuses,
-          warnings,
+          failedByType,
         );
       });
   }
@@ -1677,63 +1825,44 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     requiredFormStatusNames: string[],
     allSchemaStatus: FormStatus[],
   ): boolean {
-    let idsNotMatch = false;
-    let idsNotMatchMessage = '';
-    const maxIdsInResponse = 5;
+    const warnings: ImportWarning[] = [];
+    const asIssues = (values: string[]): ImportIssue[] => values.map(value => ({text: value}));
 
-    if (requiredUserIds.length) {
-      if (existingUsers == null || existingUsers.length != requiredUserIds.length) {
-        idsNotMatch = true;
-        const existingUserIds = existingUsers.map(u => u.id);
-        let missingUserIds = requiredUserIds
-          .filter(id => !existingUserIds.includes(id))
-          .map(i => '\n' + i);
-        console.log('File not imported! These user ids not exist:' + missingUserIds);
-        if (missingUserIds.length > maxIdsInResponse) {
-          missingUserIds = missingUserIds.slice(0, maxIdsInResponse);
-          missingUserIds.push(`\n${this._ts.translate('and more')}...`);
-        }
-        idsNotMatchMessage = `\n${this._ts.translate(
-          'Check that these user ids exist',
-        )}: ${missingUserIds}`;
+    if (requiredUserIds.length && existingUsers != null) {
+      const existingUserIds = existingUsers.map(u => u.id);
+      const missingUserIds = requiredUserIds.filter(id => !existingUserIds.includes(id));
+      if (missingUserIds.length) {
+        warnings.push(
+          this._warningGroup(
+            this._ts.translate('Invalid user ids'),
+            asIssues(missingUserIds),
+            'values',
+          ),
+        );
       }
     }
 
-    if (Object.keys(requiredMetricIdsByType).length) {
-      Object.keys(requiredMetricIdsByType).forEach(reqMetricType => {
-        if (requiredMetricIdsByType[reqMetricType].length) {
-          const existingMetrics = existingMetricsByType
-            ? existingMetricsByType.find(metricsByType => {
-                if (metricsByType.length) {
-                  return metricsByType[0].collection.name === reqMetricType;
-                }
-                return false;
-              })
-            : [];
-          if (
-            existingMetrics == undefined ||
-            existingMetrics.length != requiredMetricIdsByType[reqMetricType].length
-          ) {
-            idsNotMatch = true;
-            const existingMetricIds = existingMetrics ? existingMetrics.map(u => u.id) : [];
-            let missingMetricIds = requiredMetricIdsByType[reqMetricType]
-              .filter(id => !existingMetricIds.includes(id))
-              .map(i => '\n' + i);
-            console.log(
-              'File not imported! These ' + reqMetricType + ' ids not exist:' + missingMetricIds,
-            );
-            if (missingMetricIds.length > maxIdsInResponse) {
-              missingMetricIds = missingMetricIds.slice(0, maxIdsInResponse);
-              missingMetricIds.push(`\n${this._ts.translate('and more')}...`);
-            }
-            idsNotMatchMessage = `
-              ${idsNotMatchMessage} \n${this._ts.translate(
-              'Check that these metric ids exist for',
-            )} ${reqMetricType}: ${missingMetricIds}`;
-          }
-        }
-      });
-    }
+    Object.keys(requiredMetricIdsByType).forEach(metricType => {
+      const requiredIds = requiredMetricIdsByType[metricType];
+      if (!requiredIds.length) {
+        return;
+      }
+      const existingMetrics =
+        existingMetricsByType?.find(
+          metricsByType => metricsByType.length && metricsByType[0].collection.name === metricType,
+        ) ?? [];
+      const existingMetricIds = existingMetrics.map((m: any) => m.id);
+      const missingMetricIds = requiredIds.filter(id => !existingMetricIds.includes(id));
+      if (missingMetricIds.length) {
+        warnings.push(
+          this._warningGroup(
+            `${this._ts.translate('Invalid metric ids')} (${metricType})`,
+            asIssues(missingMetricIds),
+            'values',
+          ),
+        );
+      }
+    });
 
     if (requiredFormStatusNames.length) {
       const existingFormStatusNames = allSchemaStatus.map(fst => fst.name);
@@ -1741,20 +1870,20 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
         st => !existingFormStatusNames.includes(st),
       );
       if (missingStatus.length) {
-        idsNotMatch = true;
-        let missingStatusNames = missingStatus.map(i => '\n' + i);
-        console.log('File not imported! These form status names not exist:' + missingStatusNames);
-
-        idsNotMatchMessage = `\n${this._ts.translate(
-          'Check that these form status names exist',
-        )}: ${missingStatusNames}`;
+        warnings.push(
+          this._warningGroup(
+            this._ts.translate('Invalid form status'),
+            asIssues(missingStatus),
+            'values',
+          ),
+        );
       }
     }
 
-    if (idsNotMatch) {
-      this._setImportStatus(`${this._ts.translate('File not imported')}! ${idsNotMatchMessage}`);
+    if (warnings.length) {
+      this._setImportStatus(this._ts.translate('File not imported!'), warnings, 'error');
     }
-    return idsNotMatch;
+    return warnings.length > 0;
   }
 
   /**
@@ -1771,6 +1900,8 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     this._fieldLabels = {};
     this._schemaMetrics = null;
     this.outcome = null;
+    this.issueSearch = '';
+    this._counts = {fileRows: 0, imported: 0, metricsCreated: 0};
     this.duplicateFields = [];
     this._setImportStatus('');
     const fileReader = new FileReader();
@@ -1941,6 +2072,8 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     let requiredFormStatusNames = this._allValuesForKey(data, 'form_status_name');
     let requiredUserIds = this._allValuesForKey(data, 'user_data_ref_id');
     const activeMetrics = this._activeMetrics;
+    // The label header row of a dino export is not a data row
+    this._counts.fileRows = data.filter(row => !this._isLabelHeader(row)).length;
     const metricsInfo = this._getMetricsToBeCreated(data, activeMetrics);
     const {requiredMetricIdsByType, missingMetrics} = metricsInfo;
     let queryRequiredUsers: Observable<RxDocument<UserData>[]> = requiredUserIds.length
