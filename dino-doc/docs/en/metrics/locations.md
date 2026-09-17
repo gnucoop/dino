@@ -13,7 +13,7 @@ The **Locations** page lets you manage the geographic locations referenced by yo
 
 - **Breadcrumbs** – shows your current position in the navigation.
 - **Search & Filters** – keyword search, date range picker, and configurable advanced filters (e.g., by metric, status, user). You can also save and load filter presets.
-- **Table** – displays Location Name and Parent Location by default. Hidden columns (ID, Creation Date, Coordinates, Additional Attributes) can be shown via the **Customize columns** button (bottom right of the table header).
+- **Table** – displays Location Name and Parent Location by default. Hidden columns (ID, Creation Date, Coordinates, Additional Attributes) can be shown via the **View columns** button (bottom right of the table header).
 - **Pagination** – controls for navigating through pages.
 - **Bulk actions** – select rows using checkboxes to delete or edit multiple locations at once.
 - **Floating action buttons** – **Add New** (plus icon) and **Import** (cloud upload icon) remain available as you scroll.
@@ -64,6 +64,10 @@ Clicking a row selects it (highlights) and, if the list is expandable, reveals a
 2. Choose the export format (CSV or Excel).
 3. The file downloads automatically.
 
+### Location coordinates
+
+If you set the attribute "coordinates" of a specific location value, the information will be used to visualize your form data on a [map](../forms/forms-map.md).
+
 ## Related pages
 
 - [Metrics Overview](index.md) – return to the metrics home.
@@ -71,5 +75,3 @@ Clicking a row selects it (highlights) and, if the list is expandable, reveals a
 - [Organizations](organizations.md) – manage organizations tied to locations.
 - [Projects](projects.md) – view projects associated with locations.
 
-!!! warning "Deleting a location"
-    Deleting a location may affect forms and cases that reference it. Ensure no active records rely on the location before removing it.

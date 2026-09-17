@@ -68,7 +68,11 @@ if (!ANTHROPIC_AUTH_TOKEN) {
 
 const ANTHROPIC_BASE_URL = process.env.ANTHROPIC_BASE_URL || undefined;
 const CLAUDE_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
-const MAX_TOKENS = 4096;
+// Sized so a whole page fits in a single response. A translation costs
+// noticeably more tokens than its English source — non-Latin scripts (uk, ar)
+// worst of all — so a cap tuned to the English length truncates every large
+// page. 16k stays well under the HTTP timeout for non-streaming requests.
+const MAX_TOKENS = 16000;
 // A single response can hit the MAX_TOKENS cap and stop mid-document. We resume
 // via continuation turns; this bounds how many times, so a page that keeps
 // truncating fails loudly instead of looping forever.
@@ -185,6 +189,7 @@ Rules:
 - Do NOT translate: file paths, URLs, image references (![...](path)), code snippets, the word "Dino".
 - Keep admonition keywords in English (!!! tip, !!! warning, !!! note) but translate the admonition title text and body.
 - Keep relative markdown link paths unchanged but translate the link display text.
+- Same-page anchor links are the ONE exception to leaving link targets alone. An anchor like ](#user-area) points at a heading on this page, and the heading id is derived from the heading text — which you are translating — so the anchor must be translated in step with it, or the link breaks. Build it from the translated heading: lowercase it and replace each space with a hyphen, keeping the original letters (do not transliterate to ASCII). If "## User Area" becomes "## Area utente", then ](#user-area) becomes ](#area-utente). If the translated heading is identical to the English one, leave the anchor as it is. This applies ONLY to targets starting with "#" — file paths in link targets stay untouched.
 - Terminology glossary (translate these terms consistently, including in headings, titles and frontmatter values):
   - Italian: always translate "location" / "locations" as "posizione" / "posizioni" — never "sede" / "sedi".
 - Output ONLY the translated Markdown content, no code fences or explanations.

@@ -42,7 +42,7 @@ On large screens the menu is always visible on the left. On smaller screens it c
 The toolbar at the top of the screen contains the following controls, from left to right:
 
 - **Menu toggle** — open or collapse the side menu.
-- **Logo** — displays your organisation's logo.
+- **Logo** — displays your organisation's or Dino's logo.
 - **New version indicator** — a download icon appears when a new version of Dino is available. Click it to reload the application and apply the update.
 - **DINO-AI Credits** — shows your remaining AI credit balance as a badge. Click to open the [User Area](#user-area) on the Credits panel. *(Only visible if a DINO-AI API key has been configured.)*
 - **Dark / Light mode toggle** — a sun icon, a slider, and a moon icon. Use the slider to switch between light and dark themes. *(Hidden on mobile — use the User Area instead.)*

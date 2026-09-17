@@ -31,3 +31,10 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+  # The default toc slugify strips non-ASCII, so Cyrillic and Arabic headings
+  # collapse to positional ids (_2, _3, ...) — unusable as permalinks and
+  # unstable, since they shift when a heading is added. This one keeps unicode.
+  - toc:
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
