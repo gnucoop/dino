@@ -103,8 +103,13 @@
               <mat-icon>search</mat-icon>
               <input [(ngModel)]="search" [placeholder]="'Search columns…' | transloco" />
             </div>
-            <button type="button" class="dino-imp-automatch" (click)="autoMatch()">
-              <mat-icon>auto_fix_high</mat-icon>{{ 'Auto-match' | transloco }}
+            <button
+              type="button"
+              class="dino-imp-automatch"
+              [matTooltip]="'Reset all the columns and match them again' | transloco"
+              (click)="autoMatch()"
+            >
+              <mat-icon>auto_fix_high</mat-icon>{{ 'Re-match all' | transloco }}
             </button>
           </div>
         </div>

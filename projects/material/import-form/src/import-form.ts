@@ -656,11 +656,16 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   }
 
   /**
-   * Guesses a target field for every still-unmapped, non-ignored column by a
-   * case-insensitive substring match between the file column name and each
-   * field name or its label, then assigns it.
+   * Starts the column mapping over from the automatic proposal: every column is
+   * rebuilt as it was right after the file was read, which also restores the
+   * repeating-slide columns written as `field__<index>`, and the columns still
+   * uncovered are then guessed by name or label. Any manual choice is discarded.
    */
   autoMatch(): void {
+    this.columnMappings = this.columnMappings.map(mapping =>
+      this._buildColumnMapping(mapping.column),
+    );
+    this.openedMapping = null;
     const normalize = (value: string): string =>
       value
         .toLowerCase()
@@ -694,6 +699,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
         }
       }
     });
+    this._updateDuplicateFields();
     this._cdr.markForCheck();
   }
 
