@@ -98,6 +98,9 @@
               >{{ summary.ignored }} {{ 'ignored' | transloco }}</span
             >
           </div>
+          <span class="dino-imp-apply-hint" *ngIf="applyHint">
+            <mat-icon>warning</mat-icon>{{ applyHint }}
+          </span>
           <div class="dino-imp-toolbar-right">
             <div class="dino-imp-search">
               <mat-icon>search</mat-icon>
@@ -308,7 +311,7 @@
         class="dino-imp-apply"
         mat-raised-button
         color="primary"
-        [disabled]="step !== 2 || processing || duplicateFields.length > 0"
+        [disabled]="step !== 2 || processing || !canApply"
         (click)="apply()"
       >
         {{ 'Apply import' | transloco }}

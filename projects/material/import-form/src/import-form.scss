@@ -290,6 +290,22 @@ dino-import-form {
     color: #64748b;
   }
 
+  .dino-imp-apply-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--imp-warn-fg);
+
+    .mat-icon {
+      flex: none;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
   .dino-imp-toolbar-right {
     margin-left: auto;
     display: flex;

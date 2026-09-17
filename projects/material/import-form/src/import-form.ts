@@ -375,6 +375,12 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   private _fieldLabels: {[fieldName: string]: string} = {};
 
   /**
+   * The mapping targets contributed by each metric type, used to tell a form
+   * schema field from a metric one.
+   */
+  private _metricFields: {[metric: string]: string[]} = {};
+
+  /**
    * The metric types allowed by the form schema. Null until a file has been read.
    */
   private _schemaMetrics: string[] | null = null;
@@ -1013,10 +1019,50 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   }
 
   /**
+   * Whether a field belongs to the form schema, as opposed to the Dino columns
+   * and the metric ones: a file mapping only those would create form data with
+   * no answer inside.
+   * @param field The field name
+   * @returns true if the field is a form schema field
+   */
+  private _isSchemaField(field: string): boolean {
+    if (this._importService.dinoImportFields.includes(field)) {
+      return false;
+    }
+    return !Object.keys(this._metricFields).some(metric =>
+      this._metricFields[metric].includes(field),
+    );
+  }
+
+  /**
+   * Whether the import can start: at least one column has to be mapped to a form
+   * schema field, or the file would only create form data with no answer, and no
+   * field can be mapped twice.
+   */
+  get canApply(): boolean {
+    if (this.duplicateFields.length) {
+      return false;
+    }
+    return this.columnMappings.some(
+      mapping => this.isMapped(mapping) && this._isSchemaField(mapping.field as string),
+    );
+  }
+
+  /**
+   * Why the import cannot start yet, shown next to the disabled Apply button.
+   */
+  get applyHint(): string {
+    if (this.duplicateFields.length) {
+      return this._ts.translate('Field mapped to more than one column');
+    }
+    return this.canApply ? '' : this._ts.translate('Map at least one form field to import');
+  }
+
+  /**
    * Start processing the Xlsx file
    */
   apply(): void {
-    if (this._file == null || this.duplicateFields.length > 0) {
+    if (this._file == null || !this.canApply) {
       return;
     }
     this._processing = true;
@@ -1039,6 +1085,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     this._repeatingFields = {};
     this._tableFields = {};
     this._fieldLabels = {};
+    this._metricFields = {};
     this._schemaMetrics = null;
     this.outcome = null;
     this.issueSearch = '';
@@ -1904,6 +1951,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     this.columnMappings = [];
     this.availableFields = [];
     this._fieldLabels = {};
+    this._metricFields = {};
     this._schemaMetrics = null;
     this.outcome = null;
     this.issueSearch = '';
@@ -1940,6 +1988,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
         this._repeatingFields = this._importService.getRepeatingSlideFields(formSchema);
         this._tableFields = this._importService.getTableFields(formSchema);
         this._fieldLabels = this._importService.getFieldLabels(formSchema);
+        this._metricFields = this._importService.getMetricFields(formSchema);
         this.fieldFilterCtrl.setValue('');
         this.columnMappings = columns.map(column => this._buildColumnMapping(column));
         this._updateDuplicateFields();
