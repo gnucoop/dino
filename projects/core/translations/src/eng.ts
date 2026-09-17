@@ -340,7 +340,8 @@ export const ENG: Translation = {
   'File not imported! Error on import metrics.': 'File not imported! Error on import metrics.',
   'File not imported! Errors in metrics with parents.':
     'File not imported! Errors in metrics with parents.',
-  'File not imported! This metrics are mandatory': 'File not imported! This metrics are mandatory',
+  'File not imported! These metrics are mandatory':
+    'File not imported! These metrics are mandatory',
   'File not imported: no valid metrics to import found in the file.':
     'File not imported: no valid metrics to import found in the file.',
   'File not imported: only users with the admin role can import metrics.':
