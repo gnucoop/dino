@@ -265,7 +265,10 @@
           <!-- a grid of identifiers -->
           <div class="dino-imp-table dino-imp-issue-values" *ngIf="warning.kind === 'values'">
             <div class="dino-imp-issue-grid">
-              <div class="dino-imp-col-name" *ngFor="let item of warning.items">
+              <div
+                class="dino-imp-col-name dino-imp-issue-value"
+                *ngFor="let item of warning.items"
+              >
                 {{ item.text }}
               </div>
             </div>
