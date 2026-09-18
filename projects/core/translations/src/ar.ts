@@ -23,7 +23,8 @@ import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const AR: Translation = {
   'New translation': 'ترجمة جديدة',
-  'Define the key and, if you want, translate it right away. You can complete the other languages later.': 'حدّد المفتاح، وإن أردت ترجمه الآن. يمكنك إكمال بقية اللغات لاحقًا.',
+  'Define the key and, if you want, translate it right away. You can complete the other languages later.':
+    'حدّد المفتاح، وإن أردت ترجمه الآن. يمكنك إكمال بقية اللغات لاحقًا.',
   'mandatory': 'إلزامي',
   'Key example placeholder': 'مثال: A filter on field "" already exists.',
   'Use': 'استخدم',
@@ -35,7 +36,8 @@ export const AR: Translation = {
   'Save translation': 'حفظ الترجمة',
   'The languages left empty stay marked as missing.': 'اللغات المتروكة فارغة تبقى معلَّمة كمفقودة.',
   'All languages': 'كل اللغات',
-  'Review, import and export the whole dictionary of a language.': 'راجع القاموس الكامل للغة واستورده وصدّره.',
+  'Review, import and export the whole dictionary of a language.':
+    'راجع القاموس الكامل للغة واستورده وصدّره.',
   'Available languages': 'اللغات',
   'Search language…': 'ابحث عن لغة…',
   'Search in file…': 'ابحث في الملف…',
@@ -44,7 +46,8 @@ export const AR: Translation = {
   'Invalid JSON': 'JSON غير صالح',
   'Import file': 'استيراد ملف',
   'values present': 'قيم موجودة',
-  'Read-only preview. Single translations are edited from the Translations page.': 'معاينة للقراءة فقط. تُعدَّل الترجمات من صفحة الترجمات.',
+  'Read-only preview. Single translations are edited from the Translations page.':
+    'معاينة للقراءة فقط. تُعدَّل الترجمات من صفحة الترجمات.',
   'Translations': 'الترجمات',
   'keys': 'مفاتيح',
   'complete': 'مكتمل',
@@ -63,8 +66,7 @@ export const AR: Translation = {
   'Add translation {{language}}…': 'أضف ترجمة {{language}}…',
   'Select a translation key': 'اختر مفتاح ترجمة',
   'Import form data': 'استيراد بيانات النموذج',
-  'Match the columns in your file to the fields of the form.':
-    'طابق أعمدة ملفك مع حقول النموذج.',
+  'Match the columns in your file to the fields of the form.': 'طابق أعمدة ملفك مع حقول النموذج.',
   'Upload file': 'رفع ملف',
   'Map fields': 'ربط الحقول',
   'Drag & drop your file here': 'اسحب ملفك وأفلته هنا',
@@ -76,7 +78,6 @@ export const AR: Translation = {
   'mapped': 'مرتبطة',
   'ignored': 'متجاهَلة',
   'Search columns…': 'ابحث في الأعمدة…',
-  'Auto-match': 'ربط تلقائي',
   'File column': 'عمود الملف',
   'Form field': 'حقل النموذج',
   'Status': 'الحالة',
@@ -90,6 +91,35 @@ export const AR: Translation = {
   'Apply import': 'تطبيق الاستيراد',
   'Reuse existing metrics with the same name': 'إعادة استخدام المقاييس الموجودة بنفس الاسم',
   'No fields found': 'لم يتم العثور على حقول',
+  'Result': 'النتيجة',
+  'Rows imported': 'الصفوف المستوردة',
+  'Rows rejected': 'الصفوف المرفوضة',
+  'Rows in file': 'الصفوف في الملف',
+  'Metrics created': 'المقاييس المنشأة',
+  'Search by row or error': 'ابحث حسب الصف أو الخطأ',
+  'File row': 'صف الملف',
+  'Error': 'خطأ',
+  'and other {{n}}': 'و{{n}} أخرى',
+  'All the rows of the file have been saved.': 'تم حفظ جميع صفوف الملف.',
+  '{{n}} rows not imported: refused on save': '{{n}} صفوف لم يتم استيرادها: مرفوضة عند الحفظ',
+  'Choose the file with the data to be imported.':
+    'اختر الملف الذي يحتوي على البيانات المراد استيرادها.',
+  'Invalid user ids': 'معرّفات مستخدم غير صالحة',
+  'Invalid metric ids': 'معرّفات مقياس غير صالحة',
+  'Invalid form status': 'حالات غير صالحة',
+  'Rows not imported': 'صفوف لم يتم استيرادها',
+  'metric with invalid parent': 'مقياس بأصل غير صالح',
+  'metric not created': 'لم يتم إنشاء المقياس',
+  'Field mapped to more than one column': 'حقل مرتبط بأكثر من عمود',
+  'File not imported! Could not read the file.': 'لم يتم استيراد الملف! تعذّرت قراءة الملف.',
+  'missing required fields: {{fields}}': 'حقول مطلوبة ناقصة: {{fields}}',
+  'Re-match all': 'إعادة الربط للكل',
+  'Reset all the columns and match them again': 'يعيد ضبط جميع الأعمدة ويربطها تلقائياً من جديد',
+  'Map at least one form field to import': 'اربط حقلاً واحداً على الأقل من النموذج للاستيراد',
+  'metrics created': 'مقاييس تم إنشاؤها',
+  'the name is missing': 'الاسم مفقود',
+  'Ignore column': 'تجاهل العمود',
+  'repeating': 'متكرر',
   'Repetition': 'التكرار',
   'DISMISS': 'إغلاق',
   "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
@@ -168,9 +198,6 @@ export const AR: Translation = {
   'Cases': 'الحالات',
   'Change Password': 'تغيير كلمة المرور',
   'Chat with your data': 'الدردشة مع بياناتك',
-  'Check that these form status names exist': 'تحقق من وجود أسماء حالات النموذج هذه',
-  'Check that these metric ids exist for': 'تحقق من وجود معرفات المقاييس هذه لـ',
-  'Check that these user ids exist': 'تحقق من وجود معرفات المستخدمين هذه',
   'Choose Video source': 'اختر مصدر الفيديو',
   'Choose file': 'اختر ملفاً',
   'Choose the Action you want to perform': 'اختر الإجراء الذي تريد القيام به',
@@ -179,8 +206,10 @@ export const AR: Translation = {
   'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
     'اختر المقاييس التي سيشير إليها رابط النموذج العام، إن وجدت، ثم انسخ الرابط إلى الحافظة',
   'Choose your Action': 'اختر إجراءك',
-  'Some files were stored locally due to a temporary network problem. Click to sync these files.': 'تم تخزين بعض الملفات محلياً بسبب مشكلة مؤقتة في الشبكة. انقر لمزامنة هذه الملفات.',
-  'Some files could not be uploaded. Please retry.': 'تعذر رفع بعض الملفات. يرجى المحاولة مرة أخرى.',
+  'Some files were stored locally due to a temporary network problem. Click to sync these files.':
+    'تم تخزين بعض الملفات محلياً بسبب مشكلة مؤقتة في الشبكة. انقر لمزامنة هذه الملفات.',
+  'Some files could not be uploaded. Please retry.':
+    'تعذر رفع بعض الملفات. يرجى المحاولة مرة أخرى.',
   'Close': 'إغلاق',
   'CLOSE': 'إغلاق',
   'Close the dialog and apply filters.': 'أغلق مربع الحوار وقم بتطبيق عوامل التصفية.',
@@ -220,7 +249,8 @@ export const AR: Translation = {
   'Do you want to': 'هل تريد أن',
   'Docx': 'تصدير Docx',
   'Document saved': 'تم حفظ المستند',
-  'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.': 'تم حفظ المستند. تم تخزين بعض الملفات محلياً بسبب مشكلة مؤقتة في الشبكة. يمكنك مزامنة هذه الملفات لاحقاً بالنقر على أيقونة الرفع.',
+  'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.':
+    'تم حفظ المستند. تم تخزين بعض الملفات محلياً بسبب مشكلة مؤقتة في الشبكة. يمكنك مزامنة هذه الملفات لاحقاً بالنقر على أيقونة الرفع.',
   "Don't import metrics if name exists": 'لا تستورد المقاييس إذا كان الاسم موجوداً',
   'Donors': 'الجهات المانحة',
   'Download': 'تحميل',
@@ -262,7 +292,7 @@ export const AR: Translation = {
   'File not imported! Error on import metrics.': 'لم يتم استيراد الملف! خطأ في استيراد المقاييس.',
   'File not imported! Errors in metrics with parents.':
     'لم يتم استيراد الملف! أخطاء في المقاييس ذات الأصول.',
-  'File not imported! This metrics are mandatory': 'لم يتم استيراد الملف! هذه المقاييس إلزامية',
+  'File not imported! These metrics are mandatory': 'لم يتم استيراد الملف! هذه المقاييس إلزامية',
   'File not imported: no valid metrics to import found in the file.':
     'لم يتم استيراد الملف: لم يتم العثور على مقاييس صالحة للاستيراد في الملف.',
   'File not imported: only users with the admin role can import metrics.':

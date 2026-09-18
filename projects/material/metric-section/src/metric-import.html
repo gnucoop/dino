@@ -1,36 +1,17 @@
-<ng-container *ngIf="importMetrics">
-  <mat-card appearance="outlined" class="form-container">
-    <mat-toolbar color="primary"> {{'Import metrics'|transloco}} {{metricName|transloco}}</mat-toolbar>
-    <mat-card-content>
+<dino-import-wizard
+  [title]="('Import metrics' | transloco) + ' ' + (metricName | transloco)"
+  [fields]="fields"
+  [outcome]="outcome"
+  [busy]="importing"
+  (apply)="onApply($event)"
+  (cancelled)="cancelled.emit()"
+  (closed)="onClosed()"
+  (unreadableFile)="onUnreadableFile()"
+>
+  <div breadcrumbs><ng-content select="[breadcrumbs]"></ng-content></div>
 
-      <p class="dino-metric-import-title" mat-dialog-title>
-        {{'Upload an xls or csv file to import metrics:'|transloco}}
-      </p>
-      <form [formGroup]="importMetrics">
-        <div class="dino-upload-container">
-          <input type="file" id="excelFileInput" accept=".xls,.xlsx,.csv" (change)="onExcelfileSelected($event)"
-            style="display: none" />
-          <div class="file-name">{{fileName || 'No file uploaded yet.'|transloco}}</div>
-          <label for="excelFileInput">
-            <a color="primary" mat-raised-button>{{'Choose file'|transloco}}</a>
-          </label>
-        </div>
-        <mat-checkbox formControlName="reuseMetricName">
-          {{'Don\'t import metrics if name exists'|transloco}}
-        </mat-checkbox>
-      </form>
-      <div *ngIf="importStatus" class="dino-upload-respose">
-        <b>{{importStatus}}</b>
-      </div>
-      <br />
-    </mat-card-content>
-    <mat-card-actions>
-      <button (click)="closeDialog()" color="warn" mat-raised-button>
-        {{ 'Close'|transloco }}
-      </button>
-      <button [disabled]="processing" (click)="apply()" color="primary" mat-raised-button>
-        {{ 'Apply'|transloco }}
-      </button>
-    </mat-card-actions>
-  </mat-card>
-</ng-container>
+  <label options class="dino-metric-imp-reuse">
+    <mat-checkbox [formControl]="reuseMetricName" color="primary"></mat-checkbox>
+    {{ "Don't import metrics if name exists" | transloco }}
+  </label>
+</dino-import-wizard>

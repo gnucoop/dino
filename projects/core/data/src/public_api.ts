@@ -46,6 +46,8 @@ export * from './data-utility-functions';
 export * from './import-utils';
 export * from './insert-model';
 export * from './metric';
+export * from './metric-import-utils';
+export * from './workbook-utils';
 export * from './model';
 export * from './online-data-model-manager';
 export * from './online-data-service';

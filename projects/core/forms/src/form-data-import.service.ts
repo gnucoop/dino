@@ -32,28 +32,17 @@ import {
 import {Injectable, Optional} from '@angular/core';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
-import {DataModelManager, MetricsService} from '@dino/core/data';
+import {
+  DataModelManager,
+  MetricsService,
+  ParsedWorkbook,
+  parseWorkbook as parseWorkbookBuffer,
+} from '@dino/core/data';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
-import * as XLSX from 'xlsx';
 
 import {FormSchema} from './form-schema';
-
-/**
- * The columns and the parsed rows read from an imported file.
- */
-export interface ParsedWorkbook {
-  /**
-   * The rows parsed from the file, keyed by the file column names.
-   */
-  rows: {[key: string]: any}[];
-
-  /**
-   * The non empty column names found in the file header.
-   */
-  columns: string[];
-}
 
 /**
  * Stateless helpers used by the Import Form to parse the imported file and to
@@ -73,6 +62,16 @@ export class FormDataImportService {
     'updated_at',
     'is_deleted',
     '_deleted',
+  ];
+
+  /**
+   * The Dino managed columns offered as mapping target
+   */
+  readonly dinoImportFields: readonly string[] = [
+    'created_at',
+    'user_data_ref_id',
+    'form_status_name',
+    'dinoinvalid',
   ];
 
   /**
@@ -104,59 +103,54 @@ export class FormDataImportService {
    * @returns The parsed rows and the file columns
    */
   parseWorkbook(bufferArray: any): ParsedWorkbook {
-    const wb = XLSX.read(bufferArray, {type: 'buffer'});
-    const wsname = wb.SheetNames[0];
-    const ws = wb.Sheets[wsname];
-    // Some files declare a huge used range (e.g. A1:XFD1048576) caused by stray
-    // formatting on empty cells. sheet_to_json iterates the whole declared range,
-    // which would freeze the UI, so clamp it to the actually populated cells.
-    this._trimSheetRange(ws);
-    const rows: {[key: string]: any}[] = XLSX.utils.sheet_to_json(ws);
-    const headerRows: any[][] = XLSX.utils.sheet_to_json(ws, {header: 1});
-    const columns = (headerRows.length ? headerRows[0] : [])
-      .map(column => `${column}`)
-      .filter(column => column.length > 0);
-    return {rows, columns};
+    return parseWorkbookBuffer(bufferArray);
   }
 
   /**
-   * Shrink the worksheet declared range (`!ref`) to the bounding box of the
-   * cells that actually hold a value, so a bloated range does not make
-   * sheet_to_json walk millions of empty cells.
-   * @param ws The worksheet to clamp in place
+   * The metric types usable with a form schema: the active metrics, restricted to
+   * the ones declared by form_schema_metrics when the schema declares any.
+   * An empty form_schema_metrics means all the active metrics.
+   * @param formSchema The form schema
+   * @returns The metric type names
    */
-  private _trimSheetRange(ws: XLSX.WorkSheet): void {
-    if (!ws || !ws['!ref']) {
-      return;
-    }
-    const declared = XLSX.utils.decode_range(ws['!ref']);
-    let maxRow = -1;
-    let maxCol = -1;
-    Object.keys(ws).forEach(key => {
-      if (key.charAt(0) === '!') {
+  getSchemaMetrics(formSchema: FormSchema | null): string[] {
+    const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
+    const schemaMetrics = formSchema?.form_schema_metrics;
+    return schemaMetrics && schemaMetrics.length
+      ? activeMetrics.filter(metric => schemaMetrics.includes(metric))
+      : activeMetrics;
+  }
+
+  /**
+   * The mapping targets contributed by each metric type usable with the form
+   * schema: the metric id plus one entry per importable metric property.
+   * @param formSchema The form schema
+   * @returns metric type -> its mapping targets
+   */
+  getMetricFields(formSchema: FormSchema | null): {[metric: string]: string[]} {
+    const result: {[metric: string]: string[]} = {};
+    this.getSchemaMetrics(formSchema).forEach(metric => {
+      const manager = this._metricManagers[metric];
+      if (manager == null) {
         return;
       }
-      const cell = XLSX.utils.decode_cell(key);
-      if (cell.r > maxRow) {
-        maxRow = cell.r;
-      }
-      if (cell.c > maxCol) {
-        maxCol = cell.c;
-      }
+      const props = manager.collectionSchema.properties;
+      result[metric] = [
+        `${metric}_id`,
+        ...Object.keys(props)
+          .filter(prop => !this._notMappableMetricProps.includes(prop))
+          .filter(prop => !(metric === 'case' && prop === 'code'))
+          .filter(prop => !(metric === 'project' && prop === 'code_auto'))
+          .map(prop => `${metric}_${prop}`),
+      ];
     });
-    if (maxRow < 0 || maxCol < 0) {
-      // No data cells: nothing to import
-      return;
-    }
-    if (maxRow < declared.e.r || maxCol < declared.e.c) {
-      ws['!ref'] = XLSX.utils.encode_range({s: declared.s, e: {r: maxRow, c: maxCol}});
-    }
+    return result;
   }
 
   /**
    * Build the list of all the fields available as mapping target:
    * the form schema fields and the special Dino fields
-   * (created_at, user_data_ref_id, form_status_name and the metric columns)
+   * (created_at, user_data_ref_id, form_status_name, dinoinvalid and the metric columns)
    * @param formSchema The form schema
    * @returns All the available fields
    */
@@ -181,21 +175,9 @@ export class FormDataImportService {
       });
     }
     Object.keys(tableCells).forEach(cell => fields.push(cell));
-    fields.push('created_at', 'user_data_ref_id', 'form_status_name');
-    const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
-    activeMetrics.forEach(metric => {
-      const manager = this._metricManagers[metric];
-      if (manager === null) {
-        return;
-      }
-      fields.push(`${metric}_id`);
-      const props = manager.collectionSchema.properties;
-      Object.keys(props)
-        .filter(prop => !this._notMappableMetricProps.includes(prop))
-        .filter(prop => !(metric === 'case' && prop === 'code'))
-        .filter(prop => !(metric === 'project' && prop === 'code_auto'))
-        .forEach(prop => fields.push(`${metric}_${prop}`));
-    });
+    fields.push(...this.dinoImportFields);
+    const metricFields = this.getMetricFields(formSchema);
+    Object.keys(metricFields).forEach(metric => fields.push(...metricFields[metric]));
     return [...new Set(fields)].sort((a, b) => a.localeCompare(b));
   }
 
@@ -216,6 +198,32 @@ export class FormDataImportService {
         .filter(f => f.length > 0);
     }
     return schemaFields;
+  }
+
+  /**
+   * The raw, untranslated label of every mappable form schema field, keyed by the
+   * same name used by getAvailableFields (a repeating-slide inner field is keyed
+   * by its base name, without the `__[0-9]+` suffix).
+   * @param formSchema The form schema
+   * @returns field name -> field label
+   */
+  getFieldLabels(formSchema: FormSchema | null): {[fieldName: string]: string} {
+    const result: {[fieldName: string]: string} = {};
+    if (!formSchema) {
+      return result;
+    }
+    this.flattenNodes(formSchema.schema.nodes || [])
+      .filter(node => !isContainerNode(node))
+      .forEach(node => {
+        const field = node as AjfField;
+        if (field.name == null || !field.name.length || !field.label || !field.label.length) {
+          return;
+        }
+        const repSuffixIdx = field.name.indexOf('__[0-9]+');
+        const baseName = repSuffixIdx > -1 ? field.name.substring(0, repSuffixIdx) : field.name;
+        result[baseName] = field.label;
+      });
+    return result;
   }
 
   /**
@@ -257,13 +265,24 @@ export class FormDataImportService {
    * can be offered as its own mapping target and matched by name against a dino
    * exported file (whose header already uses these keys).
    * @param formSchema The form schema
-   * @returns cell data key -> {tableName, rowLabel, columnLabel}
+   * @returns cell data key -> {tableName, tableLabel, rowLabel, columnLabel}
    */
   getTableFields(formSchema: FormSchema | null): {
-    [cellKey: string]: {tableName: string; rowLabel: string; columnLabel: string};
+    [cellKey: string]: {
+      tableName: string;
+      tableLabel: string;
+      rowLabel: string;
+      columnLabel: string;
+    };
   } {
-    const result: {[cellKey: string]: {tableName: string; rowLabel: string; columnLabel: string}} =
-      {};
+    const result: {
+      [cellKey: string]: {
+        tableName: string;
+        tableLabel: string;
+        rowLabel: string;
+        columnLabel: string;
+      };
+    } = {};
     if (!formSchema) {
       return result;
     }
@@ -282,6 +301,7 @@ export class FormDataImportService {
             columnLabels.forEach((columnLabel, columnIdx) => {
               result[`${field.name}__${rowIdx}__${columnIdx}`] = {
                 tableName: field.name,
+                tableLabel: field.label || '',
                 rowLabel,
                 columnLabel,
               };

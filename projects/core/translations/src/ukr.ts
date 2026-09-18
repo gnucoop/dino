@@ -24,7 +24,8 @@ import {Translation} from '@ngneat/transloco';
 
 export const UKR: Translation = {
   'New translation': 'Новий переклад',
-  'Define the key and, if you want, translate it right away. You can complete the other languages later.': 'Визначте ключ і, якщо хочете, перекладіть його одразу. Інші мови можна доповнити пізніше.',
+  'Define the key and, if you want, translate it right away. You can complete the other languages later.':
+    'Визначте ключ і, якщо хочете, перекладіть його одразу. Інші мови можна доповнити пізніше.',
   'mandatory': 'обовʼязково',
   'Key example placeholder': 'напр. A filter on field "" already exists.',
   'Use': 'Використовуйте',
@@ -34,9 +35,11 @@ export const UKR: Translation = {
   'Source text': 'Текст оригіналу',
   'Translation {{language}}…': 'Переклад {{language}}…',
   'Save translation': 'Зберегти переклад',
-  'The languages left empty stay marked as missing.': 'Мови, залишені порожніми, лишаються позначеними як відсутні.',
+  'The languages left empty stay marked as missing.':
+    'Мови, залишені порожніми, лишаються позначеними як відсутні.',
   'All languages': 'Усі мови',
-  'Review, import and export the whole dictionary of a language.': 'Перегляньте, імпортуйте та експортуйте весь словник мови.',
+  'Review, import and export the whole dictionary of a language.':
+    'Перегляньте, імпортуйте та експортуйте весь словник мови.',
   'Available languages': 'Мови',
   'Search language…': 'Пошук мови…',
   'Search in file…': 'Пошук у файлі…',
@@ -45,7 +48,8 @@ export const UKR: Translation = {
   'Invalid JSON': 'Некоректний JSON',
   'Import file': 'Імпортувати файл',
   'values present': 'значень наявно',
-  'Read-only preview. Single translations are edited from the Translations page.': 'Попередній перегляд лише для читання. Переклади редагуються на сторінці Переклади.',
+  'Read-only preview. Single translations are edited from the Translations page.':
+    'Попередній перегляд лише для читання. Переклади редагуються на сторінці Переклади.',
   'Translations': 'Переклади',
   'keys': 'ключів',
   'complete': 'завершено',
@@ -77,7 +81,6 @@ export const UKR: Translation = {
   'mapped': 'зіставлено',
   'ignored': 'проігноровано',
   'Search columns…': 'Пошук стовпців…',
-  'Auto-match': 'Автозіставлення',
   'File column': 'Стовпець файлу',
   'Form field': 'Поле форми',
   'Select field…': 'Виберіть поле…',
@@ -91,6 +94,36 @@ export const UKR: Translation = {
   'Reuse existing metrics with the same name':
     'Повторно використовувати наявні метрики з тією самою назвою',
   'No fields found': 'Полів не знайдено',
+  'Result': 'Результат',
+  'Rows imported': 'Імпортовані рядки',
+  'Rows rejected': 'Відхилені рядки',
+  'Rows in file': 'Рядків у файлі',
+  'Metrics created': 'Створені метрики',
+  'Search by row or error': 'Пошук за рядком або помилкою',
+  'File row': 'Рядок файлу',
+  'Error': 'Помилка',
+  'and other {{n}}': 'та ще {{n}}',
+  'All the rows of the file have been saved.': 'Усі рядки файлу збережено.',
+  '{{n}} rows not imported: refused on save':
+    '{{n}} рядків не імпортовано: відхилено при збереженні',
+  'Choose the file with the data to be imported.': 'Виберіть файл із даними для імпорту.',
+  'Invalid user ids': 'Недійсні ідентифікатори користувачів',
+  'Invalid metric ids': 'Недійсні ідентифікатори метрик',
+  'Invalid form status': 'Недійсні статуси',
+  'Rows not imported': 'Рядки не імпортовано',
+  'metric with invalid parent': 'метрика з недійсним батьком',
+  'metric not created': 'метрику не створено',
+  'Field mapped to more than one column': 'Поле зіставлено з більш ніж одним стовпцем',
+  'File not imported! Could not read the file.': 'Файл не імпортовано! Не вдалося прочитати файл.',
+  'missing required fields: {{fields}}': 'бракує обов’язкових полів: {{fields}}',
+  'Re-match all': 'Зіставити все заново',
+  'Reset all the columns and match them again':
+    'Скидає всі стовпці та зіставляє їх автоматично заново',
+  'Map at least one form field to import': 'Зіставте щонайменше одне поле форми для імпорту',
+  'metrics created': 'метрик створено',
+  'the name is missing': 'бракує назви',
+  'Ignore column': 'Ігнорувати стовпець',
+  'repeating': 'повторюваний',
   'Repetition': 'Повторення',
   'DISMISS': 'ЗАКРИТИ',
   "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
@@ -171,9 +204,6 @@ export const UKR: Translation = {
   'Cases': 'Справи',
   'Change Password': 'Змінити пароль',
   'Chat with your data': 'Чат з вашими даними',
-  'Check that these form status names exist': 'Перевірте, чи існують ці назви статусів форм',
-  'Check that these metric ids exist for': 'Перевірте, чи існують ці ID метрик для',
-  'Check that these user ids exist': 'Перевірте, чи існують ці ID користувачів',
   'Choose Video source': 'Виберіть джерело відео',
   'Choose file': 'Виберіть файл',
   'Choose the Action you want to perform': 'Виберіть дію, яку ви хочете виконати',
@@ -258,7 +288,7 @@ export const UKR: Translation = {
   'File not imported! Error on import metrics.': 'Файл не імпортовано! Помилка при імпорті метрик.',
   'File not imported! Errors in metrics with parents.':
     'Файл не імпортовано! Помилки в метриках з батьківськими елементами.',
-  'File not imported! This metrics are mandatory':
+  'File not imported! These metrics are mandatory':
     "Файл не імпортовано! Ці метрики є обов'язковими",
   'File not imported: no valid metrics to import found in the file.':
     'Файл не імпортовано: у файлі не знайдено допустимих метрик для імпорту.',
@@ -314,7 +344,8 @@ export const UKR: Translation = {
   'Incorrect email and/or password': 'Невірна електронна пошта та/або пароль',
   'Incorrect password': 'Невірний пароль',
   'Initializing data': 'Ініціалізація даних',
-  'Insert a formula to filter metrics, using metric fields or attributes': 'Вставте формулу для фільтрації метрик, використовуючи поля або атрибути метрик. Використовуйте: attribute = \'val\' або attribute != true або attribute = false або date_start >= \'2024-04-2\'',
+  'Insert a formula to filter metrics, using metric fields or attributes':
+    "Вставте формулу для фільтрації метрик, використовуючи поля або атрибути метрик. Використовуйте: attribute = 'val' або attribute != true або attribute = false або date_start >= '2024-04-2'",
   'Invalid API Key': 'Недійсний ключ API',
   'Invalid email and/or password': 'Недійсні електронна пошта та/або пароль',
   'Invalid metrics': 'Недійсні метрики',

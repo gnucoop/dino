@@ -23,7 +23,8 @@ import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const PRT: Translation = {
   'New translation': 'Nova tradução',
-  'Define the key and, if you want, translate it right away. You can complete the other languages later.': 'Defina a chave e, se quiser, traduza-a já. Pode completar os outros idiomas mais tarde.',
+  'Define the key and, if you want, translate it right away. You can complete the other languages later.':
+    'Defina a chave e, se quiser, traduza-a já. Pode completar os outros idiomas mais tarde.',
   'mandatory': 'obrigatória',
   'Key example placeholder': 'ex. A filter on field "" already exists.',
   'Use': 'Use',
@@ -33,9 +34,11 @@ export const PRT: Translation = {
   'Source text': 'Texto de origem',
   'Translation {{language}}…': 'Tradução {{language}}…',
   'Save translation': 'Guardar tradução',
-  'The languages left empty stay marked as missing.': 'Os idiomas deixados vazios ficam marcados como em falta.',
+  'The languages left empty stay marked as missing.':
+    'Os idiomas deixados vazios ficam marcados como em falta.',
   'All languages': 'Todos os idiomas',
-  'Review, import and export the whole dictionary of a language.': 'Reveja, importe e exporte o dicionário completo de um idioma.',
+  'Review, import and export the whole dictionary of a language.':
+    'Reveja, importe e exporte o dicionário completo de um idioma.',
   'Available languages': 'Idiomas',
   'Search language…': 'Pesquisar idioma…',
   'Search in file…': 'Pesquisar no ficheiro…',
@@ -45,7 +48,8 @@ export const PRT: Translation = {
   'Invalid JSON': 'JSON inválido',
   'Import file': 'Importar ficheiro',
   'values present': 'valores presentes',
-  'Read-only preview. Single translations are edited from the Translations page.': 'Pré-visualização apenas de leitura. As traduções editam-se na página Traduções.',
+  'Read-only preview. Single translations are edited from the Translations page.':
+    'Pré-visualização apenas de leitura. As traduções editam-se na página Traduções.',
   'Translations': 'Traduções',
   'keys': 'chaves',
   'complete': 'completo',
@@ -77,7 +81,6 @@ export const PRT: Translation = {
   'mapped': 'mapeadas',
   'ignored': 'ignoradas',
   'Search columns…': 'Pesquisar colunas…',
-  'Auto-match': 'Correspondência automática',
   'File column': 'Coluna do arquivo',
   'Form field': 'Campo do formulário',
   'Status': 'Status',
@@ -89,9 +92,38 @@ export const PRT: Translation = {
   'Ignore': 'Ignorar',
   'Restore': 'Restaurar',
   'Apply import': 'Aplicar importação',
-  'Reuse existing metrics with the same name':
-    'Reutilizar métricas existentes com o mesmo nome',
+  'Reuse existing metrics with the same name': 'Reutilizar métricas existentes com o mesmo nome',
   'No fields found': 'Nenhum campo encontrado',
+  'Result': 'Resultado',
+  'Rows imported': 'Linhas importadas',
+  'Rows rejected': 'Linhas rejeitadas',
+  'Rows in file': 'Linhas no arquivo',
+  'Metrics created': 'Métricas criadas',
+  'Search by row or error': 'Pesquisar por linha ou erro',
+  'File row': 'Linha do arquivo',
+  'Error': 'Erro',
+  'and other {{n}}': 'e outras {{n}}',
+  'All the rows of the file have been saved.': 'Todas as linhas do arquivo foram salvas.',
+  '{{n}} rows not imported: refused on save': '{{n}} linhas não importadas: rejeitadas ao salvar',
+  'Choose the file with the data to be imported.': 'Escolha o arquivo com os dados a importar.',
+  'Invalid user ids': 'Ids de usuário inválidos',
+  'Invalid metric ids': 'Ids de métrica inválidos',
+  'Invalid form status': 'Status inválidos',
+  'Rows not imported': 'Linhas não importadas',
+  'metric with invalid parent': 'métrica com parent inválido',
+  'metric not created': 'métrica não criada',
+  'Field mapped to more than one column': 'Campo associado a mais de uma coluna',
+  'File not imported! Could not read the file.':
+    'Arquivo não importado! Não foi possível ler o arquivo.',
+  'missing required fields: {{fields}}': 'faltam campos obrigatórios: {{fields}}',
+  'Re-match all': 'Reassociar tudo',
+  'Reset all the columns and match them again':
+    'Redefine todas as colunas e as reassocia automaticamente',
+  'Map at least one form field to import': 'Associe ao menos um campo do formulário para importar',
+  'metrics created': 'métricas criadas',
+  'the name is missing': 'falta o nome',
+  'Ignore column': 'Ignorar coluna',
+  'repeating': 'repetido',
   'Repetition': 'Repetição',
   'DISMISS': 'FECHAR',
   "An automatic report already exists for this form. To disable it, delete that report's schema and data.":
@@ -192,10 +224,6 @@ export const PRT: Translation = {
   'Cases': 'Casos',
   'Change Password': 'Alterar a senha',
   'Chat with your data': 'Converse com seus dados',
-  'Check that these form status names exist':
-    'Verifique se esses nomes de status do formulário existem',
-  'Check that these metric ids exist for': 'Verifique se esses IDs métricos existem para',
-  'Check that these user ids exist': 'Verifique se esses IDs de usuário existem',
   'Choose Video source': 'Escolha fonte de vídeo',
   'Choose file': 'Escolha um arquivo',
   'Choose the Action you want to perform': 'Escolha a ação que pretende executar',
@@ -205,7 +233,8 @@ export const PRT: Translation = {
   'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
     'Escolha as métricas a que o Url do Formulário Público fará referência, se for o caso, e depois copie o Url para a sua memória',
   'Choose your Action': 'Escolha a sua ação',
-  'Some files were stored locally due to a temporary network problem. Click to sync these files.': 'Alguns arquivos foram armazenados localmente devido a um problema temporário de rede. Clique para sincronizá-los.',
+  'Some files were stored locally due to a temporary network problem. Click to sync these files.':
+    'Alguns arquivos foram armazenados localmente devido a um problema temporário de rede. Clique para sincronizá-los.',
   'Close': 'Fechar',
   'CLOSE': 'FECHAR',
   'Close the dialog and apply filters.': 'Feche a caixa de diálogo e aplique alguns filtros.',
@@ -221,7 +250,8 @@ export const PRT: Translation = {
   'Confirm Password': 'Confirme sua senha',
   'Coordinates': 'Coordenadas',
   'Copy to Clipboard': 'Copiar na memória',
-  'Could not save the form. Please retry.': 'Não foi possível salvar o formulário. Por favor, tente novamente.',
+  'Could not save the form. Please retry.':
+    'Não foi possível salvar o formulário. Por favor, tente novamente.',
   'Create': 'Criar',
   'Create Filter': 'Criar Filtro',
   'Create Form': 'Criar formulário',
@@ -245,7 +275,8 @@ export const PRT: Translation = {
   'Do you want to': 'Você deseja',
   'Docx': 'Exportar Docx',
   'Document saved': 'Documento salvo',
-  'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.': 'Documento salvo. Alguns arquivos foram armazenados localmente devido a um problema temporário de rede. Você pode sincronizá-los mais tarde clicando no ícone de upload.',
+  'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.':
+    'Documento salvo. Alguns arquivos foram armazenados localmente devido a um problema temporário de rede. Você pode sincronizá-los mais tarde clicando no ícone de upload.',
   "Don't import metrics if name exists": 'Não importe métricas de importação se houver nome',
   'Donors': 'Doadores',
   'Download': 'Download',
@@ -289,7 +320,7 @@ export const PRT: Translation = {
     'Arquivo não importado! Erro nas métricas de importação.',
   'File not imported! Errors in metrics with parents.':
     'Arquivo não importado! Erros em métricas com os pais.',
-  'File not imported! This metrics are mandatory':
+  'File not imported! These metrics are mandatory':
     'Arquivo não importado! Essas métricas são obrigatórias',
   'File not imported: no valid metrics to import found in the file.':
     'Arquivo não importado: nenhuma métrica válida a ser importada encontrada no arquivo.',
@@ -343,7 +374,8 @@ export const PRT: Translation = {
   'Incorrect email and/or password': 'Email e/ou senha incorretos',
   'Incorrect password': 'Palavra-passe incorrecta',
   'Initializing data': 'Inicialização de dados',
-  'Insert a formula to filter metrics, using metric fields or attributes': 'Insira uma fórmula para filtrar métricas, utilizando campos ou atributos de métricas. Use: attribute = \'val\' ou attribute != true ou attribute = false ou date_start >= \'2024-04-2\'',
+  'Insert a formula to filter metrics, using metric fields or attributes':
+    "Insira uma fórmula para filtrar métricas, utilizando campos ou atributos de métricas. Use: attribute = 'val' ou attribute != true ou attribute = false ou date_start >= '2024-04-2'",
   'Invalid API Key': 'Chave inválida da API',
   'Invalid email and/or password': 'Email inválido e/ou senha',
   'Invalid metrics': 'Métricas inválidas',
@@ -530,7 +562,8 @@ export const PRT: Translation = {
   'Uploading files...': 'Enviando arquivos...',
   'WAIT': 'AGUARDAR',
   'Files successfully uploaded': 'Arquivos enviados com sucesso',
-  'Some files could not be uploaded. Please retry.': 'Alguns arquivos não puderam ser enviados. Por favor, tente novamente.',
+  'Some files could not be uploaded. Please retry.':
+    'Alguns arquivos não puderam ser enviados. Por favor, tente novamente.',
   'Use selected field (only one allowed) as choice option. The name of the new choice origin added to the form schema will be $fieldName_choice.':
     'Use o campo selecionado (apenas um permitido) como opção de escolha. O nome da nova origem da escolha adicionada ao esquema do formulário será $ fieldname_choice.',
   'User': 'Utilizador',

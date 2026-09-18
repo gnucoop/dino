@@ -47,7 +47,6 @@ import {ListModule as CoreModule} from '@dino/core/list';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 import {ExportListModule} from '@dino/material/export-list';
 import {FormStatusChangerModule} from '@dino/material/form-status-changer';
-import {ImportFormModule} from '@dino/material/import-form';
 import {UserInteractionsModule} from '@dino/material/user-interactions';
 import {CdkDrag, CdkDropList} from '@angular/cdk/drag-drop';
 
@@ -82,7 +81,6 @@ import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
     CommonModule,
     CoreModule,
     FormStatusChangerModule,
-    ImportFormModule,
     LangsModule,
     MatButtonModule,
     MatCheckboxModule,

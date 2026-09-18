@@ -1,0 +1,329 @@
+<div class="dino-imp">
+  <!-- breadcrumb strip (projected by the host page) -->
+  <div class="dino-imp-crumbs">
+    <ng-content select="[breadcrumbs]"></ng-content>
+  </div>
+
+  <!-- scrollable content -->
+  <div class="dino-imp-scroll">
+    <div class="dino-imp-inner">
+      <!-- step header + progress stepper -->
+      <div class="dino-imp-head">
+        <div class="dino-imp-head-text">
+          <h1 class="dino-imp-title">{{ title }}</h1>
+          <p class="dino-imp-subtitle">{{ stepSubtitle }}</p>
+        </div>
+        <div class="dino-imp-stepper">
+          <div class="dino-imp-step" (click)="back()">
+            <div class="dino-imp-step-bar dino-imp-step-bar-done"></div>
+            <div class="dino-imp-step-label" [class.dino-imp-step-label-active]="step === 1">
+              1 · {{ 'Upload file' | transloco }}
+              <mat-icon *ngIf="step === 2" class="dino-imp-step-check">check</mat-icon>
+            </div>
+          </div>
+          <div class="dino-imp-step" (click)="goToStep(2)">
+            <div class="dino-imp-step-bar" [class.dino-imp-step-bar-done]="step >= 2"></div>
+            <div class="dino-imp-step-label" [class.dino-imp-step-label-active]="step === 2">
+              2 · {{ 'Map fields' | transloco }}
+              <mat-icon *ngIf="step === 3" class="dino-imp-step-check">check</mat-icon>
+            </div>
+          </div>
+          <div class="dino-imp-step" (click)="goToStep(3)">
+            <div class="dino-imp-step-bar" [class.dino-imp-step-bar-done]="step === 3"></div>
+            <div class="dino-imp-step-label" [class.dino-imp-step-label-active]="step === 3">
+              3 · {{ 'Result' | transloco }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <mat-spinner
+        *ngIf="isLoading"
+        class="dino-imp-spinner"
+        mode="indeterminate"
+        diameter="48"
+      ></mat-spinner>
+
+      <!-- ===================== STEP 1 — upload file ===================== -->
+      <ng-container *ngIf="step === 1 && !isLoading">
+        <div class="dino-imp-card">
+          <div
+            class="dino-imp-dropzone"
+            (drop)="onFileDrop($event)"
+            (dragover)="onDragOver($event)"
+          >
+            <div class="dino-imp-drop-icon"><mat-icon>upload</mat-icon></div>
+            <div class="dino-imp-drop-title">{{ 'Drag & drop your file here' | transloco }}</div>
+            <div class="dino-imp-drop-hint">
+              {{ 'Accepted formats: .xls, .xlsx, .csv — up to 20 MB' | transloco }}
+            </div>
+            <input
+              #fileInput
+              type="file"
+              id="excelFileInput"
+              accept=".xls,.xlsx,.csv"
+              (change)="onExcelfileSelected($event)"
+              class="dino-imp-file-input"
+            />
+            <label for="excelFileInput">
+              <a class="dino-imp-choose" mat-raised-button color="primary">
+                <mat-icon>description</mat-icon>{{ 'Choose a file' | transloco }}
+              </a>
+            </label>
+            <div *ngIf="fileName" class="dino-imp-file-chip">
+              <mat-icon>check_circle</mat-icon>
+              {{ fileName }} · {{ summary.total }} {{ 'columns detected' | transloco }}
+            </div>
+          </div>
+
+          <ng-content select="[options]"></ng-content>
+        </div>
+      </ng-container>
+
+      <!-- ===================== STEP 2 — map fields ===================== -->
+      <ng-container *ngIf="step === 2 && !isLoading">
+        <!-- toolbar -->
+        <div class="dino-imp-toolbar">
+          <div class="dino-imp-chips">
+            <span class="dino-imp-chip dino-imp-chip-total"
+              >{{ summary.total }} {{ 'columns' | transloco }}</span
+            >
+            <span class="dino-imp-chip dino-imp-chip-mapped"
+              >{{ summary.mapped }} {{ 'mapped' | transloco }}</span
+            >
+            <span class="dino-imp-chip dino-imp-chip-ignored"
+              >{{ summary.ignored }} {{ 'ignored' | transloco }}</span
+            >
+          </div>
+          <span class="dino-imp-apply-hint" *ngIf="applyHint">
+            <mat-icon>warning</mat-icon>{{ applyHint }}
+          </span>
+          <div class="dino-imp-toolbar-right">
+            <div class="dino-imp-search">
+              <mat-icon>search</mat-icon>
+              <input [(ngModel)]="search" [placeholder]="'Search columns…' | transloco" />
+            </div>
+            <button
+              type="button"
+              class="dino-imp-automatch"
+              [matTooltip]="'Reset all the columns and match them again' | transloco"
+              (click)="autoMatch()"
+            >
+              <mat-icon>auto_fix_high</mat-icon>{{ 'Re-match all' | transloco }}
+            </button>
+          </div>
+        </div>
+
+        <!-- mapping table -->
+        <div class="dino-imp-table">
+          <div class="dino-imp-table-head">
+            <div>{{ 'File column' | transloco }}</div>
+            <div>{{ 'Field' | transloco }}</div>
+            <div>{{ 'Status' | transloco }}</div>
+          </div>
+
+          <div
+            *ngFor="let mapping of filteredMappings"
+            class="dino-imp-row"
+            [class.dino-imp-row-ignored]="isIgnored(mapping)"
+          >
+            <!-- file column -->
+            <div class="dino-imp-col-name" [title]="mapping.column">{{ mapping.column }}</div>
+
+            <!-- form field select (+ repetition for repeating fields) -->
+            <div class="dino-imp-col-field">
+              <mat-form-field class="dino-imp-field" subscriptSizing="dynamic">
+                <mat-select
+                  [formControl]="mapping.control!"
+                  [errorStateMatcher]="this"
+                  [placeholder]="'Select field…' | transloco"
+                  (selectionChange)="onMappingChange(mapping, $event.value)"
+                  (openedChange)="onFieldSelectOpenedChange($event, mapping)"
+                >
+                  <mat-select-trigger>{{ fieldName(mapping.field) }}</mat-select-trigger>
+                  <ng-container *ngIf="openedMapping === mapping; else selectedFieldOption">
+                    <mat-option>
+                      <ngx-mat-select-search
+                        [formControl]="fieldFilterCtrl"
+                        [placeholderLabel]="'Search' | transloco"
+                        [noEntriesFoundLabel]="'No fields found' | transloco"
+                      ></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option
+                      *ngFor="let field of availableFields; trackBy: trackByField"
+                      [value]="field"
+                      [style.display]="isFieldVisible(field) ? null : 'none'"
+                      [matTooltip]="fieldLabel(field)"
+                      matTooltipPosition="right"
+                    >
+                      {{ fieldName(field) }}
+                    </mat-option>
+                    <mat-option [value]="ignoreFieldValue"
+                      >{{ '— Ignore this column —' | transloco }}</mat-option
+                    >
+                  </ng-container>
+                  <ng-template #selectedFieldOption>
+                    <mat-option [value]="mapping.field">{{ fieldName(mapping.field) }}</mat-option>
+                  </ng-template>
+                </mat-select>
+                <mat-error>{{ 'Field mapped to more than one column' | transloco }}</mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                *ngIf="isRepeatingField(mapping.field)"
+                class="dino-imp-repetition"
+                subscriptSizing="dynamic"
+              >
+                <mat-label>{{ 'Repetition' | transloco }}</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  [value]="mapping.repetition ?? 0"
+                  (change)="onRepetitionChange(mapping, $event)"
+                />
+              </mat-form-field>
+            </div>
+
+            <!-- status -->
+            <div class="dino-imp-col-status">
+              <span class="dino-imp-status dino-imp-status-{{ statusOf(mapping).kind }}"
+                >{{ statusOf(mapping).label }}</span
+              >
+              <button type="button" class="dino-imp-ignore-btn" (click)="toggleIgnore(mapping)">
+                {{ (isIgnored(mapping) ? 'Restore' : 'Ignore') | transloco }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- ===================== STEP 3 — result ===================== -->
+      <ng-container *ngIf="step === 3 && outcome && !isLoading">
+        <div
+          class="dino-imp-outcome-head"
+          [class.dino-imp-outcome-ok]="outcome.status === 'success'"
+          [class.dino-imp-outcome-partial]="outcome.status === 'partial'"
+          [class.dino-imp-outcome-ko]="outcome.status === 'error'"
+        >
+          <mat-icon
+            >{{ outcome.status === 'success' ? 'check_circle' : outcome.status === 'partial' ?
+            'warning' : 'error' }}</mat-icon
+          >
+          <div class="dino-imp-outcome-head-text">
+            <div class="dino-imp-outcome-title">{{ outcome.message }}</div>
+            <div class="dino-imp-outcome-detail" *ngIf="outcome.detail">{{ outcome.detail }}</div>
+          </div>
+        </div>
+
+        <!-- counters -->
+        <div class="dino-imp-stats">
+          <div class="dino-imp-stat" *ngFor="let count of outcome.counts">
+            <div
+              class="dino-imp-stat-value"
+              [class.dino-imp-stat-ok]="count.tone === 'ok'"
+              [class.dino-imp-stat-warn]="count.tone === 'warn'"
+              [class.dino-imp-stat-ko]="count.tone === 'ko'"
+            >
+              {{ count.value }}
+            </div>
+            <div class="dino-imp-stat-label">{{ count.label }}</div>
+          </div>
+        </div>
+
+        <!-- one section per group of issues -->
+        <ng-container *ngFor="let warning of outcome.warnings">
+          <div class="dino-imp-toolbar dino-imp-issue-bar">
+            <div class="dino-imp-issue-title">{{ warning.label }}</div>
+            <div class="dino-imp-toolbar-right">
+              <span class="dino-imp-issue-count">{{ warning.count }}</span>
+              <div class="dino-imp-search" *ngIf="warning.kind === 'rows'">
+                <mat-icon>search</mat-icon>
+                <input
+                  [(ngModel)]="issueSearch"
+                  [placeholder]="'Search by row or error' | transloco"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- one row per file row -->
+          <div class="dino-imp-table dino-imp-issue-table" *ngIf="warning.kind === 'rows'">
+            <div class="dino-imp-table-head">
+              <div>{{ 'File row' | transloco }}</div>
+              <div>{{ 'Error' | transloco }}</div>
+            </div>
+            <div class="dino-imp-row" *ngFor="let item of filteredItems(warning)">
+              <div class="dino-imp-col-name">{{ item.row }}</div>
+              <div class="dino-imp-issue-text">{{ item.text }}</div>
+            </div>
+            <div class="dino-imp-issue-more" *ngIf="hiddenItems(warning)">
+              {{ 'and other {{n}}' | transloco: {n: hiddenItems(warning)} }}
+            </div>
+          </div>
+
+          <!-- a grid of identifiers -->
+          <div class="dino-imp-table dino-imp-issue-values" *ngIf="warning.kind === 'values'">
+            <div class="dino-imp-issue-grid">
+              <div
+                class="dino-imp-col-name dino-imp-issue-value"
+                *ngFor="let item of warning.items"
+              >
+                {{ item.text }}
+              </div>
+            </div>
+            <div class="dino-imp-issue-more" *ngIf="hiddenItems(warning)">
+              {{ 'and other {{n}}' | transloco: {n: hiddenItems(warning)} }}
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- footer action bar -->
+  <div class="dino-imp-footer">
+    <ng-container *ngIf="step !== 3">
+      <button
+        type="button"
+        class="dino-imp-back"
+        mat-raised-button
+        color="accent"
+        (click)="onBack()"
+      >
+        {{ 'Back' | transloco }}
+      </button>
+      <button
+        type="button"
+        class="dino-imp-apply"
+        mat-raised-button
+        color="primary"
+        [disabled]="step !== 2 || processing || !canApply"
+        (click)="applyImport()"
+      >
+        {{ 'Apply import' | transloco }}
+      </button>
+    </ng-container>
+    <ng-container *ngIf="step === 3">
+      <button
+        type="button"
+        class="dino-imp-back"
+        mat-raised-button
+        color="accent"
+        *ngIf="outcome && outcome.status === 'error'"
+        (click)="backToMapping()"
+      >
+        {{ 'Back' | transloco }}
+      </button>
+      <button
+        type="button"
+        class="dino-imp-apply"
+        mat-raised-button
+        color="primary"
+        (click)="closeOutcome()"
+      >
+        {{ 'Close' | transloco }}
+      </button>
+    </ng-container>
+  </div>
+</div>

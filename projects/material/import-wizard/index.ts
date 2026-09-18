@@ -20,24 +20,4 @@
  *
  */
 
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {ImportWizardModule} from '@dino/material/import-wizard';
-import {TranslocoModule} from '@ngneat/transloco';
-
-import {ImportForm} from './import-form';
-
-@NgModule({
-  imports: [
-    CommonModule,
-    ImportWizardModule,
-    MatCheckboxModule,
-    ReactiveFormsModule,
-    TranslocoModule,
-  ],
-  declarations: [ImportForm],
-  exports: [ImportForm],
-})
-export class ImportFormModule {}
+export * from './src/public_api';

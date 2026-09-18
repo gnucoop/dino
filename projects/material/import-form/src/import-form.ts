@@ -26,7 +26,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   isDevMode,
@@ -34,27 +33,23 @@ import {
   OnInit,
   Optional,
   Output,
-  ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import {
-  AbstractControl,
-  FormGroupDirective,
-  NgForm,
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
-} from '@angular/forms';
-import {ErrorStateMatcher} from '@angular/material/core';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {UntypedFormControl} from '@angular/forms';
 import {AreaManager} from '@dino/core/areas';
 import {CaseManager} from '@dino/core/cases';
 import {
+  buildMetricLookupSelector,
+  collectParentRefs,
   DataModelManager,
+  getBooleanFromRow,
   getValueFromRow,
+  ImportableMetric,
+  importMetricTree,
   InsertModel,
-  Metric,
   MetricsService,
+  MetricTreeResult,
+  splitMetricsByParent,
 } from '@dino/core/data';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {
@@ -70,39 +65,25 @@ import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
 import {ProjectManager} from '@dino/core/projects';
 import {UserData, UserDataManager, UserGroupManager} from '@dino/core/users';
+import {
+  applyMappings,
+  ColumnMapping,
+  ImportField,
+  ImportIssue,
+  ImportOutcome,
+  ImportOutcomeStatus,
+  ImportWarning,
+  warningGroup,
+} from '@dino/material/import-wizard';
 import {format} from 'date-fns';
 import {RxDocument} from 'rxdb';
 import {forkJoin, Observable, of as obsOf, Subscription, zip} from 'rxjs';
 import {catchError, map, shareReplay, switchMap, take, withLatestFrom} from 'rxjs/operators';
 
 /**
- * The mapping between a file column and a target field
+ * Why a metric could not be created, by metric type and metric name
  */
-export interface ColumnMapping {
-  /**
-   * The column name found in the file
-   */
-  column: string;
-
-  /**
-   * The target field name. If null, the column will be ignored.
-   */
-  field: string | null;
-
-  /**
-   * The form control bound to the field select, used to drive the mat-error
-   * state when the field is mapped by more than one column.
-   */
-  control?: UntypedFormControl;
-
-  /**
-   * For a column mapped to a repeating-slide field, the repetition order chosen
-   * by the user. Columns of the same repeating field are sorted by this value
-   * and then compacted into contiguous indices (`field__0`, `field__1`, ...).
-   * Undefined for non-repeating fields.
-   */
-  repetition?: number;
-}
+export type MetricFailures = {[metricType: string]: {[metricName: string]: string}};
 
 /**
  * The data passed to the Import Form dialog
@@ -134,6 +115,16 @@ interface MetricInfoInRows {
   requiredMetricIdsByType: {[key: string]: string[]};
 
   /**
+   * Parent ids referenced by the new metrics, by metric type.
+   */
+  requiredParentIdsByType: {[key: string]: string[]};
+
+  /**
+   * Parent names referenced by the new metrics, by metric type.
+   */
+  requiredParentNamesByType: {[key: string]: string[]};
+
+  /**
    * Type of missing metrics in rows
    */
   missingMetrics: string[];
@@ -151,7 +142,7 @@ interface MetricInfoInRows {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
+export class ImportForm implements OnInit, OnDestroy {
   /**
    * The id of the form schema the data will be imported into.
    */
@@ -175,41 +166,36 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   @Output() imported = new EventEmitter<void>();
 
   /**
-   * The current wizard step: 1 = upload file, 2 = map fields.
+   * The fields the file columns can be mapped onto, handed to the wizard.
    */
-  step: 1 | 2 = 1;
+  fields: ImportField[] = [];
 
   /**
-   * The name of the selected file, shown in the upload success chip.
+   * The outcome of the import. Null until the pipeline ends.
    */
-  fileName = '';
+  outcome: ImportOutcome | null = null;
 
   /**
-   * Live search filter applied to the mapping rows (by file column name or
-   * mapped field label).
+   * True while the rows are being imported, to keep the wizard spinner up.
    */
-  search = '';
+  importing = false;
+
+  /**
+   * Whether an existing metric with the same name is reused instead of created.
+   */
+  readonly reuseMetricName = new UntypedFormControl(true);
+
+  /**
+   * The counters of the running import, filled in as the pipeline progresses and
+   * snapshotted into the outcome. Kept on the component so that an import failing
+   * early still reports the numbers it already knows.
+   */
+  private _counts = {fileRows: 0, imported: 0, metricsCreated: 0};
 
   /**
    * Current status message of the Import Form
    */
   importStatus = '';
-
-  /**
-   * The Import dialog form group
-   */
-  readonly importForm: UntypedFormGroup;
-
-  /**
-   * The columns found in the selected file, each one with the mapped target
-   * field. A null field means the column will be ignored during import.
-   */
-  columnMappings: ColumnMapping[] = [];
-
-  /**
-   * All the available target fields for the column mapping
-   */
-  availableFields: string[] = [];
 
   /**
    * Maps each repeating-slide field (offered in the select as a single base
@@ -224,70 +210,34 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
    * show a readable label for the cell in the field select.
    */
   private _tableFields: {
-    [cellKey: string]: {tableName: string; rowLabel: string; columnLabel: string};
+    [cellKey: string]: {
+      tableName: string;
+      tableLabel: string;
+      rowLabel: string;
+      columnLabel: string;
+    };
   } = {};
 
   /**
-   * Sentinel value used as the "Ignore column" select option. A non-null value
-   * is required so the mat-select shows the selected option (Angular Material
-   * treats a null value as no selection, leaving the trigger blank). It is
-   * mapped back to "no field" when the rows are imported.
+   * The label of every form schema field, by field name.
    */
-  readonly ignoreFieldValue = '__dino_ignore_column__';
+  private _fieldLabels: {[fieldName: string]: string} = {};
 
   /**
-   * Control bound to the search input used to filter the available fields
+   * The mapping targets contributed by each metric type, used to tell a form
+   * schema field from a metric one.
    */
-  readonly fieldFilterCtrl = new UntypedFormControl('');
+  private _metricFields: {[metric: string]: string[]} = {};
 
   /**
-   * Fields mapped by more than one column
+   * The metric types allowed by the form schema. Null until a file has been read.
    */
-  duplicateFields: string[] = [];
-
-  /**
-   * The column mapping whose field select is currently open. The full list of
-   * available field options is rendered only for this mapping: every other
-   * (closed) select renders just its selected option, so the dialog does not
-   * instantiate one mat-option per available field for every column at once.
-   */
-  openedMapping: ColumnMapping | null = null;
-
-  /**
-   * True while the selected file is being read and its columns parsed.
-   * Used to show a loading spinner.
-   */
-  isLoading: boolean = false;
-
-  /**
-   * Reference to the native file input, used to reset the selection
-   * when going back to the file selection step.
-   */
-  @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
+  private _schemaMetrics: string[] | null = null;
 
   /**
    * The Form schema object
    */
   private _formSchema: Observable<FormSchema | null>;
-
-  /**
-   * The selected file
-   */
-  private _file?: Blob;
-
-  /**
-   * The rows parsed from the selected file
-   */
-  private _rows: {[key: string]: any}[] = [];
-
-  /**
-   * True if the form is currently being processed.
-   * Defaults to true.
-   */
-  private _processing: boolean = true;
-  get processing(): boolean {
-    return this._processing;
-  }
 
   /**
    * Dino fields that should not be included in the data field
@@ -326,6 +276,17 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   };
 
   /**
+   * The metric types to be imported: the ones declared by the form schema, or
+   * all the active ones until the schema has been read.
+   */
+  private get _activeMetrics(): string[] {
+    return (
+      this._schemaMetrics ??
+      this.metricsService.activeMetrics.value.map(metric => metric.metricName)
+    );
+  }
+
+  /**
    * Subscribes to the userData
    */
   private _userDataSub: Subscription = Subscription.EMPTY;
@@ -336,18 +297,12 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   private _validateDataSub: Subscription = Subscription.EMPTY;
 
   /**
-   * Subscribes to the form schema to build the column mappings
+   * Subscribes to the form schema to declare the mappable fields
    */
-  private _columnMappingsSub: Subscription = Subscription.EMPTY;
-
-  /**
-   * Subscribes to the field search input to filter the available fields
-   */
-  private _fieldFilterSub: Subscription = Subscription.EMPTY;
+  private _schemaSub: Subscription = Subscription.EMPTY;
 
   constructor(
     private _cdr: ChangeDetectorRef,
-    private _formBuilder: UntypedFormBuilder,
     private _formDataManager: FormDataManager,
     private _formSchemaManager: FormSchemaManager,
     private _udm: UserDataManager,
@@ -357,7 +312,6 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     private _ehms: ErrorHandlerMessageService,
     readonly metricsService: MetricsService,
     private _importService: FormDataImportService,
-    private _snackbar: MatSnackBar,
     @Optional() private _ar: AreaManager | null,
     @Optional() private _cs: CaseManager | null,
     @Optional() private _pj: ProjectManager | null,
@@ -365,183 +319,78 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     @Optional() private _og: OrganizationManager | null,
   ) {
     this._formSchema = obsOf(null);
-
-    this.importForm = this._formBuilder.group({
-      reuseMetricName: [true],
-    });
-
-    this._fieldFilterSub = this.fieldFilterCtrl.valueChanges.subscribe(() =>
-      this._cdr.markForCheck(),
-    );
   }
 
   ngOnInit(): void {
-    if (this.formSchemaId) {
-      this._formSchema = this._formSchemaManager.get(this.formSchemaId).pipe(
-        map(doc => (doc == null ? null : (doc.toJSON() as FormSchema))),
-        shareReplay(1),
-      );
+    this._formSchema = this.formSchemaId
+      ? this._formSchemaManager.get(this.formSchemaId).pipe(
+          map(doc => (doc == null ? null : (doc.toJSON() as FormSchema))),
+          shareReplay(1),
+        )
+      : obsOf(null);
+    // The wizard needs the fields before the file is read, so the schema is
+    // resolved here instead of on file selection
+    this._schemaSub = this._formSchema.pipe(take(1)).subscribe(formSchema => {
+      this._schemaMetrics = this._importService.getSchemaMetrics(formSchema);
+      this._repeatingFields = this._importService.getRepeatingSlideFields(formSchema);
+      this._tableFields = this._importService.getTableFields(formSchema);
+      this._fieldLabels = this._importService.getFieldLabels(formSchema);
+      this._metricFields = this._importService.getMetricFields(formSchema);
+      this.fields = this._importService.getAvailableFields(formSchema).map(name => ({
+        name,
+        label: this.fieldLabel(name),
+        repeatable: this.isRepeatingField(name),
+        // Only a form schema field carries an answer: a file mapping just the
+        // Dino columns or the metric ones would create empty form data
+        essential: this._isSchemaField(name),
+      }));
+      this._cdr.markForCheck();
+    });
+  }
+
+  /**
+   * Starts the import with the rows and the mappings chosen in the wizard.
+   * @param request The parsed rows and the column mappings
+   */
+  onApply(request: {rows: {[key: string]: any}[]; mappings: ColumnMapping[]}): void {
+    this.importing = true;
+    this._metricMustBeUnique = this.reuseMetricName.value;
+    this._processData(this._applyColumnMappings(request.rows, request.mappings));
+  }
+
+  /**
+   * Leaves the wizard once the result has been read.
+   */
+  onClosed(): void {
+    if (this.outcome && this.outcome.status !== 'error') {
+      this.imported.emit();
     } else {
-      this._formSchema = obsOf(null);
+      this.cancelled.emit();
     }
   }
 
-  // ---- Wizard navigation & derived view data --------------------------------
-
   /**
-   * Navigates to a wizard step. Step 2 is reachable only once a file has been
-   * parsed (there are column mappings to show).
-   * @param step The target step
+   * Reports an unreadable file as an outcome, so it is shown in the result step.
    */
-  goToStep(step: 1 | 2): void {
-    if (step === 2 && !this.columnMappings.length) {
-      return;
-    }
-    this.step = step;
-    this._cdr.markForCheck();
+  onUnreadableFile(): void {
+    this._setImportStatus(this._ts.translate('File not imported! Could not read the file.'));
   }
 
   /**
-   * The mapping rows matching the current search filter (by file column name or
-   * mapped field label). Used to render the mapping table.
+   * Whether a field belongs to the form schema, as opposed to the Dino columns
+   * and the metric ones.
+   * @param field The field name
    */
-  get filteredMappings(): ColumnMapping[] {
-    const q = this.search.trim().toLowerCase();
-    if (!q) {
-      return this.columnMappings;
+  private _isSchemaField(field: string): boolean {
+    if (this._importService.dinoImportFields.includes(field)) {
+      return false;
     }
-    return this.columnMappings.filter(
-      m => m.column.toLowerCase().includes(q) || this.fieldLabel(m.field).toLowerCase().includes(q),
+    return !Object.keys(this._metricFields).some(metric =>
+      this._metricFields[metric].includes(field),
     );
   }
 
-  /**
-   * Whether a mapping is ignored (explicitly skipped or mapped to the ignore
-   * sentinel).
-   * @param mapping The column mapping
-   */
-  isIgnored(mapping: ColumnMapping): boolean {
-    return mapping.field === this.ignoreFieldValue;
-  }
-
-  /**
-   * Whether a mapping targets a real field (mapped, not ignored).
-   * @param mapping The column mapping
-   */
-  isMapped(mapping: ColumnMapping): boolean {
-    return mapping.field != null && mapping.field !== this.ignoreFieldValue;
-  }
-
-  /**
-   * Summary counts shown as chips in the mapping toolbar.
-   */
-  get summary(): {total: number; mapped: number; ignored: number} {
-    let mapped = 0;
-    let ignored = 0;
-    this.columnMappings.forEach(m => {
-      if (this.isIgnored(m)) {
-        ignored++;
-      } else if (this.isMapped(m)) {
-        mapped++;
-      }
-    });
-    return {total: this.columnMappings.length, mapped, ignored};
-  }
-
-  /**
-   * The status pill descriptor for a mapping row.
-   * @param mapping The column mapping
-   */
-  statusOf(mapping: ColumnMapping): {label: string; kind: 'mapped' | 'unmapped' | 'ignored'} {
-    if (this.isIgnored(mapping)) {
-      return {label: this._ts.translate('Ignored'), kind: 'ignored'};
-    }
-    if (this.isMapped(mapping)) {
-      return {label: this._ts.translate('Mapped'), kind: 'mapped'};
-    }
-    return {label: this._ts.translate('Not mapped'), kind: 'unmapped'};
-  }
-
-  /**
-   * Toggles a column between ignored and unmapped.
-   * @param mapping The column mapping
-   */
-  toggleIgnore(mapping: ColumnMapping): void {
-    const nowIgnored = !this.isIgnored(mapping);
-    this.onMappingChange(mapping, nowIgnored ? this.ignoreFieldValue : null);
-    if (mapping.control) {
-      mapping.control.setValue(mapping.field);
-    }
-  }
-
-  /**
-   * Guesses a target field for every still-unmapped, non-ignored column by a
-   * case-insensitive substring match between the file column name and each
-   * field name or its label, then assigns it.
-   */
-  autoMatch(): void {
-    this.columnMappings.forEach(mapping => {
-      if (mapping.field != null) {
-        return;
-      }
-      const src = mapping.column.toLowerCase();
-      const match = this.availableFields.find(
-        f => src.includes(f.toLowerCase()) || src.includes(this.fieldLabel(f).toLowerCase()),
-      );
-      if (match) {
-        this.onMappingChange(mapping, match);
-        if (mapping.control) {
-          mapping.control.setValue(match);
-        }
-      }
-    });
-    this._cdr.markForCheck();
-  }
-
-  /**
-   * Handles a file dropped onto the upload drop zone.
-   * @param event The drag drop event
-   */
-  onFileDrop(event: DragEvent): void {
-    event.preventDefault();
-    const file = event.dataTransfer?.files?.[0];
-    if (file) {
-      this._file = file;
-      this.fileName = file.name;
-      this._readFile(file);
-    }
-  }
-
-  /**
-   * Allows dropping by preventing the browser's default (open file) behavior.
-   * @param event The drag over event
-   */
-  onDragOver(event: DragEvent): void {
-    event.preventDefault();
-  }
-
-  /**
-   * Whether a field option matches the current search input. Non matching
-   * options are hidden (not removed) so each select keeps its selected value
-   * even while another select is being filtered.
-   * @param field The field option
-   * @returns true if the option should be visible
-   */
-  isFieldVisible(field: string): boolean {
-    const search = (this.fieldFilterCtrl.value || '').toLowerCase().trim();
-    return !search || field.toLowerCase().includes(search);
-  }
-
-  /**
-   * Track the field options by their value so Angular reuses the mat-option
-   * DOM nodes while the user filters the list.
-   * @param _index The option index
-   * @param field The field option
-   * @returns The field itself as tracking key
-   */
-  trackByField(_index: number, field: string): string {
-    return field;
-  }
+  // ---- Wizard navigation & derived view data --------------------------------
 
   /**
    * Whether the given field is a repeating-slide field (offered as a single
@@ -564,216 +413,183 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   }
 
   /**
-   * The label shown for a field option / select trigger.
-   * @param field The field name (or the ignore sentinel / null)
+   * The readable label of a field, handed to the wizard for the option tooltip.
+   * @param field The field name
    * @returns The localized, user facing label
    */
-  fieldLabel(field: string | null): string {
-    if (field === this.ignoreFieldValue) {
-      return this._ts.translate('Ignore column');
-    }
-    if (field == null) {
-      return '';
-    }
+  fieldLabel(field: string): string {
     if (this.isTableField(field)) {
       const cell = this._tableFields[field];
+      const tableLabel = this._plainLabel(cell.tableLabel) || cell.tableName;
       const rowLabel = this._ts.translate(cell.rowLabel);
       const columnLabel = this._ts.translate(cell.columnLabel);
-      return `${cell.tableName} [${rowLabel} / ${columnLabel}]`;
+      return `${tableLabel} [${rowLabel} / ${columnLabel}]`;
     }
-    return this.isRepeatingField(field) ? `${field} (${this._ts.translate('repeating')})` : field;
+    // Dino and metric fields have no schema label: they keep their raw key,
+    // which is also the column name written by the export.
+    return this._plainLabel(this._fieldLabels[field]) || field;
   }
 
   /**
-   * Update the repetition order of a column mapped to a repeating field.
-   * @param mapping The column mapping
-   * @param event The number input change event
+   * Translate a form schema label and strip the markup left by the rich text editor.
+   * @param label The raw schema label
+   * @returns The label to be shown, empty when there is none
    */
-  onRepetitionChange(mapping: ColumnMapping, event: Event): void {
-    const value = parseInt((event.target as HTMLInputElement).value, 10);
-    mapping.repetition = isNaN(value) ? 0 : Math.max(0, value);
-    this._cdr.markForCheck();
-  }
-
-  /**
-   * Render the full field list for the opened select only, and reset the field
-   * search when it is closed, so its trigger keeps showing the selected value
-   * and the next dropdown opens with the full list.
-   * @param opened The select opened state
-   * @param mapping The column mapping owning the select
-   */
-  onFieldSelectOpenedChange(opened: boolean, mapping: ColumnMapping): void {
-    this.openedMapping = opened ? mapping : null;
-    if (!opened && this.fieldFilterCtrl.value) {
-      this.fieldFilterCtrl.setValue('');
+  private _plainLabel(label: string | undefined): string {
+    if (label == null || !label.length) {
+      return '';
     }
-    this._cdr.markForCheck();
+    // Strip the markup left by the rich text editor before translating: the
+    // dictionary holds the plain text, so a label carrying tags would never match
+    const plain = label
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    return plain.length ? this._ts.translate(plain) : '';
   }
 
   /**
    * Updates the status message of the Import Form
    * @param msg The message string
    */
-  private _setImportStatus(msg: string): void {
+  private _setImportStatus(
+    msg: string,
+    warnings: ImportWarning[] = [],
+    status: ImportOutcomeStatus = 'error',
+    detail: string = '',
+  ): void {
     this.importStatus = msg;
-    // Hide the loading spinner as soon as a terminal status message is shown.
     // The empty (clearing) message and the in-progress "Importing file..."
-    // message keep the spinner visible.
-    if (msg !== '' && msg !== this._ts.translate('Importing file...')) {
-      this.isLoading = false;
-      // Surface the terminal outcome as a snackbar (per the redesign), colored
-      // green for a successful import and red otherwise.
-      const success = msg.startsWith(this._ts.translate('File imported successfully'));
-      this._snackbar.open(msg, this._ts.translate('DISMISS'), {
-        duration: success ? 5000 : 10000,
-        panelClass: success ? 'dino-import-snack-success' : 'dino-import-snack-error',
-      });
-    }
-    this._cdr.markForCheck();
-  }
-
-  /**
-   * Save the input file and read its columns to build the column mappings
-   * @param event The input file selection event
-   */
-  onExcelfileSelected(event: any): void {
-    if (event.target.files.length === 0) {
+    // message are not terminal: they keep the spinner up.
+    if (msg === '' || msg === this._ts.translate('Importing file...')) {
+      this._cdr.markForCheck();
       return;
     }
-    this._file = event.target.files[0];
-    this.fileName = (this._file as File).name ?? '';
-    this._readFile(this._file as Blob);
-  }
-
-  /**
-   * Update the column mapping with the selected field
-   * @param mapping The column mapping to be updated
-   * @param field The selected target field
-   */
-  onMappingChange(mapping: ColumnMapping, field: string | null): void {
-    mapping.field = field;
-    if (this.isRepeatingField(field)) {
-      // Default the repetition order to the next free slot for this field, so
-      // mapping several columns to the same repeating field auto-numbers them
-      mapping.repetition = this.columnMappings.filter(m => m.field === field).length - 1;
-    } else {
-      mapping.repetition = undefined;
-    }
-    this._updateDuplicateFields();
+    this.importing = false;
+    // Whatever did not make it was rejected, however early the import stopped
+    const rejected = this._counts.fileRows - this._counts.imported;
+    this.outcome = {
+      status,
+      message: msg,
+      detail: detail.length ? detail : undefined,
+      counts: [
+        {
+          label: this._ts.translate('Rows imported'),
+          value: this._counts.imported,
+          tone: this._counts.imported > 0 ? 'ok' : undefined,
+        },
+        {
+          label: this._ts.translate('Rows rejected'),
+          value: rejected,
+          tone: rejected > 0 ? (status === 'error' ? 'ko' : 'warn') : undefined,
+        },
+        {label: this._ts.translate('Rows in file'), value: this._counts.fileRows},
+        {label: this._ts.translate('Metrics created'), value: this._counts.metricsCreated},
+      ],
+      warnings,
+    };
     this._cdr.markForCheck();
   }
 
   /**
-   * ErrorStateMatcher implementation: a field select is in error state when its
-   * selected field is mapped by more than one column.
-   * @param control The select form control
-   * @returns true if the control's field is a duplicate
+   * Build a result group, capping the listed entries so that a file failing on
+   * thousands of rows does not flood the result step. The count always reports
+   * the real total, so the template can show how many entries are not listed.
+   * @param label The localized group label
+   * @param items The entries of the group
+   * @param kind How the group is rendered
+   * @param max The maximum number of entries to be listed
+   * @returns The group
    */
-  isErrorState(
-    control: AbstractControl | null,
-    _form: FormGroupDirective | NgForm | null,
-  ): boolean {
-    return control != null && control.value != null && this.duplicateFields.includes(control.value);
+  private _warningGroup(
+    label: string,
+    items: ImportIssue[],
+    kind: 'rows' | 'values',
+  ): ImportWarning {
+    return warningGroup(label, items, kind);
   }
 
   /**
-   * Start processing the Xlsx file
+   * The sentence about the rows the database refused. Only those are worth a
+   * sentence: they cannot be traced back to a file row, so they are the one
+   * thing the counters and the table of rejected rows do not already say.
+   * @param refused How many rows the database refused
+   * @returns The localized sentence, empty when the database refused nothing
    */
-  apply(): void {
-    if (this._file == null || this.duplicateFields.length > 0) {
-      return;
-    }
-    this._processing = true;
-    this.isLoading = true;
-    this._cdr.markForCheck();
-    this._metricMustBeUnique = this.importForm.controls['reuseMetricName'].value;
-    this._processData(this._applyColumnMappings(this._rows));
+  private _refusedDetail(refused: number): string {
+    return refused
+      ? this._ts.translate('{{n}} rows not imported: refused on save', {n: refused})
+      : '';
   }
 
   /**
-   * Go back to the file selection step, resetting the parsed file and the
-   * column mappings so the user can choose a different file.
-   */
-  back(): void {
-    this._file = undefined;
-    this.fileName = '';
-    this._rows = [];
-    this.columnMappings = [];
-    this.availableFields = [];
-    this._repeatingFields = {};
-    this._tableFields = {};
-    this.fieldFilterCtrl.setValue('');
-    this.search = '';
-    this.duplicateFields = [];
-    this.openedMapping = null;
-    this.isLoading = false;
-    this._processing = true;
-    this.step = 1;
-    this._setImportStatus('');
-    if (this.fileInput) {
-      // Clear the input value so re-selecting the same file fires the change event
-      this.fileInput.nativeElement.value = '';
-    }
-    this._cdr.markForCheck();
-  }
-
-  /**
-   * Footer "Back" action: from the mapping step return to the upload step;
-   * from the upload step leave the wizard.
-   */
-  onBack(): void {
-    if (this.step === 2) {
-      this.back();
-    } else {
-      this.cancel();
-    }
-  }
-
-  /**
-   * Leaves the wizard without importing (host navigates back to the list).
-   */
-  cancel(): void {
-    this.cancelled.emit();
-  }
-
-  /**
-   * Check and return, if unique enabled (_metricMustBeUnique must be true),
-   * the existing metrics, that have the same name of the new metrics
+   * One query per metric type fetching, in a single round trip, both the metrics
+   * to be reused by name (only when _metricMustBeUnique is true) and the metrics
+   * needed to resolve the parents of the new metrics, referenced by id or by name.
    * @param newMetrics the new metrics to be created
-   * @returns the existing list of metrics by name
+   * @param requiredParentIdsByType the parent ids referenced by the new metrics
+   * @param requiredParentNamesByType the parent names referenced by the new metrics
+   * @returns per metric type, the metrics to be reused and the ones usable as parent
    */
-  private _checkIfMetricsAlreadyExist(newMetrics: {
-    [key: string]: {[key: string]: any}[];
-  }): Observable<any[][]> {
-    const metricsObs: Observable<any[]>[] = [];
-    if (this._metricMustBeUnique) {
-      Object.keys(newMetrics).forEach(metricType => {
-        const manager = this._metricManagers[metricType];
-        if (manager !== null) {
-          if (newMetrics[metricType] && newMetrics[metricType].length) {
-            const allMetricNames: string[] = newMetrics[metricType].map(m => m['name']);
-            const selector = {
-              selector: {name: {$in: allMetricNames}, is_deleted: {$ne: true}},
-            };
-            metricsObs.push(
-              manager.query(selector).pipe(
-                take(1),
-                catchError(err => {
-                  this._ehms.captureErrorMessage(
-                    `Error while searching for already existing metrics with the same name: ${JSON.stringify(
-                      err,
-                    )}`,
-                    'error',
-                  );
-                  return obsOf([]);
-                }),
-              ),
-            );
-          }
-        }
-      });
+  private _queryMetricsForImport(
+    newMetrics: {[key: string]: {[key: string]: any}[]},
+    requiredParentIdsByType: {[key: string]: string[]},
+    requiredParentNamesByType: {[key: string]: string[]},
+  ): Observable<{[metricType: string]: {reused: any[]; parentPool: any[]}}> {
+    const queries: {[metricType: string]: Observable<any[]>} = {};
+    const reusedNamesByType: {[metricType: string]: Set<string>} = {};
+    const metricTypes = new Set([
+      ...Object.keys(newMetrics),
+      ...Object.keys(requiredParentIdsByType),
+      ...Object.keys(requiredParentNamesByType),
+    ]);
+
+    metricTypes.forEach(metricType => {
+      const manager = this._metricManagers[metricType];
+      if (manager == null) {
+        return;
+      }
+      const reusedNames = this._metricMustBeUnique
+        ? (newMetrics[metricType] ?? []).map(m => m['name']).filter(name => !!name)
+        : [];
+      reusedNamesByType[metricType] = new Set(reusedNames);
+      const options = buildMetricLookupSelector(requiredParentIdsByType[metricType] ?? [], [
+        ...reusedNames,
+        ...(requiredParentNamesByType[metricType] ?? []),
+      ]);
+      if (options == null) {
+        return;
+      }
+      queries[metricType] = manager.query(options).pipe(
+        take(1),
+        catchError(err => {
+          this._ehms.captureErrorMessage(
+            `Error while searching for already existing metrics: ${JSON.stringify(err)}`,
+            'error',
+          );
+          return obsOf([]);
+        }),
+      );
+    });
+
+    if (!Object.keys(queries).length) {
+      return obsOf({});
     }
-    return metricsObs.length ? forkJoin(metricsObs) : obsOf([]);
+    return forkJoin(queries).pipe(
+      map(res => {
+        const result: {[metricType: string]: {reused: any[]; parentPool: any[]}} = {};
+        Object.keys(res).forEach(metricType => {
+          const docs = res[metricType];
+          result[metricType] = {
+            // Only the metrics matched by their own name can be reused: a metric
+            // fetched because it is a parent must not end up in metricsIdByName
+            reused: docs.filter(doc => reusedNamesByType[metricType].has(doc.name)),
+            parentPool: docs,
+          };
+        });
+        return result;
+      }),
+    );
   }
 
   /**
@@ -828,6 +644,8 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   ): MetricInfoInRows {
     const newMetrics: {[key: string]: {[key: string]: any}[]} = {};
     const requiredMetricIdsByType: {[key: string]: string[]} = {};
+    const requiredParentIdsByType: {[key: string]: string[]} = {};
+    const requiredParentNamesByType: {[key: string]: string[]} = {};
     let missingMetrics: string[] = [];
 
     if (activeMetrics.length) {
@@ -901,10 +719,25 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
               }
             }
           });
+
+          // The parents of the new metrics must be fetched to be resolved
+          const parentRefs = collectParentRefs(newMetrics[metric] ?? []);
+          if (parentRefs.parentIds.length) {
+            requiredParentIdsByType[metric] = parentRefs.parentIds;
+          }
+          if (parentRefs.parentNames.length) {
+            requiredParentNamesByType[metric] = parentRefs.parentNames;
+          }
         }
       });
     }
-    return {newMetrics, requiredMetricIdsByType, missingMetrics: [...new Set(missingMetrics)]};
+    return {
+      newMetrics,
+      requiredMetricIdsByType,
+      requiredParentIdsByType,
+      requiredParentNamesByType,
+      missingMetrics: [...new Set(missingMetrics)],
+    };
   }
 
   /**
@@ -928,33 +761,68 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   }
 
   /**
-   * Import all new metric
-   * @param newMetrics The list of the new metrics to be created
-   * @returns
+   * Create all the new metrics, parents first: one bulk creation for the metrics
+   * without a parent, then one per tree level for the others, so that a parent
+   * defined by another row of the same file is resolved whatever the row order is.
+   * @param newMetricsByType The new metrics to be created, by metric type
+   * @param parentPoolByType The already existing metrics usable as parent, by metric type
+   * @returns The outcome of the import, by metric type
    */
-  private _importMetrics(newMetrics: {
-    [key: string]: {[key: string]: any}[];
-  }): Observable<{success: RxDocument<any>[]; error: any[]}[]> {
-    const metricsObs: Observable<{success: RxDocument<any>[]; error: any[]}>[] = [];
-    Object.keys(newMetrics).forEach(metricType => {
+  private _importMetricTrees(
+    newMetricsByType: {[key: string]: {[key: string]: any}[]},
+    parentPoolByType: {[key: string]: any[]},
+  ): Observable<{[metricType: string]: MetricTreeResult<any>}> {
+    const metricsObs: {[metricType: string]: Observable<MetricTreeResult<any>>} = {};
+    Object.keys(newMetricsByType).forEach(metricType => {
       const manager = this._metricManagers[metricType];
-      if (manager !== null) {
-        if (newMetrics[metricType] && newMetrics[metricType].length) {
-          metricsObs.push(
-            manager.bulkCreate(newMetrics[metricType]).pipe(
-              catchError(err => {
-                this._ehms.captureErrorMessage(
-                  `Could not create new imported metrics: ${JSON.stringify(err)}`,
-                  'error',
-                );
-                return obsOf({success: [], error: []});
-              }),
-            ),
-          );
-        }
+      const metrics = newMetricsByType[metricType];
+      if (manager == null || !metrics || !metrics.length) {
+        return;
       }
+      const {roots, withParent} = splitMetricsByParent(metrics);
+      const rootBulk = roots.length
+        ? manager.bulkCreate(roots).pipe(
+            catchError(err => {
+              this._ehms.captureErrorMessage(
+                `Could not create new imported metrics: ${JSON.stringify(err)}`,
+                'error',
+              );
+              return obsOf({success: [] as RxDocument<any>[], error: [{msg: err}]});
+            }),
+          )
+        : obsOf({success: [] as RxDocument<any>[], error: [] as any[]});
+
+      metricsObs[metricType] = rootBulk.pipe(
+        take(1),
+        switchMap(rootRes => {
+          if (rootRes.error.length) {
+            // The children are not attempted when their level failed
+            return obsOf({
+              success: rootRes.success,
+              error: rootRes.error,
+              deferred: withParent as ImportableMetric[],
+            });
+          }
+          // A metric created from the file wins over an existing one with the
+          // same name, so it is prepended to the pool
+          const pool = [...rootRes.success, ...(parentPoolByType[metricType] ?? [])];
+          return importMetricTree(manager, withParent, pool, {
+            onError: err =>
+              this._ehms.captureErrorMessage(
+                `Could not create new imported metrics: ${JSON.stringify(err)}`,
+                'error',
+              ),
+          }).pipe(
+            map(treeRes => ({
+              success: [...rootRes.success, ...treeRes.success],
+              error: treeRes.error,
+              deferred: treeRes.deferred,
+            })),
+          );
+        }),
+      );
     });
-    return metricsObs.length ? forkJoin(metricsObs) : obsOf([]);
+    return Object.keys(metricsObs).length ? forkJoin(metricsObs) : obsOf({});
   }
 
   /**
@@ -964,6 +832,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
    * @param userDataId the logged user data id
    * @param metricsIdByName
    * @param statusDictionary all available status for the schema
+   * @param failedByType why each metric could not be created, by type and name
    */
   private _importFormData(
     rows: {[key: string]: any}[],
@@ -972,14 +841,18 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     isAdmin: boolean,
     metricsIdByName: {[key: string]: {[key: string]: any}} | null,
     statuses: FormStatus[],
+    failedByType: MetricFailures = {},
   ): void {
     const forms: InsertModel<FormData>[] = [];
+    // The rows naming a metric that could not be created nor linked: they are
+    // not imported, so that no form data is saved with an empty metric
+    const skippedRows: ImportIssue[] = [];
     const createdAtKey = 'created_at';
     const userDataKey = 'user_data_ref_id';
 
     const defaultFormStatus = statuses.length ? statuses[0].id : null;
 
-    rows.forEach((row: {[key: string]: any}) => {
+    rows.forEach((row: {[key: string]: any}, rowIdx: number) => {
       // Check if is not a second header
       if (!this._isLabelHeader(row)) {
         let newItem: {[key: string]: any} = {};
@@ -1006,6 +879,10 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
         newItem['data'] = Object.keys(row)
           .filter(field => !this._dinoFields.includes(field))
           .reduce((obj, key) => {
+            if (key === 'dinoinvalid') {
+              // A boolean flag: like the form editors, the key is written only when true
+              return getBooleanFromRow(row[key]) ? {...obj, dinoinvalid: true} : {...obj};
+            }
             const value = getValueFromRow(row[key], key);
             if (value !== null) {
               return {...obj, [key]: value};
@@ -1014,28 +891,55 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
             }
           }, {});
 
+        const unlinkedMetrics: string[] = [];
         Object.keys(this._metricManagers).forEach(metric => {
           if (activeMetrics.length && activeMetrics.includes(metric)) {
             newItem[metric + '_ref_id'] = row[metric + '_id'] ? row[metric + '_id'] : null;
             const rawMetricName = row[metric + '_name'];
             const metricName = rawMetricName != null ? (rawMetricName as string).trim() : null;
+            const hasMetricName = metricName !== null && metricName.length > 0;
             if (
               newItem[metric + '_ref_id'] === null &&
-              metricName !== null &&
-              metricName.length > 0 &&
+              hasMetricName &&
               metricsIdByName &&
               metricsIdByName[metric] &&
-              metricsIdByName[metric][metricName] !== undefined
+              metricsIdByName[metric][metricName as string] !== undefined
             ) {
-              newItem[metric + '_ref_id'] = metricsIdByName[metric][metricName];
+              newItem[metric + '_ref_id'] = metricsIdByName[metric][metricName as string];
+            }
+            // The row asked for a metric by name and it could not be created:
+            // importing it with an empty metric would silently lose the value
+            if (newItem[metric + '_ref_id'] === null && hasMetricName) {
+              const reason =
+                failedByType[metric]?.[metricName as string] ??
+                this._ts.translate('metric not created');
+              unlinkedMetrics.push(`${metric} "${metricName}": ${reason}`);
             }
           } else {
             newItem[metric + '_ref_id'] = null;
           }
         });
+        if (unlinkedMetrics.length) {
+          // The header row is the first one of the file, so the imported rows start at 2
+          skippedRows.push({row: rowIdx + 2, text: unlinkedMetrics.join(', ')});
+          return;
+        }
         forms.push(newItem as InsertModel<FormData>);
       }
     });
+
+    // Every non label row either became a form or was skipped, so this is the
+    // authoritative row count for this path, whoever called it
+    this._counts.fileRows = forms.length + skippedRows.length;
+
+    const allWarnings = skippedRows.length
+      ? [this._warningGroup(this._ts.translate('Rows not imported'), skippedRows, 'rows')]
+      : [];
+
+    if (!forms.length) {
+      this._setImportStatus(this._ts.translate('File not imported!'), allWarnings, 'error');
+      return;
+    }
 
     this._formDataManager
       .bulkCreate(forms)
@@ -1051,12 +955,24 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
       )
       .subscribe(bulkRes => {
         if (bulkRes && bulkRes.success.length) {
+          // Some of the data rows may not have made it, either because their
+          // metric was missing or because the creation failed: say so, and show
+          // how many of them were imported
+          const totalRows = forms.length + skippedRows.length;
+          const partial = totalRows > bulkRes.success.length;
+          const created = partial
+            ? `${bulkRes.success.length}/${totalRows}`
+            : `${bulkRes.success.length}`;
+          const headline = partial ? 'File partially imported' : 'File imported successfully';
+          this._counts.imported = bulkRes.success.length;
           this._setImportStatus(
-            `${this._ts.translate('File imported successfully')}: ${
-              bulkRes.success.length
-            } ${this._ts.translate('forms created')}!`,
+            `${this._ts.translate(headline)}: ${created} ${this._ts.translate('forms created')}!`,
+            allWarnings,
+            partial ? 'partial' : 'success',
+            partial
+              ? this._refusedDetail(forms.length - bulkRes.success.length)
+              : this._ts.translate('All the rows of the file have been saved.'),
           );
-          this.imported.emit();
         } else {
           let errMsg = 'File not imported! ';
           if (bulkRes?.error.length) {
@@ -1068,45 +984,44 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
               errMsg = errMsg + JSON.stringify(bulkRes?.error[0].msg?.parameters?.errors[0]);
             }
           }
-          this._setImportStatus(errMsg);
+          this._setImportStatus(errMsg, allWarnings, 'error', this._refusedDetail(forms.length));
         }
       });
   }
 
   /**
    * Add into metricsIdByName object the metric name and id
+   * @param metricType the metric type
    * @param metric the metric document
    * @param metricsIdByName object with metrics id by metric name and metric
    * type
    */
   private _addMetricDetails(
-    metric: RxDocument<Metric>,
+    metricType: string,
+    metric: {id?: string | null; name: string},
     metricsIdByName: {[key: string]: {[key: string]: string}},
   ): void {
-    const metricCollection = metric.collection.name;
-    if (!(metricCollection in metricsIdByName)) {
-      metricsIdByName[metricCollection] = {};
+    if (!(metricType in metricsIdByName)) {
+      metricsIdByName[metricType] = {};
     }
-    metricsIdByName[metricCollection][metric.name] = metric.id as string;
+    metricsIdByName[metricType][metric.name] = metric.id as string;
   }
 
   /**
    * Add existing metrics id/name to the new metricts object list
    * @param metricsIdByName object with metrics id by metric name and metric
    * type
-   * @param existingMetrics list of already existing metrics
+   * @param existingMetricsByType already existing metrics, by metric type
    */
   private _addExistingMetricsIntoList(
     metricsIdByName: {[key: string]: {[key: string]: string}},
-    existingMetrics: any[][],
+    existingMetricsByType: {[metricType: string]: any[]},
   ): void {
-    if (existingMetrics.length > 0) {
-      existingMetrics.forEach((queryRes: any[]) => {
-        queryRes.forEach(metric => {
-          this._addMetricDetails(metric, metricsIdByName);
-        });
+    Object.keys(existingMetricsByType).forEach(metricType => {
+      existingMetricsByType[metricType].forEach(metric => {
+        this._addMetricDetails(metricType, metric, metricsIdByName);
       });
-    }
+    });
   }
 
   /**
@@ -1147,12 +1062,12 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
    * case `code`, project `code_auto`). Nullable "required" props only need the
    * key to exist, so they are not enforced here.
    * @param newMetricsByType the metrics that will actually be created, by type
-   * @returns one error entry per metric missing mandatory fields, empty if valid
+   * @returns the reason, by type and metric name, of every metric that cannot be created
    */
-  private _getMissingRequiredMetricFields(newMetricsByType: {
+  private _getInvalidNewMetrics(newMetricsByType: {
     [key: string]: {[key: string]: any}[];
-  }): string[] {
-    const errors: string[] = [];
+  }): MetricFailures {
+    const failures: MetricFailures = {};
     Object.keys(newMetricsByType).forEach(metricType => {
       const manager = this._metricManagers[metricType];
       const metrics = newMetricsByType[metricType];
@@ -1187,151 +1102,150 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
         });
         if (missing.length) {
           const label = metric['name'] != null && `${metric['name']}`.length ? metric['name'] : '?';
-          errors.push(`${metricType} "${label}" (${missing.join(', ')})`);
+          failures[metricType] = failures[metricType] ?? {};
+          failures[metricType][label] = this._ts.translate('missing required fields: {{fields}}', {
+            fields: missing.join(', '),
+          });
         }
       });
     });
-    return errors;
+    return failures;
   }
 
   /**
    * Import all the rows and all new metrics into Dino
    * @param rows The rows to be imported
-   * @param newMetrics the list of the new metrics required to be created
+   * @param metricsInfo the new metrics found in the rows and their parent references
    * @param isAdminUser true if active user has admin role
    * @param statuses all available Form Statuses associated with the Form Schema
    */
   private _importFormDataRows(
     rows: {[key: string]: any}[],
-    newMetrics: {
-      [key: string]: {
-        [key: string]: any;
-      }[];
-    },
+    metricsInfo: MetricInfoInRows,
     isAdminUser: boolean,
     statuses: FormStatus[],
   ): void {
-    const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
-    if (Object.keys(newMetrics).length) {
-      this._userDataSub = this._checkIfMetricsAlreadyExist(newMetrics)
-        .pipe(
-          switchMap(existingMetrics => {
-            const newMetricsRequested: {[key: string]: {[key: string]: any}[]} =
-              deepCopy(newMetrics);
-            if (existingMetrics.length > 0) {
-              existingMetrics.forEach((queryRes: any[]) => {
-                if (queryRes.length) {
-                  const metricCollection = queryRes[0].collection.name;
-                  const metricNames = queryRes.map(metric => metric.name);
-                  newMetricsRequested[metricCollection] = newMetrics[metricCollection].filter(
-                    m => !metricNames.includes(m['name']),
-                  );
-                }
-              });
-            }
-            // Only the metrics that will actually be created must carry all
-            // their required fields: an already existing metric reused by name
-            // is filtered out above, so the user does not have to re-enter them.
-            const missingRequired = this._getMissingRequiredMetricFields(newMetricsRequested);
-            if (missingRequired.length) {
-              this._setImportStatus(
-                `${this._ts.translate(
-                  'File not imported! Missing required fields for new metrics',
-                )}: ${missingRequired.join('; ')}`,
-              );
-              return obsOf(null);
-            }
-            return obsOf({newMetricsRequested, existingMetrics});
-          }),
-          switchMap(r => {
-            if (r == null) {
-              return obsOf(null);
-            }
-            return zip(
-              this._importMetrics(r.newMetricsRequested),
-              obsOf(r.newMetricsRequested),
-              obsOf(r.existingMetrics),
-            );
-          }),
-          catchError(err => {
-            this._ehms.captureErrorMessage(
-              `Could not import form data rows: ${JSON.stringify(err)}`,
-              'error',
-            );
-            return obsOf([], [], []);
-          }),
-          withLatestFrom(this._udm.getActiveUserData()),
-        )
-        .subscribe(([r, ud]) => {
-          if (r == null) {
-            // Missing required fields: the status message is already set
-            return;
-          }
-          const createdMetrics = r[0];
-          const requiredNewMetrics = r[1];
-          const existingMetrics = r[2];
-          const userDataId = ud ? ud.id : null;
-          let metricsError: string[] = [];
-          let metricsIdByName: {[key: string]: {[key: string]: string}} = {};
-          if (createdMetrics) {
-            createdMetrics.forEach(metrics => {
-              if (metrics && metrics.success.length) {
-                if (
-                  metrics.success.length ===
-                  requiredNewMetrics[metrics.success[0].collection.name].length
-                ) {
-                  metrics.success.forEach(metric => {
-                    this._addMetricDetails(metric, metricsIdByName);
-                  });
-                } else {
-                  metricsError.push(metrics.success[0].collection.name);
-                }
-              } else {
-                if (metrics && metrics.error.length && metrics.error[0].msg) {
-                  if (isDevMode()) {
-                    console.log('Import metric error: ' + metrics.error[0].msg?.parameters);
-                  }
-                  if (
-                    metrics.error[0].msg?.parameters?.errors &&
-                    metrics.error[0].msg?.parameters?.errors.length
-                  ) {
-                    metricsError.push(JSON.stringify(metrics.error[0].msg?.parameters?.errors[0]));
-                  }
-                } else {
-                  metricsError.push('-');
-                }
-              }
-            });
-
-            if (metricsError.length === 0) {
-              this._addExistingMetricsIntoList(metricsIdByName, existingMetrics);
-              this._importFormData(
-                rows,
-                activeMetrics,
-                userDataId,
-                isAdminUser,
-                metricsIdByName,
-                statuses,
-              );
-            } else {
-              this._setImportStatus(
-                `${this._ts.translate(
-                  'File not imported! Error during create new metrics',
-                )}: ${metricsError}`,
-              );
-            }
-          } else {
-            this._setImportStatus(
-              this._ts.translate('File not imported! Error on import metrics.'),
-            );
-          }
-        });
-    } else {
+    const activeMetrics = this._activeMetrics;
+    const {newMetrics, requiredParentIdsByType, requiredParentNamesByType} = metricsInfo;
+    if (!Object.keys(newMetrics).length) {
       this._userDataSub = this._udm.getActiveUserData().subscribe(ud => {
         const userDataId = ud ? ud.id : null;
         this._importFormData(rows, activeMetrics, userDataId, isAdminUser, null, statuses);
       });
+      return;
     }
+
+    this._userDataSub = this._queryMetricsForImport(
+      newMetrics,
+      requiredParentIdsByType,
+      requiredParentNamesByType,
+    )
+      .pipe(
+        switchMap(lookup => {
+          const newMetricsRequested: {[key: string]: {[key: string]: any}[]} = deepCopy(newMetrics);
+          Object.keys(newMetricsRequested).forEach(metricType => {
+            const reusedNames = (lookup[metricType]?.reused ?? []).map(metric => metric.name);
+            if (reusedNames.length) {
+              newMetricsRequested[metricType] = newMetricsRequested[metricType].filter(
+                m => !reusedNames.includes(m['name']),
+              );
+            }
+          });
+          // Only the metrics that will actually be created must carry all
+          // their required fields: an already existing metric reused by name
+          // is filtered out above, so the user does not have to re-enter them.
+          // A metric missing one is not created, like a metric with an
+          // unresolvable parent: the rows naming it are reported one by one and
+          // the rest of the file is imported.
+          const failures = this._getInvalidNewMetrics(newMetricsRequested);
+          Object.keys(failures).forEach(metricType => {
+            newMetricsRequested[metricType] = newMetricsRequested[metricType].filter(
+              metric => failures[metricType][metric['name']] === undefined,
+            );
+          });
+          const parentPoolByType: {[metricType: string]: any[]} = {};
+          Object.keys(lookup).forEach(
+            metricType => (parentPoolByType[metricType] = lookup[metricType].parentPool),
+          );
+          return this._importMetricTrees(newMetricsRequested, parentPoolByType).pipe(
+            map(created => ({created, lookup, requested: newMetricsRequested, failures})),
+          );
+        }),
+        catchError(err => {
+          this._ehms.captureErrorMessage(
+            `Could not import form data rows: ${JSON.stringify(err)}`,
+            'error',
+          );
+          this._setImportStatus(this._ts.translate('File not imported! Error on import metrics.'));
+          return obsOf(null);
+        }),
+        withLatestFrom(this._udm.getActiveUserData()),
+      )
+      .subscribe(([r, ud]) => {
+        if (r == null) {
+          // The status message is already set
+          return;
+        }
+        const userDataId = ud ? ud.id : null;
+        const metricsError: string[] = [];
+        const metricsIdByName: {[key: string]: {[key: string]: string}} = {};
+        // Why each metric could not be created: a missing required field or an
+        // unresolvable parent. The rows naming them are reported one by one.
+        const failedByType: MetricFailures = deepCopy(r.failures);
+
+        // The reused metrics go in first: the created ones must win on a name clash
+        const reusedByType: {[metricType: string]: any[]} = {};
+        Object.keys(r.lookup).forEach(
+          metricType => (reusedByType[metricType] = r.lookup[metricType].reused),
+        );
+        this._addExistingMetricsIntoList(metricsIdByName, reusedByType);
+
+        Object.keys(r.created).forEach(metricType => {
+          const res = r.created[metricType];
+          if (res.error.length) {
+            const detailedErrors = res.error[0].msg?.parameters?.errors;
+            if (isDevMode()) {
+              console.log('Import metric error: ' + res.error[0].msg?.parameters);
+            }
+            metricsError.push(
+              detailedErrors && detailedErrors.length ? JSON.stringify(detailedErrors[0]) : '-',
+            );
+            return;
+          }
+          if (res.success.length + res.deferred.length !== (r.requested[metricType] ?? []).length) {
+            metricsError.push(metricType);
+            return;
+          }
+          this._counts.metricsCreated += res.success.length;
+          res.success.forEach(metric =>
+            this._addMetricDetails(metricType, metric, metricsIdByName),
+          );
+          res.deferred.forEach(metric => {
+            failedByType[metricType] = failedByType[metricType] ?? {};
+            failedByType[metricType][`${metric['name']}`] = this._ts.translate(
+              'metric with invalid parent',
+            );
+          });
+        });
+
+        if (metricsError.length) {
+          this._setImportStatus(
+            `${this._ts.translate(
+              'File not imported! Error during create new metrics',
+            )}: ${metricsError}`,
+          );
+          return;
+        }
+        this._importFormData(
+          rows,
+          activeMetrics,
+          userDataId,
+          isAdminUser,
+          metricsIdByName,
+          statuses,
+          failedByType,
+        );
+      });
   }
 
   /**
@@ -1362,63 +1276,44 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     requiredFormStatusNames: string[],
     allSchemaStatus: FormStatus[],
   ): boolean {
-    let idsNotMatch = false;
-    let idsNotMatchMessage = '';
-    const maxIdsInResponse = 5;
+    const warnings: ImportWarning[] = [];
+    const asIssues = (values: string[]): ImportIssue[] => values.map(value => ({text: value}));
 
-    if (requiredUserIds.length) {
-      if (existingUsers == null || existingUsers.length != requiredUserIds.length) {
-        idsNotMatch = true;
-        const existingUserIds = existingUsers.map(u => u.id);
-        let missingUserIds = requiredUserIds
-          .filter(id => !existingUserIds.includes(id))
-          .map(i => '\n' + i);
-        console.log('File not imported! These user ids not exist:' + missingUserIds);
-        if (missingUserIds.length > maxIdsInResponse) {
-          missingUserIds = missingUserIds.slice(0, maxIdsInResponse);
-          missingUserIds.push(`\n${this._ts.translate('and more')}...`);
-        }
-        idsNotMatchMessage = `\n${this._ts.translate(
-          'Check that these user ids exist',
-        )}: ${missingUserIds}`;
+    if (requiredUserIds.length && existingUsers != null) {
+      const existingUserIds = existingUsers.map(u => u.id);
+      const missingUserIds = requiredUserIds.filter(id => !existingUserIds.includes(id));
+      if (missingUserIds.length) {
+        warnings.push(
+          this._warningGroup(
+            this._ts.translate('Invalid user ids'),
+            asIssues(missingUserIds),
+            'values',
+          ),
+        );
       }
     }
 
-    if (Object.keys(requiredMetricIdsByType).length) {
-      Object.keys(requiredMetricIdsByType).forEach(reqMetricType => {
-        if (requiredMetricIdsByType[reqMetricType].length) {
-          const existingMetrics = existingMetricsByType
-            ? existingMetricsByType.find(metricsByType => {
-                if (metricsByType.length) {
-                  return metricsByType[0].collection.name === reqMetricType;
-                }
-                return false;
-              })
-            : [];
-          if (
-            existingMetrics == undefined ||
-            existingMetrics.length != requiredMetricIdsByType[reqMetricType].length
-          ) {
-            idsNotMatch = true;
-            const existingMetricIds = existingMetrics ? existingMetrics.map(u => u.id) : [];
-            let missingMetricIds = requiredMetricIdsByType[reqMetricType]
-              .filter(id => !existingMetricIds.includes(id))
-              .map(i => '\n' + i);
-            console.log(
-              'File not imported! These ' + reqMetricType + ' ids not exist:' + missingMetricIds,
-            );
-            if (missingMetricIds.length > maxIdsInResponse) {
-              missingMetricIds = missingMetricIds.slice(0, maxIdsInResponse);
-              missingMetricIds.push(`\n${this._ts.translate('and more')}...`);
-            }
-            idsNotMatchMessage = `
-              ${idsNotMatchMessage} \n${this._ts.translate(
-              'Check that these metric ids exist for',
-            )} ${reqMetricType}: ${missingMetricIds}`;
-          }
-        }
-      });
-    }
+    Object.keys(requiredMetricIdsByType).forEach(metricType => {
+      const requiredIds = requiredMetricIdsByType[metricType];
+      if (!requiredIds.length) {
+        return;
+      }
+      const existingMetrics =
+        existingMetricsByType?.find(
+          metricsByType => metricsByType.length && metricsByType[0].collection.name === metricType,
+        ) ?? [];
+      const existingMetricIds = existingMetrics.map((m: any) => m.id);
+      const missingMetricIds = requiredIds.filter(id => !existingMetricIds.includes(id));
+      if (missingMetricIds.length) {
+        warnings.push(
+          this._warningGroup(
+            `${this._ts.translate('Invalid metric ids')} (${metricType})`,
+            asIssues(missingMetricIds),
+            'values',
+          ),
+        );
+      }
+    });
 
     if (requiredFormStatusNames.length) {
       const existingFormStatusNames = allSchemaStatus.map(fst => fst.name);
@@ -1426,96 +1321,20 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
         st => !existingFormStatusNames.includes(st),
       );
       if (missingStatus.length) {
-        idsNotMatch = true;
-        let missingStatusNames = missingStatus.map(i => '\n' + i);
-        console.log('File not imported! These form status names not exist:' + missingStatusNames);
-
-        idsNotMatchMessage = `\n${this._ts.translate(
-          'Check that these form status names exist',
-        )}: ${missingStatusNames}`;
+        warnings.push(
+          this._warningGroup(
+            this._ts.translate('Invalid form status'),
+            asIssues(missingStatus),
+            'values',
+          ),
+        );
       }
     }
 
-    if (idsNotMatch) {
-      this._setImportStatus(`${this._ts.translate('File not imported')}! ${idsNotMatchMessage}`);
+    if (warnings.length) {
+      this._setImportStatus(this._ts.translate('File not imported!'), warnings, 'error');
     }
-    return idsNotMatch;
-  }
-
-  /**
-   * Convert the xls file into a json, read the file columns and build the
-   * column mappings, prefilled with the available fields with the same name
-   * @param file The Xlsx file to be read
-   */
-  private _readFile(file: Blob): void {
-    this._processing = true;
-    this.isLoading = true;
-    this._rows = [];
-    this.columnMappings = [];
-    this.availableFields = [];
-    this.duplicateFields = [];
-    this._setImportStatus('');
-    const fileReader = new FileReader();
-    fileReader.readAsArrayBuffer(file);
-    fileReader.onerror = () => {
-      this.isLoading = false;
-      this._processing = false;
-      this._cdr.markForCheck();
-    };
-    fileReader.onload = (e: any) => {
-      const bufferArray = e?.target.result;
-      let rows: {[key: string]: any}[];
-      let columns: string[];
-      try {
-        ({rows, columns} = this._importService.parseWorkbook(bufferArray));
-      } catch (err) {
-        if (isDevMode()) {
-          console.log('Could not read the import file:', err);
-        }
-        this.isLoading = false;
-        this._processing = false;
-        this._setImportStatus(this._ts.translate('File not imported! Could not read the file.'));
-        return;
-      }
-      this._rows = rows;
-      this._columnMappingsSub.unsubscribe();
-      this._columnMappingsSub = this._formSchema.pipe(take(1)).subscribe(formSchema => {
-        this.availableFields = this._importService.getAvailableFields(formSchema);
-        this._repeatingFields = this._importService.getRepeatingSlideFields(formSchema);
-        this._tableFields = this._importService.getTableFields(formSchema);
-        this.fieldFilterCtrl.setValue('');
-        this.columnMappings = columns.map(column => this._buildColumnMapping(column));
-        this._updateDuplicateFields();
-        this._processing = false;
-        this.isLoading = false;
-        // Advance to the mapping step now that the file has been parsed.
-        this.step = 2;
-        this._cdr.markForCheck();
-      });
-    };
-  }
-
-  /**
-   * Build the column mapping for a file column, pre-filling the target field
-   * when the column name matches an available field, or a repeating-slide field
-   * written as `base__<index>` (in which case the repetition order is taken
-   * from the index found in the column name).
-   * @param column The file column name
-   * @returns The column mapping
-   */
-  private _buildColumnMapping(column: string): ColumnMapping {
-    let field: string | null = null;
-    let repetition: number | undefined;
-    if (this.availableFields.includes(column)) {
-      field = column;
-    } else {
-      const repMatch = column.match(/^(.+)__(\d+)$/);
-      if (repMatch && this.isRepeatingField(repMatch[1])) {
-        field = repMatch[1];
-        repetition = +repMatch[2];
-      }
-    }
-    return {column, field, repetition, control: new UntypedFormControl(field)};
+    return warnings.length > 0;
   }
 
   /**
@@ -1527,16 +1346,18 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
    * @param rows The rows parsed from the file
    * @returns The rows with the mapped field names as keys
    */
-  private _applyColumnMappings(rows: {[key: string]: any}[]): {[key: string]: any}[] {
-    const directMappings = this.columnMappings.filter(
-      mapping =>
-        mapping.field != null &&
-        mapping.field !== this.ignoreFieldValue &&
-        !this.isRepeatingField(mapping.field),
+  private _applyColumnMappings(
+    rows: {[key: string]: any}[],
+    mappings: ColumnMapping[],
+  ): {[key: string]: any}[] {
+    // The plain rename is shared; the repeating slides are laid out here, since
+    // only the form schema knows how their repetitions have to be numbered
+    const mappedRows = applyMappings(rows, mappings, mapping =>
+      this.isRepeatingField(mapping.field),
     );
     // slide name -> field base -> the columns mapped to it, ordered by repetition
     const slides: {[slide: string]: {[base: string]: ColumnMapping[]}} = {};
-    this.columnMappings.forEach(mapping => {
+    mappings.forEach(mapping => {
       if (!this.isRepeatingField(mapping.field)) {
         return;
       }
@@ -1549,19 +1370,13 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
       Object.keys(slides[slide]).forEach(base => {
         slides[slide][base].sort(
           (a, b) =>
-            (a.repetition ?? 0) - (b.repetition ?? 0) ||
-            this.columnMappings.indexOf(a) - this.columnMappings.indexOf(b),
+            (a.repetition ?? 0) - (b.repetition ?? 0) || mappings.indexOf(a) - mappings.indexOf(b),
         );
       });
     });
 
-    return rows.map(row => {
-      const mappedRow: {[key: string]: any} = {};
-      directMappings.forEach(mapping => {
-        if (row[mapping.column] !== undefined) {
-          mappedRow[mapping.field as string] = row[mapping.column];
-        }
-      });
+    return rows.map((row, rowIdx) => {
+      const mappedRow: {[key: string]: any} = mappedRows[rowIdx];
       Object.keys(slides).forEach(slide => {
         const bases = slides[slide];
         const slots = Math.max(...Object.keys(bases).map(base => bases[base].length));
@@ -1596,21 +1411,6 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   }
 
   /**
-   * Update the list of the fields mapped by more than one column. Repeating
-   * fields are excluded: they are meant to be mapped by several columns.
-   */
-  private _updateDuplicateFields(): void {
-    const mappedFields = this.columnMappings
-      .map(mapping => mapping.field)
-      .filter(
-        field => field != null && field !== this.ignoreFieldValue && !this.isRepeatingField(field),
-      ) as string[];
-    this.duplicateFields = [
-      ...new Set(mappedFields.filter((field, idx) => mappedFields.indexOf(field) !== idx)),
-    ];
-  }
-
-  /**
    * Validate the mapped rows and start import all the rows
    * No update for form data, all form data will be imported as new
    * @param data The mapped rows to be imported
@@ -1620,11 +1420,11 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
     this._setImportStatus(startMessage);
     let requiredFormStatusNames = this._allValuesForKey(data, 'form_status_name');
     let requiredUserIds = this._allValuesForKey(data, 'user_data_ref_id');
-    const activeMetrics = this.metricsService.activeMetrics.value.map(metric => metric.metricName);
-    const {newMetrics, requiredMetricIdsByType, missingMetrics} = this._getMetricsToBeCreated(
-      data,
-      activeMetrics,
-    );
+    const activeMetrics = this._activeMetrics;
+    // The label header row of a dino export is not a data row
+    this._counts.fileRows = data.filter(row => !this._isLabelHeader(row)).length;
+    const metricsInfo = this._getMetricsToBeCreated(data, activeMetrics);
+    const {requiredMetricIdsByType, missingMetrics} = metricsInfo;
     let queryRequiredUsers: Observable<RxDocument<UserData>[]> = requiredUserIds.length
       ? this._udm
           .query({
@@ -1641,10 +1441,8 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
         switchMap(formSchema => {
           let missingRequiredMetrics = false;
           if (!this.hasOptionalMetrics) {
-            const requiredMetrics =
-              formSchema?.form_schema_metrics && formSchema.form_schema_metrics.length
-                ? formSchema.form_schema_metrics
-                : activeMetrics;
+            // activeMetrics is already restricted to the metrics of the form schema
+            const requiredMetrics = activeMetrics;
 
             if (requiredMetrics && requiredMetrics.length && missingMetrics.length) {
               missingRequiredMetrics = requiredMetrics.some(reqMetric =>
@@ -1653,7 +1451,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
               if (missingRequiredMetrics) {
                 this._setImportStatus(
                   `${this._ts.translate(
-                    'File not imported! This metrics are mandatory',
+                    'File not imported! These metrics are mandatory',
                   )}: ${requiredMetrics.join(',')}.`,
                 );
                 return obsOf([]);
@@ -1700,7 +1498,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
           );
 
           if (!idsNotMatch) {
-            this._importFormDataRows(data, newMetrics, isAdminUser, allSchemaStatus);
+            this._importFormDataRows(data, metricsInfo, isAdminUser, allSchemaStatus);
           }
         } else {
           if (
@@ -1717,8 +1515,7 @@ export class ImportForm implements OnInit, OnDestroy, ErrorStateMatcher {
   ngOnDestroy() {
     this._userDataSub.unsubscribe();
     this._validateDataSub.unsubscribe();
-    this._columnMappingsSub.unsubscribe();
-    this._fieldFilterSub.unsubscribe();
+    this._schemaSub.unsubscribe();
     this.cancelled.complete();
     this.imported.complete();
   }

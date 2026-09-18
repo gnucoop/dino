@@ -171,7 +171,7 @@ export class MetricDelete<T extends Metric = Metric> implements OnInit, OnDestro
         if (typeof formsCount === 'number' && formsCount > 0) {
           this.enableDelete = false;
           this.data.customContent =
-            this._ts.translate('Some forms use this metrics.') +
+            this._ts.translate('Some forms use these metrics.') +
             ' ' +
             this._ts.translate('You cannot delete them.');
         } else {
@@ -193,7 +193,7 @@ export class MetricDelete<T extends Metric = Metric> implements OnInit, OnDestro
             this.enableDelete = true;
             if (reports.length > 0) {
               this.data.customContent =
-                this._ts.translate('Some reports use this metrics.') +
+                this._ts.translate('Some reports use these metrics.') +
                 ' ' +
                 this._ts.translate('Do you still want to delete the selected items?');
             }

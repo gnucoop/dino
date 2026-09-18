@@ -22,22 +22,35 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {ReactiveFormsModule} from '@angular/forms';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {ImportWizardModule} from '@dino/material/import-wizard';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSelectModule} from '@angular/material/select';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {TranslocoModule} from '@ngneat/transloco';
+import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
-import {ImportForm} from './import-form';
+import {ImportWizard} from './import-wizard';
 
 @NgModule({
   imports: [
     CommonModule,
-    ImportWizardModule,
-    MatCheckboxModule,
+    FormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatTooltipModule,
+    NgxMatSelectSearchModule,
     ReactiveFormsModule,
     TranslocoModule,
   ],
-  declarations: [ImportForm],
-  exports: [ImportForm],
+  declarations: [ImportWizard],
+  exports: [ImportWizard],
 })
-export class ImportFormModule {}
+export class ImportWizardModule {}

@@ -23,7 +23,8 @@ import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ENG: Translation = {
   'New translation': 'New translation',
-  'Define the key and, if you want, translate it right away. You can complete the other languages later.': 'Define the key and, if you want, translate it right away. You can complete the other languages later.',
+  'Define the key and, if you want, translate it right away. You can complete the other languages later.':
+    'Define the key and, if you want, translate it right away. You can complete the other languages later.',
   'mandatory': 'mandatory',
   'Key example placeholder': 'e.g. A filter on field "" already exists.',
   'Use': 'Use',
@@ -33,9 +34,11 @@ export const ENG: Translation = {
   'Source text': 'Source text',
   'Translation {{language}}…': 'Translation {{language}}…',
   'Save translation': 'Save translation',
-  'The languages left empty stay marked as missing.': 'The languages left empty stay marked as missing.',
+  'The languages left empty stay marked as missing.':
+    'The languages left empty stay marked as missing.',
   'All languages': 'All languages',
-  'Review, import and export the whole dictionary of a language.': 'Review, import and export the whole dictionary of a language.',
+  'Review, import and export the whole dictionary of a language.':
+    'Review, import and export the whole dictionary of a language.',
   'Available languages': 'Languages',
   'Search language…': 'Search language…',
   'Search in file…': 'Search in file…',
@@ -45,7 +48,8 @@ export const ENG: Translation = {
   'Invalid JSON': 'Invalid JSON',
   'Import file': 'Import file',
   'values present': 'values present',
-  'Read-only preview. Single translations are edited from the Translations page.': 'Read-only preview. Single translations are edited from the Translations page.',
+  'Read-only preview. Single translations are edited from the Translations page.':
+    'Read-only preview. Single translations are edited from the Translations page.',
   'Translations': 'Translations',
   'keys': 'keys',
   'complete': 'complete',
@@ -77,7 +81,6 @@ export const ENG: Translation = {
   'mapped': 'mapped',
   'ignored': 'ignored',
   'Search columns…': 'Search columns…',
-  'Auto-match': 'Auto-match',
   'File column': 'File column',
   'Form field': 'Form field',
   'Status': 'Status',
@@ -91,6 +94,34 @@ export const ENG: Translation = {
   'Apply import': 'Apply import',
   'Reuse existing metrics with the same name': 'Reuse existing metrics with the same name',
   'No fields found': 'No fields found',
+  'Result': 'Result',
+  'Rows imported': 'Rows imported',
+  'Rows rejected': 'Rows rejected',
+  'Rows in file': 'Rows in file',
+  'Metrics created': 'Metrics created',
+  'Search by row or error': 'Search by row or error',
+  'File row': 'File row',
+  'Error': 'Error',
+  'and other {{n}}': 'and other {{n}}',
+  'All the rows of the file have been saved.': 'All the rows of the file have been saved.',
+  '{{n}} rows not imported: refused on save': '{{n}} rows not imported: refused on save',
+  'Choose the file with the data to be imported.': 'Choose the file with the data to be imported.',
+  'Invalid user ids': 'Invalid user ids',
+  'Invalid metric ids': 'Invalid metric ids',
+  'Invalid form status': 'Invalid form status',
+  'Rows not imported': 'Rows not imported',
+  'metric with invalid parent': 'metric with invalid parent',
+  'metric not created': 'metric not created',
+  'Field mapped to more than one column': 'Field mapped to more than one column',
+  'File not imported! Could not read the file.': 'File not imported! Could not read the file.',
+  'missing required fields: {{fields}}': 'missing required fields: {{fields}}',
+  'Re-match all': 'Re-match all',
+  'Reset all the columns and match them again': 'Reset all the columns and match them again',
+  'Map at least one form field to import': 'Map at least one form field to import',
+  'metrics created': 'metrics created',
+  'the name is missing': 'the name is missing',
+  'Ignore column': 'Ignore column',
+  'repeating': 'repeating',
   'Repetition': 'Repetition',
   'DISMISS': 'DISMISS',
   // Public survey footer navigation ('Forward' maps to "Next" but is a distinct
@@ -196,9 +227,6 @@ export const ENG: Translation = {
   'Cases': 'Cases',
   'Change Password': 'Change Password',
   'Chat with your data': 'Chat with your data',
-  'Check that these form status names exist': 'Check that these form status names exist',
-  'Check that these metric ids exist for': 'Check that these metric ids exist for',
-  'Check that these user ids exist': 'Check that these user ids exist',
   'Choose Video source': 'Choose Video source',
   'Choose file': 'Choose file',
   'Choose the Action you want to perform': 'Choose the Action you want to perform',
@@ -208,8 +236,10 @@ export const ENG: Translation = {
   'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard':
     'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard',
   'Choose your Action': 'Choose your Action',
-  'Some files were stored locally due to a temporary network problem. Click to sync these files.': 'Some files were stored locally due to a temporary network problem. Click to sync these files.',
-  'Some files could not be uploaded. Please retry.': 'Some files could not be uploaded. Please retry.',
+  'Some files were stored locally due to a temporary network problem. Click to sync these files.':
+    'Some files were stored locally due to a temporary network problem. Click to sync these files.',
+  'Some files could not be uploaded. Please retry.':
+    'Some files could not be uploaded. Please retry.',
   'Close': 'Close',
   'CLOSE': 'CLOSE',
   'Close the dialog and apply filters.': 'Close the dialog and apply filters.',
@@ -249,7 +279,8 @@ export const ENG: Translation = {
   'Do you want to': 'Do you want to',
   'Docx': 'Export Docx',
   'Document saved': 'Document saved',
-  'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.': 'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.',
+  'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.':
+    'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.',
   "Don't import metrics if name exists": "Don't import metrics if name exists",
   'Donors': 'Donors',
   'Download': 'Download',
@@ -290,7 +321,8 @@ export const ENG: Translation = {
   'File not imported! Error on import metrics.': 'File not imported! Error on import metrics.',
   'File not imported! Errors in metrics with parents.':
     'File not imported! Errors in metrics with parents.',
-  'File not imported! This metrics are mandatory': 'File not imported! This metrics are mandatory',
+  'File not imported! These metrics are mandatory':
+    'File not imported! These metrics are mandatory',
   'File not imported: no valid metrics to import found in the file.':
     'File not imported: no valid metrics to import found in the file.',
   'File not imported: only users with the admin role can import metrics.':
@@ -344,7 +376,8 @@ export const ENG: Translation = {
   'Incorrect email and/or password': 'Incorrect email and/or password',
   'Incorrect password': 'Incorrect password',
   'Initializing data': 'Initializing data',
-  'Insert a formula to filter metrics, using metric fields or attributes': 'Insert a formula to filter metrics, using metric fields or attributes. Use: attribute = \'val\' or attribute != true or attribute = false or date_start >= \'2024-04-2\'',
+  'Insert a formula to filter metrics, using metric fields or attributes':
+    "Insert a formula to filter metrics, using metric fields or attributes. Use: attribute = 'val' or attribute != true or attribute = false or date_start >= '2024-04-2'",
   'Invalid API Key': 'Invalid API Key',
   'Invalid email and/or password': 'Invalid email and/or password',
   'Invalid metrics': 'Invalid metrics',
