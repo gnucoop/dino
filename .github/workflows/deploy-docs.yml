@@ -17,11 +17,20 @@ name: Deploy Docs
 on:
   workflow_run:
     workflows: ['CI']
+    # Without this filter every branch whose CI passes republishes the docs. The
+    # run would rebuild main anyway, since a workflow_run checkout defaults to the
+    # default branch, so those pushes to gh-pages are pure waste.
+    branches:
+      - main
     types:
       - completed
 jobs:
   docs:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # The branch filter above is belt; this is braces, in case the trigger ever
+    # gains another branch.
+    if: >-
+      ${{ github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -125,6 +134,19 @@ jobs:
       # ------------------------
       - name: Copy root index
         run: cp dino-doc/site-root/index.html dino-doc/site/index.html
+
+      # ------------------------
+      # Keep Vercel off the docs branch
+      # ------------------------
+      # gh-pages is an orphan branch holding the built site and nothing else, so
+      # the repo's own vercel.json never reaches it and the gate in
+      # projects/dinoapp/vercel-build-step.sh cannot protect it: both Vercel
+      # projects wired to this repo try to build the docs branch as if it were
+      # the app, and fail. Shipping a vercel.json inside the site gives them an
+      # ignore command that always skips. Exit 0 means "skip the build".
+      - name: Skip Vercel builds on gh-pages
+        run: |
+          echo '{"ignoreCommand": "exit 0"}' > dino-doc/site/vercel.json
 
       # ------------------------
       # Deploy to GitHub Pages
