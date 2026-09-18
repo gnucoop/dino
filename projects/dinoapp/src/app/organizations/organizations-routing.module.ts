@@ -4,6 +4,12 @@ import {OrganizationsComponent} from './components/organizations.component';
 
 const routes: Routes = [
   {
+    path: 'import',
+    loadChildren: () =>
+      import('../metric-import-page/metric-import-page.module').then(m => m.MetricImportPageModule),
+    data: {metricType: 'organization', breadcrumbs: [{label: 'Import'}]},
+  },
+  {
     path: '',
     component: OrganizationsComponent,
     data: {breadcrumbs: null},
@@ -11,5 +17,4 @@ const routes: Routes = [
 ];
 
 @NgModule({imports: [RouterModule.forChild(routes)], exports: [RouterModule]})
-export class OrganizationsRoutingModule {
-}
+export class OrganizationsRoutingModule {}
