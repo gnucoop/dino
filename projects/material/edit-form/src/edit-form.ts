@@ -190,6 +190,11 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   isSaveDisabled: Observable<boolean> = obsOf(false);
 
   /**
+   * True if the Save draft button should be disabled
+   */
+  isSaveDraftDisabled: Observable<boolean> = obsOf(false);
+
+  /**
    * True if no validation errors are encountered in the Form Metrics selector form
    */
   isFormMetricsSelectorValid: Observable<boolean> = obsOf(false);
@@ -1339,23 +1344,18 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       )
       .subscribe();
 
-    this.isSaveDisabled = combineLatest([
-      this.isAjfFormValid,
-      this._uniqueMetricsSetAlreadyExists,
-      this.isLoading,
-    ]).pipe(
-      map(
-        ([ajfValid, uniqueExists, loading]) =>
-          ajfValid === false || uniqueExists === true || loading === true,
-      ),
-      shareReplay(1),
-    );
-
+    // Assigned before isSaveDisabled, which combines it: the other way round it
+    // would capture the initial obsOf(false) and never enable the Save button
     this.isFormMetricsSelectorValid = combineLatest([
+      this.metricsService.hasActiveMetrics,
       this._formMetricsSelector,
       this._uniqueMetricsSetAlreadyExists,
     ]).pipe(
-      switchMap(([formMetricsSelector, uniqueExists]) => {
+      switchMap(([hasActiveMetrics, formMetricsSelector, uniqueExists]) => {
+        if (!hasActiveMetrics) {
+          // There is no metric step at all: nothing to choose, nothing to validate
+          return obsOf(true);
+        }
         if (formMetricsSelector == null || uniqueExists) {
           return obsOf(false);
         }
@@ -1364,6 +1364,39 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           switchMap(() => formMetricsSelector.isFormMetricsValid()),
         );
       }),
+      shareReplay(1),
+    );
+
+    // Clearing a mandatory metric must disable the Save as much as emptying a
+    // mandatory field does: without them the form data cannot be saved
+    const isComplete = combineLatest([this.isAjfFormValid, this.isFormMetricsSelectorValid]).pipe(
+      map(([ajfValid, metricsValid]) => ajfValid === true && metricsValid === true),
+      shareReplay(1),
+    );
+
+    this.isSaveDisabled = combineLatest([
+      isComplete,
+      this._uniqueMetricsSetAlreadyExists,
+      this.isLoading,
+    ]).pipe(
+      map(
+        ([complete, uniqueExists, loading]) =>
+          complete === false || uniqueExists === true || loading === true,
+      ),
+      shareReplay(1),
+    );
+
+    // The draft is offered exactly when the form data cannot be saved as complete
+    this.isSaveDraftDisabled = combineLatest([
+      isComplete,
+      this._uniqueMetricsSetAlreadyExists,
+      this.isLoading,
+    ]).pipe(
+      map(
+        ([complete, uniqueExists, loading]) =>
+          complete === true || uniqueExists === true || loading === true,
+      ),
+      shareReplay(1),
     );
   }
 

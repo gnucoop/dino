@@ -84,7 +84,7 @@
     buttonIcon="save_as"
     [tooltipMessage]="'Save draft'|transloco"
     [tourAnchor]="uiServiceConfig ? 'save-draft-floating-button' : ''"
-    [buttonDisabled]="((isAjfFormValid|async) === true) || ((uniqueMetricsSetAlreadyExists|async) === true) || ((isLoading|async) === true) "
+    [buttonDisabled]="(isSaveDraftDisabled|async) === true"
     (click)="saveDraft()"
   ></dino-floating-button>
 </ng-container>
