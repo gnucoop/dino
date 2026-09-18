@@ -585,10 +585,22 @@ dino-import-wizard {
     padding: 16px 22px;
   }
 
+  // One entry per row: side by side, two adjacent values read as a single line
   .dino-imp-issue-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 8px 22px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dino-imp-issue-value {
+    padding: 7px 0;
+    // Full width is available now: wrap instead of the ellipsis of col-name
+    white-space: normal;
+    overflow: visible;
+    word-break: break-word;
+
+    & + & {
+      border-top: 1px solid var(--imp-border-inner);
+    }
   }
 
   .dino-imp-issue-more {
