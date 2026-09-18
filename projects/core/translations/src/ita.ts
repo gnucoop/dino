@@ -141,6 +141,8 @@ export const ITA: Translation = {
   'Reset all the columns and match them again':
     'Reimposta tutte le colonne e le riassocia automaticamente',
   'Map at least one form field to import': 'Associa almeno un campo del modulo per importare',
+  'metrics created': 'metriche create',
+  'the name is missing': 'manca il nome',
   'Ignore column': 'Ignora colonna',
   'repeating': 'ripetuto',
   'Repetition': 'Ripetizione',

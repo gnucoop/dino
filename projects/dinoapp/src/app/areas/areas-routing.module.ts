@@ -4,6 +4,12 @@ import {AreasComponent} from './components/areas.component';
 
 const routes: Routes = [
   {
+    path: 'import',
+    loadChildren: () =>
+      import('../metric-import-page/metric-import-page.module').then(m => m.MetricImportPageModule),
+    data: {metricType: 'area', breadcrumbs: [{label: 'Import'}]},
+  },
+  {
     path: '',
     component: AreasComponent,
     data: {breadcrumbs: null},

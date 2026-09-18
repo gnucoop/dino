@@ -19,28 +19,39 @@
  * If not, see http://www.gnu.org/licenses/.
  *
  */
+
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Inject,
+  EventEmitter,
+  Input,
   OnDestroy,
-  OnInit,
+  Output,
   ViewEncapsulation,
 } from '@angular/core';
-import {UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {UntypedFormControl} from '@angular/forms';
 import {
   buildMetricLookupSelector,
+  collectParentRefs,
   DataModelManager,
-  formatMetricNamesMessage,
   getValueFromRow,
   importMetricTree,
   Metric,
   MetricTreeResult,
+  splitMetricsByParent,
 } from '@dino/core/data';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
+import {
+  ColumnMapping,
+  ImportField,
+  ImportIssue,
+  ImportOutcome,
+  ImportOutcomeStatus,
+  ImportWarning,
+  applyMappings,
+  warningGroup,
+} from '@dino/material/import-wizard';
 import {UserGroupManager} from '@dino/core/users';
 import {TranslocoService} from '@ngneat/transloco';
 import {RxDocument, RxJsonSchema} from 'rxdb';
@@ -52,66 +63,47 @@ import {
   Subscription,
   switchMap,
   take,
-  zip,
 } from 'rxjs';
 
-import * as XLSX from 'xlsx';
-
 /**
- * This Dialog is opened to ask the user a confirmation
- * of a delete metric/metrics action, after check if there are no related forms or metric's children
+ * Metric properties Dino generates by itself, never mapped by the user.
  */
-export interface MetricImportDialogData<T extends Metric = Metric> {
-  /**
-   * The manager passed to the dialog.
-   */
-  metricManager: DataModelManager<T>;
-
-  /**
-   * The Metric name.
-   */
-  metricName: string;
-
-  /**
-   * The dialog custom text
-   */
-  customContent?: string;
-}
+const AUTO_METRIC_PROPS = ['id', 'created_at', 'updated_at', 'is_deleted', '_deleted'];
 
 /**
- * All metric details found in rows
+ * All metric details found in the mapped rows
  */
 interface MetricInfoInRows {
   /**
-   * Metrics to be created
+   * Metrics to be created, with no parent
    */
-  newMetrics: {[key: string]: any}[];
+  newMetrics: Metric[];
 
   /**
-   * Metrics with parent to be created
+   * Metrics to be created, referencing a parent
    */
-  newMetricsWithParent: {[key: string]: any}[];
+  newMetricsWithParent: Metric[];
 
   /**
-   * Invalid metrics in rows
+   * The rows that cannot be imported, with the reason
    */
-  invalidMetrics: {[key: string]: any}[];
+  invalidRows: ImportIssue[];
 
   /**
-   * Parent Metric ids found in rows, which must exist.
+   * Parent ids referenced by the new metrics
    */
   requiredMetricParentIds: string[];
 
   /**
-   * Parent Metric names found in rows, which must exist.
+   * Parent names referenced by the new metrics
    */
   requiredMetricParentNames: string[];
 }
 
 /**
- * Dino Metric Import component.
- * Allows the Admin to import entries for metric.
- * The generic type refers to the model of the Metric to be imported.
+ * The Metric import component.
+ * Declares the metric properties as the mappable fields and imports the rows
+ * the wizard hands over, resolving the parents recursively.
  */
 @Component({
   selector: 'dino-metric-import',
@@ -120,66 +112,74 @@ interface MetricInfoInRows {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestroy {
+export class MetricImport implements OnDestroy {
   /**
-   * The data model manager used to import the items of
-   * the relative Metric.
+   * The data model manager of the metric to be imported.
    */
-  private _metricManager?: DataModelManager<T>;
-
-  /**
-   * The metric name to be imported (location, case, project...)
-   */
-  metricName = '';
-
-  /**
-   * Current status message of the Import Form
-   */
-  importStatus = '';
-
-  /**
-   * Selected file name for import
-   */
-  fileName = '';
-
-  /**
-   * Total imported metrics
-   */
-  private _totalImportedMetrics: number = 0;
-
-  /**
-   * The Import dialog form group
-   */
-  readonly importMetrics: UntypedFormGroup;
-
-  /**
-   * The selected file
-   */
-  private _file?: Blob;
-
-  /**
-   * True if the form is currently being processed.
-   * Defaults to true.
-   */
-  private _processing: boolean = true;
-  get processing(): boolean {
-    return this._processing;
+  @Input()
+  set metricManager(manager: DataModelManager<any> | null) {
+    this._metricManager = manager;
+    this._buildFields();
   }
+  private _metricManager: DataModelManager<any> | null = null;
 
   /**
-   * If true, metric name must be unique
+   * The metric name (area, case, project...), the prefix of the file columns.
    */
-  private _metricMustBeUnique: boolean = false;
+  @Input()
+  set metricName(name: string) {
+    this._metricName = name ?? '';
+    this._buildFields();
+  }
+  get metricName(): string {
+    return this._metricName;
+  }
+  private _metricName = '';
 
   /**
-   * Subscribes to the validate xlsx data function
+   * Emitted when the user leaves the wizard without importing.
    */
-  private _validateDataSub: Subscription = Subscription.EMPTY;
+  @Output() cancelled = new EventEmitter<void>();
 
   /**
-   * Dino importable common metric fields
+   * Emitted once some metric has been imported.
    */
-  private _dinoFields: string[] = ['created_at', 'name', 'parent_id', 'parent_name'];
+  @Output() imported = new EventEmitter<void>();
+
+  /**
+   * The fields the file columns can be mapped onto.
+   */
+  fields: ImportField[] = [];
+
+  /**
+   * The outcome of the import, shown in the last step of the wizard.
+   */
+  outcome: ImportOutcome | null = null;
+
+  /**
+   * True while the rows are being imported.
+   */
+  importing = false;
+
+  /**
+   * Whether an existing metric with the same name is reused instead of created.
+   */
+  readonly reuseMetricName = new UntypedFormControl(true);
+
+  /**
+   * If true, a metric whose name already exists is not created again.
+   */
+  private _metricMustBeUnique = false;
+
+  /**
+   * The data rows of the file, the label header row excluded.
+   */
+  private _fileRows = 0;
+
+  /**
+   * The roles granting Admin permissions
+   */
+  private _adminRoles = ['admin'];
 
   /**
    * Not mandatory common fields for import. Id and updated_at are not importable.
@@ -187,535 +187,488 @@ export class MetricImport<T extends Metric = Metric> implements OnInit, OnDestro
   private _notMandatoryFields: string[] = ['id', 'created_at', 'updated_at'];
 
   /**
-   * The roles granting Admin permissions
+   * Dino importable common metric fields, used to spot the label header row
    */
-  private adminRoles = ['admin'];
+  private _dinoFields: string[] = ['created_at', 'name', 'parent_id', 'parent_name'];
+
+  private _importSub: Subscription = Subscription.EMPTY;
 
   constructor(
-    private _formBuilder: UntypedFormBuilder,
-    readonly snackbar: MatSnackBar,
-    public dialogRef: MatDialogRef<MetricImport>,
-    @Inject(MAT_DIALOG_DATA) public data: MetricImportDialogData<T>,
     private _ehms: ErrorHandlerMessageService,
     private _ugm: UserGroupManager,
     private _ts: TranslocoService,
     private _cdr: ChangeDetectorRef,
-  ) {
-    if (data != null && data.metricManager != null && data.metricName) {
-      this._metricManager = data.metricManager;
-      this.metricName = data.metricName;
-    }
-    this.importMetrics = this._formBuilder.group({
-      reuseMetricName: [true],
-    });
+  ) {}
+
+  ngOnDestroy(): void {
+    this._importSub.unsubscribe();
+    this.cancelled.complete();
+    this.imported.complete();
   }
 
   /**
-   * Updates the status message of the Import Form
-   * @param msg The message string
+   * Imports the rows the wizard hands over.
+   * @param request The parsed rows and the column mappings
    */
-  private _setImportStatus(msg: string): void {
-    this.importStatus = msg;
+  onApply(request: {rows: {[key: string]: any}[]; mappings: ColumnMapping[]}): void {
+    if (this._metricManager == null) {
+      return;
+    }
+    this.importing = true;
+    this._metricMustBeUnique = this.reuseMetricName.value;
+    const rows = this._stripPrefix(applyMappings(request.rows, request.mappings));
+    this._importRows(rows);
+  }
+
+  /**
+   * Leaves the wizard once the result has been read.
+   */
+  onClosed(): void {
+    if (this.outcome && this.outcome.status !== 'error') {
+      this.imported.emit();
+    } else {
+      this.cancelled.emit();
+    }
+  }
+
+  /**
+   * Reports an unreadable file as an outcome.
+   */
+  onUnreadableFile(): void {
+    this._setOutcome(this._ts.translate('File not imported! Could not read the file.'), 'error');
+  }
+
+  /**
+   * Declares one mappable field per importable metric property. The field is
+   * named as the export writes it, `<metric>_<prop>`, so that a file exported by
+   * Dino is mapped without touching anything.
+   */
+  private _buildFields(): void {
+    if (this._metricManager == null || !this._metricName) {
+      this.fields = [];
+      return;
+    }
+    const props = this._metricManager.collectionSchema.properties;
+    this.fields = Object.keys(props)
+      .filter(prop => !this._isAutoProp(prop))
+      .map(prop => ({
+        name: `${this._metricName}_${prop}`,
+        label: prop,
+        // A metric with no name cannot be created, so this is the one field
+        // that has to be mapped
+        essential: prop === 'name',
+      }));
     this._cdr.markForCheck();
   }
 
   /**
-   * Save the input file
-   * @param event The input file selection event
+   * Whether the property is generated by Dino and must not be mapped.
+   * @param prop The metric property
    */
-  onExcelfileSelected(event: any): void {
-    if (event.target.files.length === 0 || !event.target.files[0].name) {
-      return;
+  private _isAutoProp(prop: string): boolean {
+    if (AUTO_METRIC_PROPS.includes(prop)) {
+      return true;
     }
-    this._file = event.target.files[0];
-    this.fileName = event.target.files[0].name;
-    this._processing = false;
-  }
-
-  /**
-   * Start processing the Xlsx file
-   */
-  apply(): void {
-    if (this._file == null) {
-      return;
+    if (this._metricName === 'case' && prop === 'code') {
+      return true;
     }
-    this._processing = true;
-    this._metricMustBeUnique = this.importMetrics.controls['reuseMetricName'].value;
-    this._importXlsx(this._file);
+    return this._metricName === 'project' && prop === 'code_auto';
   }
 
   /**
-   * Closes the Import form data dialog
+   * Drops the `<metric>_` prefix from the mapped keys, so the rows carry the
+   * metric properties and the shared helpers can work on them.
+   * @param rows The mapped rows
    */
-  closeDialog(): void {
-    this.dialogRef.close();
+  private _stripPrefix(rows: {[key: string]: any}[]): {[key: string]: any}[] {
+    const prefix = `${this._metricName}_`;
+    return rows.map(row => {
+      const stripped: {[key: string]: any} = {};
+      Object.keys(row).forEach(key => {
+        stripped[key.startsWith(prefix) ? key.slice(prefix.length) : key] = row[key];
+      });
+      return stripped;
+    });
   }
 
   /**
-   * Return requested metrics by ids or names
-   * @param metricIds
-   * @param metricNames
-   * @returns the existing list of metrics by ids or names
+   * Whether the row is the label header of a Dino export, whose values repeat
+   * the column names instead of carrying data.
+   * @param row The mapped row
    */
-  private _getMetricsIfExist(metricIds: string[], metricNames: string[]): Observable<T[]> {
-    const metricSelector = buildMetricLookupSelector(metricIds, metricNames);
-    if (this._metricManager == null || metricSelector == null) {
+  private _isLabelHeader(row: {[key: string]: any}): boolean {
+    const values = Object.values(row);
+    return this._dinoFields.some(field => values.indexOf(`${this._metricName}_${field}`) > -1);
+  }
+
+  /**
+   * The metric properties the user must provide: required by the schema, not
+   * nullable and not generated by Dino.
+   * @param collectionSchema The metric collection schema
+   */
+  private _getRequiredMetricProps(collectionSchema: RxJsonSchema<any>): string[] {
+    const props: {[key: string]: any} = collectionSchema.properties;
+    return Object.keys(props).filter(prop => {
+      const propValue = props[prop];
+      const required =
+        (collectionSchema.required ?? []).indexOf(prop as any) >= 0 &&
+        !(propValue.type?.length && propValue.type.indexOf('null') > 0);
+      return required && !this._notMandatoryFields.includes(prop);
+    });
+  }
+
+  /**
+   * Turns the mapped rows into the metrics to be created, splitting the ones
+   * whose parent has to be resolved and collecting the rows that cannot be
+   * imported, each with its file row number.
+   * @param rows The mapped rows, keyed by the metric properties
+   */
+  private _getMetricsToBeCreated(rows: {[key: string]: any}[]): MetricInfoInRows {
+    const info: MetricInfoInRows = {
+      newMetrics: [],
+      newMetricsWithParent: [],
+      invalidRows: [],
+      requiredMetricParentIds: [],
+      requiredMetricParentNames: [],
+    };
+    if (this._metricManager == null) {
+      return info;
+    }
+    const schema = this._metricManager.collectionSchema;
+    const props: {[key: string]: any} = schema.properties;
+    const requiredProps = this._getRequiredMetricProps(schema);
+    const propKeys = Object.keys(props).filter(prop => !this._isAutoProp(prop));
+    const seenNames: string[] = [];
+    const valid: Metric[] = [];
+
+    rows.forEach((row, rowIdx) => {
+      if (this._isLabelHeader(row)) {
+        return;
+      }
+      this._fileRows++;
+      // The row number as the user sees it: the header is the first row of the file
+      const fileRow = rowIdx + 2;
+      const name = row['name'] || null;
+      if (!name) {
+        info.invalidRows.push({row: fileRow, text: this._ts.translate('the name is missing')});
+        return;
+      }
+      if (this._metricMustBeUnique && seenNames.includes(name)) {
+        info.invalidRows.push({
+          row: fileRow,
+          text: `${name}: ${this._ts.translate('duplicated in the file')}`,
+        });
+        return;
+      }
+      seenNames.push(name);
+
+      const metric: {[key: string]: any} = {};
+      const invalidFields: string[] = [];
+      propKeys.forEach(prop => {
+        if (!requiredProps.includes(prop) && !row[prop]) {
+          return;
+        }
+        if (prop === 'metric_data') {
+          try {
+            metric[prop] = JSON.parse(row[prop]);
+          } catch (_e) {
+            invalidFields.push(prop);
+          }
+          return;
+        }
+        metric[prop] = getValueFromRow(row[prop], prop, props[prop].type);
+        if (requiredProps.includes(prop) && !metric[prop]) {
+          invalidFields.push(prop);
+        }
+      });
+
+      if (invalidFields.length) {
+        info.invalidRows.push({
+          row: fileRow,
+          text: `${name}: ${this._ts.translate('missing required fields: {{fields}}', {
+            fields: invalidFields.join(', '),
+          })}`,
+        });
+        return;
+      }
+      valid.push(metric as Metric);
+    });
+
+    const {roots, withParent} = splitMetricsByParent(valid);
+    const refs = collectParentRefs(valid);
+    info.newMetrics = roots as Metric[];
+    info.newMetricsWithParent = withParent as Metric[];
+    info.requiredMetricParentIds = refs.parentIds;
+    info.requiredMetricParentNames = refs.parentNames;
+    return info;
+  }
+
+  /**
+   * The metrics already stored matching the given ids or names.
+   * @param metricIds The parent ids to be resolved
+   * @param metricNames The names to be looked up
+   */
+  private _getMetricsIfExist(metricIds: string[], metricNames: string[]): Observable<Metric[]> {
+    const selector = buildMetricLookupSelector(metricIds, metricNames);
+    if (this._metricManager == null || selector == null) {
       return obsOf([]);
     }
-    return this._metricManager.query(metricSelector).pipe(
+    return this._metricManager.query(selector).pipe(
       take(1),
       catchError(_ => obsOf([])),
     );
   }
 
   /**
-   * Get required metric properties from collectionSchema
-   * @param schema
-   * @returns
+   * Moves the metrics whose name already exists out of the list to be created.
+   * @param newMetrics The metrics to be created, filtered in place
+   * @param reused The metrics found already stored, filled in place
+   * @param existingMetrics The metrics returned by the lookup
    */
-  private _getRequiredMetricProps(collectionSchema: RxJsonSchema<T>): string[] {
-    const requiredProps: string[] = [];
-    const props: {[key: string]: any} = collectionSchema.properties;
-    for (let propK in props) {
-      const propKey = propK as Extract<keyof T, string>;
-      const propValue = collectionSchema.properties[propKey];
-      const propRequired =
-        collectionSchema.required!.indexOf(propKey) >= 0 &&
-        !(propValue.type?.length && propValue.type.indexOf('null') > 0);
-      if (propRequired && !this._notMandatoryFields.includes(propK)) {
-        requiredProps.push(propK);
-      }
-    }
-    return requiredProps;
-  }
-
-  /**
-   * Get from rows all new metrics to be created and all ids and names for required parent metrics
-   * @param rows The new metrics rows
-   * @returns An object with all new metric info
-   */
-  private _getMetricsToBeCreated(rows: {[key: string]: any}[]): MetricInfoInRows {
-    const metricsInfo: MetricInfoInRows = {
-      newMetrics: [],
-      newMetricsWithParent: [],
-      invalidMetrics: [],
-      requiredMetricParentIds: [],
-      requiredMetricParentNames: [],
-    };
-
-    if (this._metricManager) {
-      const newMetricNames: string[] = [];
-      const requiredProps = this._getRequiredMetricProps(this._metricManager.collectionSchema);
-      const props: {[key: string]: any} = this._metricManager.collectionSchema.properties;
-      // Exclude the auto-generated props without mutating the shared collection schema
-      const notImportableProps = [
-        'id',
-        `${this.metricName}_id`,
-        'updated_at',
-        `${this.metricName}_updated_at`,
-        ...(this.metricName === 'case' ? ['case_code'] : []),
-        ...(this.metricName === 'project' ? ['project_code_auto'] : []),
-      ];
-      const propKeys = Object.keys(props).filter(prop => !notImportableProps.includes(prop));
-
-      rows.forEach((row: {[key: string]: any}) => {
-        let invalid = false;
-        if (!this._isLabelHeader(row)) {
-          const newMetricName = row[`${this.metricName}_name`] || null;
-          if (newMetricName) {
-            let newMetric: {[key: string]: any} = {};
-
-            if (this._metricMustBeUnique && newMetricNames.includes(newMetricName)) {
-              invalid = true;
-              newMetric['name'] = `${newMetricName} (${this._ts.translate(
-                'duplicated in the file',
-              )})`;
-            } else {
-              newMetricNames.push(newMetricName);
-
-              const missingFields = [];
-              for (let prop of propKeys) {
-                const propKey = `${this.metricName}_${prop}`;
-                if (requiredProps.includes(prop) || row[propKey]) {
-                  if (prop === 'metric_data') {
-                    try {
-                      newMetric[prop] = JSON.parse(row[propKey]);
-                    } catch (_e) {
-                      invalid = true;
-                      missingFields.push(propKey);
-                    }
-                  } else {
-                    newMetric[prop] = getValueFromRow(row[propKey], propKey, props[prop].type);
-                    if (requiredProps.includes(prop) && !newMetric[prop]) {
-                      invalid = true;
-                      missingFields.push(propKey);
-                    }
-                  }
-                }
-              }
-
-              if (invalid) {
-                newMetric['name'] = `${newMetricName} (${this._ts.translate(
-                  'missing or invalid columns',
-                )}: ${missingFields.join(', ')})`;
-              } else {
-                const parentId = row[`${this.metricName}_parent_id`];
-                const parentName = row[`${this.metricName}_parent_name`];
-                if (parentId || parentName) {
-                  if (parentId) {
-                    // Required Metric parent id
-                    if (!metricsInfo.requiredMetricParentIds.includes(parentId)) {
-                      metricsInfo.requiredMetricParentIds.push(parentId);
-                    }
-                  }
-                  if (parentName) {
-                    // Required Metric parent name
-                    if (!metricsInfo.requiredMetricParentNames.includes(parentName)) {
-                      metricsInfo.requiredMetricParentNames.push(parentName);
-                    }
-                  }
-                  metricsInfo.newMetricsWithParent.push(newMetric);
-                } else {
-                  metricsInfo.newMetrics.push(newMetric);
-                }
-              }
-            }
-            if (invalid) {
-              metricsInfo.invalidMetrics.push(newMetric);
-            }
-          }
-        }
-      });
-    }
-    return metricsInfo;
-  }
-
-  /**
-   * Separate valid and invalid metrics
-   * @param newMetrics
-   * @param invalidMetrics
-   */
-  private _moveOutInvalidMetrics(newMetrics: T[], duplicatesMetrics: T[], existingMetrics: T[]) {
+  private _moveOutExistingMetrics(
+    newMetrics: Metric[],
+    reused: Metric[],
+    existingMetrics: Metric[],
+  ): void {
     const existingNames = new Set(existingMetrics.map(m => m.name));
     for (let i = newMetrics.length - 1; i >= 0; i--) {
       if (existingNames.has(newMetrics[i].name)) {
-        duplicatesMetrics.push(newMetrics[i]); // Modify duplicatesMetrics in place
-        newMetrics.splice(i, 1); // Remove invalid metric in place
+        reused.push(newMetrics[i]);
+        newMetrics.splice(i, 1);
       }
     }
   }
 
   /**
-   * Bulk create for all input metrics
-   * @param newMetrics The list of the new metrics to be created
-   * @returns
-   */
-  private _importMetrics(
-    newMetrics: T[],
-  ): Observable<{success: RxDocument<T>[]; error: any[]} | null> {
-    if (this._metricManager != null && newMetrics && newMetrics.length) {
-      return this._metricManager.bulkCreate(newMetrics).pipe(
-        catchError(err => {
-          this._ehms.captureErrorMessage(
-            `Could not import new metrics: ${JSON.stringify(err)}`,
-            'error',
-          );
-          return obsOf(null);
-        }),
-        take(1),
-      );
-    }
-    return obsOf({success: [], error: []});
-  }
-
-  /**
-   * Recursively imports a tree of metrics, with parent-child relationships:
-   * every pass creates the metrics whose parent is already known and retries the
-   * remaining ones, so that a parent defined by another row of the same file is
-   * resolved whatever the row order is.
-   * @param newMetricsWithParent the new metrics referencing a parent
-   * @param existingMetrics the metrics usable as parent
-   * @returns the created metrics, the db errors and the metrics with no parent
-   */
-  private _processTree(
-    newMetricsWithParent: T[],
-    existingMetrics: T[],
-  ): Observable<MetricTreeResult<T>> {
-    if (this._metricManager == null) {
-      return obsOf({success: [], error: [], deferred: newMetricsWithParent});
-    }
-    return importMetricTree<T>(this._metricManager, newMetricsWithParent, existingMetrics, {
-      onCreated: created => (this._totalImportedMetrics += created.length),
-      onError: err =>
-        this._ehms.captureErrorMessage(
-          `Could not import new metrics: ${JSON.stringify(err)}`,
-          'error',
-        ),
-    });
-  }
-
-  /**
-   * Import all the rows into Dino, recursively
-   * @param rows The rows to be imported
-   * @param newMetrics the list of the new metrics required to be created
+   * Creates the metrics with no parent, then the others one tree level at a time.
+   * @param info The metrics found in the rows
+   * @param existingMetrics The metrics usable as parent
    */
   private _importMetricRows(
-    newMetrics: T[],
-    newMetricsWithParent: T[],
-    existingMetrics: T[],
-  ): Observable<({success: RxDocument<T>[]; error: any[]} | null)[]> {
-    let firstBulkNoParent: Observable<{
-      success: RxDocument<T>[];
-      error: any[];
-    } | null> = obsOf({success: [], error: []});
+    info: MetricInfoInRows,
+    existingMetrics: Metric[],
+  ): Observable<MetricTreeResult<Metric>> {
+    const manager = this._metricManager as DataModelManager<any>;
+    const rootBulk = info.newMetrics.length
+      ? manager.bulkCreate(info.newMetrics as any).pipe(
+          take(1),
+          catchError(err => {
+            this._ehms.captureErrorMessage(
+              `Could not import new metrics: ${JSON.stringify(err)}`,
+              'error',
+            );
+            return obsOf({success: [] as RxDocument<Metric>[], error: [{msg: err}]});
+          }),
+        )
+      : obsOf({success: [] as RxDocument<Metric>[], error: [] as any[]});
 
-    if (newMetrics && newMetrics.length) {
-      firstBulkNoParent = this._importMetrics(newMetrics);
-    }
-    return firstBulkNoParent.pipe(
-      switchMap(firstBulkRes => {
-        if (firstBulkRes && firstBulkRes.error.length === 0) {
-          let bulkWithParent: Observable<MetricTreeResult<T> | null> = obsOf({
-            success: [],
-            error: [],
-            deferred: [],
+    return rootBulk.pipe(
+      switchMap(rootRes => {
+        if (rootRes.error.length) {
+          // The children are not attempted when their level failed
+          return obsOf({
+            success: rootRes.success,
+            error: rootRes.error,
+            deferred: info.newMetricsWithParent,
           });
-
-          if (firstBulkRes.success.length) {
-            this._totalImportedMetrics = firstBulkRes.success.length;
-            existingMetrics = existingMetrics.concat(firstBulkRes.success);
-          }
-
-          if (newMetricsWithParent && newMetricsWithParent.length) {
-            // Recursive import
-            bulkWithParent = this._processTree(newMetricsWithParent, existingMetrics);
-          }
-          return zip(obsOf(firstBulkRes), bulkWithParent);
-        } else {
-          let errMsg = this._ts.translate('File not imported! ');
-          if (firstBulkRes?.error.length) {
-            console.log('Import metrics error: ' + firstBulkRes.error[0].msg);
-            if (
-              firstBulkRes?.error[0].msg?.parameters?.errors &&
-              firstBulkRes?.error[0].msg?.parameters?.errors.length
-            ) {
-              errMsg = errMsg + JSON.stringify(firstBulkRes?.error[0].msg?.parameters?.errors[0]);
-            }
-          }
-          this._setImportStatus(errMsg);
-          return obsOf([null, null]);
         }
-      }),
-      switchMap(([firstBulkRes, bulkRes]) => {
-        if (!firstBulkRes && !bulkRes) {
-          return obsOf([null, null]);
-        }
-
-        const firstSuccess = firstBulkRes?.success ?? [];
-        const bulkSuccess = bulkRes?.success ?? [];
-        const firstError = firstBulkRes?.error ?? [];
-        const bulkError = bulkRes?.error ?? [];
-        const invalidParentMetrics = bulkRes?.deferred ?? [];
-
-        if (firstError.length === 0 && bulkError.length === 0) {
-          let resMsg = '';
-          const totalImported = firstSuccess.length + bulkSuccess.length;
-          if (totalImported) {
-            resMsg = this._getFormattedMessage(
-              firstSuccess.concat(bulkSuccess),
-              this._ts.translate('Imported metrics'),
-            );
-          } else {
-            resMsg =
-              this._ts.translate(
-                'File not imported: no valid metrics to import found in the file.',
-              ) + '\n';
-          }
-          if (invalidParentMetrics.length > 0) {
-            resMsg =
-              resMsg +
-              this._getFormattedMessage(
-                invalidParentMetrics,
-                this._ts.translate('Metrics with invalid parent'),
-              );
-          }
-          this._setImportStatus(resMsg);
-          return obsOf([firstBulkRes, bulkRes]);
-        } else {
-          // Errors from db
-          let errMsg = '';
-
-          const partiallyImported = firstSuccess.length + bulkSuccess.length;
-          if (partiallyImported) {
-            errMsg = this._getFormattedMessage(
-              firstSuccess.concat(bulkSuccess),
-              `${this._ts.translate('File partially imported')}. ${this._ts.translate(
-                'Imported metrics',
-              )}`,
-            );
-          }
-
-          if (firstError.length > 0) {
-            errMsg = errMsg + this._ts.translate('Import errors for metrics without parent.');
-
-            const detailedErrors = firstError[0].msg?.parameters?.errors ?? [];
-            if (detailedErrors.length > 0) {
-              errMsg += '\n' + JSON.stringify(detailedErrors[0]);
-            }
-          } else {
-            // case bulkError.length > 0
-            console.log('Import errors for metrics with parent: ' + bulkError[0].msg);
-            errMsg = errMsg + this._ts.translate('Import errors for metrics with parent.');
-
-            const detailedErrors = bulkError[0].msg?.parameters?.errors ?? [];
-            if (detailedErrors.length > 0) {
-              errMsg += '\n' + JSON.stringify(detailedErrors[0]);
-            }
-          }
-
-          this._setImportStatus(errMsg);
-          return obsOf([firstBulkRes, bulkRes]);
-        }
+        const pool = [...rootRes.success, ...existingMetrics];
+        return importMetricTree(manager, info.newMetricsWithParent, pool, {
+          onError: err =>
+            this._ehms.captureErrorMessage(
+              `Could not import new metrics: ${JSON.stringify(err)}`,
+              'error',
+            ),
+        }).pipe(
+          switchMap(treeRes =>
+            obsOf({
+              success: [...rootRes.success, ...treeRes.success],
+              error: treeRes.error,
+              deferred: treeRes.deferred,
+            }),
+          ),
+        );
       }),
     );
   }
 
   /**
-   * Check if the first row is the label header with no data
-   * @param data
-   * @returns true if is a label header
+   * Runs the whole import: checks the permission, resolves the parents and the
+   * names already stored, creates the metrics and reports the outcome.
+   * @param rows The mapped rows, keyed by the metric properties
    */
-  private _isLabelHeader(row: {[key: string]: any}): boolean {
-    const rowVals = Object.values(row);
-    return this._dinoFields.some(f => rowVals.indexOf(`${this.metricName}_${f}`) > -1);
-  }
-
-  /**
-   * Return a formatted message for a list of metrics
-   * @param metrics the metric list
-   * @param message the custom message
-   * @returns the formatted message string
-   */
-  private _getFormattedMessage(metrics: {name?: any}[], message: string): string {
-    return formatMetricNamesMessage(metrics, message);
-  }
-
-  /**
-   * Convert the xls file into a json and start import all the rows
-   * No update, all data will be imported as new
-   * @param file The Xlsx file to be imported
-   */
-  private _importXlsx(file: Blob): void {
-    const startMessage = this._ts.translate('Importing file...');
-    this._setImportStatus(startMessage);
-    const fileReader = new FileReader();
-    fileReader.readAsArrayBuffer(file);
-    fileReader.onload = (e: any) => {
-      const bufferArray = e?.target.result;
-      const wb = XLSX.read(bufferArray, {type: 'buffer'});
-      const wsname = wb.SheetNames[0];
-      const ws = wb.Sheets[wsname];
-      const data: {[key: string]: any}[] = XLSX.utils.sheet_to_json(ws);
-
-      if (this._metricManager && this.metricName) {
-        const {
-          newMetrics,
-          newMetricsWithParent,
-          invalidMetrics,
-          requiredMetricParentIds,
-          requiredMetricParentNames,
-        } = this._getMetricsToBeCreated(data);
-
-        const duplicatedMetrics: T[] = [];
-
-        const metricNamesToQuery = [...requiredMetricParentNames];
-        if (this._metricMustBeUnique) {
-          metricNamesToQuery.push(...newMetrics.map((m: {[key: string]: any}) => m['name']));
-          metricNamesToQuery.push(
-            ...newMetricsWithParent.map((m: {[key: string]: any}) => m['name']),
-          );
-        }
-
-        this._validateDataSub = combineLatest([
-          this._getMetricsIfExist(requiredMetricParentIds, metricNamesToQuery),
-          this._ugm.isActiveUserAdmin(this.adminRoles),
-        ])
-          .pipe(
-            switchMap(([existingMetrics, isAdminUser]) => {
-              if (isAdminUser) {
-                if (this._metricMustBeUnique && existingMetrics && existingMetrics.length) {
-                  this._moveOutInvalidMetrics(
-                    newMetrics as T[],
-                    duplicatedMetrics,
-                    existingMetrics,
-                  );
-                  this._moveOutInvalidMetrics(
-                    newMetricsWithParent as T[],
-                    duplicatedMetrics,
-                    existingMetrics,
-                  );
-                }
-                // Create new metrics
-                if (newMetrics.length || newMetricsWithParent.length) {
-                  return this._importMetricRows(
-                    newMetrics as T[],
-                    newMetricsWithParent as T[],
-                    existingMetrics,
-                  );
-                }
-                this._setImportStatus(
-                  this._ts.translate(
-                    'File not imported: no valid metrics to import found in the file.',
-                  ) + '\n',
-                );
-              } else {
-                this._setImportStatus(
-                  this._ts.translate(
-                    'File not imported: only users with the admin role can import metrics.',
-                  ) + '\n',
-                );
-              }
-              return obsOf(null);
-            }),
-          )
-          .subscribe(_ => {
-            let notImportedMetricsMessage = this._getFormattedMessage(
-              invalidMetrics as T[],
-              this._ts.translate('Invalid metrics'),
-            );
-            notImportedMetricsMessage =
-              notImportedMetricsMessage +
-              this._getFormattedMessage(
-                duplicatedMetrics,
-                this._ts.translate('Already existing metrics'),
-              );
-
-            if (
-              !this.importStatus ||
-              !this.importStatus.length ||
-              this.importStatus === startMessage
-            ) {
-              this._setImportStatus(this._ts.translate('File not imported!'));
-            }
-
-            if (notImportedMetricsMessage) {
-              this._setImportStatus(this.importStatus + notImportedMetricsMessage);
-            }
-          });
-      }
-    };
-  }
-
-  ngOnInit(): void {
-    if (this._metricManager == null || !this.data.metricName) {
-      this.snackbar.open(this._ts.translate('Oops! Something went wrong checking'), 'ERROR', {
-        duration: 5000,
-      });
-      throw new Error(this._ts.translate('No metric manager or metric name was provided'));
+  private _importRows(rows: {[key: string]: any}[]): void {
+    this._fileRows = 0;
+    const info = this._getMetricsToBeCreated(rows);
+    const reused: Metric[] = [];
+    const namesToQuery = [...info.requiredMetricParentNames];
+    if (this._metricMustBeUnique) {
+      namesToQuery.push(
+        ...info.newMetrics.map(m => m.name),
+        ...info.newMetricsWithParent.map(m => m.name),
+      );
     }
+
+    this._importSub = combineLatest([
+      this._getMetricsIfExist(info.requiredMetricParentIds, namesToQuery),
+      this._ugm.isActiveUserAdmin(this._adminRoles),
+    ])
+      .pipe(
+        switchMap(([existingMetrics, isAdminUser]) => {
+          if (!isAdminUser) {
+            this._setOutcome(
+              this._ts.translate(
+                'File not imported: only users with the admin role can import metrics.',
+              ),
+              'error',
+            );
+            return obsOf(null);
+          }
+          if (this._metricMustBeUnique && existingMetrics.length) {
+            this._moveOutExistingMetrics(info.newMetrics, reused, existingMetrics);
+            this._moveOutExistingMetrics(info.newMetricsWithParent, reused, existingMetrics);
+          }
+          if (!info.newMetrics.length && !info.newMetricsWithParent.length) {
+            this._reportOutcome(info, reused, {success: [], error: [], deferred: []});
+            return obsOf(null);
+          }
+          return this._importMetricRows(info, existingMetrics);
+        }),
+      )
+      .subscribe(res => {
+        if (res != null) {
+          this._reportOutcome(info, reused, res);
+        }
+      });
   }
 
-  ngOnDestroy(): void {
-    this._validateDataSub.unsubscribe();
+  /**
+   * Turns the import result into the outcome shown by the wizard.
+   * @param info The metrics found in the rows
+   * @param reused The metrics not created because their name already exists
+   * @param res The created metrics, the db errors and the unresolved parents
+   */
+  private _reportOutcome(
+    info: MetricInfoInRows,
+    reused: Metric[],
+    res: MetricTreeResult<Metric>,
+  ): void {
+    const created = res.success.length;
+    const warnings: ImportWarning[] = [];
+    if (info.invalidRows.length) {
+      warnings.push(
+        this._warningGroup(this._ts.translate('Rows not imported'), info.invalidRows, 'rows'),
+      );
+    }
+    if (res.deferred.length) {
+      warnings.push(
+        this._warningGroup(
+          this._ts.translate('Metrics with invalid parent'),
+          res.deferred.map(metric => ({text: `${metric['name']}`})),
+          'values',
+        ),
+      );
+    }
+    if (reused.length) {
+      warnings.push(
+        this._warningGroup(
+          this._ts.translate('Already existing metrics'),
+          reused.map(metric => ({text: metric.name})),
+          'values',
+        ),
+      );
+    }
+
+    if (res.error.length) {
+      const detailed = res.error[0].msg?.parameters?.errors;
+      this._setOutcome(
+        `${this._ts.translate('File not imported! Error during create new metrics')}${
+          detailed && detailed.length ? `: ${JSON.stringify(detailed[0])}` : ''
+        }`,
+        'error',
+        warnings,
+        created,
+      );
+      return;
+    }
+
+    if (!created) {
+      // Nothing was written: the groups say whether the rows were invalid,
+      // already stored, or waiting for a parent that never came
+      const explained = info.invalidRows.length || reused.length || res.deferred.length;
+      this._setOutcome(
+        this._ts.translate(
+          explained
+            ? 'File not imported!'
+            : 'File not imported: no valid metrics to import found in the file.',
+        ),
+        'error',
+        warnings,
+        0,
+      );
+      return;
+    }
+
+    // A reused metric produced no row, so it counts as not imported: saying
+    // otherwise would contradict the rejected counter
+    const partial = created < this._fileRows;
+    this._setOutcome(
+      `${this._ts.translate(partial ? 'File partially imported' : 'File imported successfully')}: ${
+        partial ? `${created}/${this._fileRows}` : created
+      } ${this._ts.translate('metrics created')}!`,
+      partial ? 'partial' : 'success',
+      warnings,
+      created,
+    );
+  }
+
+  /**
+   * Builds a capped result group.
+   * @param label The localized group label
+   * @param items The entries of the group
+   * @param kind How the group is rendered
+   */
+  private _warningGroup(
+    label: string,
+    items: ImportIssue[],
+    kind: 'rows' | 'values',
+  ): ImportWarning {
+    return warningGroup(label, items, kind);
+  }
+
+  /**
+   * Publishes the outcome, which moves the wizard to its result step.
+   * @param message The headline message
+   * @param status How the import ended
+   * @param warnings What could not be imported
+   * @param created How many metrics were created
+   */
+  private _setOutcome(
+    message: string,
+    status: ImportOutcomeStatus,
+    warnings: ImportWarning[] = [],
+    created: number = 0,
+  ): void {
+    this.importing = false;
+    const rejected = Math.max(this._fileRows - created, 0);
+    this.outcome = {
+      status,
+      message,
+      counts: [
+        {
+          label: this._ts.translate('Metrics created'),
+          value: created,
+          tone: created > 0 ? 'ok' : undefined,
+        },
+        {
+          label: this._ts.translate('Rows rejected'),
+          value: rejected,
+          tone: rejected > 0 ? (status === 'error' ? 'ko' : 'warn') : undefined,
+        },
+        {label: this._ts.translate('Rows in file'), value: this._fileRows},
+      ],
+      warnings,
+    };
+    this._cdr.markForCheck();
   }
 }

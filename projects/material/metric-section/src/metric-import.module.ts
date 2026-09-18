@@ -20,39 +20,21 @@
  *
  */
 
-import {AjfFormBuilderModule} from '@ajf/material/form-builder';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {MatButtonModule} from '@angular/material/button';
-import {MatCardModule} from '@angular/material/card';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {RouterModule} from '@angular/router';
+import {ImportWizardModule} from '@dino/material/import-wizard';
 import {TranslocoModule} from '@ngneat/transloco';
 
 import {MetricImport} from './metric-import';
 
 @NgModule({
   imports: [
-    AjfFormBuilderModule,
     CommonModule,
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatCardModule,
+    ImportWizardModule,
     MatCheckboxModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatSnackBarModule,
-    MatToolbarModule,
     ReactiveFormsModule,
-    RouterModule,
     TranslocoModule,
   ],
   declarations: [MetricImport],

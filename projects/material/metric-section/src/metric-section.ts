@@ -27,13 +27,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  isDevMode,
   OnDestroy,
   OnInit,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Case, CaseManager} from '@dino/core/cases';
 import {DataModelManager, Metric} from '@dino/core/data';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
@@ -41,7 +41,6 @@ import {ListDataSource, SelectionList} from '@dino/material/list';
 import {MetricEditor} from '@dino/material/metric-editor';
 import {catchError, Observable, Subscription, take, throwError} from 'rxjs';
 import {MetricDelete} from './metric-delete';
-import {MetricImport} from './metric-import';
 
 /**
  * Dino Metric Section component.
@@ -138,6 +137,8 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, OnDestr
     private _httpClient: HttpClient,
     public dialog: MatDialog,
     private _ts: TranslocoService,
+    private _router: Router,
+    private _route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -169,25 +170,8 @@ export class MetricSection<T extends Metric = Metric> implements OnInit, OnDestr
    * @param metricName
    */
   openImportMetrics(): void {
-    if (this.metricLabel) {
-      const importDialogRef = this.dialog.open(MetricImport, {
-        data: {
-          metricManager: this._metricManager,
-          metricName: this.metricLabel.toLowerCase(),
-        },
-      });
-      this._dialogSub = importDialogRef
-        .afterClosed()
-        .pipe(
-          catchError(err => throwError(() => err) as Observable<boolean>),
-          take(1),
-        )
-        .subscribe(confirmation => {
-          if (isDevMode()) {
-            console.log('metrics imported ' + confirmation);
-          }
-        });
-    }
+    // The import is a page of its own, a child route of the metric section
+    this._router.navigate(['import'], {relativeTo: this._route});
   }
 
   openDeleteDialog(metrics: T | T[]): void {
