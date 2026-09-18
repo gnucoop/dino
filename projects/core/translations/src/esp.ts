@@ -121,6 +121,8 @@ export const ESP: Translation = {
   'Reset all the columns and match them again':
     'Restablece todas las columnas y las vuelve a asociar automáticamente',
   'Map at least one form field to import': 'Asocia al menos un campo del formulario para importar',
+  'metrics created': 'métricas creadas',
+  'the name is missing': 'falta el nombre',
   'Ignore column': 'Ignorar columna',
   'repeating': 'repetido',
   'Repetition': 'Repetición',

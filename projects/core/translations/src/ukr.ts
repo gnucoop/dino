@@ -120,6 +120,8 @@ export const UKR: Translation = {
   'Reset all the columns and match them again':
     'Скидає всі стовпці та зіставляє їх автоматично заново',
   'Map at least one form field to import': 'Зіставте щонайменше одне поле форми для імпорту',
+  'metrics created': 'метрик створено',
+  'the name is missing': 'бракує назви',
   'Ignore column': 'Ігнорувати стовпець',
   'repeating': 'повторюваний',
   'Repetition': 'Повторення',

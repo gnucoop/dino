@@ -118,6 +118,8 @@ export const ENG: Translation = {
   'Re-match all': 'Re-match all',
   'Reset all the columns and match them again': 'Reset all the columns and match them again',
   'Map at least one form field to import': 'Map at least one form field to import',
+  'metrics created': 'metrics created',
+  'the name is missing': 'the name is missing',
   'Ignore column': 'Ignore column',
   'repeating': 'repeating',
   'Repetition': 'Repetition',
