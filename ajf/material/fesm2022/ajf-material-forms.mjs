@@ -1,5 +1,5 @@
 import * as i1$1 from '@ajf/core/forms';
-import { AjfBaseFieldComponent, AJF_WARNING_ALERT_SERVICE, isRepeatingSlideInstance, AjfAudioFieldComponent as AjfAudioFieldComponent$1, AjfInputFieldComponent as AjfInputFieldComponent$1, AjfFieldWithChoicesComponent, AJF_SEARCH_ALERT_THRESHOLD, AjfTableFieldComponent as AjfTableFieldComponent$1, AjfVideoUrlFieldComponent as AjfVideoUrlFieldComponent$1, AjfFieldService as AjfFieldService$1, AjfReadOnlyFieldComponent, AjfFieldType, AjfReadOnlyDateFieldComponent, AjfReadOnlyTableFieldComponent, AjfReadOnlySelectFieldComponent, AjfReadOnlyImageFieldComponent, AjfReadOnlyGeolocationFieldComponent, AjfReadOnlyFileFieldComponent, AjfFileFieldComponent, AjfImageFieldComponent, AjfReadOnlyVideoUrlFieldComponent, AjfFormField as AjfFormField$1, isFieldInstance, nodeInstanceCompleteName, AjfFormRenderer as AjfFormRenderer$1, AjfFormsModule as AjfFormsModule$1 } from '@ajf/core/forms';
+import { AjfBaseFieldComponent, AJF_WARNING_ALERT_SERVICE, isRepeatingSlideInstance, AjfAudioFieldComponent as AjfAudioFieldComponent$1, AjfInputFieldComponent as AjfInputFieldComponent$1, AjfFieldWithChoicesComponent, AJF_SEARCH_ALERT_THRESHOLD, AjfTableFieldComponent as AjfTableFieldComponent$1, AjfVideoUrlFieldComponent as AjfVideoUrlFieldComponent$1, AjfFieldService as AjfFieldService$1, AjfReadOnlyFieldComponent, AjfFieldType, AjfReadOnlyDateFieldComponent, AjfReadOnlyTableFieldComponent, AjfReadOnlySelectFieldComponent, AjfReadOnlyImageFieldComponent, AjfReadOnlyGeolocationFieldComponent, AjfReadOnlyFileFieldComponent, AjfFileFieldComponent, AjfImageFieldComponent, AjfReadOnlyVideoUrlFieldComponent, AjfFormField as AjfFormField$1, AjfNodeType, isFieldInstance, nodeInstanceCompleteName, AjfFormRenderer as AjfFormRenderer$1, AjfFormsModule as AjfFormsModule$1 } from '@ajf/core/forms';
 import * as i0 from '@angular/core';
 import { ViewEncapsulation, ChangeDetectionStrategy, Component, Injectable, Inject, Pipe, ViewChild, Optional, HostBinding, Input, EventEmitter, Output, NgModule } from '@angular/core';
 import * as i2$1 from '@angular/common';
@@ -1147,11 +1147,11 @@ class AjfRangeFieldComponent extends AjfRange {
             i0.ɵɵpipe(1, "async");
         } if (rf & 2) {
             i0.ɵɵproperty("ngIf", i0.ɵɵpipeBind1(1, 1, ctx.control));
-        } }, dependencies: [i2$1.NgForOf, i2$1.NgIf, i2$7.MatIcon, i4.DefaultValueAccessor, i4.NgControlStatus, i4.FormControlDirective, i5$1.MatSlider, i5$1.MatSliderThumb, i2$1.AsyncPipe], styles: ["ajf-range{display:block;width:100%}ajf-range .ajf-range{display:flex;align-items:center;gap:12px}ajf-range .ajf-range-track{flex:1 1 auto;min-width:180px;max-width:360px}ajf-range .ajf-range-track .mat-mdc-slider{width:100%;margin:0}ajf-range .ajf-range-bounds{display:flex;justify-content:space-between;margin-top:-6px;padding:0 8px;color:var(--ajf-text-muted);font-family:var(--ajf-font-mono);font-size:11px}ajf-range .ajf-range-value{box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;min-width:44px;padding:0 8px;background:var(--ajf-band);font-family:var(--ajf-font-mono);text-align:center}ajf-range .ajf-range-value:focus,ajf-range .ajf-range-value:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}ajf-range .ajf-range-value:disabled,ajf-range .ajf-range-value[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}ajf-range .ajf-range-no-value .mat-mdc-slider{--mdc-slider-active-track-color: var(--ajf-border-strong);--mdc-slider-handle-color: var(--ajf-band)}ajf-range .ajf-range-no-value .ajf-range-value{color:var(--ajf-text-faint)}ajf-range .ajf-rating-container{display:flex;align-items:center;gap:4px}ajf-range .ajf-rating-star{padding:0;border:0;background:none;color:var(--ajf-border-strong);cursor:pointer}ajf-range .ajf-rating-star.ajf-selected{color:var(--ajf-accent)}ajf-range .ajf-rating-star .mat-icon{width:26px;height:26px;font-size:26px}ajf-range .ajf-rating-readout{margin-left:8px;color:var(--ajf-text-muted);font-family:var(--ajf-font-mono);font-size:13px}\n"], encapsulation: 2, changeDetection: 0 }); }
+        } }, dependencies: [i2$1.NgForOf, i2$1.NgIf, i2$7.MatIcon, i4.DefaultValueAccessor, i4.NgControlStatus, i4.FormControlDirective, i5$1.MatSlider, i5$1.MatSliderThumb, i2$1.AsyncPipe], styles: ["ajf-range{display:block;width:100%}ajf-range .ajf-range{display:flex;align-items:center;gap:12px}ajf-range .ajf-range-track{flex:1 1 auto;min-width:180px;max-width:360px}ajf-range .ajf-range-track .mat-mdc-slider{width:100%;margin:0}ajf-range .ajf-range-bounds{display:flex;justify-content:space-between;margin-top:-6px;padding:0 8px;color:var(--ajf-text-muted);font-family:var(--ajf-font-mono);font-size:11px}ajf-range .ajf-range-value{box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;min-width:44px;padding:0 8px;background:var(--ajf-band);font-family:var(--ajf-font-mono);text-align:center}ajf-range .ajf-range-value:focus,ajf-range .ajf-range-value:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}ajf-range .ajf-range-value:disabled,ajf-range .ajf-range-value[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}ajf-range .ajf-range-no-value .mat-mdc-slider{--mdc-slider-active-track-color: var(--ajf-border-strong);--mdc-slider-handle-color: var(--ajf-border-strong);--mdc-slider-focus-handle-color: var(--ajf-border-strong);--mdc-slider-hover-handle-color: var(--ajf-border-strong)}ajf-range .ajf-range-no-value .ajf-range-value{color:var(--ajf-text-faint)}ajf-range .ajf-rating-container{display:flex;align-items:center;gap:4px}ajf-range .ajf-rating-star{padding:0;border:0;background:none;color:var(--ajf-border-strong);cursor:pointer}ajf-range .ajf-rating-star.ajf-selected{color:var(--ajf-accent)}ajf-range .ajf-rating-star .mat-icon{width:26px;height:26px;font-size:26px}ajf-range .ajf-rating-readout{margin-left:8px;color:var(--ajf-text-muted);font-family:var(--ajf-font-mono);font-size:13px}\n"], encapsulation: 2, changeDetection: 0 }); }
 }
 (() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(AjfRangeFieldComponent, [{
         type: Component,
-        args: [{ selector: 'ajf-range', changeDetection: ChangeDetectionStrategy.OnPush, encapsulation: ViewEncapsulation.None, template: "<ng-container *ngIf=\"control | async as ctrl\">\n  <div\n    *ngIf=\"appearance !== 'rating'; else ratingTemplate\"\n    class=\"ajf-range\"\n    [class.ajf-range-no-value]=\"isEmpty(ctrl.value)\"\n  >\n    <div class=\"ajf-range-track\">\n      <mat-slider\n        discrete\n        showTickMarks\n        [step]=\"step\"\n        [min]=\"start\"\n        [max]=\"end\"\n        [attr.aria-label]=\"name\"\n        [attr.name]=\"name\"\n      >\n        <input matSliderThumb [value]=\"value\" [formControl]=\"ctrl\" />\n      </mat-slider>\n      <div class=\"ajf-range-bounds\">\n        <span>{{ start }}</span>\n        <span>{{ end }}</span>\n      </div>\n    </div>\n    <span class=\"ajf-range-value\">{{ isEmpty(ctrl.value) ? '&mdash;' : ctrl.value }}</span>\n  </div>\n\n  <ng-template #ratingTemplate>\n    <div class=\"ajf-rating-container\">\n      <button\n        type=\"button\"\n        *ngFor=\"let i of enumerateStars()\"\n        class=\"ajf-rating-star\"\n        [class.ajf-selected]=\"i <= ctrl.value\"\n        (click)=\"ctrl.setValue(i)\"\n        [attr.aria-label]=\"'Rate ' + i + ' out of ' + end\"\n        [attr.name]=\"name\"\n      >\n        <mat-icon>star</mat-icon>\n      </button>\n      <span class=\"ajf-rating-readout\">{{ ctrl.value || 0 }} / {{ end }}</span>\n    </div>\n  </ng-template>\n</ng-container>\n", styles: ["ajf-range{display:block;width:100%}ajf-range .ajf-range{display:flex;align-items:center;gap:12px}ajf-range .ajf-range-track{flex:1 1 auto;min-width:180px;max-width:360px}ajf-range .ajf-range-track .mat-mdc-slider{width:100%;margin:0}ajf-range .ajf-range-bounds{display:flex;justify-content:space-between;margin-top:-6px;padding:0 8px;color:var(--ajf-text-muted);font-family:var(--ajf-font-mono);font-size:11px}ajf-range .ajf-range-value{box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;min-width:44px;padding:0 8px;background:var(--ajf-band);font-family:var(--ajf-font-mono);text-align:center}ajf-range .ajf-range-value:focus,ajf-range .ajf-range-value:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}ajf-range .ajf-range-value:disabled,ajf-range .ajf-range-value[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}ajf-range .ajf-range-no-value .mat-mdc-slider{--mdc-slider-active-track-color: var(--ajf-border-strong);--mdc-slider-handle-color: var(--ajf-band)}ajf-range .ajf-range-no-value .ajf-range-value{color:var(--ajf-text-faint)}ajf-range .ajf-rating-container{display:flex;align-items:center;gap:4px}ajf-range .ajf-rating-star{padding:0;border:0;background:none;color:var(--ajf-border-strong);cursor:pointer}ajf-range .ajf-rating-star.ajf-selected{color:var(--ajf-accent)}ajf-range .ajf-rating-star .mat-icon{width:26px;height:26px;font-size:26px}ajf-range .ajf-rating-readout{margin-left:8px;color:var(--ajf-text-muted);font-family:var(--ajf-font-mono);font-size:13px}\n"] }]
+        args: [{ selector: 'ajf-range', changeDetection: ChangeDetectionStrategy.OnPush, encapsulation: ViewEncapsulation.None, template: "<ng-container *ngIf=\"control | async as ctrl\">\n  <div\n    *ngIf=\"appearance !== 'rating'; else ratingTemplate\"\n    class=\"ajf-range\"\n    [class.ajf-range-no-value]=\"isEmpty(ctrl.value)\"\n  >\n    <div class=\"ajf-range-track\">\n      <mat-slider\n        discrete\n        showTickMarks\n        [step]=\"step\"\n        [min]=\"start\"\n        [max]=\"end\"\n        [attr.aria-label]=\"name\"\n        [attr.name]=\"name\"\n      >\n        <input matSliderThumb [value]=\"value\" [formControl]=\"ctrl\" />\n      </mat-slider>\n      <div class=\"ajf-range-bounds\">\n        <span>{{ start }}</span>\n        <span>{{ end }}</span>\n      </div>\n    </div>\n    <span class=\"ajf-range-value\">{{ isEmpty(ctrl.value) ? '&mdash;' : ctrl.value }}</span>\n  </div>\n\n  <ng-template #ratingTemplate>\n    <div class=\"ajf-rating-container\">\n      <button\n        type=\"button\"\n        *ngFor=\"let i of enumerateStars()\"\n        class=\"ajf-rating-star\"\n        [class.ajf-selected]=\"i <= ctrl.value\"\n        (click)=\"ctrl.setValue(i)\"\n        [attr.aria-label]=\"'Rate ' + i + ' out of ' + end\"\n        [attr.name]=\"name\"\n      >\n        <mat-icon>star</mat-icon>\n      </button>\n      <span class=\"ajf-rating-readout\">{{ ctrl.value || 0 }} / {{ end }}</span>\n    </div>\n  </ng-template>\n</ng-container>\n", styles: ["ajf-range{display:block;width:100%}ajf-range .ajf-range{display:flex;align-items:center;gap:12px}ajf-range .ajf-range-track{flex:1 1 auto;min-width:180px;max-width:360px}ajf-range .ajf-range-track .mat-mdc-slider{width:100%;margin:0}ajf-range .ajf-range-bounds{display:flex;justify-content:space-between;margin-top:-6px;padding:0 8px;color:var(--ajf-text-muted);font-family:var(--ajf-font-mono);font-size:11px}ajf-range .ajf-range-value{box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;min-width:44px;padding:0 8px;background:var(--ajf-band);font-family:var(--ajf-font-mono);text-align:center}ajf-range .ajf-range-value:focus,ajf-range .ajf-range-value:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}ajf-range .ajf-range-value:disabled,ajf-range .ajf-range-value[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}ajf-range .ajf-range-no-value .mat-mdc-slider{--mdc-slider-active-track-color: var(--ajf-border-strong);--mdc-slider-handle-color: var(--ajf-border-strong);--mdc-slider-focus-handle-color: var(--ajf-border-strong);--mdc-slider-hover-handle-color: var(--ajf-border-strong)}ajf-range .ajf-range-no-value .ajf-range-value{color:var(--ajf-text-faint)}ajf-range .ajf-rating-container{display:flex;align-items:center;gap:4px}ajf-range .ajf-rating-star{padding:0;border:0;background:none;color:var(--ajf-border-strong);cursor:pointer}ajf-range .ajf-rating-star.ajf-selected{color:var(--ajf-accent)}ajf-range .ajf-rating-star .mat-icon{width:26px;height:26px;font-size:26px}ajf-range .ajf-rating-readout{margin-left:8px;color:var(--ajf-text-muted);font-family:var(--ajf-font-mono);font-size:13px}\n"] }]
     }], () => [{ type: i0.ChangeDetectorRef }, { type: i1$1.AjfFormRendererService }, { type: AjfWarningAlertService, decorators: [{
                 type: Inject,
                 args: [AJF_WARNING_ALERT_SERVICE]
@@ -2017,11 +2017,11 @@ class AjfFormField extends AjfFormField$1 {
             i0.ɵɵproperty("ngIf", ctx.instance && ctx.instance.node && ctx.instance.node.attachments);
             i0.ɵɵadvance();
             i0.ɵɵproperty("ngIf", !ctx.readonly && ctx.instance && ctx.instance.validationResults);
-        } }, dependencies: [i2$1.NgClass, i2$1.NgForOf, i2$1.NgIf, i1$1.AjfFieldHost, i5.TranslocoPipe, i1$1.AjfFieldIsValidPipe, i1$1.AjfNodeCompleteNamePipe], styles: [":root{--ajf-control-h: 44px;--ajf-slider-min-h: 420px;--ajf-label-col: 280px;--ajf-side-col: 260px;--ajf-gap: 12px;--ajf-radius: 4px;--ajf-font-sans: system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif;--ajf-font-mono: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #f7f5f2) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #ffffff) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #faf8f5) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #e6e2dc) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #d5cfc6) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #0f4c5c) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #ffffff) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #e8f1f5) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #2d6b7f) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #1c1a17) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #7a736a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #b8362b) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #fdf1ef) );--ajf-text-faint: #a49c92;--ajf-accent-hover: #0c3d4a;--ajf-kbd-bg: rgba(255, 255, 255, .22)}@media (prefers-color-scheme: dark){:root:not(.ajf-light){--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #16150f) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #1e1c17) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #262319) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #35322a) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #4a463c) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #6fbcd0) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #06232b) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #123641) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #9ad4e4) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #f2efe9) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #a9a29a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #ff9b8f) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #3a201c) );--ajf-text-faint: #7a736a;--ajf-accent-hover: #8fcedf;--ajf-kbd-bg: rgba(0, 0, 0, .22)}}.ajf-dark{--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #16150f) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #1e1c17) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #262319) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #35322a) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #4a463c) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #6fbcd0) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #06232b) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #123641) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #9ad4e4) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #f2efe9) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #a9a29a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #ff9b8f) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #3a201c) );--ajf-text-faint: #7a736a;--ajf-accent-hover: #8fcedf;--ajf-kbd-bg: rgba(0, 0, 0, .22)}.ajf-light{--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #f7f5f2) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #ffffff) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #faf8f5) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #e6e2dc) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #d5cfc6) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #0f4c5c) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #ffffff) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #e8f1f5) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #2d6b7f) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #1c1a17) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #7a736a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #b8362b) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #fdf1ef) );--ajf-text-faint: #a49c92;--ajf-accent-hover: #0c3d4a;--ajf-kbd-bg: rgba(255, 255, 255, .22)}.ajf-form-container,ajf-field{color-scheme:light dark}.ajf-dark .ajf-form-container,.ajf-dark ajf-field{color-scheme:dark}.ajf-light .ajf-form-container,.ajf-light ajf-field{color-scheme:light}.ajf-control{box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 12px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;width:100%;max-width:360px}.ajf-control:focus,.ajf-control:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}.ajf-control:disabled,.ajf-control[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}.ajf-control--mono{font-family:var(--ajf-font-mono);font-size:13px;letter-spacing:.01em}.ajf-control--narrow{max-width:160px}.ajf-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 16px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer}.ajf-btn:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-btn:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-btn--primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 16px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer;border-color:var(--ajf-accent);background:var(--ajf-accent);color:var(--ajf-accent-fg)}.ajf-btn--primary:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-btn--primary:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-btn--primary:hover:not(:disabled){border-color:var(--ajf-accent-hover);background:var(--ajf-accent-hover)}.ajf-btn--ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer;min-height:auto;padding:0 4px;border-color:transparent;background:none;color:var(--ajf-accent-ink);text-decoration:none}.ajf-btn--ghost:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-btn--ghost:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-btn--ghost:hover:not(:disabled){border-color:transparent;text-decoration:underline}.ajf-btn--ghost.ajf-danger{color:var(--ajf-danger)}.ajf-segmented{display:inline-flex;flex-wrap:wrap;gap:8px}.ajf-segmented .ajf-segment{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 16px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer}.ajf-segmented .ajf-segment:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-segmented .ajf-segment:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-segmented .ajf-segment.ajf-selected{border-color:var(--ajf-accent);background:var(--ajf-accent);color:var(--ajf-accent-fg)}.ajf-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:var(--ajf-radius);background:var(--ajf-accent-soft);color:var(--ajf-accent-ink);font-size:13px;white-space:nowrap}.ajf-chip--removable button{display:inline-flex;align-items:center;padding:0;border:0;background:none;color:inherit;cursor:pointer;opacity:.7}.ajf-chip--removable button:hover{opacity:1}.ajf-chip--removable button .mat-icon{width:14px;height:14px;font-size:14px}.ajf-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--ajf-band);color:var(--ajf-text-muted);font-size:12px;white-space:nowrap}.ajf-pill--danger{background:var(--ajf-danger-bg);color:var(--ajf-danger);font-weight:500}.ajf-kbd{padding:1px 5px;border-radius:3px;background:var(--ajf-kbd-bg);font-family:var(--ajf-font-mono);font-size:10px}.ajf-input-group{display:inline-flex;align-items:center;overflow:hidden;box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;padding:0}.ajf-input-group:focus,.ajf-input-group:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}.ajf-input-group:disabled,.ajf-input-group[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}.ajf-input-group>input{flex:1 1 auto;min-width:0;height:calc(var(--ajf-control-h) - 2px);padding:0 12px;border:0;background:none;color:inherit;font:inherit;outline:none}.ajf-input-group>.ajf-input-group-action{display:inline-flex;align-items:center;justify-content:center;align-self:stretch;padding:0 8px;border:0;border-left:1px solid var(--ajf-border);background:var(--ajf-band);color:var(--ajf-text-muted);cursor:pointer}.ajf-hatch{background-color:var(--ajf-band);background-image:repeating-linear-gradient(45deg,var(--ajf-border) 0,var(--ajf-border) 1px,transparent 1px,transparent 7px)}.ajf-micro-label{font-family:var(--ajf-font-mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ajf-text-muted)}ajf-field .mat-mdc-select{box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 12px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;display:inline-flex;align-items:center;width:auto;min-width:240px;max-width:100%}ajf-field .mat-mdc-select:focus,ajf-field .mat-mdc-select:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}ajf-field .mat-mdc-select:disabled,ajf-field .mat-mdc-select[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}ajf-field .mat-mdc-select .mat-mdc-select-trigger{height:auto}ajf-field .mat-mdc-select .mat-mdc-select-value{color:var(--ajf-text);font-size:14px}ajf-field .mat-mdc-select .mat-mdc-select-arrow-wrapper{color:var(--ajf-text-muted)}ajf-field .mat-mdc-select-multiple{min-height:var(--ajf-control-h)}ajf-field .mat-mdc-select-multiple .mat-mdc-select-value{display:flex;flex-wrap:wrap;padding:5px 0}ajf-field .mat-mdc-select-multiple mat-select-trigger{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}ajf-field .mat-mdc-slide-toggle{--mdc-switch-selected-track-color: var(--ajf-accent);--mdc-switch-selected-handle-color: var(--ajf-surface);--mdc-switch-selected-hover-track-color: var(--ajf-accent);--mdc-switch-selected-focus-track-color: var(--ajf-accent);--mdc-switch-selected-pressed-track-color: var(--ajf-accent);--mdc-switch-selected-hover-handle-color: var(--ajf-surface);--mdc-switch-selected-focus-handle-color: var(--ajf-surface);--mdc-switch-selected-pressed-handle-color: var(--ajf-surface)}ajf-field .mat-mdc-slider{--mdc-slider-handle-color: var(--ajf-surface);--mdc-slider-focus-handle-color: var(--ajf-surface);--mdc-slider-hover-handle-color: var(--ajf-surface);--mdc-slider-active-track-color: var(--ajf-accent);--mdc-slider-inactive-track-color: var(--ajf-border);--mdc-slider-with-tick-marks-active-container-color: var(--ajf-accent-fg);--mdc-slider-with-tick-marks-inactive-container-color: var(--ajf-border-strong);--mdc-slider-handle-elevation: none;--mat-slider-ripple-color: var(--ajf-accent)}ajf-field .mat-datepicker-toggle .mat-mdc-icon-button{width:34px;height:34px;padding:5px;color:var(--ajf-text-muted)}ajf-field{display:block;min-width:0;font-family:var(--ajf-font-sans)}ajf-field .ajf-choices-container{display:flex;flex-direction:row;flex-wrap:wrap;align-items:stretch;gap:8px}ajf-field .ajf-item-container{position:relative}ajf-field .ajf-errors{color:var(--ajf-danger);font-size:13px}ajf-field>a{color:var(--ajf-accent-ink);font-size:13px}ajf-field-row ajf-field .ajf-errors{display:none}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{appearance:none;margin:0}\n"], encapsulation: 2, changeDetection: 0 }); }
+        } }, dependencies: [i2$1.NgClass, i2$1.NgForOf, i2$1.NgIf, i1$1.AjfFieldHost, i5.TranslocoPipe, i1$1.AjfFieldIsValidPipe, i1$1.AjfNodeCompleteNamePipe], styles: [":root{--ajf-control-h: 44px;--ajf-slider-min-h: 420px;--ajf-label-col: 280px;--ajf-side-col: 260px;--ajf-gap: 12px;--ajf-radius: 4px;--ajf-font-sans: system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif;--ajf-font-mono: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #f7f5f2) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #ffffff) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #faf8f5) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #e6e2dc) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #d5cfc6) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #0f4c5c) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #ffffff) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #e8f1f5) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #2d6b7f) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #1c1a17) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #7a736a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #b8362b) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #fdf1ef) );--ajf-text-faint: #a49c92;--ajf-accent-hover: #0c3d4a;--ajf-kbd-bg: rgba(255, 255, 255, .22)}@media (prefers-color-scheme: dark){:root:not(.ajf-light){--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #16150f) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #1e1c17) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #262319) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #35322a) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #4a463c) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #6fbcd0) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #06232b) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #123641) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #9ad4e4) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #f2efe9) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #a9a29a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #ff9b8f) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #3a201c) );--ajf-text-faint: #7a736a;--ajf-accent-hover: #8fcedf;--ajf-kbd-bg: rgba(0, 0, 0, .22)}}.ajf-dark{--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #16150f) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #1e1c17) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #262319) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #35322a) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #4a463c) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #6fbcd0) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #06232b) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #123641) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #9ad4e4) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #f2efe9) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #a9a29a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #ff9b8f) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #3a201c) );--ajf-text-faint: #7a736a;--ajf-accent-hover: #8fcedf;--ajf-kbd-bg: rgba(0, 0, 0, .22)}.ajf-light{--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #f7f5f2) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #ffffff) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #faf8f5) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #e6e2dc) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #d5cfc6) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #0f4c5c) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #ffffff) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #e8f1f5) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #2d6b7f) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #1c1a17) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #7a736a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #b8362b) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #fdf1ef) );--ajf-text-faint: #a49c92;--ajf-accent-hover: #0c3d4a;--ajf-kbd-bg: rgba(255, 255, 255, .22)}.ajf-form-container,ajf-field{color-scheme:light dark}.ajf-dark .ajf-form-container,.ajf-dark ajf-field{color-scheme:dark}.ajf-light .ajf-form-container,.ajf-light ajf-field{color-scheme:light}.ajf-control{box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 12px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;width:100%;max-width:360px}.ajf-control:focus,.ajf-control:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}.ajf-control:disabled,.ajf-control[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}.ajf-control--mono{font-family:var(--ajf-font-mono);font-size:13px;letter-spacing:.01em}.ajf-control--narrow{max-width:160px}.ajf-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 16px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer}.ajf-btn:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-btn:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-btn--primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 16px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer;border-color:var(--ajf-accent);background:var(--ajf-accent);color:var(--ajf-accent-fg)}.ajf-btn--primary:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-btn--primary:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-btn--primary:hover:not(:disabled){border-color:var(--ajf-accent-hover);background:var(--ajf-accent-hover)}.ajf-btn--ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer;min-height:auto;padding:0 4px;border-color:transparent;background:none;color:var(--ajf-accent-ink);text-decoration:none}.ajf-btn--ghost:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-btn--ghost:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-btn--ghost:hover:not(:disabled){border-color:transparent;text-decoration:underline}.ajf-btn--ghost.ajf-danger{color:var(--ajf-danger)}.ajf-segmented{display:inline-flex;flex-wrap:wrap;gap:8px}.ajf-segmented .ajf-segment{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 16px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer}.ajf-segmented .ajf-segment:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-segmented .ajf-segment:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-segmented .ajf-segment.ajf-selected{border-color:var(--ajf-accent);background:var(--ajf-accent);color:var(--ajf-accent-fg)}.ajf-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:var(--ajf-radius);background:var(--ajf-accent-soft);color:var(--ajf-accent-ink);font-size:13px;white-space:nowrap}.ajf-chip--removable button{display:inline-flex;align-items:center;padding:0;border:0;background:none;color:inherit;cursor:pointer;opacity:.7}.ajf-chip--removable button:hover{opacity:1}.ajf-chip--removable button .mat-icon{width:14px;height:14px;font-size:14px}.ajf-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--ajf-band);color:var(--ajf-text-muted);font-size:12px;white-space:nowrap}.ajf-pill--danger{background:var(--ajf-danger-bg);color:var(--ajf-danger);font-weight:500}.ajf-kbd{padding:1px 5px;border-radius:3px;background:var(--ajf-kbd-bg);font-family:var(--ajf-font-mono);font-size:10px}.ajf-input-group{display:inline-flex;align-items:center;overflow:hidden;box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;padding:0}.ajf-input-group:focus,.ajf-input-group:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}.ajf-input-group:disabled,.ajf-input-group[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}.ajf-input-group>input{flex:1 1 auto;min-width:0;height:calc(var(--ajf-control-h) - 2px);padding:0 12px;border:0;background:none;color:inherit;font:inherit;outline:none}.ajf-input-group>.ajf-input-group-action{display:inline-flex;align-items:center;justify-content:center;align-self:stretch;padding:0 8px;border:0;border-left:1px solid var(--ajf-border);background:var(--ajf-band);color:var(--ajf-text-muted);cursor:pointer}.ajf-hatch{background-color:var(--ajf-band);background-image:repeating-linear-gradient(45deg,var(--ajf-border) 0,var(--ajf-border) 1px,transparent 1px,transparent 7px)}.ajf-micro-label{font-family:var(--ajf-font-mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ajf-text-muted)}ajf-field .mat-mdc-select{box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 12px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;display:inline-flex;align-items:center;width:auto;min-width:240px;max-width:100%}ajf-field .mat-mdc-select:focus,ajf-field .mat-mdc-select:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}ajf-field .mat-mdc-select:disabled,ajf-field .mat-mdc-select[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}ajf-field .mat-mdc-select .mat-mdc-select-trigger{height:auto}ajf-field .mat-mdc-select .mat-mdc-select-value{color:var(--ajf-text);font-size:14px}ajf-field .mat-mdc-select .mat-mdc-select-arrow-wrapper{color:var(--ajf-text-muted)}ajf-field .mat-mdc-select-multiple{min-height:var(--ajf-control-h)}ajf-field .mat-mdc-select-multiple .mat-mdc-select-value{display:flex;flex-wrap:wrap;padding:5px 0}ajf-field .mat-mdc-select-multiple mat-select-trigger{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}ajf-field .mat-mdc-slide-toggle{--mdc-switch-selected-track-color: var(--ajf-accent);--mdc-switch-selected-handle-color: var(--ajf-surface);--mdc-switch-selected-hover-track-color: var(--ajf-accent);--mdc-switch-selected-focus-track-color: var(--ajf-accent);--mdc-switch-selected-pressed-track-color: var(--ajf-accent);--mdc-switch-selected-hover-handle-color: var(--ajf-surface);--mdc-switch-selected-focus-handle-color: var(--ajf-surface);--mdc-switch-selected-pressed-handle-color: var(--ajf-surface)}ajf-field .mat-mdc-slider{--mdc-slider-handle-color: var(--ajf-accent);--mdc-slider-focus-handle-color: var(--ajf-accent);--mdc-slider-hover-handle-color: var(--ajf-accent);--mdc-slider-active-track-color: var(--ajf-accent);--mdc-slider-inactive-track-color: var(--ajf-border);--mdc-slider-with-tick-marks-active-container-color: var(--ajf-accent-fg);--mdc-slider-with-tick-marks-inactive-container-color: var(--ajf-border-strong);--mdc-slider-handle-elevation: none;--mat-slider-ripple-color: var(--ajf-accent)}ajf-field .mat-datepicker-toggle .mat-mdc-icon-button{width:34px;height:34px;padding:5px;color:var(--ajf-text-muted)}ajf-field{display:block;min-width:0;font-family:var(--ajf-font-sans)}ajf-field .ajf-choices-container{display:flex;flex-direction:row;flex-wrap:wrap;align-items:stretch;gap:8px}ajf-field .ajf-item-container{position:relative}ajf-field .ajf-errors{color:var(--ajf-danger);font-size:13px}ajf-field>a{color:var(--ajf-accent-ink);font-size:13px}ajf-field-row ajf-field .ajf-errors{display:none}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{appearance:none;margin:0}\n"], encapsulation: 2, changeDetection: 0 }); }
 }
 (() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(AjfFormField, [{
         type: Component,
-        args: [{ selector: 'ajf-field,ajf-form-field', changeDetection: ChangeDetectionStrategy.OnPush, encapsulation: ViewEncapsulation.None, template: "<div\n    *ngIf=\"instance\"\n    [ngClass]=\"'ajf-field-' + (instance|ajfNodeCompleteName)\"\n    [class.ajf-validated]=\"instance.validationResults|ajfFieldIsValid\"\n    (keydown)=\"tabEvent($event, instance)\"\n>\n  <ng-template ajf-field-host></ng-template>\n</div>\n<ng-container *ngIf=\"instance && instance.node && instance.node.attachments\">\n  <a *ngFor=\"let attachment of instance.node.attachments\"\n    [href]=\"attachment.value\" target=\"_blank\">{{attachment.label | transloco}}</a>\n</ng-container>\n<div *ngIf=\"!readonly && instance && instance.validationResults\" class=\"ajf-errors\">\n  <ng-container *ngFor=\"let res of instance.validationResults\">\n    <div class=\"error\" *ngIf=\"!res.result\">\n      {{ res.error|transloco }}\n    </div>\n  </ng-container>\n</div>\n", styles: [":root{--ajf-control-h: 44px;--ajf-slider-min-h: 420px;--ajf-label-col: 280px;--ajf-side-col: 260px;--ajf-gap: 12px;--ajf-radius: 4px;--ajf-font-sans: system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif;--ajf-font-mono: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #f7f5f2) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #ffffff) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #faf8f5) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #e6e2dc) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #d5cfc6) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #0f4c5c) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #ffffff) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #e8f1f5) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #2d6b7f) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #1c1a17) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #7a736a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #b8362b) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #fdf1ef) );--ajf-text-faint: #a49c92;--ajf-accent-hover: #0c3d4a;--ajf-kbd-bg: rgba(255, 255, 255, .22)}@media (prefers-color-scheme: dark){:root:not(.ajf-light){--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #16150f) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #1e1c17) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #262319) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #35322a) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #4a463c) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #6fbcd0) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #06232b) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #123641) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #9ad4e4) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #f2efe9) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #a9a29a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #ff9b8f) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #3a201c) );--ajf-text-faint: #7a736a;--ajf-accent-hover: #8fcedf;--ajf-kbd-bg: rgba(0, 0, 0, .22)}}.ajf-dark{--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #16150f) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #1e1c17) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #262319) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #35322a) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #4a463c) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #6fbcd0) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #06232b) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #123641) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #9ad4e4) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #f2efe9) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #a9a29a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #ff9b8f) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #3a201c) );--ajf-text-faint: #7a736a;--ajf-accent-hover: #8fcedf;--ajf-kbd-bg: rgba(0, 0, 0, .22)}.ajf-light{--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #f7f5f2) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #ffffff) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #faf8f5) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #e6e2dc) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #d5cfc6) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #0f4c5c) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #ffffff) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #e8f1f5) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #2d6b7f) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #1c1a17) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #7a736a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #b8362b) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #fdf1ef) );--ajf-text-faint: #a49c92;--ajf-accent-hover: #0c3d4a;--ajf-kbd-bg: rgba(255, 255, 255, .22)}.ajf-form-container,ajf-field{color-scheme:light dark}.ajf-dark .ajf-form-container,.ajf-dark ajf-field{color-scheme:dark}.ajf-light .ajf-form-container,.ajf-light ajf-field{color-scheme:light}.ajf-control{box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 12px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;width:100%;max-width:360px}.ajf-control:focus,.ajf-control:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}.ajf-control:disabled,.ajf-control[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}.ajf-control--mono{font-family:var(--ajf-font-mono);font-size:13px;letter-spacing:.01em}.ajf-control--narrow{max-width:160px}.ajf-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 16px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer}.ajf-btn:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-btn:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-btn--primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 16px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer;border-color:var(--ajf-accent);background:var(--ajf-accent);color:var(--ajf-accent-fg)}.ajf-btn--primary:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-btn--primary:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-btn--primary:hover:not(:disabled){border-color:var(--ajf-accent-hover);background:var(--ajf-accent-hover)}.ajf-btn--ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer;min-height:auto;padding:0 4px;border-color:transparent;background:none;color:var(--ajf-accent-ink);text-decoration:none}.ajf-btn--ghost:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-btn--ghost:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-btn--ghost:hover:not(:disabled){border-color:transparent;text-decoration:underline}.ajf-btn--ghost.ajf-danger{color:var(--ajf-danger)}.ajf-segmented{display:inline-flex;flex-wrap:wrap;gap:8px}.ajf-segmented .ajf-segment{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 16px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer}.ajf-segmented .ajf-segment:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-segmented .ajf-segment:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-segmented .ajf-segment.ajf-selected{border-color:var(--ajf-accent);background:var(--ajf-accent);color:var(--ajf-accent-fg)}.ajf-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:var(--ajf-radius);background:var(--ajf-accent-soft);color:var(--ajf-accent-ink);font-size:13px;white-space:nowrap}.ajf-chip--removable button{display:inline-flex;align-items:center;padding:0;border:0;background:none;color:inherit;cursor:pointer;opacity:.7}.ajf-chip--removable button:hover{opacity:1}.ajf-chip--removable button .mat-icon{width:14px;height:14px;font-size:14px}.ajf-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--ajf-band);color:var(--ajf-text-muted);font-size:12px;white-space:nowrap}.ajf-pill--danger{background:var(--ajf-danger-bg);color:var(--ajf-danger);font-weight:500}.ajf-kbd{padding:1px 5px;border-radius:3px;background:var(--ajf-kbd-bg);font-family:var(--ajf-font-mono);font-size:10px}.ajf-input-group{display:inline-flex;align-items:center;overflow:hidden;box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;padding:0}.ajf-input-group:focus,.ajf-input-group:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}.ajf-input-group:disabled,.ajf-input-group[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}.ajf-input-group>input{flex:1 1 auto;min-width:0;height:calc(var(--ajf-control-h) - 2px);padding:0 12px;border:0;background:none;color:inherit;font:inherit;outline:none}.ajf-input-group>.ajf-input-group-action{display:inline-flex;align-items:center;justify-content:center;align-self:stretch;padding:0 8px;border:0;border-left:1px solid var(--ajf-border);background:var(--ajf-band);color:var(--ajf-text-muted);cursor:pointer}.ajf-hatch{background-color:var(--ajf-band);background-image:repeating-linear-gradient(45deg,var(--ajf-border) 0,var(--ajf-border) 1px,transparent 1px,transparent 7px)}.ajf-micro-label{font-family:var(--ajf-font-mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ajf-text-muted)}ajf-field .mat-mdc-select{box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 12px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;display:inline-flex;align-items:center;width:auto;min-width:240px;max-width:100%}ajf-field .mat-mdc-select:focus,ajf-field .mat-mdc-select:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}ajf-field .mat-mdc-select:disabled,ajf-field .mat-mdc-select[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}ajf-field .mat-mdc-select .mat-mdc-select-trigger{height:auto}ajf-field .mat-mdc-select .mat-mdc-select-value{color:var(--ajf-text);font-size:14px}ajf-field .mat-mdc-select .mat-mdc-select-arrow-wrapper{color:var(--ajf-text-muted)}ajf-field .mat-mdc-select-multiple{min-height:var(--ajf-control-h)}ajf-field .mat-mdc-select-multiple .mat-mdc-select-value{display:flex;flex-wrap:wrap;padding:5px 0}ajf-field .mat-mdc-select-multiple mat-select-trigger{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}ajf-field .mat-mdc-slide-toggle{--mdc-switch-selected-track-color: var(--ajf-accent);--mdc-switch-selected-handle-color: var(--ajf-surface);--mdc-switch-selected-hover-track-color: var(--ajf-accent);--mdc-switch-selected-focus-track-color: var(--ajf-accent);--mdc-switch-selected-pressed-track-color: var(--ajf-accent);--mdc-switch-selected-hover-handle-color: var(--ajf-surface);--mdc-switch-selected-focus-handle-color: var(--ajf-surface);--mdc-switch-selected-pressed-handle-color: var(--ajf-surface)}ajf-field .mat-mdc-slider{--mdc-slider-handle-color: var(--ajf-surface);--mdc-slider-focus-handle-color: var(--ajf-surface);--mdc-slider-hover-handle-color: var(--ajf-surface);--mdc-slider-active-track-color: var(--ajf-accent);--mdc-slider-inactive-track-color: var(--ajf-border);--mdc-slider-with-tick-marks-active-container-color: var(--ajf-accent-fg);--mdc-slider-with-tick-marks-inactive-container-color: var(--ajf-border-strong);--mdc-slider-handle-elevation: none;--mat-slider-ripple-color: var(--ajf-accent)}ajf-field .mat-datepicker-toggle .mat-mdc-icon-button{width:34px;height:34px;padding:5px;color:var(--ajf-text-muted)}ajf-field{display:block;min-width:0;font-family:var(--ajf-font-sans)}ajf-field .ajf-choices-container{display:flex;flex-direction:row;flex-wrap:wrap;align-items:stretch;gap:8px}ajf-field .ajf-item-container{position:relative}ajf-field .ajf-errors{color:var(--ajf-danger);font-size:13px}ajf-field>a{color:var(--ajf-accent-ink);font-size:13px}ajf-field-row ajf-field .ajf-errors{display:none}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{appearance:none;margin:0}\n"] }]
+        args: [{ selector: 'ajf-field,ajf-form-field', changeDetection: ChangeDetectionStrategy.OnPush, encapsulation: ViewEncapsulation.None, template: "<div\n    *ngIf=\"instance\"\n    [ngClass]=\"'ajf-field-' + (instance|ajfNodeCompleteName)\"\n    [class.ajf-validated]=\"instance.validationResults|ajfFieldIsValid\"\n    (keydown)=\"tabEvent($event, instance)\"\n>\n  <ng-template ajf-field-host></ng-template>\n</div>\n<ng-container *ngIf=\"instance && instance.node && instance.node.attachments\">\n  <a *ngFor=\"let attachment of instance.node.attachments\"\n    [href]=\"attachment.value\" target=\"_blank\">{{attachment.label | transloco}}</a>\n</ng-container>\n<div *ngIf=\"!readonly && instance && instance.validationResults\" class=\"ajf-errors\">\n  <ng-container *ngFor=\"let res of instance.validationResults\">\n    <div class=\"error\" *ngIf=\"!res.result\">\n      {{ res.error|transloco }}\n    </div>\n  </ng-container>\n</div>\n", styles: [":root{--ajf-control-h: 44px;--ajf-slider-min-h: 420px;--ajf-label-col: 280px;--ajf-side-col: 260px;--ajf-gap: 12px;--ajf-radius: 4px;--ajf-font-sans: system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif;--ajf-font-mono: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #f7f5f2) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #ffffff) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #faf8f5) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #e6e2dc) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #d5cfc6) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #0f4c5c) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #ffffff) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #e8f1f5) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #2d6b7f) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #1c1a17) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #7a736a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #b8362b) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #fdf1ef) );--ajf-text-faint: #a49c92;--ajf-accent-hover: #0c3d4a;--ajf-kbd-bg: rgba(255, 255, 255, .22)}@media (prefers-color-scheme: dark){:root:not(.ajf-light){--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #16150f) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #1e1c17) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #262319) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #35322a) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #4a463c) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #6fbcd0) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #06232b) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #123641) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #9ad4e4) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #f2efe9) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #a9a29a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #ff9b8f) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #3a201c) );--ajf-text-faint: #7a736a;--ajf-accent-hover: #8fcedf;--ajf-kbd-bg: rgba(0, 0, 0, .22)}}.ajf-dark{--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #16150f) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #1e1c17) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #262319) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #35322a) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #4a463c) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #6fbcd0) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #06232b) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #123641) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #9ad4e4) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #f2efe9) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #a9a29a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #ff9b8f) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #3a201c) );--ajf-text-faint: #7a736a;--ajf-accent-hover: #8fcedf;--ajf-kbd-bg: rgba(0, 0, 0, .22)}.ajf-light{--ajf-bg: var( --mat-sys-surface-container-low, var(--sys-surface-container-low, #f7f5f2) );--ajf-surface: var( --mat-sys-surface, var(--sys-surface, #ffffff) );--ajf-band: var( --mat-sys-surface-container, var(--sys-surface-container, #faf8f5) );--ajf-border: var( --mat-sys-outline-variant, var(--sys-outline-variant, #e6e2dc) );--ajf-border-strong: var( --mat-sys-outline, var(--sys-outline, #d5cfc6) );--ajf-accent: var( --mat-sys-primary, var(--sys-primary, #0f4c5c) );--ajf-accent-fg: var( --mat-sys-on-primary, var(--sys-on-primary, #ffffff) );--ajf-accent-soft: var( --mat-sys-primary-container, var(--sys-primary-container, #e8f1f5) );--ajf-accent-ink: var( --mat-sys-on-primary-container, var(--sys-on-primary-container, #2d6b7f) );--ajf-text: var( --mat-sys-on-surface, var(--sys-on-surface, #1c1a17) );--ajf-text-muted: var( --mat-sys-on-surface-variant, var(--sys-on-surface-variant, #7a736a) );--ajf-danger: var( --mat-sys-error, var(--sys-error, #b8362b) );--ajf-danger-bg: var( --mat-sys-error-container, var(--sys-error-container, #fdf1ef) );--ajf-text-faint: #a49c92;--ajf-accent-hover: #0c3d4a;--ajf-kbd-bg: rgba(255, 255, 255, .22)}.ajf-form-container,ajf-field{color-scheme:light dark}.ajf-dark .ajf-form-container,.ajf-dark ajf-field{color-scheme:dark}.ajf-light .ajf-form-container,.ajf-light ajf-field{color-scheme:light}.ajf-control{box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 12px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;width:100%;max-width:360px}.ajf-control:focus,.ajf-control:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}.ajf-control:disabled,.ajf-control[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}.ajf-control--mono{font-family:var(--ajf-font-mono);font-size:13px;letter-spacing:.01em}.ajf-control--narrow{max-width:160px}.ajf-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 16px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer}.ajf-btn:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-btn:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-btn--primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 16px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer;border-color:var(--ajf-accent);background:var(--ajf-accent);color:var(--ajf-accent-fg)}.ajf-btn--primary:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-btn--primary:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-btn--primary:hover:not(:disabled){border-color:var(--ajf-accent-hover);background:var(--ajf-accent-hover)}.ajf-btn--ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer;min-height:auto;padding:0 4px;border-color:transparent;background:none;color:var(--ajf-accent-ink);text-decoration:none}.ajf-btn--ghost:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-btn--ghost:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-btn--ghost:hover:not(:disabled){border-color:transparent;text-decoration:underline}.ajf-btn--ghost.ajf-danger{color:var(--ajf-danger)}.ajf-segmented{display:inline-flex;flex-wrap:wrap;gap:8px}.ajf-segmented .ajf-segment{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 16px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer}.ajf-segmented .ajf-segment:hover:not(:disabled){border-color:var(--ajf-accent)}.ajf-segmented .ajf-segment:disabled{color:var(--ajf-text-faint);cursor:default}.ajf-segmented .ajf-segment.ajf-selected{border-color:var(--ajf-accent);background:var(--ajf-accent);color:var(--ajf-accent-fg)}.ajf-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border-radius:var(--ajf-radius);background:var(--ajf-accent-soft);color:var(--ajf-accent-ink);font-size:13px;white-space:nowrap}.ajf-chip--removable button{display:inline-flex;align-items:center;padding:0;border:0;background:none;color:inherit;cursor:pointer;opacity:.7}.ajf-chip--removable button:hover{opacity:1}.ajf-chip--removable button .mat-icon{width:14px;height:14px;font-size:14px}.ajf-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--ajf-band);color:var(--ajf-text-muted);font-size:12px;white-space:nowrap}.ajf-pill--danger{background:var(--ajf-danger-bg);color:var(--ajf-danger);font-weight:500}.ajf-kbd{padding:1px 5px;border-radius:3px;background:var(--ajf-kbd-bg);font-family:var(--ajf-font-mono);font-size:10px}.ajf-input-group{display:inline-flex;align-items:center;overflow:hidden;box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;padding:0}.ajf-input-group:focus,.ajf-input-group:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}.ajf-input-group:disabled,.ajf-input-group[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}.ajf-input-group>input{flex:1 1 auto;min-width:0;height:calc(var(--ajf-control-h) - 2px);padding:0 12px;border:0;background:none;color:inherit;font:inherit;outline:none}.ajf-input-group>.ajf-input-group-action{display:inline-flex;align-items:center;justify-content:center;align-self:stretch;padding:0 8px;border:0;border-left:1px solid var(--ajf-border);background:var(--ajf-band);color:var(--ajf-text-muted);cursor:pointer}.ajf-hatch{background-color:var(--ajf-band);background-image:repeating-linear-gradient(45deg,var(--ajf-border) 0,var(--ajf-border) 1px,transparent 1px,transparent 7px)}.ajf-micro-label{font-family:var(--ajf-font-mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ajf-text-muted)}ajf-field .mat-mdc-select{box-sizing:border-box;min-height:var(--ajf-control-h);padding:0 12px;border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;line-height:calc(var(--ajf-control-h) - 2px);outline:none;display:inline-flex;align-items:center;width:auto;min-width:240px;max-width:100%}ajf-field .mat-mdc-select:focus,ajf-field .mat-mdc-select:focus-within{border-color:var(--ajf-accent);box-shadow:0 0 0 2px var(--ajf-accent-soft)}ajf-field .mat-mdc-select:disabled,ajf-field .mat-mdc-select[readonly]{color:var(--ajf-text-muted);background:var(--ajf-band)}ajf-field .mat-mdc-select .mat-mdc-select-trigger{height:auto}ajf-field .mat-mdc-select .mat-mdc-select-value{color:var(--ajf-text);font-size:14px}ajf-field .mat-mdc-select .mat-mdc-select-arrow-wrapper{color:var(--ajf-text-muted)}ajf-field .mat-mdc-select-multiple{min-height:var(--ajf-control-h)}ajf-field .mat-mdc-select-multiple .mat-mdc-select-value{display:flex;flex-wrap:wrap;padding:5px 0}ajf-field .mat-mdc-select-multiple mat-select-trigger{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}ajf-field .mat-mdc-slide-toggle{--mdc-switch-selected-track-color: var(--ajf-accent);--mdc-switch-selected-handle-color: var(--ajf-surface);--mdc-switch-selected-hover-track-color: var(--ajf-accent);--mdc-switch-selected-focus-track-color: var(--ajf-accent);--mdc-switch-selected-pressed-track-color: var(--ajf-accent);--mdc-switch-selected-hover-handle-color: var(--ajf-surface);--mdc-switch-selected-focus-handle-color: var(--ajf-surface);--mdc-switch-selected-pressed-handle-color: var(--ajf-surface)}ajf-field .mat-mdc-slider{--mdc-slider-handle-color: var(--ajf-accent);--mdc-slider-focus-handle-color: var(--ajf-accent);--mdc-slider-hover-handle-color: var(--ajf-accent);--mdc-slider-active-track-color: var(--ajf-accent);--mdc-slider-inactive-track-color: var(--ajf-border);--mdc-slider-with-tick-marks-active-container-color: var(--ajf-accent-fg);--mdc-slider-with-tick-marks-inactive-container-color: var(--ajf-border-strong);--mdc-slider-handle-elevation: none;--mat-slider-ripple-color: var(--ajf-accent)}ajf-field .mat-datepicker-toggle .mat-mdc-icon-button{width:34px;height:34px;padding:5px;color:var(--ajf-text-muted)}ajf-field{display:block;min-width:0;font-family:var(--ajf-font-sans)}ajf-field .ajf-choices-container{display:flex;flex-direction:row;flex-wrap:wrap;align-items:stretch;gap:8px}ajf-field .ajf-item-container{position:relative}ajf-field .ajf-errors{color:var(--ajf-danger);font-size:13px}ajf-field>a{color:var(--ajf-accent-ink);font-size:13px}ajf-field-row ajf-field .ajf-errors{display:none}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{appearance:none;margin:0}\n"] }]
     }], () => [{ type: i0.ChangeDetectorRef }, { type: AjfFieldService }], null); })();
 (() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassDebugInfo(AjfFormField, { className: "AjfFormField", filePath: "field.ts", lineNumber: 45 }); })();
 
@@ -2203,13 +2203,26 @@ class AjfFieldRow {
      * Rows drop out on the host element rather than inside it, so that a hidden
      * field leaves no empty cell behind when rows are laid out in columns.
      *
-     * A formula field with no label carries no information of its own -- it only
-     * feeds other fields -- so it is kept out of the layout too.
+     * Three kinds of node carry no information of their own and are kept out of
+     * the layout: a container node, which is only a bracket around the fields it
+     * holds and has no fieldType to render; a formula field with no label, which
+     * only feeds other fields; and a note with no body -- the renderer synthesises
+     * one of those to carry a node group's label, and a group is meant to show
+     * nothing of itself.
      */
     get hidden() {
         const node = this.instance?.node;
-        if (node == null || this.instance.visible === false) {
+        // Truthy, not `=== false`: a visibility condition is an arbitrary expression
+        // and the renderer stores whatever it returns, so an unanswered field can
+        // leave `visible` at null rather than at false.
+        if (node == null || !this.instance.visible) {
             return true;
+        }
+        if (node.nodeType !== AjfNodeType.AjfField) {
+            return true;
+        }
+        if (node.fieldType === AjfFieldType.Empty) {
+            return !node.HTML;
         }
         return node.fieldType === AjfFieldType.Formula && node.label === '';
     }
@@ -2227,11 +2240,11 @@ class AjfFieldRow {
             i0.ɵɵtemplate(0, AjfFieldRow_div_0_Template, 13, 19, "div", 0);
         } if (rf & 2) {
             i0.ɵɵproperty("ngIf", !ctx.hidden);
-        } }, dependencies: [i2$1.NgClass, i2$1.NgIf, i2$7.MatIcon, i3$3.MatTooltip, AjfFormField, i5.TranslocoPipe, i1$1.AjfAsFieldInstanceErrorsPipe, i1$1.AjfFieldTypeLabelPipe], styles: ["ajf-field-row{display:block}ajf-field-row.ajf-hidden-row{display:none}ajf-field-row .ajf-field-row{display:flex;flex-wrap:nowrap;align-items:flex-start;gap:var(--ajf-gap);box-sizing:border-box;padding:10px 20px;border-bottom:1px solid var(--ajf-border);background:var(--ajf-surface);font-family:var(--ajf-font-sans)}ajf-field-row .ajf-field-label{display:flex;flex:0 0 var(--ajf-label-col);flex-direction:column;justify-content:center;gap:2px;min-height:var(--ajf-control-h);max-width:var(--ajf-label-col)}ajf-field-row .ajf-field-label .ajf-field-label-line{display:flex;align-items:center;gap:6px}ajf-field-row .ajf-field-label label{color:var(--ajf-text);font-size:14px;font-weight:500;line-height:1.35}ajf-field-row .ajf-field-label .ajf-field-type-name{color:var(--ajf-text-muted);font-size:12px;line-height:1.3}ajf-field-row .ajf-field-label .ajf-required{color:var(--ajf-danger);font-weight:600}ajf-field-row .ajf-field-label .ajf-hint-icon{width:16px;height:16px;border-radius:50%;background:var(--ajf-border);color:var(--ajf-text-muted);font-size:12px;line-height:16px;cursor:help}ajf-field-row .ajf-field-control{display:flex;flex:1 1 auto;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}ajf-field-row .ajf-field-control>ajf-field{flex:1 1 auto;min-width:0}ajf-field-row .ajf-field-side{display:flex;flex:0 0 var(--ajf-side-col);align-items:center;min-height:var(--ajf-control-h);max-width:var(--ajf-side-col)}ajf-field-row .ajf-field-side .ajf-field-hint-text{color:var(--ajf-text-muted);font-size:13px}ajf-field-row .ajf-field-side .ajf-field-error-message{color:var(--ajf-danger);font-size:13px}ajf-field-row .ajf-normal .ajf-field-control{max-width:none}ajf-field-row .ajf-small .ajf-field-control{max-width:420px}ajf-field-row .ajf-smaller .ajf-field-control{max-width:320px}ajf-field-row .ajf-tiny .ajf-field-control{max-width:220px}ajf-field-row .ajf-mini .ajf-field-control{max-width:140px}ajf-field-row .ajf-field-row.ajf-invalid{background:color-mix(in srgb,var(--ajf-danger-bg) 45%,var(--ajf-surface))}ajf-field-row .ajf-field-row.ajf-invalid .ajf-control,ajf-field-row .ajf-field-row.ajf-invalid input.ajf-control,ajf-field-row .ajf-field-row.ajf-invalid .mat-mdc-select-trigger{border-color:var(--ajf-danger)}ajf-field-row .ajf-field-row.ajf-readonly .ajf-field-side{flex-basis:auto}ajf-field-row .ajf-note-row .ajf-field-control,ajf-field-row .ajf-field-type-1 .ajf-field-control,ajf-field-row .ajf-field-type-11 .ajf-field-control{max-width:none}@media (width <= 900px){ajf-field-row .ajf-field-row{flex-wrap:wrap;padding:12px 16px}ajf-field-row .ajf-field-label,ajf-field-row .ajf-field-side{flex-basis:100%;max-width:none;min-height:0}ajf-field-row .ajf-field-control{flex-basis:100%}}\n"], encapsulation: 2, changeDetection: 0 }); }
+        } }, dependencies: [i2$1.NgClass, i2$1.NgIf, i2$7.MatIcon, i3$3.MatTooltip, AjfFormField, i5.TranslocoPipe, i1$1.AjfAsFieldInstanceErrorsPipe, i1$1.AjfFieldTypeLabelPipe], styles: ["ajf-field-row{display:block}ajf-field-row.ajf-hidden-row{display:none}ajf-field-row .ajf-field-row{display:flex;flex-wrap:nowrap;align-items:flex-start;gap:var(--ajf-gap);box-sizing:border-box;padding:10px 20px;border-bottom:1px solid var(--ajf-border);background:var(--ajf-surface);font-family:var(--ajf-font-sans)}ajf-field-row .ajf-field-label{display:flex;flex:0 0 var(--ajf-label-col);flex-direction:column;justify-content:center;gap:2px;min-height:var(--ajf-control-h);max-width:var(--ajf-label-col)}ajf-field-row .ajf-field-label .ajf-field-label-line{display:flex;align-items:center;gap:6px}ajf-field-row .ajf-field-label label{color:var(--ajf-text);font-size:14px;font-weight:500;line-height:1.35}ajf-field-row .ajf-field-label .ajf-field-type-name{color:var(--ajf-text-muted);font-size:12px;line-height:1.3}ajf-field-row .ajf-field-label .ajf-required{color:var(--ajf-danger);font-weight:600}ajf-field-row .ajf-field-label .ajf-hint-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;color:var(--ajf-text-muted);font-size:16px;line-height:1;cursor:help}ajf-field-row .ajf-field-control{display:flex;flex:1 1 auto;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}ajf-field-row .ajf-field-control>ajf-field{flex:1 1 auto;min-width:0}ajf-field-row .ajf-field-side{display:flex;flex:0 0 var(--ajf-side-col);align-items:center;min-height:var(--ajf-control-h);max-width:var(--ajf-side-col)}ajf-field-row .ajf-field-side .ajf-field-hint-text{color:var(--ajf-text-muted);font-size:13px}ajf-field-row .ajf-field-side .ajf-field-error-message{color:var(--ajf-danger);font-size:13px}ajf-field-row .ajf-normal .ajf-field-control{max-width:none}ajf-field-row .ajf-small .ajf-field-control{max-width:420px}ajf-field-row .ajf-smaller .ajf-field-control{max-width:320px}ajf-field-row .ajf-tiny .ajf-field-control{max-width:220px}ajf-field-row .ajf-mini .ajf-field-control{max-width:140px}ajf-field-row .ajf-field-row.ajf-invalid{background:color-mix(in srgb,var(--ajf-danger-bg) 45%,var(--ajf-surface))}ajf-field-row .ajf-field-row.ajf-invalid .ajf-control,ajf-field-row .ajf-field-row.ajf-invalid input.ajf-control,ajf-field-row .ajf-field-row.ajf-invalid .mat-mdc-select-trigger{border-color:var(--ajf-danger)}ajf-field-row .ajf-field-row.ajf-readonly .ajf-field-side{flex-basis:auto}ajf-field-row .ajf-note-row .ajf-field-control,ajf-field-row .ajf-field-type-1 .ajf-field-control,ajf-field-row .ajf-field-type-11 .ajf-field-control{max-width:none}@media (width <= 900px){ajf-field-row .ajf-field-row{flex-wrap:wrap;padding:12px 16px}ajf-field-row .ajf-field-label,ajf-field-row .ajf-field-side{flex-basis:100%;max-width:none;min-height:0}ajf-field-row .ajf-field-control{flex-basis:100%}}\n"], encapsulation: 2, changeDetection: 0 }); }
 }
 (() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(AjfFieldRow, [{
         type: Component,
-        args: [{ selector: 'ajf-field-row', changeDetection: ChangeDetectionStrategy.OnPush, encapsulation: ViewEncapsulation.None, template: "<div\n  *ngIf=\"!hidden\"\n  class=\"ajf-field-row\"\n  [class.ajf-invalid]=\"!instance.valid\"\n  [class.ajf-readonly]=\"readonly\"\n  [class.ajf-note-row]=\"isNote\"\n  [ngClass]=\"'ajf-' + instance.node.size + ' ajf-field-type-' + instance.node.fieldType\"\n>\n  <div class=\"ajf-field-label\">\n    <span class=\"ajf-field-label-line\">\n      <label [attr.id]=\"instance.node.name\" [innerHTML]=\"instance.node.label | transloco\"></label>\n      <span class=\"ajf-required\" *ngIf=\"required\" aria-hidden=\"true\">*</span>\n      <mat-icon\n        class=\"ajf-hint-icon\"\n        *ngIf=\"instance.node.hint as hint\"\n        [matTooltip]=\"hint | transloco\"\n        matTooltipPosition=\"right\"\n        >{{ instance.node.hintIcon || 'help' }}</mat-icon\n      >\n    </span>\n    <!-- A note carries prose, not a value, so naming its type says nothing. -->\n    <ng-container *ngIf=\"!isNote\">\n      <span class=\"ajf-field-type-name\" *ngIf=\"instance | ajfFieldTypeLabel as type\"\n        >{{ type.name | transloco }}<ng-container *ngIf=\"type.detailValue\"> &middot;\n          {{ type.detailValue }}<ng-container *ngIf=\"type.detailUnit\">\n            {{ type.detailUnit | transloco }}</ng-container\n          ></ng-container\n        ></span\n      >\n    </ng-container>\n  </div>\n\n  <div class=\"ajf-field-control\">\n    <ajf-field\n      [instance]=\"instance\"\n      [readonly]=\"readonly\"\n      [id]=\"'field_entry_' + instance.node.id\"\n    ></ajf-field>\n  </div>\n\n  <div class=\"ajf-field-side\">\n    <span class=\"ajf-field-error-message\" *ngIf=\"!instance.valid\">{{\n      instance | ajfAsFieldInstanceErrors | transloco\n    }}</span>\n    <span class=\"ajf-field-hint-text\" *ngIf=\"instance.valid && instance.node.description\">{{\n      instance.node.description | transloco\n    }}</span>\n  </div>\n</div>\n", styles: ["ajf-field-row{display:block}ajf-field-row.ajf-hidden-row{display:none}ajf-field-row .ajf-field-row{display:flex;flex-wrap:nowrap;align-items:flex-start;gap:var(--ajf-gap);box-sizing:border-box;padding:10px 20px;border-bottom:1px solid var(--ajf-border);background:var(--ajf-surface);font-family:var(--ajf-font-sans)}ajf-field-row .ajf-field-label{display:flex;flex:0 0 var(--ajf-label-col);flex-direction:column;justify-content:center;gap:2px;min-height:var(--ajf-control-h);max-width:var(--ajf-label-col)}ajf-field-row .ajf-field-label .ajf-field-label-line{display:flex;align-items:center;gap:6px}ajf-field-row .ajf-field-label label{color:var(--ajf-text);font-size:14px;font-weight:500;line-height:1.35}ajf-field-row .ajf-field-label .ajf-field-type-name{color:var(--ajf-text-muted);font-size:12px;line-height:1.3}ajf-field-row .ajf-field-label .ajf-required{color:var(--ajf-danger);font-weight:600}ajf-field-row .ajf-field-label .ajf-hint-icon{width:16px;height:16px;border-radius:50%;background:var(--ajf-border);color:var(--ajf-text-muted);font-size:12px;line-height:16px;cursor:help}ajf-field-row .ajf-field-control{display:flex;flex:1 1 auto;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}ajf-field-row .ajf-field-control>ajf-field{flex:1 1 auto;min-width:0}ajf-field-row .ajf-field-side{display:flex;flex:0 0 var(--ajf-side-col);align-items:center;min-height:var(--ajf-control-h);max-width:var(--ajf-side-col)}ajf-field-row .ajf-field-side .ajf-field-hint-text{color:var(--ajf-text-muted);font-size:13px}ajf-field-row .ajf-field-side .ajf-field-error-message{color:var(--ajf-danger);font-size:13px}ajf-field-row .ajf-normal .ajf-field-control{max-width:none}ajf-field-row .ajf-small .ajf-field-control{max-width:420px}ajf-field-row .ajf-smaller .ajf-field-control{max-width:320px}ajf-field-row .ajf-tiny .ajf-field-control{max-width:220px}ajf-field-row .ajf-mini .ajf-field-control{max-width:140px}ajf-field-row .ajf-field-row.ajf-invalid{background:color-mix(in srgb,var(--ajf-danger-bg) 45%,var(--ajf-surface))}ajf-field-row .ajf-field-row.ajf-invalid .ajf-control,ajf-field-row .ajf-field-row.ajf-invalid input.ajf-control,ajf-field-row .ajf-field-row.ajf-invalid .mat-mdc-select-trigger{border-color:var(--ajf-danger)}ajf-field-row .ajf-field-row.ajf-readonly .ajf-field-side{flex-basis:auto}ajf-field-row .ajf-note-row .ajf-field-control,ajf-field-row .ajf-field-type-1 .ajf-field-control,ajf-field-row .ajf-field-type-11 .ajf-field-control{max-width:none}@media (width <= 900px){ajf-field-row .ajf-field-row{flex-wrap:wrap;padding:12px 16px}ajf-field-row .ajf-field-label,ajf-field-row .ajf-field-side{flex-basis:100%;max-width:none;min-height:0}ajf-field-row .ajf-field-control{flex-basis:100%}}\n"] }]
+        args: [{ selector: 'ajf-field-row', changeDetection: ChangeDetectionStrategy.OnPush, encapsulation: ViewEncapsulation.None, template: "<div\n  *ngIf=\"!hidden\"\n  class=\"ajf-field-row\"\n  [class.ajf-invalid]=\"!instance.valid\"\n  [class.ajf-readonly]=\"readonly\"\n  [class.ajf-note-row]=\"isNote\"\n  [ngClass]=\"'ajf-' + instance.node.size + ' ajf-field-type-' + instance.node.fieldType\"\n>\n  <div class=\"ajf-field-label\">\n    <span class=\"ajf-field-label-line\">\n      <label [attr.id]=\"instance.node.name\" [innerHTML]=\"instance.node.label | transloco\"></label>\n      <span class=\"ajf-required\" *ngIf=\"required\" aria-hidden=\"true\">*</span>\n      <mat-icon\n        class=\"ajf-hint-icon\"\n        *ngIf=\"instance.node.hint as hint\"\n        [matTooltip]=\"hint | transloco\"\n        matTooltipPosition=\"right\"\n        >{{ instance.node.hintIcon || 'help' }}</mat-icon\n      >\n    </span>\n    <!-- A note carries prose, not a value, so naming its type says nothing. -->\n    <ng-container *ngIf=\"!isNote\">\n      <span class=\"ajf-field-type-name\" *ngIf=\"instance | ajfFieldTypeLabel as type\"\n        >{{ type.name | transloco }}<ng-container *ngIf=\"type.detailValue\"> &middot;\n          {{ type.detailValue }}<ng-container *ngIf=\"type.detailUnit\">\n            {{ type.detailUnit | transloco }}</ng-container\n          ></ng-container\n        ></span\n      >\n    </ng-container>\n  </div>\n\n  <div class=\"ajf-field-control\">\n    <ajf-field\n      [instance]=\"instance\"\n      [readonly]=\"readonly\"\n      [id]=\"'field_entry_' + instance.node.id\"\n    ></ajf-field>\n  </div>\n\n  <div class=\"ajf-field-side\">\n    <span class=\"ajf-field-error-message\" *ngIf=\"!instance.valid\">{{\n      instance | ajfAsFieldInstanceErrors | transloco\n    }}</span>\n    <span class=\"ajf-field-hint-text\" *ngIf=\"instance.valid && instance.node.description\">{{\n      instance.node.description | transloco\n    }}</span>\n  </div>\n</div>\n", styles: ["ajf-field-row{display:block}ajf-field-row.ajf-hidden-row{display:none}ajf-field-row .ajf-field-row{display:flex;flex-wrap:nowrap;align-items:flex-start;gap:var(--ajf-gap);box-sizing:border-box;padding:10px 20px;border-bottom:1px solid var(--ajf-border);background:var(--ajf-surface);font-family:var(--ajf-font-sans)}ajf-field-row .ajf-field-label{display:flex;flex:0 0 var(--ajf-label-col);flex-direction:column;justify-content:center;gap:2px;min-height:var(--ajf-control-h);max-width:var(--ajf-label-col)}ajf-field-row .ajf-field-label .ajf-field-label-line{display:flex;align-items:center;gap:6px}ajf-field-row .ajf-field-label label{color:var(--ajf-text);font-size:14px;font-weight:500;line-height:1.35}ajf-field-row .ajf-field-label .ajf-field-type-name{color:var(--ajf-text-muted);font-size:12px;line-height:1.3}ajf-field-row .ajf-field-label .ajf-required{color:var(--ajf-danger);font-weight:600}ajf-field-row .ajf-field-label .ajf-hint-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;color:var(--ajf-text-muted);font-size:16px;line-height:1;cursor:help}ajf-field-row .ajf-field-control{display:flex;flex:1 1 auto;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}ajf-field-row .ajf-field-control>ajf-field{flex:1 1 auto;min-width:0}ajf-field-row .ajf-field-side{display:flex;flex:0 0 var(--ajf-side-col);align-items:center;min-height:var(--ajf-control-h);max-width:var(--ajf-side-col)}ajf-field-row .ajf-field-side .ajf-field-hint-text{color:var(--ajf-text-muted);font-size:13px}ajf-field-row .ajf-field-side .ajf-field-error-message{color:var(--ajf-danger);font-size:13px}ajf-field-row .ajf-normal .ajf-field-control{max-width:none}ajf-field-row .ajf-small .ajf-field-control{max-width:420px}ajf-field-row .ajf-smaller .ajf-field-control{max-width:320px}ajf-field-row .ajf-tiny .ajf-field-control{max-width:220px}ajf-field-row .ajf-mini .ajf-field-control{max-width:140px}ajf-field-row .ajf-field-row.ajf-invalid{background:color-mix(in srgb,var(--ajf-danger-bg) 45%,var(--ajf-surface))}ajf-field-row .ajf-field-row.ajf-invalid .ajf-control,ajf-field-row .ajf-field-row.ajf-invalid input.ajf-control,ajf-field-row .ajf-field-row.ajf-invalid .mat-mdc-select-trigger{border-color:var(--ajf-danger)}ajf-field-row .ajf-field-row.ajf-readonly .ajf-field-side{flex-basis:auto}ajf-field-row .ajf-note-row .ajf-field-control,ajf-field-row .ajf-field-type-1 .ajf-field-control,ajf-field-row .ajf-field-type-11 .ajf-field-control{max-width:none}@media (width <= 900px){ajf-field-row .ajf-field-row{flex-wrap:wrap;padding:12px 16px}ajf-field-row .ajf-field-label,ajf-field-row .ajf-field-side{flex-basis:100%;max-width:none;min-height:0}ajf-field-row .ajf-field-control{flex-basis:100%}}\n"] }]
     }], () => [{ type: i0.ChangeDetectorRef }], { instance: [{
             type: Input
         }], readonly: [{
@@ -2300,11 +2313,19 @@ class AjfRepStrip {
     get readonly() {
         return this._readonly;
     }
+    /**
+     * A repetition count driven by a formula is not the reader's to change:
+     * `AjfFormRendererService.addGroup` and `removeGroup` both refuse the call
+     * outright, so without this the buttons would sit enabled and do nothing.
+     */
+    get manualReps() {
+        return this.slide.formulaReps == null;
+    }
     get canAdd() {
-        return (!!this.slide.canAdd && !(this.slide.node.disableRemoval && !this.slide.valid));
+        return this.manualReps && !!this.slide.canAdd;
     }
     get canRemove() {
-        return !!this.slide.canRemove && !this.slide.node.disableRemoval;
+        return this.manualReps && !!this.slide.canRemove;
     }
     static { this.ɵfac = function AjfRepStrip_Factory(__ngFactoryType__) { return new (__ngFactoryType__ || AjfRepStrip)(); }; }
     static { this.ɵcmp = /*@__PURE__*/ i0.ɵɵdefineComponent({ type: AjfRepStrip, selectors: [["ajf-rep-strip"]], inputs: { slide: "slide", current: "current", readonly: "readonly" }, outputs: { goTo: "goTo", add: "add", remove: "remove" }, decls: 22, vars: 26, consts: [[1, "ajf-rep-strip"], [1, "ajf-micro-label", "ajf-rep-strip-label"], [1, "ajf-rep-pager"], ["type", "button", 1, "ajf-btn", 3, "click", "disabled"], ["type", "button", "class", "ajf-btn ajf-rep-page", 3, "ajf-selected", "click", 4, "ngFor", "ngForOf"], [4, "ngIf"], [1, "ajf-rep-strip-context"], [3, "innerHTML"], ["type", "button", 1, "ajf-btn", "ajf-rep-page", 3, "click"]], template: function AjfRepStrip_Template(rf, ctx) { if (rf & 1) {
@@ -2370,7 +2391,160 @@ class AjfRepStrip {
         }], remove: [{
             type: Output
         }] }); })();
-(() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassDebugInfo(AjfRepStrip, { className: "AjfRepStrip", filePath: "rep-strip.ts", lineNumber: 47 }); })();
+(() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassDebugInfo(AjfRepStrip, { className: "AjfRepStrip", filePath: "rep-strip.ts", lineNumber: 41 }); })();
+
+const _c0$1 = ["*"];
+function AjfSlideHeader_span_6_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelement(0, "span", 10);
+    i0.ɵɵpipe(1, "transloco");
+} if (rf & 2) {
+    const s_r1 = ctx.$implicit;
+    const ctx_r1 = i0.ɵɵnextContext();
+    i0.ɵɵclassProp("ajf-current", s_r1 === ctx_r1.slide);
+    i0.ɵɵproperty("innerHTML", i0.ɵɵpipeBind1(1, 3, s_r1.node.label), i0.ɵɵsanitizeHtml);
+} }
+function AjfSlideHeader_mat_icon_7_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "mat-icon", 11);
+    i0.ɵɵtext(1, "arrow_drop_down");
+    i0.ɵɵelementEnd();
+} }
+function AjfSlideHeader_button_10_Template(rf, ctx) { if (rf & 1) {
+    const _r3 = i0.ɵɵgetCurrentView();
+    i0.ɵɵelementStart(0, "button", 12);
+    i0.ɵɵlistener("click", function AjfSlideHeader_button_10_Template_button_click_0_listener() { const s_r4 = i0.ɵɵrestoreView(_r3).$implicit; const ctx_r1 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r1.jumpTo.emit(s_r4)); });
+    i0.ɵɵelementStart(1, "mat-icon");
+    i0.ɵɵtext(2);
+    i0.ɵɵelementEnd();
+    i0.ɵɵelement(3, "span", 13);
+    i0.ɵɵpipe(4, "transloco");
+    i0.ɵɵelementEnd();
+} if (rf & 2) {
+    const s_r4 = ctx.$implicit;
+    i0.ɵɵproperty("disabled", s_r4.visible === false);
+    i0.ɵɵadvance();
+    i0.ɵɵclassProp("ajf-invalid", !s_r4.valid);
+    i0.ɵɵadvance();
+    i0.ɵɵtextInterpolate(s_r4.valid ? "check" : "warning");
+    i0.ɵɵadvance();
+    i0.ɵɵproperty("innerHTML", i0.ɵɵpipeBind1(4, 5, s_r4.node.label), i0.ɵɵsanitizeHtml);
+} }
+function AjfSlideHeader_div_11_Template(rf, ctx) { if (rf & 1) {
+    const _r5 = i0.ɵɵgetCurrentView();
+    i0.ɵɵelementStart(0, "div", 14)(1, "button", 15);
+    i0.ɵɵpipe(2, "transloco");
+    i0.ɵɵlistener("click", function AjfSlideHeader_div_11_Template_button_click_1_listener() { i0.ɵɵrestoreView(_r5); const ctx_r1 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r1.prev.emit()); });
+    i0.ɵɵelementStart(3, "mat-icon");
+    i0.ɵɵtext(4, "chevron_left");
+    i0.ɵɵelementEnd()();
+    i0.ɵɵelementStart(5, "button", 15);
+    i0.ɵɵpipe(6, "transloco");
+    i0.ɵɵlistener("click", function AjfSlideHeader_div_11_Template_button_click_5_listener() { i0.ɵɵrestoreView(_r5); const ctx_r1 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r1.next.emit()); });
+    i0.ɵɵelementStart(7, "mat-icon");
+    i0.ɵɵtext(8, "chevron_right");
+    i0.ɵɵelementEnd()()();
+} if (rf & 2) {
+    i0.ɵɵadvance();
+    i0.ɵɵattribute("aria-label", i0.ɵɵpipeBind1(2, 2, "Back"));
+    i0.ɵɵadvance(4);
+    i0.ɵɵattribute("aria-label", i0.ɵɵpipeBind1(6, 4, "Forward"));
+} }
+/**
+ * The bar at the top of every slide: its number and title, a menu to jump to any
+ * other slide, previous/next paging, and a slot for the form's own action
+ * buttons.
+ *
+ * What the form still has failing is reported by the footer alone. Naming it
+ * here too cost a phone's whole header width to repeat something already on
+ * screen.
+ *
+ * Paging belongs to the renderer, which owns the page slider, so it is raised
+ * as an event rather than handled here.
+ */
+class AjfSlideHeader {
+    constructor() {
+        /** Absent while a start or end message page is on screen. */
+        this.slide = null;
+        /** The number shown in the badge, already offset by any start message. */
+        this.displayNumber = 1;
+        /** Every slide of the form, for the jump menu. */
+        this.slides = [];
+        /** How many pages the slider holds, repetitions and message pages included. */
+        this.pages = 0;
+        this.jumpTo = new EventEmitter();
+        this.prev = new EventEmitter();
+        this.next = new EventEmitter();
+    }
+    /**
+     * Whether the form has anywhere to page to. A single page form gets no arrows
+     * and no "slide 1 of 1": both are controls that cannot do anything.
+     */
+    get canNavigate() {
+        return this.pages > 1;
+    }
+    /**
+     * Whether the jump menu is worth opening. Counted over the visible slides, the
+     * only ones the menu can actually reach.
+     */
+    get canJump() {
+        return this.slides.filter(s => s.visible !== false).length > 1;
+    }
+    static { this.ɵfac = function AjfSlideHeader_Factory(__ngFactoryType__) { return new (__ngFactoryType__ || AjfSlideHeader)(); }; }
+    static { this.ɵcmp = /*@__PURE__*/ i0.ɵɵdefineComponent({ type: AjfSlideHeader, selectors: [["ajf-slide-header"]], inputs: { slide: "slide", displayNumber: "displayNumber", slides: "slides", pages: "pages" }, outputs: { jumpTo: "jumpTo", prev: "prev", next: "next" }, ngContentSelectors: _c0$1, decls: 14, vars: 12, consts: [["slideMenu", "matMenu"], [1, "ajf-slide-header"], ["type", "button", 1, "ajf-slide-title", 3, "disabled", "matMenuTriggerFor"], [1, "ajf-slide-number"], [1, "ajf-slide-label-stack"], ["class", "ajf-slide-label", 3, "ajf-current", "innerHTML", 4, "ngFor", "ngForOf"], ["class", "ajf-slide-caret", 4, "ngIf"], ["mat-menu-item", "", 3, "disabled", "click", 4, "ngFor", "ngForOf"], ["class", "ajf-slide-nav", 4, "ngIf"], [1, "ajf-slide-header-spacer"], [1, "ajf-slide-label", 3, "innerHTML"], [1, "ajf-slide-caret"], ["mat-menu-item", "", 3, "click", "disabled"], [3, "innerHTML"], [1, "ajf-slide-nav"], ["type", "button", 1, "ajf-btn", 3, "click"]], template: function AjfSlideHeader_Template(rf, ctx) { if (rf & 1) {
+            i0.ɵɵprojectionDef();
+            i0.ɵɵelementStart(0, "div", 1)(1, "button", 2);
+            i0.ɵɵpipe(2, "transloco");
+            i0.ɵɵelementStart(3, "span", 3);
+            i0.ɵɵtext(4);
+            i0.ɵɵelementEnd();
+            i0.ɵɵelementStart(5, "span", 4);
+            i0.ɵɵtemplate(6, AjfSlideHeader_span_6_Template, 2, 5, "span", 5);
+            i0.ɵɵelementEnd();
+            i0.ɵɵtemplate(7, AjfSlideHeader_mat_icon_7_Template, 2, 0, "mat-icon", 6);
+            i0.ɵɵelementEnd();
+            i0.ɵɵelementStart(8, "mat-menu", null, 0);
+            i0.ɵɵtemplate(10, AjfSlideHeader_button_10_Template, 5, 7, "button", 7);
+            i0.ɵɵelementEnd();
+            i0.ɵɵtemplate(11, AjfSlideHeader_div_11_Template, 9, 6, "div", 8);
+            i0.ɵɵelement(12, "span", 9);
+            i0.ɵɵprojection(13);
+            i0.ɵɵelementEnd();
+        } if (rf & 2) {
+            const slideMenu_r6 = i0.ɵɵreference(9);
+            i0.ɵɵadvance();
+            i0.ɵɵclassProp("ajf-slide-title-static", !ctx.slide || !ctx.canJump);
+            i0.ɵɵproperty("disabled", !ctx.slide || !ctx.canJump)("matMenuTriggerFor", slideMenu_r6);
+            i0.ɵɵattribute("aria-label", i0.ɵɵpipeBind1(2, 10, "Go to slide"));
+            i0.ɵɵadvance(3);
+            i0.ɵɵtextInterpolate(ctx.displayNumber);
+            i0.ɵɵadvance(2);
+            i0.ɵɵproperty("ngForOf", ctx.slides);
+            i0.ɵɵadvance();
+            i0.ɵɵproperty("ngIf", ctx.slide && ctx.canJump);
+            i0.ɵɵadvance(3);
+            i0.ɵɵproperty("ngForOf", ctx.slides);
+            i0.ɵɵadvance();
+            i0.ɵɵproperty("ngIf", ctx.canNavigate);
+        } }, dependencies: [i2$1.NgForOf, i2$1.NgIf, i2$7.MatIcon, i3$4.MatMenu, i3$4.MatMenuItem, i3$4.MatMenuTrigger, i5.TranslocoPipe], styles: ["ajf-slide-header{display:block}ajf-slide-header .ajf-slide-header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 20px;background:var(--ajf-surface);font-family:var(--ajf-font-sans)}ajf-slide-header .ajf-slide-header-spacer{flex:1 1 auto}ajf-slide-header .ajf-slide-title{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer;flex:0 1 auto;justify-content:flex-start;gap:10px;max-width:100%;padding:0 12px}ajf-slide-header .ajf-slide-title:hover:not(:disabled){border-color:var(--ajf-accent)}ajf-slide-header .ajf-slide-title:disabled{color:var(--ajf-text-faint);cursor:default}ajf-slide-header .ajf-slide-title .ajf-slide-number{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--ajf-accent);color:var(--ajf-accent-fg);font-size:12px;font-weight:600}ajf-slide-header .ajf-slide-title .ajf-slide-label-stack{display:grid;min-width:0;max-width:340px;text-align:left}ajf-slide-header .ajf-slide-title .ajf-slide-label{grid-area:1/1;overflow:hidden;visibility:hidden;font-size:16px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}ajf-slide-header .ajf-slide-title .ajf-slide-label.ajf-current{visibility:visible}ajf-slide-header .ajf-slide-title .ajf-slide-caret{width:20px;height:20px;margin-left:auto;color:var(--ajf-text-muted);font-size:20px}ajf-slide-header .ajf-slide-title-static{cursor:default}ajf-slide-header .ajf-slide-title-static:hover{border-color:var(--ajf-border-strong)}ajf-slide-header .ajf-slide-nav{display:flex;gap:8px}ajf-slide-header .ajf-slide-nav .ajf-btn{width:var(--ajf-control-h);padding:0}.mat-mdc-menu-panel .mat-mdc-menu-item .mat-icon.ajf-invalid{color:var(--ajf-danger)}\n"], encapsulation: 2 }); }
+}
+(() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(AjfSlideHeader, [{
+        type: Component,
+        args: [{ selector: 'ajf-slide-header', encapsulation: ViewEncapsulation.None, template: "<div class=\"ajf-slide-header\">\n  <button\n    type=\"button\"\n    class=\"ajf-slide-title\"\n    [class.ajf-slide-title-static]=\"!slide || !canJump\"\n    [disabled]=\"!slide || !canJump\"\n    [matMenuTriggerFor]=\"slideMenu\"\n    [attr.aria-label]=\"'Go to slide' | transloco\"\n  >\n    <span class=\"ajf-slide-number\">{{ displayNumber }}</span>\n\n    <!-- Every slide title is laid out in the same grid cell, so the trigger is as\n         wide as the longest of them and keeps that width while paging. Only the\n         current title is visible; the rest just hold the space open. -->\n    <span class=\"ajf-slide-label-stack\">\n      <span\n        class=\"ajf-slide-label\"\n        *ngFor=\"let s of slides\"\n        [class.ajf-current]=\"s === slide\"\n        [innerHTML]=\"s.node.label | transloco\"\n      ></span>\n    </span>\n    <mat-icon class=\"ajf-slide-caret\" *ngIf=\"slide && canJump\">arrow_drop_down</mat-icon>\n  </button>\n\n  <mat-menu #slideMenu=\"matMenu\">\n    <button\n      mat-menu-item\n      *ngFor=\"let s of slides\"\n      [disabled]=\"s.visible === false\"\n      (click)=\"jumpTo.emit(s)\"\n    >\n      <mat-icon [class.ajf-invalid]=\"!s.valid\">{{ s.valid ? 'check' : 'warning' }}</mat-icon>\n      <span [innerHTML]=\"s.node.label | transloco\"></span>\n    </button>\n  </mat-menu>\n\n  <!-- Nothing to page through in a single page form. -->\n  <div class=\"ajf-slide-nav\" *ngIf=\"canNavigate\">\n    <button\n      type=\"button\"\n      class=\"ajf-btn\"\n      (click)=\"prev.emit()\"\n      [attr.aria-label]=\"'Back' | transloco\"\n    >\n      <mat-icon>chevron_left</mat-icon>\n    </button>\n    <button\n      type=\"button\"\n      class=\"ajf-btn\"\n      (click)=\"next.emit()\"\n      [attr.aria-label]=\"'Forward' | transloco\"\n    >\n      <mat-icon>chevron_right</mat-icon>\n    </button>\n  </div>\n\n  <span class=\"ajf-slide-header-spacer\"></span>\n\n  <ng-content></ng-content>\n</div>\n", styles: ["ajf-slide-header{display:block}ajf-slide-header .ajf-slide-header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 20px;background:var(--ajf-surface);font-family:var(--ajf-font-sans)}ajf-slide-header .ajf-slide-header-spacer{flex:1 1 auto}ajf-slide-header .ajf-slide-title{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer;flex:0 1 auto;justify-content:flex-start;gap:10px;max-width:100%;padding:0 12px}ajf-slide-header .ajf-slide-title:hover:not(:disabled){border-color:var(--ajf-accent)}ajf-slide-header .ajf-slide-title:disabled{color:var(--ajf-text-faint);cursor:default}ajf-slide-header .ajf-slide-title .ajf-slide-number{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--ajf-accent);color:var(--ajf-accent-fg);font-size:12px;font-weight:600}ajf-slide-header .ajf-slide-title .ajf-slide-label-stack{display:grid;min-width:0;max-width:340px;text-align:left}ajf-slide-header .ajf-slide-title .ajf-slide-label{grid-area:1/1;overflow:hidden;visibility:hidden;font-size:16px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}ajf-slide-header .ajf-slide-title .ajf-slide-label.ajf-current{visibility:visible}ajf-slide-header .ajf-slide-title .ajf-slide-caret{width:20px;height:20px;margin-left:auto;color:var(--ajf-text-muted);font-size:20px}ajf-slide-header .ajf-slide-title-static{cursor:default}ajf-slide-header .ajf-slide-title-static:hover{border-color:var(--ajf-border-strong)}ajf-slide-header .ajf-slide-nav{display:flex;gap:8px}ajf-slide-header .ajf-slide-nav .ajf-btn{width:var(--ajf-control-h);padding:0}.mat-mdc-menu-panel .mat-mdc-menu-item .mat-icon.ajf-invalid{color:var(--ajf-danger)}\n"] }]
+    }], null, { slide: [{
+            type: Input
+        }], displayNumber: [{
+            type: Input
+        }], slides: [{
+            type: Input
+        }], pages: [{
+            type: Input
+        }], jumpTo: [{
+            type: Output
+        }], prev: [{
+            type: Output
+        }], next: [{
+            type: Output
+        }] }); })();
+(() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassDebugInfo(AjfSlideHeader, { className: "AjfSlideHeader", filePath: "slide-header.ts", lineNumber: 47 }); })();
 
 /**
  * @license
@@ -2538,335 +2712,50 @@ class AjfFormIssuesPipe {
  * If not, see http://www.gnu.org/licenses/.
  *
  */
-const _c0$1 = ["*"];
-const _c1$1 = (a0, a1) => ({ fields: a0, slides: a1 });
-function AjfSlideHeader_span_6_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelement(0, "span", 14);
-    i0.ɵɵpipe(1, "transloco");
-} if (rf & 2) {
-    const s_r1 = ctx.$implicit;
-    const ctx_r1 = i0.ɵɵnextContext();
-    i0.ɵɵclassProp("ajf-current", s_r1 === ctx_r1.slide);
-    i0.ɵɵproperty("innerHTML", i0.ɵɵpipeBind1(1, 3, s_r1.node.label), i0.ɵɵsanitizeHtml);
-} }
-function AjfSlideHeader_span_7_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "span", 15);
-    i0.ɵɵtext(1);
-    i0.ɵɵpipe(2, "transloco");
-    i0.ɵɵelementEnd();
-} if (rf & 2) {
-    const ctx_r1 = i0.ɵɵnextContext();
-    i0.ɵɵclassProp("ajf-pill-placeholder", ctx_r1.reps < 1);
-    i0.ɵɵadvance();
-    i0.ɵɵtextInterpolate2("", ctx_r1.reps, " ", i0.ɵɵpipeBind1(2, 4, "repetitions"), "");
-} }
-function AjfSlideHeader_span_8_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "span", 16);
-    i0.ɵɵtext(1);
-    i0.ɵɵpipe(2, "ajfSlideCompletion");
-    i0.ɵɵpipe(3, "ajfSlideCompletion");
-    i0.ɵɵelementEnd();
-} if (rf & 2) {
-    const s_r3 = ctx.ngIf;
-    const ctx_r1 = i0.ɵɵnextContext();
-    i0.ɵɵadvance();
-    i0.ɵɵtextInterpolate2("", i0.ɵɵpipeBind3(2, 2, s_r3, ctx_r1.repIndex, ctx_r1.group).done, "/", i0.ɵɵpipeBind3(3, 6, s_r3, ctx_r1.repIndex, ctx_r1.group).total, "");
-} }
-function AjfSlideHeader_mat_icon_9_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "mat-icon", 17);
-    i0.ɵɵtext(1, "arrow_drop_down");
-    i0.ɵɵelementEnd();
-} }
-function AjfSlideHeader_button_12_Template(rf, ctx) { if (rf & 1) {
-    const _r4 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "button", 18);
-    i0.ɵɵlistener("click", function AjfSlideHeader_button_12_Template_button_click_0_listener() { const s_r5 = i0.ɵɵrestoreView(_r4).$implicit; const ctx_r1 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r1.jumpTo.emit(s_r5)); });
-    i0.ɵɵelementStart(1, "mat-icon");
-    i0.ɵɵtext(2);
-    i0.ɵɵelementEnd();
-    i0.ɵɵelement(3, "span", 19);
-    i0.ɵɵpipe(4, "transloco");
-    i0.ɵɵelementEnd();
-} if (rf & 2) {
-    const s_r5 = ctx.$implicit;
-    i0.ɵɵproperty("disabled", s_r5.visible === false);
-    i0.ɵɵadvance();
-    i0.ɵɵclassProp("ajf-invalid", !s_r5.valid);
-    i0.ɵɵadvance();
-    i0.ɵɵtextInterpolate(s_r5.valid ? "check" : "warning");
-    i0.ɵɵadvance();
-    i0.ɵɵproperty("innerHTML", i0.ɵɵpipeBind1(4, 5, s_r5.node.label), i0.ɵɵsanitizeHtml);
-} }
-function AjfSlideHeader_div_13_Template(rf, ctx) { if (rf & 1) {
-    const _r6 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "div", 20)(1, "button", 21);
-    i0.ɵɵpipe(2, "transloco");
-    i0.ɵɵlistener("click", function AjfSlideHeader_div_13_Template_button_click_1_listener() { i0.ɵɵrestoreView(_r6); const ctx_r1 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r1.prev.emit()); });
-    i0.ɵɵelementStart(3, "mat-icon");
-    i0.ɵɵtext(4, "chevron_left");
-    i0.ɵɵelementEnd()();
-    i0.ɵɵelementStart(5, "button", 21);
-    i0.ɵɵpipe(6, "transloco");
-    i0.ɵɵlistener("click", function AjfSlideHeader_div_13_Template_button_click_5_listener() { i0.ɵɵrestoreView(_r6); const ctx_r1 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r1.next.emit()); });
-    i0.ɵɵelementStart(7, "mat-icon");
-    i0.ɵɵtext(8, "chevron_right");
-    i0.ɵɵelementEnd()()();
-} if (rf & 2) {
-    i0.ɵɵadvance();
-    i0.ɵɵattribute("aria-label", i0.ɵɵpipeBind1(2, 2, "Back"));
-    i0.ɵɵadvance(4);
-    i0.ɵɵattribute("aria-label", i0.ɵɵpipeBind1(6, 4, "Forward"));
-} }
-function AjfSlideHeader_button_14_Template(rf, ctx) { if (rf & 1) {
-    const _r7 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "button", 22);
-    i0.ɵɵlistener("click", function AjfSlideHeader_button_14_Template_button_click_0_listener() { i0.ɵɵrestoreView(_r7); const ctx_r1 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r1.gotoIssue.emit()); });
-    i0.ɵɵelementStart(1, "mat-icon");
-    i0.ɵɵtext(2, "error");
-    i0.ɵɵelementEnd();
-    i0.ɵɵtext(3);
-    i0.ɵɵpipe(4, "transloco");
-    i0.ɵɵelementEnd();
-} if (rf & 2) {
-    const ctx_r1 = i0.ɵɵnextContext();
-    i0.ɵɵadvance(3);
-    i0.ɵɵtextInterpolate1(" ", i0.ɵɵpipeBind2(4, 1, "{{fields}} fields in {{slides}} slides need attention", i0.ɵɵpureFunction2(4, _c1$1, ctx_r1.issues.fields, ctx_r1.issues.slides)), " ");
-} }
-function AjfSlideHeader_span_16_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "span", 23);
-    i0.ɵɵtext(1);
-    i0.ɵɵpipe(2, "transloco");
-    i0.ɵɵpipe(3, "transloco");
-    i0.ɵɵelementEnd();
-} if (rf & 2) {
-    const ctx_r1 = i0.ɵɵnextContext();
-    i0.ɵɵadvance();
-    i0.ɵɵtextInterpolate4("", i0.ɵɵpipeBind1(2, 4, "slide"), " ", ctx_r1.displayNumber, " ", i0.ɵɵpipeBind1(3, 6, "of"), " ", ctx_r1.total, "");
-} }
-/**
- * The bar at the top of every slide: its number and title, a completion
- * counter, a menu to jump to any other slide, previous/next paging, an alert
- * when the slide has failing fields, and a slot for the form's own action
- * buttons.
- *
- * Paging and error navigation belong to the renderer, which owns the page
- * slider, so they are raised as events rather than handled here.
- */
-class AjfSlideHeader {
-    constructor() {
-        /** Absent while a start or end message page is on screen. */
-        this.slide = null;
-        /** The number shown in the badge, already offset by any start message. */
-        this.displayNumber = 1;
-        /** Which repetition of a repeating slide this header belongs to. */
-        this.repIndex = 0;
-        /** Every slide of the form, for the jump menu. */
-        this.slides = [];
-        /** How many repetitions a repeating slide currently has; 0 when not repeating. */
-        this.reps = 0;
-        /** How many visible slides the form has, for the "slide N of M" readout. */
-        this.total = 0;
-        /** How many pages the slider holds, repetitions and message pages included. */
-        this.pages = 0;
-        /**
-         * The form's control group, which the completion counter reads values from.
-         * Not named `formGroup`: that is ReactiveFormsModule's own selector, and would
-         * bind FormGroupDirective to this element too.
-         */
-        this.group = null;
-        /** What the whole form still has failing, computed by the renderer. */
-        this.issues = null;
-        this.jumpTo = new EventEmitter();
-        this.prev = new EventEmitter();
-        this.next = new EventEmitter();
-        this.gotoIssue = new EventEmitter();
-    }
-    /**
-     * Whether any slide of the form repeats. The repetition count sits inside the
-     * jump trigger, so its slot is held open on every slide of such a form -- one
-     * width for the whole form beats a trigger that jumps by the width of a pill
-     * whenever a repeating slide comes up. Forms with no repeating slide never
-     * reserve the space.
-     */
-    get hasRepeatingSlides() {
-        return this.slides.some(s => isRepeatingSlideInstance(s));
-    }
-    /**
-     * Whether the form has anywhere to page to. A single page form gets no arrows
-     * and no "slide 1 of 1": both are controls that cannot do anything.
-     */
-    get canNavigate() {
-        return this.pages > 1;
-    }
-    /**
-     * Whether the jump menu is worth opening. Counted over the visible slides, the
-     * only ones the menu can actually reach.
-     */
-    get canJump() {
-        return this.slides.filter(s => s.visible !== false).length > 1;
-    }
-    static { this.ɵfac = function AjfSlideHeader_Factory(__ngFactoryType__) { return new (__ngFactoryType__ || AjfSlideHeader)(); }; }
-    static { this.ɵcmp = /*@__PURE__*/ i0.ɵɵdefineComponent({ type: AjfSlideHeader, selectors: [["ajf-slide-header"]], inputs: { slide: "slide", displayNumber: "displayNumber", repIndex: "repIndex", slides: "slides", reps: "reps", total: "total", pages: "pages", group: "group", issues: "issues" }, outputs: { jumpTo: "jumpTo", prev: "prev", next: "next", gotoIssue: "gotoIssue" }, ngContentSelectors: _c0$1, decls: 18, vars: 16, consts: [["slideMenu", "matMenu"], [1, "ajf-slide-header"], ["type", "button", 1, "ajf-slide-title", 3, "disabled", "matMenuTriggerFor"], [1, "ajf-slide-number"], [1, "ajf-slide-label-stack"], ["class", "ajf-slide-label", 3, "ajf-current", "innerHTML", 4, "ngFor", "ngForOf"], ["class", "ajf-pill ajf-reps-pill", 3, "ajf-pill-placeholder", 4, "ngIf"], ["class", "ajf-pill", 4, "ngIf"], ["class", "ajf-slide-caret", 4, "ngIf"], ["mat-menu-item", "", 3, "disabled", "click", 4, "ngFor", "ngForOf"], ["class", "ajf-slide-nav", 4, "ngIf"], ["type", "button", "class", "ajf-pill ajf-pill--danger ajf-issue-pill", 3, "click", 4, "ngIf"], [1, "ajf-slide-header-spacer"], ["class", "ajf-slide-count", 4, "ngIf"], [1, "ajf-slide-label", 3, "innerHTML"], [1, "ajf-pill", "ajf-reps-pill"], [1, "ajf-pill"], [1, "ajf-slide-caret"], ["mat-menu-item", "", 3, "click", "disabled"], [3, "innerHTML"], [1, "ajf-slide-nav"], ["type", "button", 1, "ajf-btn", 3, "click"], ["type", "button", 1, "ajf-pill", "ajf-pill--danger", "ajf-issue-pill", 3, "click"], [1, "ajf-slide-count"]], template: function AjfSlideHeader_Template(rf, ctx) { if (rf & 1) {
-            i0.ɵɵprojectionDef();
-            i0.ɵɵelementStart(0, "div", 1)(1, "button", 2);
-            i0.ɵɵpipe(2, "transloco");
-            i0.ɵɵelementStart(3, "span", 3);
-            i0.ɵɵtext(4);
-            i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(5, "span", 4);
-            i0.ɵɵtemplate(6, AjfSlideHeader_span_6_Template, 2, 5, "span", 5);
-            i0.ɵɵelementEnd();
-            i0.ɵɵtemplate(7, AjfSlideHeader_span_7_Template, 3, 6, "span", 6)(8, AjfSlideHeader_span_8_Template, 4, 10, "span", 7)(9, AjfSlideHeader_mat_icon_9_Template, 2, 0, "mat-icon", 8);
-            i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(10, "mat-menu", null, 0);
-            i0.ɵɵtemplate(12, AjfSlideHeader_button_12_Template, 5, 7, "button", 9);
-            i0.ɵɵelementEnd();
-            i0.ɵɵtemplate(13, AjfSlideHeader_div_13_Template, 9, 6, "div", 10)(14, AjfSlideHeader_button_14_Template, 5, 7, "button", 11);
-            i0.ɵɵelement(15, "span", 12);
-            i0.ɵɵtemplate(16, AjfSlideHeader_span_16_Template, 4, 8, "span", 13);
-            i0.ɵɵprojection(17);
-            i0.ɵɵelementEnd();
-        } if (rf & 2) {
-            const slideMenu_r8 = i0.ɵɵreference(11);
-            i0.ɵɵadvance();
-            i0.ɵɵclassProp("ajf-slide-title-static", !ctx.slide || !ctx.canJump);
-            i0.ɵɵproperty("disabled", !ctx.slide || !ctx.canJump)("matMenuTriggerFor", slideMenu_r8);
-            i0.ɵɵattribute("aria-label", i0.ɵɵpipeBind1(2, 14, "Go to slide"));
-            i0.ɵɵadvance(3);
-            i0.ɵɵtextInterpolate(ctx.displayNumber);
-            i0.ɵɵadvance(2);
-            i0.ɵɵproperty("ngForOf", ctx.slides);
-            i0.ɵɵadvance();
-            i0.ɵɵproperty("ngIf", ctx.hasRepeatingSlides);
-            i0.ɵɵadvance();
-            i0.ɵɵproperty("ngIf", ctx.slide);
-            i0.ɵɵadvance();
-            i0.ɵɵproperty("ngIf", ctx.slide && ctx.canJump);
-            i0.ɵɵadvance(3);
-            i0.ɵɵproperty("ngForOf", ctx.slides);
-            i0.ɵɵadvance();
-            i0.ɵɵproperty("ngIf", ctx.canNavigate);
-            i0.ɵɵadvance();
-            i0.ɵɵproperty("ngIf", ctx.issues && ctx.issues.fields > 0);
-            i0.ɵɵadvance(2);
-            i0.ɵɵproperty("ngIf", ctx.canNavigate && ctx.total > 0);
-        } }, dependencies: [i2$1.NgForOf, i2$1.NgIf, i2$7.MatIcon, i3$4.MatMenu, i3$4.MatMenuItem, i3$4.MatMenuTrigger, i5.TranslocoPipe, AjfSlideCompletionPipe], styles: ["ajf-slide-header{display:block}ajf-slide-header .ajf-slide-header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 20px;background:var(--ajf-surface);font-family:var(--ajf-font-sans)}ajf-slide-header .ajf-slide-header-spacer{flex:1 1 auto}ajf-slide-header .ajf-slide-title{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer;flex:0 1 auto;justify-content:flex-start;gap:10px;max-width:100%;padding:0 12px}ajf-slide-header .ajf-slide-title:hover:not(:disabled){border-color:var(--ajf-accent)}ajf-slide-header .ajf-slide-title:disabled{color:var(--ajf-text-faint);cursor:default}ajf-slide-header .ajf-slide-title .ajf-slide-number{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--ajf-accent);color:var(--ajf-accent-fg);font-size:12px;font-weight:600}ajf-slide-header .ajf-slide-title .ajf-slide-label-stack{display:grid;min-width:0;max-width:340px;text-align:left}ajf-slide-header .ajf-slide-title .ajf-slide-label{grid-area:1/1;overflow:hidden;visibility:hidden;font-size:16px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}ajf-slide-header .ajf-slide-title .ajf-slide-label.ajf-current{visibility:visible}ajf-slide-header .ajf-slide-title .ajf-slide-caret{width:20px;height:20px;margin-left:auto;color:var(--ajf-text-muted);font-size:20px}ajf-slide-header .ajf-slide-title-static{cursor:default}ajf-slide-header .ajf-slide-title-static:hover{border-color:var(--ajf-border-strong)}ajf-slide-header .ajf-slide-title .ajf-pill{justify-content:center;min-width:3.4em}ajf-slide-header .ajf-slide-title .ajf-reps-pill{min-width:8em}ajf-slide-header .ajf-pill-placeholder{visibility:hidden}ajf-slide-header .ajf-slide-count{font-family:var(--ajf-font-mono);font-size:13px;letter-spacing:.01em;color:var(--ajf-text-faint)}ajf-slide-header .ajf-slide-nav{display:flex;gap:8px}ajf-slide-header .ajf-slide-nav .ajf-btn{width:var(--ajf-control-h);padding:0}ajf-slide-header .ajf-issue-pill{border:0;cursor:pointer}ajf-slide-header .ajf-issue-pill .mat-icon{width:16px;height:16px;font-size:16px}.mat-mdc-menu-panel .mat-mdc-menu-item .mat-icon.ajf-invalid{color:var(--ajf-danger)}\n"], encapsulation: 2 }); }
-}
-(() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(AjfSlideHeader, [{
-        type: Component,
-        args: [{ selector: 'ajf-slide-header', encapsulation: ViewEncapsulation.None, template: "<div class=\"ajf-slide-header\">\n  <button\n    type=\"button\"\n    class=\"ajf-slide-title\"\n    [class.ajf-slide-title-static]=\"!slide || !canJump\"\n    [disabled]=\"!slide || !canJump\"\n    [matMenuTriggerFor]=\"slideMenu\"\n    [attr.aria-label]=\"'Go to slide' | transloco\"\n  >\n    <span class=\"ajf-slide-number\">{{ displayNumber }}</span>\n\n    <!-- Every slide title is laid out in the same grid cell, so the trigger is as\n         wide as the longest of them and keeps that width while paging. Only the\n         current title is visible; the rest just hold the space open. -->\n    <span class=\"ajf-slide-label-stack\">\n      <span\n        class=\"ajf-slide-label\"\n        *ngFor=\"let s of slides\"\n        [class.ajf-current]=\"s === slide\"\n        [innerHTML]=\"s.node.label | transloco\"\n      ></span>\n    </span>\n\n    <span\n      class=\"ajf-pill ajf-reps-pill\"\n      *ngIf=\"hasRepeatingSlides\"\n      [class.ajf-pill-placeholder]=\"reps < 1\"\n      >{{ reps }} {{ 'repetitions' | transloco }}</span\n    >\n    <span class=\"ajf-pill\" *ngIf=\"slide as s\"\n      >{{ (s | ajfSlideCompletion : repIndex : group).done }}/{{\n        (s | ajfSlideCompletion : repIndex : group).total\n      }}</span\n    >\n    <mat-icon class=\"ajf-slide-caret\" *ngIf=\"slide && canJump\">arrow_drop_down</mat-icon>\n  </button>\n\n  <mat-menu #slideMenu=\"matMenu\">\n    <button\n      mat-menu-item\n      *ngFor=\"let s of slides\"\n      [disabled]=\"s.visible === false\"\n      (click)=\"jumpTo.emit(s)\"\n    >\n      <mat-icon [class.ajf-invalid]=\"!s.valid\">{{ s.valid ? 'check' : 'warning' }}</mat-icon>\n      <span [innerHTML]=\"s.node.label | transloco\"></span>\n    </button>\n  </mat-menu>\n\n  <!-- Nothing to page through in a single page form. -->\n  <div class=\"ajf-slide-nav\" *ngIf=\"canNavigate\">\n    <button\n      type=\"button\"\n      class=\"ajf-btn\"\n      (click)=\"prev.emit()\"\n      [attr.aria-label]=\"'Back' | transloco\"\n    >\n      <mat-icon>chevron_left</mat-icon>\n    </button>\n    <button\n      type=\"button\"\n      class=\"ajf-btn\"\n      (click)=\"next.emit()\"\n      [attr.aria-label]=\"'Forward' | transloco\"\n    >\n      <mat-icon>chevron_right</mat-icon>\n    </button>\n  </div>\n\n  <!-- Form-wide, not per-slide: the slide on screen is the one place the reader\n       can already see what is wrong. -->\n  <button\n    type=\"button\"\n    class=\"ajf-pill ajf-pill--danger ajf-issue-pill\"\n    *ngIf=\"issues && issues.fields > 0\"\n    (click)=\"gotoIssue.emit()\"\n  >\n    <mat-icon>error</mat-icon>\n    {{\n      '{{fields}} fields in {{slides}} slides need attention'\n        | transloco : {fields: issues.fields, slides: issues.slides}\n    }}\n  </button>\n\n  <span class=\"ajf-slide-header-spacer\"></span>\n\n  <span class=\"ajf-slide-count\" *ngIf=\"canNavigate && total > 0\"\n    >{{ 'slide' | transloco }} {{ displayNumber }} {{ 'of' | transloco }} {{ total }}</span\n  >\n\n  <ng-content></ng-content>\n</div>\n", styles: ["ajf-slide-header{display:block}ajf-slide-header .ajf-slide-header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 20px;background:var(--ajf-surface);font-family:var(--ajf-font-sans)}ajf-slide-header .ajf-slide-header-spacer{flex:1 1 auto}ajf-slide-header .ajf-slide-title{display:inline-flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box;min-height:var(--ajf-control-h);border:1px solid var(--ajf-border-strong);border-radius:var(--ajf-radius);background:var(--ajf-surface);color:var(--ajf-text);font-family:var(--ajf-font-sans);font-size:14px;cursor:pointer;flex:0 1 auto;justify-content:flex-start;gap:10px;max-width:100%;padding:0 12px}ajf-slide-header .ajf-slide-title:hover:not(:disabled){border-color:var(--ajf-accent)}ajf-slide-header .ajf-slide-title:disabled{color:var(--ajf-text-faint);cursor:default}ajf-slide-header .ajf-slide-title .ajf-slide-number{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--ajf-accent);color:var(--ajf-accent-fg);font-size:12px;font-weight:600}ajf-slide-header .ajf-slide-title .ajf-slide-label-stack{display:grid;min-width:0;max-width:340px;text-align:left}ajf-slide-header .ajf-slide-title .ajf-slide-label{grid-area:1/1;overflow:hidden;visibility:hidden;font-size:16px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}ajf-slide-header .ajf-slide-title .ajf-slide-label.ajf-current{visibility:visible}ajf-slide-header .ajf-slide-title .ajf-slide-caret{width:20px;height:20px;margin-left:auto;color:var(--ajf-text-muted);font-size:20px}ajf-slide-header .ajf-slide-title-static{cursor:default}ajf-slide-header .ajf-slide-title-static:hover{border-color:var(--ajf-border-strong)}ajf-slide-header .ajf-slide-title .ajf-pill{justify-content:center;min-width:3.4em}ajf-slide-header .ajf-slide-title .ajf-reps-pill{min-width:8em}ajf-slide-header .ajf-pill-placeholder{visibility:hidden}ajf-slide-header .ajf-slide-count{font-family:var(--ajf-font-mono);font-size:13px;letter-spacing:.01em;color:var(--ajf-text-faint)}ajf-slide-header .ajf-slide-nav{display:flex;gap:8px}ajf-slide-header .ajf-slide-nav .ajf-btn{width:var(--ajf-control-h);padding:0}ajf-slide-header .ajf-issue-pill{border:0;cursor:pointer}ajf-slide-header .ajf-issue-pill .mat-icon{width:16px;height:16px;font-size:16px}.mat-mdc-menu-panel .mat-mdc-menu-item .mat-icon.ajf-invalid{color:var(--ajf-danger)}\n"] }]
-    }], null, { slide: [{
-            type: Input
-        }], displayNumber: [{
-            type: Input
-        }], repIndex: [{
-            type: Input
-        }], slides: [{
-            type: Input
-        }], reps: [{
-            type: Input
-        }], total: [{
-            type: Input
-        }], pages: [{
-            type: Input
-        }], group: [{
-            type: Input
-        }], issues: [{
-            type: Input
-        }], jumpTo: [{
-            type: Output
-        }], prev: [{
-            type: Output
-        }], next: [{
-            type: Output
-        }], gotoIssue: [{
-            type: Output
-        }] }); })();
-(() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassDebugInfo(AjfSlideHeader, { className: "AjfSlideHeader", filePath: "slide-header.ts", lineNumber: 53 }); })();
-
-/**
- * @license
- * Copyright (C) Gnucoop soc. coop.
- *
- * This file is part of the Advanced JSON forms (ajf).
- *
- * Advanced JSON forms (ajf) is free software: you can redistribute it and/or
- * modify it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the License,
- * or (at your option) any later version.
- *
- * Advanced JSON forms (ajf) is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
- * General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with Advanced JSON forms (ajf).
- * If not, see http://www.gnu.org/licenses/.
- *
- */
 const _c0 = [[["", "ajfFormTopToolbarButtons", ""]], [["", "ajfFormSaveButton", ""]], [["", "ajfFormStartMessageTitle", ""]], [["", "ajfFormStartMessage", ""]], [["", "ajfFormEndMessageTitle", ""]], [["", "ajfFormEndMessage", ""]]];
 const _c1 = ["[ajfFormTopToolbarButtons]", "[ajfFormSaveButton]", "[ajfFormStartMessageTitle]", "[ajfFormStartMessage]", "[ajfFormEndMessageTitle]", "[ajfFormEndMessage]"];
 const _c2 = (a0, a1) => ({ fields: a0, slides: a1 });
-function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_span_4_button_4_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "button", 16);
-    i0.ɵɵtext(1);
-    i0.ɵɵpipe(2, "transloco");
-    i0.ɵɵelementEnd();
-} if (rf & 2) {
-    i0.ɵɵadvance();
-    i0.ɵɵtextInterpolate1(" ", i0.ɵɵpipeBind1(2, 1, "Save"), " ");
-} }
-function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_span_4_Template(rf, ctx) { if (rf & 1) {
+function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_span_3_Template(rf, ctx) { if (rf & 1) {
     const _r4 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "span", 14);
-    i0.ɵɵlistener("click", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_span_4_Template_span_click_0_listener($event) { i0.ɵɵrestoreView(_r4); const ctx_r2 = i0.ɵɵnextContext(5); return i0.ɵɵresetView(ctx_r2.onSave($event)); });
-    i0.ɵɵelementStart(1, "span", null, 1);
-    i0.ɵɵprojection(3, 1);
+    i0.ɵɵelementStart(0, "span", 13);
+    i0.ɵɵlistener("click", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_span_3_Template_span_click_0_listener($event) { i0.ɵɵrestoreView(_r4); const ctx_r2 = i0.ɵɵnextContext(5); return i0.ɵɵresetView(ctx_r2.onSave($event)); });
+    i0.ɵɵprojection(1, 1);
     i0.ɵɵelementEnd();
-    i0.ɵɵtemplate(4, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_span_4_button_4_Template, 3, 3, "button", 15);
-    i0.ɵɵelementEnd();
-} if (rf & 2) {
-    const saveButton_r5 = i0.ɵɵreference(2);
-    i0.ɵɵadvance(4);
-    i0.ɵɵproperty("ngIf", saveButton_r5 && saveButton_r5.childNodes && saveButton_r5.childNodes.length === 0);
 } }
-function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_ajf_rep_strip_5_Template(rf, ctx) { if (rf & 1) {
-    const _r6 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "ajf-rep-strip", 17);
+function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_ajf_rep_strip_4_Template(rf, ctx) { if (rf & 1) {
+    const _r5 = i0.ɵɵgetCurrentView();
+    i0.ɵɵelementStart(0, "ajf-rep-strip", 14);
     i0.ɵɵpipe(1, "ajfAsRepeatingSlideInstance");
-    i0.ɵɵlistener("goTo", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_ajf_rep_strip_5_Template_ajf_rep_strip_goTo_0_listener($event) { i0.ɵɵrestoreView(_r6); const cur_r7 = i0.ɵɵnextContext(2).ngIf; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.goToRep(cur_r7.slide, $event)); })("add", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_ajf_rep_strip_5_Template_ajf_rep_strip_add_0_listener() { i0.ɵɵrestoreView(_r6); const cur_r7 = i0.ɵɵnextContext(2).ngIf; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.addGroup(cur_r7.slide)); })("remove", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_ajf_rep_strip_5_Template_ajf_rep_strip_remove_0_listener() { i0.ɵɵrestoreView(_r6); const cur_r7 = i0.ɵɵnextContext(2).ngIf; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.removeGroup(cur_r7.slide, cur_r7.repIndex)); });
+    i0.ɵɵlistener("goTo", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_ajf_rep_strip_4_Template_ajf_rep_strip_goTo_0_listener($event) { i0.ɵɵrestoreView(_r5); const cur_r6 = i0.ɵɵnextContext(2).ngIf; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.goToRep(cur_r6.slide, $event)); })("add", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_ajf_rep_strip_4_Template_ajf_rep_strip_add_0_listener() { i0.ɵɵrestoreView(_r5); const cur_r6 = i0.ɵɵnextContext(2).ngIf; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.addGroup(cur_r6.slide)); })("remove", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_ajf_rep_strip_4_Template_ajf_rep_strip_remove_0_listener() { i0.ɵɵrestoreView(_r5); const cur_r6 = i0.ɵɵnextContext(2).ngIf; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.removeGroup(cur_r6.slide, cur_r6.repIndex)); });
     i0.ɵɵelementEnd();
 } if (rf & 2) {
-    const cur_r7 = i0.ɵɵnextContext(2).ngIf;
+    const cur_r6 = i0.ɵɵnextContext(2).ngIf;
     const ctx_r2 = i0.ɵɵnextContext(3);
-    i0.ɵɵproperty("slide", i0.ɵɵpipeBind1(1, 3, cur_r7.slide))("current", cur_r7.repIndex)("readonly", ctx_r2.readonly);
+    i0.ɵɵproperty("slide", i0.ɵɵpipeBind1(1, 3, cur_r6.slide))("current", cur_r6.repIndex)("readonly", ctx_r2.readonly);
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_Template(rf, ctx) { if (rf & 1) {
     const _r2 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "div", 10)(1, "ajf-slide-header", 11);
-    i0.ɵɵpipe(2, "ajfFormIssues");
-    i0.ɵɵlistener("jumpTo", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_Template_ajf_slide_header_jumpTo_1_listener($event) { i0.ɵɵrestoreView(_r2); const ctx_r2 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r2.goToSlide($event)); })("prev", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_Template_ajf_slide_header_prev_1_listener() { i0.ɵɵrestoreView(_r2); const ctx_r2 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r2.goToPrevSlide()); })("next", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_Template_ajf_slide_header_next_1_listener() { i0.ɵɵrestoreView(_r2); const ctx_r2 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r2.goToNextSlide()); })("gotoIssue", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_Template_ajf_slide_header_gotoIssue_1_listener() { i0.ɵɵrestoreView(_r2); const ctx_r2 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r2.goToNextError()); });
-    i0.ɵɵprojection(3);
-    i0.ɵɵtemplate(4, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_span_4_Template, 5, 1, "span", 12);
+    i0.ɵɵelementStart(0, "div", 9)(1, "ajf-slide-header", 10);
+    i0.ɵɵlistener("jumpTo", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_Template_ajf_slide_header_jumpTo_1_listener($event) { i0.ɵɵrestoreView(_r2); const ctx_r2 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r2.goToSlide($event)); })("prev", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_Template_ajf_slide_header_prev_1_listener() { i0.ɵɵrestoreView(_r2); const ctx_r2 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r2.goToPrevSlide()); })("next", function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_Template_ajf_slide_header_next_1_listener() { i0.ɵɵrestoreView(_r2); const ctx_r2 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r2.goToNextSlide()); });
+    i0.ɵɵprojection(2);
+    i0.ɵɵtemplate(3, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_span_3_Template, 2, 0, "span", 11);
     i0.ɵɵelementEnd();
-    i0.ɵɵtemplate(5, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_ajf_rep_strip_5_Template, 2, 5, "ajf-rep-strip", 13);
+    i0.ɵɵtemplate(4, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_ajf_rep_strip_4_Template, 2, 5, "ajf-rep-strip", 12);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
-    const cur_r7 = i0.ɵɵnextContext().ngIf;
-    const curSlides_r8 = i0.ɵɵnextContext().ngIf;
-    const fg_r9 = i0.ɵɵnextContext().ngIf;
-    const ctx_r2 = i0.ɵɵnextContext();
+    const cur_r6 = i0.ɵɵnextContext().ngIf;
+    const curSlides_r7 = i0.ɵɵnextContext().ngIf;
+    const ctx_r2 = i0.ɵɵnextContext(2);
     i0.ɵɵadvance();
-    i0.ɵɵproperty("slide", cur_r7.slide)("slides", curSlides_r8)("displayNumber", cur_r7.displayNumber)("repIndex", cur_r7.repIndex)("reps", cur_r7.reps)("total", cur_r7.total)("pages", cur_r7.pages)("group", fg_r9)("issues", i0.ɵɵpipeBind1(2, 11, curSlides_r8));
-    i0.ɵɵadvance(3);
+    i0.ɵɵproperty("slide", cur_r6.slide)("slides", curSlides_r7)("displayNumber", cur_r6.displayNumber)("pages", cur_r6.pages);
+    i0.ɵɵadvance(2);
     i0.ɵɵproperty("ngIf", !ctx_r2.saveDisabled);
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", cur_r7.slide && cur_r7.reps > 0);
+    i0.ɵɵproperty("ngIf", cur_r6.slide && cur_r6.reps > 0);
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementContainerStart(0);
-    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_Template, 6, 13, "div", 9);
+    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_div_1_Template, 5, 6, "div", 8);
     i0.ɵɵelementContainerEnd();
 } if (rf & 2) {
     const ctx_r2 = i0.ɵɵnextContext(3);
@@ -2874,182 +2763,207 @@ function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_Template(r
     i0.ɵɵproperty("ngIf", !ctx_r2.hideTopToolbar);
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_ajf_page_slider_item_6_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "ajf-page-slider-item")(1, "div", 18)(2, "h2", 19);
+    i0.ɵɵelementStart(0, "ajf-page-slider-item")(1, "div", 15)(2, "h2", 16);
     i0.ɵɵprojection(3, 2);
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(4, "div", 20);
+    i0.ɵɵelementStart(4, "div", 17);
     i0.ɵɵprojection(5, 3);
     i0.ɵɵelementEnd()()();
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_1_ajf_field_row_3_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelement(0, "ajf-field-row", 23);
+    i0.ɵɵelement(0, "ajf-field-row", 20);
     i0.ɵɵpipe(1, "ajfAsFieldInstance");
 } if (rf & 2) {
-    const fieldInstance_r10 = ctx.$implicit;
-    const slideInstance_r11 = i0.ɵɵnextContext(3).$implicit;
+    const fieldInstance_r8 = ctx.$implicit;
+    const slideInstance_r9 = i0.ɵɵnextContext(3).$implicit;
     const ctx_r2 = i0.ɵɵnextContext(3);
-    i0.ɵɵproperty("instance", i0.ɵɵpipeBind1(1, 2, fieldInstance_r10))("readonly", ctx_r2.readonly || !slideInstance_r11.editable);
+    i0.ɵɵproperty("instance", i0.ɵɵpipeBind1(1, 2, fieldInstance_r8))("readonly", ctx_r2.readonly || !slideInstance_r9.editable);
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_1_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementContainerStart(0);
-    i0.ɵɵelementStart(1, "ajf-page-slider-item")(2, "div", 21);
-    i0.ɵɵtemplate(3, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_1_ajf_field_row_3_Template, 2, 4, "ajf-field-row", 22);
+    i0.ɵɵelementStart(1, "ajf-page-slider-item")(2, "div", 18);
+    i0.ɵɵtemplate(3, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_1_ajf_field_row_3_Template, 2, 4, "ajf-field-row", 19);
     i0.ɵɵelementEnd()();
     i0.ɵɵelementContainerEnd();
 } if (rf & 2) {
-    const slideInstance_r11 = i0.ɵɵnextContext(2).$implicit;
+    const slideInstance_r9 = i0.ɵɵnextContext(2).$implicit;
     const ctx_r2 = i0.ɵɵnextContext(3);
     i0.ɵɵadvance(2);
     i0.ɵɵproperty("ngClass", "ajf-max-columns-" + ctx_r2.maxColumns);
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngForOf", slideInstance_r11.flatNodes)("ngForTrackBy", ctx_r2.trackNodeById);
+    i0.ɵɵproperty("ngForOf", slideInstance_r9.flatNodes)("ngForTrackBy", ctx_r2.trackNodeById);
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_3_ajf_page_slider_item_1_ajf_field_row_2_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelement(0, "ajf-field-row", 23);
+    i0.ɵɵelement(0, "ajf-field-row", 20);
     i0.ɵɵpipe(1, "ajfAsFieldInstance");
 } if (rf & 2) {
-    const fieldInstance_r12 = ctx.$implicit;
-    const slideInstance_r11 = i0.ɵɵnextContext(4).$implicit;
+    const fieldInstance_r10 = ctx.$implicit;
+    const slideInstance_r9 = i0.ɵɵnextContext(4).$implicit;
     const ctx_r2 = i0.ɵɵnextContext(3);
-    i0.ɵɵproperty("instance", i0.ɵɵpipeBind1(1, 2, fieldInstance_r12))("readonly", ctx_r2.readonly || !slideInstance_r11.editable);
+    i0.ɵɵproperty("instance", i0.ɵɵpipeBind1(1, 2, fieldInstance_r10))("readonly", ctx_r2.readonly || !slideInstance_r9.editable);
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_3_ajf_page_slider_item_1_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "ajf-page-slider-item", 25)(1, "div", 21);
-    i0.ɵɵtemplate(2, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_3_ajf_page_slider_item_1_ajf_field_row_2_Template, 2, 4, "ajf-field-row", 22);
+    i0.ɵɵelementStart(0, "ajf-page-slider-item", 22)(1, "div", 18);
+    i0.ɵɵtemplate(2, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_3_ajf_page_slider_item_1_ajf_field_row_2_Template, 2, 4, "ajf-field-row", 19);
     i0.ɵɵelementEnd()();
 } if (rf & 2) {
-    const idx_r13 = ctx.index;
-    const lastSlide_r14 = ctx.last;
-    const slideInstance_r11 = i0.ɵɵnextContext(3).$implicit;
+    const idx_r11 = ctx.index;
+    const lastSlide_r12 = ctx.last;
+    const slideInstance_r9 = i0.ɵɵnextContext(3).$implicit;
     const ctx_r2 = i0.ɵɵnextContext(3);
-    i0.ɵɵproperty("isRepeating", true)("isRepeatingLast", lastSlide_r14);
+    i0.ɵɵproperty("isRepeating", true)("isRepeatingLast", lastSlide_r12);
     i0.ɵɵadvance();
     i0.ɵɵproperty("ngClass", "ajf-max-columns-" + ctx_r2.maxColumns);
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngForOf", slideInstance_r11.slideNodes[idx_r13])("ngForTrackBy", ctx_r2.trackNodeById);
+    i0.ɵɵproperty("ngForOf", slideInstance_r9.slideNodes[idx_r11])("ngForTrackBy", ctx_r2.trackNodeById);
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_3_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementContainerStart(0);
-    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_3_ajf_page_slider_item_1_Template, 3, 5, "ajf-page-slider-item", 24);
+    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_3_ajf_page_slider_item_1_Template, 3, 5, "ajf-page-slider-item", 21);
     i0.ɵɵpipe(2, "ajfAsRepeatingSlideInstance");
     i0.ɵɵpipe(3, "ajfRange");
     i0.ɵɵelementContainerEnd();
 } if (rf & 2) {
-    const slideInstance_r11 = i0.ɵɵnextContext(2).$implicit;
+    const slideInstance_r9 = i0.ɵɵnextContext(2).$implicit;
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngForOf", i0.ɵɵpipeBind1(3, 3, i0.ɵɵpipeBind1(2, 1, slideInstance_r11).reps));
+    i0.ɵɵproperty("ngForOf", i0.ɵɵpipeBind1(3, 3, i0.ɵɵpipeBind1(2, 1, slideInstance_r9).reps));
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementContainerStart(0);
-    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_1_Template, 4, 3, "ng-container", 2);
+    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_1_Template, 4, 3, "ng-container", 1);
     i0.ɵɵpipe(2, "ajfIsRepeatingSlideInstance");
-    i0.ɵɵtemplate(3, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_3_Template, 4, 5, "ng-container", 2);
+    i0.ɵɵtemplate(3, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_ng_container_3_Template, 4, 5, "ng-container", 1);
     i0.ɵɵpipe(4, "ajfIsRepeatingSlideInstance");
     i0.ɵɵelementContainerEnd();
 } if (rf & 2) {
-    const slideInstance_r11 = i0.ɵɵnextContext().$implicit;
+    const slideInstance_r9 = i0.ɵɵnextContext().$implicit;
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", !i0.ɵɵpipeBind1(2, 2, slideInstance_r11));
+    i0.ɵɵproperty("ngIf", !i0.ɵɵpipeBind1(2, 2, slideInstance_r9));
     i0.ɵɵadvance(2);
-    i0.ɵɵproperty("ngIf", i0.ɵɵpipeBind1(4, 4, slideInstance_r11));
+    i0.ɵɵproperty("ngIf", i0.ɵɵpipeBind1(4, 4, slideInstance_r9));
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementContainerStart(0);
-    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_Template, 5, 6, "ng-container", 2);
+    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_ng_container_1_Template, 5, 6, "ng-container", 1);
     i0.ɵɵelementContainerEnd();
 } if (rf & 2) {
-    const slideInstance_r11 = ctx.$implicit;
+    const slideInstance_r9 = ctx.$implicit;
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", slideInstance_r11.visible);
+    i0.ɵɵproperty("ngIf", slideInstance_r9.visible);
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_ajf_page_slider_item_8_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "ajf-page-slider-item")(1, "div", 18)(2, "h2", 19);
+    i0.ɵɵelementStart(0, "ajf-page-slider-item")(1, "div", 15)(2, "h2", 16);
     i0.ɵɵprojection(3, 4);
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(4, "div", 20);
+    i0.ɵɵelementStart(4, "div", 17);
     i0.ɵɵprojection(5, 5);
     i0.ɵɵelementEnd()()();
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_1_span_1_Template(rf, ctx) { if (rf & 1) {
-    const _r15 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "span", 28)(1, "mat-icon");
+    const _r13 = i0.ɵɵgetCurrentView();
+    i0.ɵɵelementStart(0, "span", 25)(1, "mat-icon");
     i0.ɵɵtext(2, "error");
     i0.ɵɵelementEnd();
     i0.ɵɵtext(3);
     i0.ɵɵpipe(4, "transloco");
-    i0.ɵɵelementStart(5, "button", 29);
-    i0.ɵɵlistener("click", function AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_1_span_1_Template_button_click_5_listener() { i0.ɵɵrestoreView(_r15); const ctx_r2 = i0.ɵɵnextContext(5); return i0.ɵɵresetView(ctx_r2.goToPrevError()); });
-    i0.ɵɵelementStart(6, "mat-icon");
-    i0.ɵɵtext(7, "arrow_upward");
+    i0.ɵɵelementStart(5, "span", 26)(6, "button", 27);
+    i0.ɵɵlistener("click", function AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_1_span_1_Template_button_click_6_listener() { i0.ɵɵrestoreView(_r13); const ctx_r2 = i0.ɵɵnextContext(5); return i0.ɵɵresetView(ctx_r2.goToPrevError()); });
+    i0.ɵɵelementStart(7, "mat-icon");
+    i0.ɵɵtext(8, "arrow_upward");
     i0.ɵɵelementEnd()();
-    i0.ɵɵelementStart(8, "button", 29);
-    i0.ɵɵlistener("click", function AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_1_span_1_Template_button_click_8_listener() { i0.ɵɵrestoreView(_r15); const ctx_r2 = i0.ɵɵnextContext(5); return i0.ɵɵresetView(ctx_r2.goToNextError()); });
-    i0.ɵɵelementStart(9, "mat-icon");
-    i0.ɵɵtext(10, "arrow_downward");
-    i0.ɵɵelementEnd()()();
+    i0.ɵɵelementStart(9, "button", 27);
+    i0.ɵɵlistener("click", function AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_1_span_1_Template_button_click_9_listener() { i0.ɵɵrestoreView(_r13); const ctx_r2 = i0.ɵɵnextContext(5); return i0.ɵɵresetView(ctx_r2.goToNextError()); });
+    i0.ɵɵelementStart(10, "mat-icon");
+    i0.ɵɵtext(11, "arrow_downward");
+    i0.ɵɵelementEnd()()()();
 } if (rf & 2) {
-    const issues_r16 = i0.ɵɵnextContext().ngIf;
+    const issues_r14 = i0.ɵɵnextContext().ngIf;
     i0.ɵɵadvance(3);
-    i0.ɵɵtextInterpolate1(" ", i0.ɵɵpipeBind2(4, 1, "{{fields}} fields in {{slides}} slides need attention", i0.ɵɵpureFunction2(4, _c2, issues_r16.fields, issues_r16.slides)), " ");
+    i0.ɵɵtextInterpolate1(" ", i0.ɵɵpipeBind2(4, 1, "{{fields}} fields in {{slides}} slides need attention", i0.ɵɵpureFunction2(4, _c2, issues_r14.fields, issues_r14.slides)), " ");
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_1_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementContainerStart(0);
-    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_1_span_1_Template, 11, 7, "span", 27);
+    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_1_span_1_Template, 12, 7, "span", 24);
     i0.ɵɵelementContainerEnd();
 } if (rf & 2) {
-    const issues_r16 = ctx.ngIf;
+    const issues_r14 = ctx.ngIf;
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", issues_r16.fields > 0);
+    i0.ɵɵproperty("ngIf", issues_r14.fields > 0);
 } }
-function AjfFormRenderer_ng_container_0_ng_container_3_div_9_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "div", 26);
-    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_1_Template, 2, 1, "ng-container", 2);
-    i0.ɵɵpipe(2, "ajfFormIssues");
+function AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_3_span_1_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "span", 29);
+    i0.ɵɵtext(1);
+    i0.ɵɵpipe(2, "transloco");
+    i0.ɵɵpipe(3, "transloco");
     i0.ɵɵelementEnd();
 } if (rf & 2) {
-    const curSlides_r8 = i0.ɵɵnextContext().ngIf;
+    const cur_r15 = i0.ɵɵnextContext().ngIf;
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", i0.ɵɵpipeBind1(2, 1, curSlides_r8));
+    i0.ɵɵtextInterpolate4("", i0.ɵɵpipeBind1(2, 4, "slide"), " ", cur_r15.displayNumber, " ", i0.ɵɵpipeBind1(3, 6, "of"), " ", cur_r15.total, "");
+} }
+function AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_3_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementContainerStart(0);
+    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_3_span_1_Template, 4, 8, "span", 28);
+    i0.ɵɵelementContainerEnd();
+} if (rf & 2) {
+    const cur_r15 = ctx.ngIf;
+    i0.ɵɵadvance();
+    i0.ɵɵproperty("ngIf", cur_r15.pages > 1 && cur_r15.total > 0);
+} }
+function AjfFormRenderer_ng_container_0_ng_container_3_div_9_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "div", 23);
+    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_1_Template, 2, 1, "ng-container", 1);
+    i0.ɵɵpipe(2, "ajfFormIssues");
+    i0.ɵɵtemplate(3, AjfFormRenderer_ng_container_0_ng_container_3_div_9_ng_container_3_Template, 2, 1, "ng-container", 1);
+    i0.ɵɵpipe(4, "ajfCurrentSlide");
+    i0.ɵɵelementEnd();
+} if (rf & 2) {
+    const curSlides_r7 = i0.ɵɵnextContext().ngIf;
+    const ctx_r2 = i0.ɵɵnextContext(2);
+    i0.ɵɵadvance();
+    i0.ɵɵproperty("ngIf", i0.ɵɵpipeBind1(2, 2, curSlides_r7));
+    i0.ɵɵadvance(2);
+    i0.ɵɵproperty("ngIf", i0.ɵɵpipeBind4(4, 4, curSlides_r7, ctx_r2.currentPage, ctx_r2.hasStartMessage, ctx_r2.hasEndMessage));
 } }
 function AjfFormRenderer_ng_container_0_ng_container_3_Template(rf, ctx) { if (rf & 1) {
     const _r1 = i0.ɵɵgetCurrentView();
     i0.ɵɵelementContainerStart(0);
-    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_Template, 2, 1, "ng-container", 2);
+    i0.ɵɵtemplate(1, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_1_Template, 2, 1, "ng-container", 1);
     i0.ɵɵpipe(2, "ajfCurrentSlide");
-    i0.ɵɵelementStart(3, "div", 5)(4, "ajf-page-slider", 6, 0);
+    i0.ɵɵelementStart(3, "div", 4)(4, "ajf-page-slider", 5, 0);
     i0.ɵɵlistener("orientationChange", function AjfFormRenderer_ng_container_0_ng_container_3_Template_ajf_page_slider_orientationChange_4_listener($event) { i0.ɵɵrestoreView(_r1); const ctx_r2 = i0.ɵɵnextContext(2); return i0.ɵɵresetView(ctx_r2.orientationChangeHandler($event)); });
-    i0.ɵɵtemplate(6, AjfFormRenderer_ng_container_0_ng_container_3_ajf_page_slider_item_6_Template, 6, 0, "ajf-page-slider-item", 2)(7, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_Template, 2, 1, "ng-container", 7)(8, AjfFormRenderer_ng_container_0_ng_container_3_ajf_page_slider_item_8_Template, 6, 0, "ajf-page-slider-item", 2)(9, AjfFormRenderer_ng_container_0_ng_container_3_div_9_Template, 3, 3, "div", 8);
+    i0.ɵɵtemplate(6, AjfFormRenderer_ng_container_0_ng_container_3_ajf_page_slider_item_6_Template, 6, 0, "ajf-page-slider-item", 1)(7, AjfFormRenderer_ng_container_0_ng_container_3_ng_container_7_Template, 2, 1, "ng-container", 6)(8, AjfFormRenderer_ng_container_0_ng_container_3_ajf_page_slider_item_8_Template, 6, 0, "ajf-page-slider-item", 1)(9, AjfFormRenderer_ng_container_0_ng_container_3_div_9_Template, 5, 9, "div", 7);
     i0.ɵɵelementEnd()();
     i0.ɵɵelementContainerEnd();
 } if (rf & 2) {
-    const curSlides_r8 = ctx.ngIf;
+    const curSlides_r7 = ctx.ngIf;
     const ctx_r2 = i0.ɵɵnextContext(2);
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", i0.ɵɵpipeBind4(2, 9, curSlides_r8, ctx_r2.currentPage, ctx_r2.hasStartMessage, ctx_r2.hasEndMessage));
+    i0.ɵɵproperty("ngIf", i0.ɵɵpipeBind4(2, 9, curSlides_r7, ctx_r2.currentPage, ctx_r2.hasStartMessage, ctx_r2.hasEndMessage));
     i0.ɵɵadvance(3);
     i0.ɵɵproperty("fixedOrientation", ctx_r2.fixedOrientation)("hideNavigationButtons", ctx_r2.hideNavigationButtons)("orientation", ctx_r2.orientation);
     i0.ɵɵadvance(2);
-    i0.ɵɵproperty("ngIf", curSlides_r8.length > 0 && ctx_r2.hasStartMessage);
+    i0.ɵɵproperty("ngIf", curSlides_r7.length > 0 && ctx_r2.hasStartMessage);
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngForOf", curSlides_r8)("ngForTrackBy", ctx_r2.trackNodeById);
+    i0.ɵɵproperty("ngForOf", curSlides_r7)("ngForTrackBy", ctx_r2.trackNodeById);
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", curSlides_r8 && curSlides_r8.length > 0 && ctx_r2.hasEndMessage);
+    i0.ɵɵproperty("ngIf", curSlides_r7 && curSlides_r7.length > 0 && ctx_r2.hasEndMessage);
     i0.ɵɵadvance();
     i0.ɵɵproperty("ngIf", !ctx_r2.hideBottomToolbar);
 } }
 function AjfFormRenderer_ng_container_0_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementContainerStart(0);
-    i0.ɵɵelementStart(1, "form", 3)(2, "div", 4);
-    i0.ɵɵtemplate(3, AjfFormRenderer_ng_container_0_ng_container_3_Template, 10, 14, "ng-container", 2);
+    i0.ɵɵelementStart(1, "form", 2)(2, "div", 3);
+    i0.ɵɵtemplate(3, AjfFormRenderer_ng_container_0_ng_container_3_Template, 10, 14, "ng-container", 1);
     i0.ɵɵpipe(4, "async");
     i0.ɵɵelementEnd()();
     i0.ɵɵelementContainerEnd();
 } if (rf & 2) {
-    const fg_r9 = ctx.ngIf;
+    const fg_r16 = ctx.ngIf;
     const ctx_r2 = i0.ɵɵnextContext();
     i0.ɵɵadvance();
     i0.ɵɵclassProp("ajf-form-readonly", ctx_r2.readonly);
-    i0.ɵɵproperty("formGroup", fg_r9);
+    i0.ɵɵproperty("formGroup", fg_r16);
     i0.ɵɵadvance(2);
     i0.ɵɵproperty("ngIf", i0.ɵɵpipeBind1(4, 4, ctx_r2.slides));
 } }
@@ -3160,17 +3074,17 @@ class AjfFormRenderer extends AjfFormRenderer$1 {
         }
     }
     static { this.ɵfac = function AjfFormRenderer_Factory(__ngFactoryType__) { return new (__ngFactoryType__ || AjfFormRenderer)(i0.ɵɵdirectiveInject(i1$1.AjfFormRendererService), i0.ɵɵdirectiveInject(i0.ChangeDetectorRef)); }; }
-    static { this.ɵcmp = /*@__PURE__*/ i0.ɵɵdefineComponent({ type: AjfFormRenderer, selectors: [["ajf-form"]], inputs: { topBar: "topBar", centeredFieldsContent: "centeredFieldsContent", maxColumns: "maxColumns" }, features: [i0.ɵɵInheritDefinitionFeature], ngContentSelectors: _c1, decls: 2, vars: 3, consts: [["formSlider", ""], ["saveButton", ""], [4, "ngIf"], ["novalidate", "", 3, "formGroup"], [1, "ajf-form-container"], [1, "ajf-slider-container"], [3, "orientationChange", "fixedOrientation", "hideNavigationButtons", "orientation"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ajfPageSliderBar", "", "class", "ajf-form-footer", 4, "ngIf"], ["class", "ajf-form-bar", 4, "ngIf"], [1, "ajf-form-bar"], [3, "jumpTo", "prev", "next", "gotoIssue", "slide", "slides", "displayNumber", "repIndex", "reps", "total", "pages", "group", "issues"], ["class", "ajf-form-save", 3, "click", 4, "ngIf"], [3, "slide", "current", "readonly", "goTo", "add", "remove", 4, "ngIf"], [1, "ajf-form-save", 3, "click"], ["type", "button", "class", "ajf-btn--primary", 4, "ngIf"], ["type", "button", 1, "ajf-btn--primary"], [3, "goTo", "add", "remove", "slide", "current", "readonly"], [1, "ajf-form-page", "ajf-form-message"], [1, "ajf-message-title"], [1, "ajf-message-body"], [1, "ajf-form-page", 3, "ngClass"], [3, "instance", "readonly", 4, "ngFor", "ngForOf", "ngForTrackBy"], [3, "instance", "readonly"], [3, "isRepeating", "isRepeatingLast", 4, "ngFor", "ngForOf"], [3, "isRepeating", "isRepeatingLast"], ["ajfPageSliderBar", "", 1, "ajf-form-footer"], ["class", "ajf-form-footer-status", 4, "ngIf"], [1, "ajf-form-footer-status"], ["type", "button", 1, "ajf-btn--ghost", 3, "click"]], template: function AjfFormRenderer_Template(rf, ctx) { if (rf & 1) {
+    static { this.ɵcmp = /*@__PURE__*/ i0.ɵɵdefineComponent({ type: AjfFormRenderer, selectors: [["ajf-form"]], inputs: { topBar: "topBar", centeredFieldsContent: "centeredFieldsContent", maxColumns: "maxColumns" }, features: [i0.ɵɵInheritDefinitionFeature], ngContentSelectors: _c1, decls: 2, vars: 3, consts: [["formSlider", ""], [4, "ngIf"], ["novalidate", "", 3, "formGroup"], [1, "ajf-form-container"], [1, "ajf-slider-container"], [3, "orientationChange", "fixedOrientation", "hideNavigationButtons", "orientation"], [4, "ngFor", "ngForOf", "ngForTrackBy"], ["ajfPageSliderBar", "", "class", "ajf-form-footer", 4, "ngIf"], ["class", "ajf-form-bar", 4, "ngIf"], [1, "ajf-form-bar"], [3, "jumpTo", "prev", "next", "slide", "slides", "displayNumber", "pages"], ["class", "ajf-form-save", 3, "click", 4, "ngIf"], [3, "slide", "current", "readonly", "goTo", "add", "remove", 4, "ngIf"], [1, "ajf-form-save", 3, "click"], [3, "goTo", "add", "remove", "slide", "current", "readonly"], [1, "ajf-form-page", "ajf-form-message"], [1, "ajf-message-title"], [1, "ajf-message-body"], [1, "ajf-form-page", 3, "ngClass"], [3, "instance", "readonly", 4, "ngFor", "ngForOf", "ngForTrackBy"], [3, "instance", "readonly"], [3, "isRepeating", "isRepeatingLast", 4, "ngFor", "ngForOf"], [3, "isRepeating", "isRepeatingLast"], ["ajfPageSliderBar", "", 1, "ajf-form-footer"], ["class", "ajf-form-footer-status", 4, "ngIf"], [1, "ajf-form-footer-status"], [1, "ajf-footer-jump"], ["type", "button", 1, "ajf-btn--ghost", 3, "click"], ["class", "ajf-slide-count", 4, "ngIf"], [1, "ajf-slide-count"]], template: function AjfFormRenderer_Template(rf, ctx) { if (rf & 1) {
             i0.ɵɵprojectionDef(_c0);
-            i0.ɵɵtemplate(0, AjfFormRenderer_ng_container_0_Template, 5, 6, "ng-container", 2);
+            i0.ɵɵtemplate(0, AjfFormRenderer_ng_container_0_Template, 5, 6, "ng-container", 1);
             i0.ɵɵpipe(1, "async");
         } if (rf & 2) {
             i0.ɵɵproperty("ngIf", i0.ɵɵpipeBind1(1, 1, ctx.formGroup));
-        } }, dependencies: [i2$b.AjfPageSliderItem, i3$5.AjfPageSlider, i2$1.NgClass, i2$1.NgForOf, i2$1.NgIf, i2$7.MatIcon, i4.ɵNgNoValidate, i4.NgControlStatusGroup, i4.FormGroupDirective, AjfFieldRow, AjfRepStrip, AjfSlideHeader, i5.TranslocoPipe, i2$1.AsyncPipe, i1$1.AjfAsFieldInstancePipe, i1$1.AjfAsRepeatingSlideInstancePipe, i1$1.AjfIsRepeatingSlideInstancePipe, i1$1.AjfRangePipe, AjfCurrentSlidePipe, AjfFormIssuesPipe], styles: ["ajf-form{display:block;height:100%}ajf-form .ajf-form-container{display:flex;flex-direction:column;box-sizing:border-box;height:100%;background:var(--ajf-bg);color:var(--ajf-text);font-family:var(--ajf-font-sans)}ajf-form .ajf-form-bar{flex:0 0 auto;border-bottom:1px solid var(--ajf-border);background:var(--ajf-surface)}ajf-form .ajf-form-save{display:inline-flex;align-items:center;gap:8px}ajf-form>form{height:100%}ajf-form .ajf-slider-container{position:relative;flex:1 1 auto;min-height:var(--ajf-slider-min-h)}ajf-form .ajf-slider-container>ajf-page-slider{position:absolute;inset:0}ajf-form .ajf-form-page{display:flex;flex-direction:column;align-self:stretch;box-sizing:border-box;width:100%;background:var(--ajf-surface)}ajf-form .ajf-form-page.ajf-max-columns-2,ajf-form .ajf-form-page.ajf-max-columns-3{display:grid;align-content:start}ajf-form .ajf-form-page.ajf-max-columns-2{grid-template-columns:repeat(2,minmax(0,1fr))}ajf-form .ajf-form-page.ajf-max-columns-3{grid-template-columns:repeat(3,minmax(0,1fr))}@media (width <= 900px){ajf-form .ajf-form-page.ajf-max-columns-2,ajf-form .ajf-form-page.ajf-max-columns-3{grid-template-columns:minmax(0,1fr)}}ajf-form .ajf-form-message{gap:12px;padding:24px 20px}ajf-form .ajf-form-message .ajf-message-title{margin:0;font-size:20px;font-weight:600}ajf-form .ajf-form-message .ajf-message-body{color:var(--ajf-text-muted)}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar{min-height:48px;padding:0 12px;border-top:1px solid var(--ajf-border);background:var(--ajf-band);color:var(--ajf-text-muted);font-family:var(--ajf-font-sans);font-size:13px}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .mat-mdc-button{color:var(--ajf-text-muted)}ajf-form .ajf-form-footer-status{display:inline-flex;align-items:center;gap:6px;color:var(--ajf-danger)}ajf-form .ajf-form-footer-status .mat-icon{width:16px;height:16px;font-size:16px}ajf-form .ajf-form-readonly .ajf-field-label label{font-weight:600}\n"], encapsulation: 2, changeDetection: 0 }); }
+        } }, dependencies: [i2$b.AjfPageSliderItem, i3$5.AjfPageSlider, i2$1.NgClass, i2$1.NgForOf, i2$1.NgIf, i2$7.MatIcon, i4.ɵNgNoValidate, i4.NgControlStatusGroup, i4.FormGroupDirective, AjfFieldRow, AjfRepStrip, AjfSlideHeader, i5.TranslocoPipe, i2$1.AsyncPipe, i1$1.AjfAsFieldInstancePipe, i1$1.AjfAsRepeatingSlideInstancePipe, i1$1.AjfIsRepeatingSlideInstancePipe, i1$1.AjfRangePipe, AjfCurrentSlidePipe, AjfFormIssuesPipe], styles: ["ajf-form{display:block;height:100%}ajf-form .ajf-form-container{display:flex;flex-direction:column;box-sizing:border-box;height:100%;background:var(--ajf-bg);color:var(--ajf-text);font-family:var(--ajf-font-sans)}ajf-form .ajf-form-bar{flex:0 0 auto;border-bottom:1px solid var(--ajf-border);background:var(--ajf-surface)}ajf-form .ajf-form-save{display:inline-flex;align-items:center;gap:8px}ajf-form .ajf-form-save:empty{display:none}ajf-form>form{height:100%}ajf-form .ajf-slider-container{position:relative;flex:1 1 auto;min-height:var(--ajf-slider-min-h)}ajf-form .ajf-slider-container>ajf-page-slider{position:absolute;inset:0}ajf-form .ajf-form-page{display:flex;flex-direction:column;align-self:stretch;box-sizing:border-box;width:100%;background:var(--ajf-surface)}ajf-form .ajf-form-page.ajf-max-columns-2,ajf-form .ajf-form-page.ajf-max-columns-3{display:grid;align-content:start}ajf-form .ajf-form-page.ajf-max-columns-2{grid-template-columns:repeat(2,minmax(0,1fr))}ajf-form .ajf-form-page.ajf-max-columns-3{grid-template-columns:repeat(3,minmax(0,1fr))}@media (width <= 900px){ajf-form .ajf-form-page.ajf-max-columns-2,ajf-form .ajf-form-page.ajf-max-columns-3{grid-template-columns:minmax(0,1fr)}}ajf-form .ajf-form-message{gap:12px;padding:24px 20px}ajf-form .ajf-form-message .ajf-message-title{margin:0;font-size:20px;font-weight:600}ajf-form .ajf-form-message .ajf-message-body{color:var(--ajf-text-muted)}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar{flex-wrap:wrap;row-gap:4px;height:auto;min-height:48px;padding:6px 12px;white-space:normal;border-top:1px solid var(--ajf-border);background:var(--ajf-band);color:var(--ajf-text-muted);font-family:var(--ajf-font-sans);font-size:13px}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .mat-mdc-button,ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .ajf-form-footer-status .ajf-btn--ghost{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:36px;min-width:0;height:36px;min-height:0;padding:0;border:0;border-radius:50%;background:none;color:var(--ajf-text-muted);text-decoration:none}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .mat-mdc-button .mat-icon,ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .ajf-form-footer-status .ajf-btn--ghost .mat-icon{width:18px;height:18px;margin:0;font-size:18px}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .mat-mdc-button:hover:not(:disabled),ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .ajf-form-footer-status .ajf-btn--ghost:hover:not(:disabled){border-color:transparent;text-decoration:none}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .mat-mdc-button{--mat-text-button-state-layer-color: var(--ajf-text)}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .ajf-footer-jump{display:inline-flex;align-items:center}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .ajf-form-footer-status .ajf-btn--ghost:hover:not(:disabled){background:color-mix(in srgb,var(--ajf-text) 8%,transparent)}ajf-form .ajf-form-footer{display:contents}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar:has(.ajf-slide-count) .ajf-spacer{flex-grow:0}ajf-form .ajf-slide-count{font-family:var(--ajf-font-mono);margin-right:8px;margin-left:auto;color:var(--ajf-text-faint)}ajf-form .ajf-form-footer-status{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0;color:var(--ajf-danger)}ajf-form .ajf-form-footer-status .mat-icon{width:16px;height:16px;font-size:16px}ajf-form .ajf-form-readonly .ajf-field-label label{font-weight:600}\n"], encapsulation: 2, changeDetection: 0 }); }
 }
 (() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(AjfFormRenderer, [{
         type: Component,
-        args: [{ selector: 'ajf-form', encapsulation: ViewEncapsulation.None, changeDetection: ChangeDetectionStrategy.OnPush, template: "<ng-container *ngIf=\"formGroup | async as fg\">\n  <form [class.ajf-form-readonly]=\"readonly\" novalidate [formGroup]=\"fg!\">\n    <div class=\"ajf-form-container\">\n      <ng-container *ngIf=\"slides | async as curSlides\">\n        <ng-container *ngIf=\"curSlides | ajfCurrentSlide : currentPage : hasStartMessage : hasEndMessage as cur\">\n          <div class=\"ajf-form-bar\" *ngIf=\"!hideTopToolbar\">\n            <ajf-slide-header\n              [slide]=\"cur.slide\"\n              [slides]=\"curSlides\"\n              [displayNumber]=\"cur.displayNumber\"\n              [repIndex]=\"cur.repIndex\"\n              [reps]=\"cur.reps\"\n              [total]=\"cur.total\"\n              [pages]=\"cur.pages\"\n              [group]=\"fg\"\n              [issues]=\"curSlides | ajfFormIssues\"\n              (jumpTo)=\"goToSlide($event)\"\n              (prev)=\"goToPrevSlide()\"\n              (next)=\"goToNextSlide()\"\n              (gotoIssue)=\"goToNextError()\"\n            >\n              <!-- this content projection allows to add buttons on the slide header -->\n              <ng-content select=\"[ajfFormTopToolbarButtons]\"></ng-content>\n              <!-- apply a default save button only when ajfFormSaveButton is empty -->\n              <span class=\"ajf-form-save\" *ngIf=\"!saveDisabled\" (click)=\"onSave($event)\">\n                <span #saveButton><ng-content select=\"[ajfFormSaveButton]\"></ng-content></span>\n                <button\n                  *ngIf=\"saveButton && saveButton.childNodes && saveButton.childNodes.length === 0\"\n                  type=\"button\"\n                  class=\"ajf-btn--primary\"\n                >\n                  {{ 'Save' | transloco }}\n                </button>\n              </span>\n            </ajf-slide-header>\n\n            <ajf-rep-strip\n              *ngIf=\"cur.slide && cur.reps > 0\"\n              [slide]=\"cur.slide! | ajfAsRepeatingSlideInstance\"\n              [current]=\"cur.repIndex\"\n              [readonly]=\"readonly\"\n              (goTo)=\"goToRep(cur.slide!, $event)\"\n              (add)=\"addGroup(cur.slide!)\"\n              (remove)=\"removeGroup(cur.slide!, cur.repIndex)\"\n            ></ajf-rep-strip>\n          </div>\n        </ng-container>\n\n        <div class=\"ajf-slider-container\">\n          <ajf-page-slider\n            (orientationChange)=\"orientationChangeHandler($event)\"\n            [fixedOrientation]=\"fixedOrientation\"\n            [hideNavigationButtons]=\"hideNavigationButtons\"\n            [orientation]=\"orientation\"\n            #formSlider\n          >\n            <ajf-page-slider-item *ngIf=\"curSlides!.length > 0 && hasStartMessage\">\n              <div class=\"ajf-form-page ajf-form-message\">\n                <h2 class=\"ajf-message-title\">\n                  <ng-content select=\"[ajfFormStartMessageTitle]\"></ng-content>\n                </h2>\n                <div class=\"ajf-message-body\">\n                  <ng-content select=\"[ajfFormStartMessage]\"></ng-content>\n                </div>\n              </div>\n            </ajf-page-slider-item>\n\n            <ng-container *ngFor=\"let slideInstance of curSlides; trackBy: trackNodeById\">\n              <ng-container *ngIf=\"slideInstance.visible\">\n                <!-- non repeating slides -->\n                <ng-container *ngIf=\"!(slideInstance | ajfIsRepeatingSlideInstance)\">\n                  <ajf-page-slider-item>\n                    <div class=\"ajf-form-page\" [ngClass]=\"'ajf-max-columns-' + maxColumns\">\n                      <ajf-field-row\n                        *ngFor=\"let fieldInstance of slideInstance.flatNodes; trackBy: trackNodeById\"\n                        [instance]=\"fieldInstance | ajfAsFieldInstance\"\n                        [readonly]=\"readonly || !slideInstance.editable\"\n                      ></ajf-field-row>\n                    </div>\n                  </ajf-page-slider-item>\n                </ng-container>\n\n                <!-- repeating slides: one page per repetition -->\n                <ng-container *ngIf=\"slideInstance | ajfIsRepeatingSlideInstance\">\n                  <ajf-page-slider-item\n                    *ngFor=\"\n                      let curRep of (slideInstance | ajfAsRepeatingSlideInstance).reps | ajfRange;\n                      let idx = index;\n                      let lastSlide = last\n                    \"\n                    [isRepeating]=\"true\"\n                    [isRepeatingLast]=\"lastSlide\"\n                  >\n                    <div class=\"ajf-form-page\" [ngClass]=\"'ajf-max-columns-' + maxColumns\">\n                      <ajf-field-row\n                        *ngFor=\"\n                          let fieldInstance of slideInstance.slideNodes[idx];\n                          trackBy: trackNodeById\n                        \"\n                        [instance]=\"fieldInstance | ajfAsFieldInstance\"\n                        [readonly]=\"readonly || !slideInstance.editable\"\n                      ></ajf-field-row>\n                    </div>\n                  </ajf-page-slider-item>\n                </ng-container>\n              </ng-container>\n            </ng-container>\n\n            <ajf-page-slider-item *ngIf=\"curSlides && curSlides!.length > 0 && hasEndMessage\">\n              <div class=\"ajf-form-page ajf-form-message\">\n                <h2 class=\"ajf-message-title\">\n                  <ng-content select=\"[ajfFormEndMessageTitle]\"></ng-content>\n                </h2>\n                <div class=\"ajf-message-body\">\n                  <ng-content select=\"[ajfFormEndMessage]\"></ng-content>\n                </div>\n              </div>\n            </ajf-page-slider-item>\n\n            <div ajfPageSliderBar *ngIf=\"!hideBottomToolbar\" class=\"ajf-form-footer\">\n              <ng-container *ngIf=\"curSlides | ajfFormIssues as issues\">\n                <span class=\"ajf-form-footer-status\" *ngIf=\"issues.fields > 0\">\n                  <mat-icon>error</mat-icon>\n                  {{\n                    '{{fields}} fields in {{slides}} slides need attention'\n                      | transloco : {fields: issues.fields, slides: issues.slides}\n                  }}\n                  <button type=\"button\" class=\"ajf-btn--ghost\" (click)=\"goToPrevError()\">\n                    <mat-icon>arrow_upward</mat-icon>\n                  </button>\n                  <button type=\"button\" class=\"ajf-btn--ghost\" (click)=\"goToNextError()\">\n                    <mat-icon>arrow_downward</mat-icon>\n                  </button>\n                </span>\n              </ng-container>\n            </div>\n          </ajf-page-slider>\n        </div>\n\n      </ng-container>\n    </div>\n  </form>\n</ng-container>\n", styles: ["ajf-form{display:block;height:100%}ajf-form .ajf-form-container{display:flex;flex-direction:column;box-sizing:border-box;height:100%;background:var(--ajf-bg);color:var(--ajf-text);font-family:var(--ajf-font-sans)}ajf-form .ajf-form-bar{flex:0 0 auto;border-bottom:1px solid var(--ajf-border);background:var(--ajf-surface)}ajf-form .ajf-form-save{display:inline-flex;align-items:center;gap:8px}ajf-form>form{height:100%}ajf-form .ajf-slider-container{position:relative;flex:1 1 auto;min-height:var(--ajf-slider-min-h)}ajf-form .ajf-slider-container>ajf-page-slider{position:absolute;inset:0}ajf-form .ajf-form-page{display:flex;flex-direction:column;align-self:stretch;box-sizing:border-box;width:100%;background:var(--ajf-surface)}ajf-form .ajf-form-page.ajf-max-columns-2,ajf-form .ajf-form-page.ajf-max-columns-3{display:grid;align-content:start}ajf-form .ajf-form-page.ajf-max-columns-2{grid-template-columns:repeat(2,minmax(0,1fr))}ajf-form .ajf-form-page.ajf-max-columns-3{grid-template-columns:repeat(3,minmax(0,1fr))}@media (width <= 900px){ajf-form .ajf-form-page.ajf-max-columns-2,ajf-form .ajf-form-page.ajf-max-columns-3{grid-template-columns:minmax(0,1fr)}}ajf-form .ajf-form-message{gap:12px;padding:24px 20px}ajf-form .ajf-form-message .ajf-message-title{margin:0;font-size:20px;font-weight:600}ajf-form .ajf-form-message .ajf-message-body{color:var(--ajf-text-muted)}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar{min-height:48px;padding:0 12px;border-top:1px solid var(--ajf-border);background:var(--ajf-band);color:var(--ajf-text-muted);font-family:var(--ajf-font-sans);font-size:13px}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .mat-mdc-button{color:var(--ajf-text-muted)}ajf-form .ajf-form-footer-status{display:inline-flex;align-items:center;gap:6px;color:var(--ajf-danger)}ajf-form .ajf-form-footer-status .mat-icon{width:16px;height:16px;font-size:16px}ajf-form .ajf-form-readonly .ajf-field-label label{font-weight:600}\n"] }]
+        args: [{ selector: 'ajf-form', encapsulation: ViewEncapsulation.None, changeDetection: ChangeDetectionStrategy.OnPush, template: "<ng-container *ngIf=\"formGroup | async as fg\">\n  <form [class.ajf-form-readonly]=\"readonly\" novalidate [formGroup]=\"fg!\">\n    <div class=\"ajf-form-container\">\n      <ng-container *ngIf=\"slides | async as curSlides\">\n        <ng-container\n          *ngIf=\"curSlides | ajfCurrentSlide : currentPage : hasStartMessage : hasEndMessage as cur\"\n        >\n          <div class=\"ajf-form-bar\" *ngIf=\"!hideTopToolbar\">\n            <ajf-slide-header\n              [slide]=\"cur.slide\"\n              [slides]=\"curSlides\"\n              [displayNumber]=\"cur.displayNumber\"\n              [pages]=\"cur.pages\"\n              (jumpTo)=\"goToSlide($event)\"\n              (prev)=\"goToPrevSlide()\"\n              (next)=\"goToNextSlide()\"\n            >\n              <!-- this content projection allows to add buttons on the slide header -->\n              <ng-content select=\"[ajfFormTopToolbarButtons]\"></ng-content>\n              <!-- The renderer has nowhere to save to: clicking here only emits\n                   `formAction`. So it ships no button of its own and holds the\n                   slot open instead -- a host that handles the event projects the\n                   button it wants, and gets the click through this wrapper. -->\n              <span class=\"ajf-form-save\" *ngIf=\"!saveDisabled\" (click)=\"onSave($event)\">\n                <ng-content select=\"[ajfFormSaveButton]\"></ng-content>\n              </span>\n            </ajf-slide-header>\n\n            <ajf-rep-strip\n              *ngIf=\"cur.slide && cur.reps > 0\"\n              [slide]=\"cur.slide! | ajfAsRepeatingSlideInstance\"\n              [current]=\"cur.repIndex\"\n              [readonly]=\"readonly\"\n              (goTo)=\"goToRep(cur.slide!, $event)\"\n              (add)=\"addGroup(cur.slide!)\"\n              (remove)=\"removeGroup(cur.slide!, cur.repIndex)\"\n            ></ajf-rep-strip>\n          </div>\n        </ng-container>\n\n        <div class=\"ajf-slider-container\">\n          <ajf-page-slider\n            (orientationChange)=\"orientationChangeHandler($event)\"\n            [fixedOrientation]=\"fixedOrientation\"\n            [hideNavigationButtons]=\"hideNavigationButtons\"\n            [orientation]=\"orientation\"\n            #formSlider\n          >\n            <ajf-page-slider-item *ngIf=\"curSlides!.length > 0 && hasStartMessage\">\n              <div class=\"ajf-form-page ajf-form-message\">\n                <h2 class=\"ajf-message-title\">\n                  <ng-content select=\"[ajfFormStartMessageTitle]\"></ng-content>\n                </h2>\n                <div class=\"ajf-message-body\">\n                  <ng-content select=\"[ajfFormStartMessage]\"></ng-content>\n                </div>\n              </div>\n            </ajf-page-slider-item>\n\n            <ng-container *ngFor=\"let slideInstance of curSlides; trackBy: trackNodeById\">\n              <ng-container *ngIf=\"slideInstance.visible\">\n                <!-- non repeating slides -->\n                <ng-container *ngIf=\"!(slideInstance | ajfIsRepeatingSlideInstance)\">\n                  <ajf-page-slider-item>\n                    <div class=\"ajf-form-page\" [ngClass]=\"'ajf-max-columns-' + maxColumns\">\n                      <ajf-field-row\n                        *ngFor=\"let fieldInstance of slideInstance.flatNodes; trackBy: trackNodeById\"\n                        [instance]=\"fieldInstance | ajfAsFieldInstance\"\n                        [readonly]=\"readonly || !slideInstance.editable\"\n                      ></ajf-field-row>\n                    </div>\n                  </ajf-page-slider-item>\n                </ng-container>\n\n                <!-- repeating slides: one page per repetition -->\n                <ng-container *ngIf=\"slideInstance | ajfIsRepeatingSlideInstance\">\n                  <ajf-page-slider-item\n                    *ngFor=\"\n                      let curRep of (slideInstance | ajfAsRepeatingSlideInstance).reps | ajfRange;\n                      let idx = index;\n                      let lastSlide = last\n                    \"\n                    [isRepeating]=\"true\"\n                    [isRepeatingLast]=\"lastSlide\"\n                  >\n                    <div class=\"ajf-form-page\" [ngClass]=\"'ajf-max-columns-' + maxColumns\">\n                      <ajf-field-row\n                        *ngFor=\"\n                          let fieldInstance of slideInstance.slideNodes[idx];\n                          trackBy: trackNodeById\n                        \"\n                        [instance]=\"fieldInstance | ajfAsFieldInstance\"\n                        [readonly]=\"readonly || !slideInstance.editable\"\n                      ></ajf-field-row>\n                    </div>\n                  </ajf-page-slider-item>\n                </ng-container>\n              </ng-container>\n            </ng-container>\n\n            <ajf-page-slider-item *ngIf=\"curSlides && curSlides!.length > 0 && hasEndMessage\">\n              <div class=\"ajf-form-page ajf-form-message\">\n                <h2 class=\"ajf-message-title\">\n                  <ng-content select=\"[ajfFormEndMessageTitle]\"></ng-content>\n                </h2>\n                <div class=\"ajf-message-body\">\n                  <ng-content select=\"[ajfFormEndMessage]\"></ng-content>\n                </div>\n              </div>\n            </ajf-page-slider-item>\n\n            <div ajfPageSliderBar *ngIf=\"!hideBottomToolbar\" class=\"ajf-form-footer\">\n              <ng-container *ngIf=\"curSlides | ajfFormIssues as issues\">\n                <span class=\"ajf-form-footer-status\" *ngIf=\"issues.fields > 0\">\n                  <mat-icon>error</mat-icon>\n                  {{ '{{fields}} fields in {{slides}} slides need attention' | transloco : {fields:\n                  issues.fields, slides: issues.slides} }}\n                  <!-- One pair, so they sit against each other rather than taking\n                       the gap the status keeps between its own parts. -->\n                  <span class=\"ajf-footer-jump\">\n                    <button type=\"button\" class=\"ajf-btn--ghost\" (click)=\"goToPrevError()\">\n                      <mat-icon>arrow_upward</mat-icon>\n                    </button>\n                    <button type=\"button\" class=\"ajf-btn--ghost\" (click)=\"goToNextError()\">\n                      <mat-icon>arrow_downward</mat-icon>\n                    </button>\n                  </span>\n                </span>\n              </ng-container>\n\n              <!-- Pushed to the far end of the bar by its auto margin, so it sits\n                   next to the slider's own paging buttons rather than next to the\n                   error status. -->\n              <ng-container\n                *ngIf=\"\n                  curSlides | ajfCurrentSlide : currentPage : hasStartMessage : hasEndMessage as cur\n                \"\n              >\n                <span class=\"ajf-slide-count\" *ngIf=\"cur.pages > 1 && cur.total > 0\"\n                  >{{ 'slide' | transloco }} {{ cur.displayNumber }} {{ 'of' | transloco }} {{\n                  cur.total }}</span\n                >\n              </ng-container>\n            </div>\n          </ajf-page-slider>\n        </div>\n      </ng-container>\n    </div>\n  </form>\n</ng-container>\n", styles: ["ajf-form{display:block;height:100%}ajf-form .ajf-form-container{display:flex;flex-direction:column;box-sizing:border-box;height:100%;background:var(--ajf-bg);color:var(--ajf-text);font-family:var(--ajf-font-sans)}ajf-form .ajf-form-bar{flex:0 0 auto;border-bottom:1px solid var(--ajf-border);background:var(--ajf-surface)}ajf-form .ajf-form-save{display:inline-flex;align-items:center;gap:8px}ajf-form .ajf-form-save:empty{display:none}ajf-form>form{height:100%}ajf-form .ajf-slider-container{position:relative;flex:1 1 auto;min-height:var(--ajf-slider-min-h)}ajf-form .ajf-slider-container>ajf-page-slider{position:absolute;inset:0}ajf-form .ajf-form-page{display:flex;flex-direction:column;align-self:stretch;box-sizing:border-box;width:100%;background:var(--ajf-surface)}ajf-form .ajf-form-page.ajf-max-columns-2,ajf-form .ajf-form-page.ajf-max-columns-3{display:grid;align-content:start}ajf-form .ajf-form-page.ajf-max-columns-2{grid-template-columns:repeat(2,minmax(0,1fr))}ajf-form .ajf-form-page.ajf-max-columns-3{grid-template-columns:repeat(3,minmax(0,1fr))}@media (width <= 900px){ajf-form .ajf-form-page.ajf-max-columns-2,ajf-form .ajf-form-page.ajf-max-columns-3{grid-template-columns:minmax(0,1fr)}}ajf-form .ajf-form-message{gap:12px;padding:24px 20px}ajf-form .ajf-form-message .ajf-message-title{margin:0;font-size:20px;font-weight:600}ajf-form .ajf-form-message .ajf-message-body{color:var(--ajf-text-muted)}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar{flex-wrap:wrap;row-gap:4px;height:auto;min-height:48px;padding:6px 12px;white-space:normal;border-top:1px solid var(--ajf-border);background:var(--ajf-band);color:var(--ajf-text-muted);font-family:var(--ajf-font-sans);font-size:13px}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .mat-mdc-button,ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .ajf-form-footer-status .ajf-btn--ghost{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:36px;min-width:0;height:36px;min-height:0;padding:0;border:0;border-radius:50%;background:none;color:var(--ajf-text-muted);text-decoration:none}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .mat-mdc-button .mat-icon,ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .ajf-form-footer-status .ajf-btn--ghost .mat-icon{width:18px;height:18px;margin:0;font-size:18px}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .mat-mdc-button:hover:not(:disabled),ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .ajf-form-footer-status .ajf-btn--ghost:hover:not(:disabled){border-color:transparent;text-decoration:none}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .mat-mdc-button{--mat-text-button-state-layer-color: var(--ajf-text)}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .ajf-footer-jump{display:inline-flex;align-items:center}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar .ajf-form-footer-status .ajf-btn--ghost:hover:not(:disabled){background:color-mix(in srgb,var(--ajf-text) 8%,transparent)}ajf-form .ajf-form-footer{display:contents}ajf-form ajf-page-slider>mat-toolbar.ajf-toolbar:has(.ajf-slide-count) .ajf-spacer{flex-grow:0}ajf-form .ajf-slide-count{font-family:var(--ajf-font-mono);margin-right:8px;margin-left:auto;color:var(--ajf-text-faint)}ajf-form .ajf-form-footer-status{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0;color:var(--ajf-danger)}ajf-form .ajf-form-footer-status .mat-icon{width:16px;height:16px;font-size:16px}ajf-form .ajf-form-readonly .ajf-field-label label{font-weight:600}\n"] }]
     }], () => [{ type: i1$1.AjfFormRendererService }, { type: i0.ChangeDetectorRef }], { topBar: [{
             type: Input
         }], centeredFieldsContent: [{

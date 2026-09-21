@@ -639,7 +639,11 @@ function updateVisibility(instance, context, branchVisibility = true) {
     }
     const visibility = instance.visibility;
     const oldVisibility = instance.visible;
-    let newVisibility = branchVisibility && evaluateExpression(visibility.condition, context);
+    // Coerced: the condition is an arbitrary expression, so it hands back whatever
+    // the field holds -- a date string, null, 0 -- and `&&` passes that value
+    // straight through. `visible` is declared a boolean and read as one by callers
+    // that compare it against `false`, so it has to be one.
+    let newVisibility = branchVisibility && !!evaluateExpression(visibility.condition, context);
     if (newVisibility !== instance.visible) {
         instance.visible = newVisibility;
     }
@@ -2268,7 +2272,6 @@ function createRepeatingSlideInstance(instance) {
         node: instance.node,
         slideNodes: [],
         formulaReps: instance.formulaReps,
-        disableRemoval: instance.disableRemoval,
         reps: 0,
         nodes: [],
         flatNodes: [],
@@ -3514,6 +3517,12 @@ class AjfFormRendererService {
             updateEditability(instance, context);
         }
         updateVisibility(instance, context, branchVisibility);
+        if (isNodeGroupInstance(instance)) {
+            // The group's children were built above, before the group itself had a
+            // visibility: without this a group that starts out hidden still shows
+            // every field it holds until its condition happens to change.
+            propagateVisibility(instance, context, instance.visible);
+        }
         updateConditionalBranches(instance, context);
         if (isFieldInstance(instance)) {
             if (isFieldWithChoicesInstance(instance)) {
@@ -3654,7 +3663,11 @@ class AjfFormRendererService {
             const nodesPerSlide = instance.nodes != null ? instance.nodes.length / instance.reps : 0;
             for (let i = 0; i < instance.reps; i++) {
                 const startNode = i * nodesPerSlide;
-                slideNodes.push(instance.nodes.slice(startNode, startNode + nodesPerSlide));
+                // Flattened, like `flatNodes` above: a node group inside the slide is a
+                // container, and its fields live one level down. Slicing alone would hand
+                // the repetition the group instance itself -- a node with no fieldType,
+                // which renders as an unknown field -- and none of the fields it holds.
+                slideNodes.push(flattenNodesInstances(instance.nodes.slice(startNode, startNode + nodesPerSlide)));
             }
             instance.slideNodes = slideNodes;
         }
@@ -4349,6 +4362,9 @@ const updateVisibilityMapEntry = (nodeInstance, formGroup, newFormValue) => {
     const completeName = nodeInstanceCompleteName(nodeInstance);
     const visibilityChanged = updateVisibility(nodeInstance, newFormValue);
     const isField = isFieldInstance(nodeInstance);
+    if (visibilityChanged && isNodeGroupInstance(nodeInstance)) {
+        propagateVisibility(nodeInstance, newFormValue, nodeInstance.visible);
+    }
     if (visibilityChanged && !nodeInstance.visible) {
         const fg = formGroup.getValue();
         if (fg != null) {
@@ -4409,6 +4425,27 @@ const updateVisibilityMapEntry = (nodeInstance, formGroup, newFormValue) => {
             }
         }
     }
+};
+/**
+ * Push a container's visibility down to the fields it holds.
+ *
+ * A node group is a bracket: the renderer lays out the fields inside it, never
+ * the group itself, so a group whose condition turns false changes nothing on
+ * screen unless its children are told. Each descendant re-evaluates its own
+ * condition against the branch flag -- the same call `_initNodeInstance` makes
+ * when the tree is built -- so a field that hides itself for its own reasons
+ * stays hidden when the group comes back into view.
+ */
+const propagateVisibility = (container, context, branchVisibility) => {
+    (container.nodes || []).forEach(node => {
+        updateVisibility(node, context, branchVisibility);
+        // The nodes reached this way are not in the caller's `updatedNodes` list, so
+        // the components bound to them have to be woken up here.
+        node.updatedEvt.emit();
+        if (isNodeGroupInstance(node)) {
+            propagateVisibility(node, context, node.visible);
+        }
+    });
 };
 const updateRepetitionMapEntry = (nodeInstance, newFormValue, nodes, cb) => {
     if (isRepeatingContainerNodeInstance(nodeInstance)) {
@@ -4490,8 +4527,6 @@ const updateFilteredChoicesMapEntry = (nodeInstance, newFormValue) => {
  * It rappresents the base field component, the first overlay of ajfFieldInstance.
  * It keeps a reference to the relative control of the form.
  * It manages the component update in conjunction with the instance update.
- * It manages the warningTrigger of the instance by displaying a confirmation
- * popup when an alert event is triggered.
  * @export
  * @abstract
  * @class AjfBaseFieldComponent
@@ -4521,37 +4556,15 @@ class AjfBaseFieldComponent {
             .getControl(this.instance)
             .pipe(map(ctrl => (ctrl || new UntypedFormControl()))));
     }
-    ngOnInit() {
-        if (this.instance != null) {
-            this._warningTriggerSub = this.instance.warningTrigger
-                .pipe(withLatestFrom(this.control), filter(([_, ctrl]) => ctrl != null))
-                .subscribe(([_, ctrl]) => {
-                if (this.instance == null || this.instance.warningResults == null) {
-                    return;
-                }
-                const control = ctrl;
-                const s = this._warningAlertService
-                    .showWarningAlertPrompt(this.instance.warningResults.filter(w => w.result).map(w => w.warning))
-                    .subscribe({
-                    next: (r) => {
-                        if (r.result) {
-                            control.setValue(null);
-                        }
-                    },
-                    error: (_e) => {
-                        if (s) {
-                            s.unsubscribe();
-                        }
-                    },
-                    complete: () => {
-                        if (s) {
-                            s.unsubscribe();
-                        }
-                    },
-                });
-            });
-        }
-    }
+    // Nothing left to set up: the warning machinery is untouched -- the renderer
+    // still evaluates every warning group and `instance.warningTrigger` still
+    // fires with `instance.warningResults` filled in -- but the confirmation
+    // dialog it used to open is gone, so nothing subscribes to the trigger any
+    // more. The hook itself stays, empty, because subclasses call
+    // `super.ngOnInit()` -- field components in host applications included, so
+    // dropping it would break them at compile time.
+    // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
+    ngOnInit() { }
     ngOnDestroy() {
         this._warningTriggerSub.unsubscribe();
         this._instanceUpdateSub.unsubscribe();

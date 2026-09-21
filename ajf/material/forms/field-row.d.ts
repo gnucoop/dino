@@ -46,8 +46,12 @@ export declare class AjfFieldRow implements OnDestroy {
      * Rows drop out on the host element rather than inside it, so that a hidden
      * field leaves no empty cell behind when rows are laid out in columns.
      *
-     * A formula field with no label carries no information of its own -- it only
-     * feeds other fields -- so it is kept out of the layout too.
+     * Three kinds of node carry no information of their own and are kept out of
+     * the layout: a container node, which is only a bracket around the fields it
+     * holds and has no fieldType to render; a formula field with no label, which
+     * only feeds other fields; and a note with no body -- the renderer synthesises
+     * one of those to carry a node group's label, and a group is meant to show
+     * nothing of itself.
      */
     get hidden(): boolean;
     /** Notes render their own block and never get a control border around it. */

@@ -30,8 +30,6 @@ import * as i0 from "@angular/core";
  * It rappresents the base field component, the first overlay of ajfFieldInstance.
  * It keeps a reference to the relative control of the form.
  * It manages the component update in conjunction with the instance update.
- * It manages the warningTrigger of the instance by displaying a confirmation
- * popup when an alert event is triggered.
  * @export
  * @abstract
  * @class AjfBaseFieldComponent
