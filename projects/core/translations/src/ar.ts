@@ -22,6 +22,7 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const AR: Translation = {
+  'This item cannot be removed': 'لا يمكن إزالة هذا العنصر',
   'New translation': 'ترجمة جديدة',
   'Define the key and, if you want, translate it right away. You can complete the other languages later.': 'حدّد المفتاح، وإن أردت ترجمه الآن. يمكنك إكمال بقية اللغات لاحقًا.',
   'mandatory': 'إلزامي',

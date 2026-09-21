@@ -26,7 +26,9 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
+  Output,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -106,6 +108,16 @@ export class MixedEditor implements AfterViewInit {
   @Input() viewOnly?: boolean;
 
   /**
+   * Emits whenever an Item enters or leaves the saved list, so that a parent can
+   * react to a choice while the editor is still open instead of waiting for the
+   * save. It fires for programmatic calls too, so a handler has to be idempotent.
+   */
+  @Output() readonly saveListChanged = new EventEmitter<{
+    item: MixedEditorItem;
+    operation: 'add' | 'remove';
+  }>();
+
+  /**
    * The text input filtering the source list.
    */
   @ViewChild('search', {static: true}) search!: ElementRef<HTMLInputElement>;
@@ -168,6 +180,7 @@ export class MixedEditor implements AfterViewInit {
 
       this._refreshFilteredList();
       this._refreshSaveValid();
+      this.saveListChanged.emit({item, operation: 'add'});
     }
 
     this._cdr.detectChanges();
@@ -178,7 +191,7 @@ export class MixedEditor implements AfterViewInit {
    * @param item  A list item
    */
   removeItem(item: MixedEditorItem | undefined): void {
-    if (item == null) {
+    if (item == null || item.locked) {
       return;
     }
     const itemAlreadyExists = this.sourceList.value[item.itemType].find(
@@ -205,8 +218,25 @@ export class MixedEditor implements AfterViewInit {
 
       this._refreshFilteredList();
       this._refreshSaveValid();
+      this.saveListChanged.emit({item, operation: 'remove'});
     }
 
+    this._cdr.detectChanges();
+  }
+
+  /**
+   * Holds an Item of the saved list in place, or releases it. A held Item keeps its
+   * place in the list whatever the user does: the remove button is replaced by a
+   * lock, and `removeItem` refuses it.
+   * @param itemId The id of the Item
+   * @param locked Whether the Item has to be held in the list
+   */
+  setItemLocked(itemId: string, locked: boolean): void {
+    const item = this.findItem(itemId, 'save');
+    if (item == null) {
+      return;
+    }
+    item.locked = locked;
     this._cdr.detectChanges();
   }
 
