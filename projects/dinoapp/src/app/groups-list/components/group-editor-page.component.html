@@ -64,7 +64,7 @@
             <b>{{ availTotal | number }}</b> {{ 'results' | transloco }}
           </div>
           <button
-            *ngIf="!viewOnly && !uniqueCat"
+            *ngIf="!viewOnly && !uniqueCat && !lockedCat"
             type="button"
             class="dino-ge-link"
             (click)="addAllShown()"
@@ -105,7 +105,7 @@
           <span class="dino-ge-rail-count">({{ assignedCount }})</span>
         </div>
         <button
-          *ngIf="!viewOnly && assignedCount > 0"
+          *ngIf="!viewOnly && assignedCount > 0 && !lockedCat"
           type="button"
           class="dino-ge-clear"
           (click)="clear()"
@@ -133,13 +133,25 @@
           <div class="dino-ge-avatar dino-ge-avatar-assigned">{{ initial(item) }}</div>
           <div class="dino-ge-label">{{ item.itemName }}</div>
           <button
-            *ngIf="!viewOnly"
+            *ngIf="!viewOnly && !isLocked(item)"
             type="button"
             class="dino-ge-remove"
             [attr.aria-label]="'Remove' | transloco"
             (click)="remove(item)"
           >
             <mat-icon>close</mat-icon>
+          </button>
+          <!-- Left enabled on purpose: a natively disabled button receives no mouse
+               event, so the tooltip explaining the lock would never show. It has no
+               click handler, and remove() refuses a locked item anyway. -->
+          <button
+            *ngIf="!viewOnly && isLocked(item)"
+            type="button"
+            class="dino-ge-remove"
+            [attr.aria-label]="'This item cannot be removed' | transloco"
+            [matTooltip]="'This item cannot be removed' | transloco"
+          >
+            <mat-icon>lock</mat-icon>
           </button>
         </div>
       </div>

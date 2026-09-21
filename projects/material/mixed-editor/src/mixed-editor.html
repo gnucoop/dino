@@ -33,9 +33,16 @@
                   <mat-icon class="dino-mixed-list-icon-identifier" [matTooltip]="tooltipCache.get(item.itemId) ?? ''"
                     [matTooltipPosition]="'after'">{{item.itemIcon}}</mat-icon>
                   <div class="dino-mixed-list-entry-tile">{{item.itemName}}</div>
-                  <button *ngIf="!viewOnly" mat-icon-button color="primary" aria-label="Remove item"
+                  <button *ngIf="!viewOnly && !item.locked" mat-icon-button color="primary" aria-label="Remove item"
                     (click)="removeItem(item)">
                     <mat-icon>delete</mat-icon>
+                  </button>
+                  <!-- Left enabled on purpose: a natively disabled button receives no mouse
+                       event, so the tooltip explaining the lock would never show. It has no
+                       click handler, and removeItem() refuses a locked item anyway. -->
+                  <button *ngIf="!viewOnly && item.locked" mat-icon-button aria-label="Locked item"
+                    [matTooltip]="'This item cannot be removed'|transloco">
+                    <mat-icon>lock</mat-icon>
                   </button>
                 </div>
               </cdk-virtual-scroll-viewport>

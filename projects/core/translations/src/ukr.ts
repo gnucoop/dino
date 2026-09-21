@@ -23,6 +23,7 @@
 import {Translation} from '@ngneat/transloco';
 
 export const UKR: Translation = {
+  'This item cannot be removed': 'Цей елемент не можна видалити',
   'New translation': 'Новий переклад',
   'Define the key and, if you want, translate it right away. You can complete the other languages later.': 'Визначте ключ і, якщо хочете, перекладіть його одразу. Інші мови можна доповнити пізніше.',
   'mandatory': 'обовʼязково',
