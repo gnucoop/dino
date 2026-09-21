@@ -57,10 +57,6 @@ describe('dino-form-metric-selector', {testIsolation: false}, () => {
     cy.get('.dino-go-to-data-button').first().should('exist').should('be.visible');
   });
 
-  it('should render a save floating button', () => {
-    cy.get('dino-floating-button[buttonicon="save"]').should('exist');
-  });
-
   // Step 2 tests — navigate forward and stay there for subsequent tests
 
   it('should navigate to the form data step when clicking Fill the Form', () => {
@@ -70,6 +66,10 @@ describe('dino-form-metric-selector', {testIsolation: false}, () => {
 
   it('should render an ajf-form in the form data step', () => {
     cy.get('ajf-form').should('exist');
+  });
+
+  it('should render a save button in the form header', () => {
+    cy.get('ajf-form .dino-form-save-button').should('exist');
   });
 
   it('should show a back navigation button in the form data step', () => {
