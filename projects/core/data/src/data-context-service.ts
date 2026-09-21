@@ -215,12 +215,17 @@ export class PermissionContextService {
           if (isData) {
             actionsCollectionName = collectionName.replace('_schema', '_data');
           }
+          // `allowedDocs` is tested for null because a role that names no document of
+          // this kind used to reach here only with `docId == null`, which short-circuits
+          // before the list is read. Now that callers name a document to have the list
+          // honoured - `'all'` included, which is how the right to create is asked for -
+          // a missing list would throw instead of denying.
           if (
             docId == null ||
-            allowedDocs.indexOf(docId) >= 0 ||
-            allowedDocs.some(dc => dc === 'all')
+            (allowedDocs != null &&
+              (allowedDocs.indexOf(docId) >= 0 || allowedDocs.some(dc => dc === 'all')))
           ) {
-            actions.push(...permissions[group].actions[actionsCollectionName]);
+            actions.push(...(permissions[group].actions[actionsCollectionName] ?? []));
           }
         }
         let uniqueActions = actions.filter(function (elem, index, self) {
