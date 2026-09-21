@@ -36,6 +36,17 @@ dino-edit-form {
       min-width: 0;
     }
   }
+  // The two save actions ride in the <ajf-form> header now, where the renderer's
+  // own `.ajf-btn` metrics apply to them. Only the icons need reining in:
+  // mat-icon defaults to 24px, which would out-size the 14px label beside it.
+  .dino-form-save-button,
+  .dino-form-save-draft-button {
+    .mat-icon {
+      width: 18px;
+      height: 18px;
+      font-size: 18px;
+    }
+  }
   .mat-stepper-horizontal {
     display: flex;
     flex-direction: column;

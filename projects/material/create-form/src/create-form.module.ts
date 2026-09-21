@@ -39,7 +39,6 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
 import {FormMetricSelectorModule} from '@dino/material/form-metric-selector';
 import {TranslocoModule} from '@ngneat/transloco';
-import {FloatingButtonModule as DinoFloatingButtonModule} from '@dino/material/floating-button';
 import {PipelineStepperModule as DinoPipelineStepperModule} from '@dino/material/pipeline-stepper';
 import {BreakpointObserverModule as DinoBreakpointObserverModule} from '@dino/material/breakpoint-observer';
 
@@ -51,7 +50,6 @@ import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
     AjfFormsModule,
     CommonModule,
     DinoBreakpointObserverModule,
-    DinoFloatingButtonModule,
     DinoPipelineStepperModule,
     FormMetricSelectorModule,
     MatButtonModule,

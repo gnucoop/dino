@@ -38,14 +38,6 @@ describe('dino-create-form', {testIsolation: false}, () => {
     cy.get('.dino-go-to-data-button').first().should('exist').should('be.visible');
   });
 
-  it('should render a save floating button', () => {
-    cy.get('dino-floating-button[buttonicon="save"]').should('exist');
-  });
-
-  it('should have the save floating button disabled before form data is entered', () => {
-    cy.get('dino-floating-button[buttonicon="save"] button').should('be.disabled');
-  });
-
   // Step 2 tests — navigate forward via "Fill the Form" and stay there for subsequent tests
 
   it('should navigate to the form data step when clicking Fill the Form', () => {
@@ -58,12 +50,16 @@ describe('dino-create-form', {testIsolation: false}, () => {
     cy.get('mat-radio-button').should('exist');
   });
 
+  it('should render a save button in the form header', () => {
+    cy.get('ajf-form .dino-form-save-button').should('exist');
+  });
+
   it('should show a back navigation button in the form data step', () => {
     cy.get('button[aria-label="Previous step"]').should('exist');
   });
 
-  it('should keep the save floating button disabled when the form is empty', () => {
-    cy.get('dino-floating-button[buttonicon="save"] button').should('be.disabled');
+  it('should keep the save button disabled when the form is empty', () => {
+    cy.get('ajf-form .dino-form-save-button').should('be.disabled');
   });
 
   it('should return to the metrics step when clicking the back button', () => {

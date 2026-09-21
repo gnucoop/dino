@@ -38,11 +38,35 @@
           <ajf-form
             #formContainer
             [form]="(form|async)!"
-            [saveDisabled]="(isSaveDisabled|async) === true"
             [topBar]="(isPipeline|async) === false"
             [centeredFieldsContent]="centeredFieldsContent"
             (formAction)="onFormAction($event)"
-          ></ajf-form>
+          >
+            <!-- Save draft goes in the header's generic action slot and calls dino
+                 directly. Save goes in the renderer's own save slot, whose wrapper turns
+                 the click into a `formAction` -- see onFormAction(). Both stay visible
+                 while unavailable, disabled, as the floating buttons they replace did. -->
+            <button
+              *ngIf="allowSaveDraft"
+              ajfFormTopToolbarButtons
+              type="button"
+              class="ajf-btn dino-form-save-draft-button"
+              [tourAnchor]="uiServiceConfig ? 'save-draft-floating-button' : ''"
+              [disabled]="(isSaveDraftDisabled|async) === true"
+              (click)="saveDraft()"
+            >
+              <mat-icon>save_as</mat-icon>{{'Save draft'|transloco}}
+            </button>
+            <button
+              ajfFormSaveButton
+              type="button"
+              class="ajf-btn--primary dino-form-save-button"
+              [tourAnchor]="uiServiceConfig ? 'save-form-floating-button' : ''"
+              [disabled]="(isSaveDisabled|async) === true"
+            >
+              <mat-icon>save</mat-icon>{{'Save form'|transloco}}
+            </button>
+          </ajf-form>
         </div>
       </mat-step>
     </mat-stepper>
@@ -58,31 +82,38 @@
       <ajf-form
         #formContainer
         [form]="(form|async)!"
-        [saveDisabled]="(isSaveDisabled|async) === true"
         [topBar]="(isPipeline|async) === false"
         [centeredFieldsContent]="centeredFieldsContent"
         (formAction)="onFormAction($event)"
-      ></ajf-form>
+      >
+        <!-- Save draft goes in the header's generic action slot and calls dino
+             directly. Save goes in the renderer's own save slot, whose wrapper turns
+             the click into a `formAction` -- see onFormAction(). Both stay visible
+             while unavailable, disabled, as the floating buttons they replace did. -->
+        <button
+          *ngIf="allowSaveDraft"
+          ajfFormTopToolbarButtons
+          type="button"
+          class="ajf-btn dino-form-save-draft-button"
+          [tourAnchor]="uiServiceConfig ? 'save-draft-floating-button' : ''"
+          [disabled]="(isSaveDraftDisabled|async) === true"
+          (click)="saveDraft()"
+        >
+          <mat-icon>save_as</mat-icon>{{'Save draft'|transloco}}
+        </button>
+        <button
+          ajfFormSaveButton
+          type="button"
+          class="ajf-btn--primary dino-form-save-button"
+          [tourAnchor]="uiServiceConfig ? 'save-form-floating-button' : ''"
+          [disabled]="(isSaveDisabled|async) === true"
+        >
+          <mat-icon>save</mat-icon>{{'Save form'|transloco}}
+        </button>
+      </ajf-form>
     </div>
   </ng-container>
   <ng-container *ngIf="(isLoading|async) === true">
     <mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner>
   </ng-container>
-
-  <dino-floating-button
-    buttonIcon="save"
-    [tooltipMessage]="'Save form'|transloco"
-    [tourAnchor]="uiServiceConfig ? 'save-form-floating-button' : ''"
-    [buttonDisabled]="(isSaveDisabled|async) === true"
-    (click)="saveForm()"
-  ></dino-floating-button>
-
-  <dino-floating-button
-    *ngIf="allowSaveDraft"
-    buttonIcon="save_as"
-    [tooltipMessage]="'Save draft'|transloco"
-    [tourAnchor]="uiServiceConfig ? 'save-draft-floating-button' : ''"
-    [buttonDisabled]="(isSaveDraftDisabled|async) === true"
-    (click)="saveDraft()"
-  ></dino-floating-button>
 </ng-container>
