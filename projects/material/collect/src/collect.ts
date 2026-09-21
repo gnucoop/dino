@@ -251,15 +251,23 @@ export class Collect implements OnDestroy {
       switchMap(([isCollect, menuItems, permissionContext]) => {
         if (isCollect !== 'custom') {
           let result: Observable<(RxDocument<FormSchema> | RxDocument<ReportSchema>)[]>;
+          // `'all'` is passed as the document id on purpose. Creating a schema is not a
+          // right of the role alone: the backend grants the insert only to a user whose
+          // group holds the `'all'` wildcard on that kind of schema, because a schema
+          // that does not exist yet cannot be listed in anyone's group. Asking for the
+          // actions on `'all'` is what makes `getAllowedActions` look at the group's list
+          // instead of skipping it, as it does when no document is named. Without this the
+          // button showed up for anyone whose role could create, and the document was
+          // written locally only to have every push refused by the server.
           if (isCollect === 'reports') {
             result = this._rs.list();
             this.displayAddButton = this._pcs
-              .getAllowedActions('report_schema')
+              .getAllowedActions('report_schema', 'all')
               .pipe(map(actions => actions.some(act => act === 'create')));
           } else {
             result = this._fs.list();
             this.displayAddButton = this._pcs
-              .getAllowedActions('form_schema')
+              .getAllowedActions('form_schema', 'all')
               .pipe(map(actions => actions.some(act => act === 'create')));
           }
           return result.pipe(
