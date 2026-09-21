@@ -38,6 +38,12 @@ export declare class AjfRepStrip {
     readonly goTo: EventEmitter<number>;
     readonly add: EventEmitter<void>;
     readonly remove: EventEmitter<void>;
+    /**
+     * A repetition count driven by a formula is not the reader's to change:
+     * `AjfFormRendererService.addGroup` and `removeGroup` both refuse the call
+     * outright, so without this the buttons would sit enabled and do nothing.
+     */
+    private get manualReps();
     get canAdd(): boolean;
     get canRemove(): boolean;
     static ngAcceptInputType_readonly: BooleanInput;

@@ -21,49 +21,28 @@
  */
 import { AjfSlideInstance } from '@ajf/core/forms';
 import { EventEmitter } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
-import { AjfFormIssues } from './slide-stats';
 import * as i0 from "@angular/core";
 /**
- * The bar at the top of every slide: its number and title, a completion
- * counter, a menu to jump to any other slide, previous/next paging, an alert
- * when the slide has failing fields, and a slot for the form's own action
+ * The bar at the top of every slide: its number and title, a menu to jump to any
+ * other slide, previous/next paging, and a slot for the form's own action
  * buttons.
  *
- * Paging and error navigation belong to the renderer, which owns the page
- * slider, so they are raised as events rather than handled here.
+ * What the form still has failing is reported by the footer alone. Naming it
+ * here too cost a phone's whole header width to repeat something already on
+ * screen.
+ *
+ * Paging belongs to the renderer, which owns the page slider, so it is raised
+ * as an event rather than handled here.
  */
 export declare class AjfSlideHeader {
     /** Absent while a start or end message page is on screen. */
     slide: AjfSlideInstance | null;
     /** The number shown in the badge, already offset by any start message. */
     displayNumber: number;
-    /** Which repetition of a repeating slide this header belongs to. */
-    repIndex: number;
     /** Every slide of the form, for the jump menu. */
     slides: AjfSlideInstance[];
-    /** How many repetitions a repeating slide currently has; 0 when not repeating. */
-    reps: number;
-    /** How many visible slides the form has, for the "slide N of M" readout. */
-    total: number;
     /** How many pages the slider holds, repetitions and message pages included. */
     pages: number;
-    /**
-     * The form's control group, which the completion counter reads values from.
-     * Not named `formGroup`: that is ReactiveFormsModule's own selector, and would
-     * bind FormGroupDirective to this element too.
-     */
-    group: UntypedFormGroup | null;
-    /** What the whole form still has failing, computed by the renderer. */
-    issues: AjfFormIssues | null;
-    /**
-     * Whether any slide of the form repeats. The repetition count sits inside the
-     * jump trigger, so its slot is held open on every slide of such a form -- one
-     * width for the whole form beats a trigger that jumps by the width of a pill
-     * whenever a repeating slide comes up. Forms with no repeating slide never
-     * reserve the space.
-     */
-    get hasRepeatingSlides(): boolean;
     /**
      * Whether the form has anywhere to page to. A single page form gets no arrows
      * and no "slide 1 of 1": both are controls that cannot do anything.
@@ -77,8 +56,7 @@ export declare class AjfSlideHeader {
     readonly jumpTo: EventEmitter<AjfSlideInstance>;
     readonly prev: EventEmitter<void>;
     readonly next: EventEmitter<void>;
-    readonly gotoIssue: EventEmitter<void>;
     static ɵfac: i0.ɵɵFactoryDeclaration<AjfSlideHeader, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<AjfSlideHeader, "ajf-slide-header", never, { "slide": { "alias": "slide"; "required": false; }; "displayNumber": { "alias": "displayNumber"; "required": false; }; "repIndex": { "alias": "repIndex"; "required": false; }; "slides": { "alias": "slides"; "required": false; }; "reps": { "alias": "reps"; "required": false; }; "total": { "alias": "total"; "required": false; }; "pages": { "alias": "pages"; "required": false; }; "group": { "alias": "group"; "required": false; }; "issues": { "alias": "issues"; "required": false; }; }, { "jumpTo": "jumpTo"; "prev": "prev"; "next": "next"; "gotoIssue": "gotoIssue"; }, never, ["*"], false, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<AjfSlideHeader, "ajf-slide-header", never, { "slide": { "alias": "slide"; "required": false; }; "displayNumber": { "alias": "displayNumber"; "required": false; }; "slides": { "alias": "slides"; "required": false; }; "pages": { "alias": "pages"; "required": false; }; }, { "jumpTo": "jumpTo"; "prev": "prev"; "next": "next"; }, never, ["*"], false, never>;
 }
 //# sourceMappingURL=slide-header.d.ts.map

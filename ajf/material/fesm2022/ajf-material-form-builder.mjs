@@ -1322,7 +1322,9 @@ class AjfFormBuilderService {
                     properties.formulaReps != null
                         ? createFormula({ formula: properties.formulaReps })
                         : undefined;
-                node.minReps = properties.minReps;
+                // minReps is deliberately left alone: the builder no longer offers it,
+                // and assigning the missing property would wipe the value a schema
+                // authored elsewhere came in with. Absent, it deserialises as 1.
                 node.maxReps = properties.maxReps;
             }
             if (isField(node)) {
@@ -2764,22 +2766,13 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_56_Templa
     i0.ɵɵelementEnd()();
     i0.ɵɵelementStart(5, "div")(6, "mat-slider", 18);
     i0.ɵɵelement(7, "input", 23);
-    i0.ɵɵelementEnd()();
-    i0.ɵɵelementStart(8, "div")(9, "label");
-    i0.ɵɵtext(10);
-    i0.ɵɵpipe(11, "transloco");
-    i0.ɵɵelementEnd()();
-    i0.ɵɵelementStart(12, "div")(13, "mat-slider", 18);
-    i0.ɵɵelement(14, "input", 24);
     i0.ɵɵelementEnd()()();
 } if (rf & 2) {
     i0.ɵɵadvance(3);
-    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(4, 2, "Min repetitions"));
-    i0.ɵɵadvance(7);
-    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(11, 4, "Max repetitions"));
+    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(4, 1, "Max repetitions"));
 } }
 function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_mat_option_11_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "mat-option", 36);
+    i0.ɵɵelementStart(0, "mat-option", 34);
     i0.ɵɵtext(1);
     i0.ɵɵpipe(2, "transloco");
     i0.ɵɵelementEnd();
@@ -2791,19 +2784,19 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_mat_op
 } }
 function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_41_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementStart(0, "div", 8)(1, "mat-form-field");
-    i0.ɵɵelement(2, "input", 37);
+    i0.ɵɵelement(2, "input", 35);
     i0.ɵɵpipe(3, "transloco");
     i0.ɵɵelementEnd()();
     i0.ɵɵelementStart(4, "div", 8)(5, "mat-form-field");
-    i0.ɵɵelement(6, "input", 38);
+    i0.ɵɵelement(6, "input", 36);
     i0.ɵɵpipe(7, "transloco");
     i0.ɵɵelementEnd()();
     i0.ɵɵelementStart(8, "div", 8)(9, "mat-form-field");
-    i0.ɵɵelement(10, "input", 39);
+    i0.ɵɵelement(10, "input", 37);
     i0.ɵɵpipe(11, "transloco");
     i0.ɵɵelementEnd()();
     i0.ɵɵelementStart(12, "div", 8)(13, "mat-form-field");
-    i0.ɵɵelement(14, "input", 40);
+    i0.ɵɵelement(14, "input", 38);
     i0.ɵɵpipe(15, "transloco");
     i0.ɵɵelementEnd()();
 } if (rf & 2) {
@@ -2818,24 +2811,24 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_tem
 } }
 function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_42_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementStart(0, "div", 8)(1, "mat-form-field");
-    i0.ɵɵelement(2, "input", 41);
+    i0.ɵɵelement(2, "input", 39);
     i0.ɵɵpipe(3, "transloco");
     i0.ɵɵelementEnd()();
     i0.ɵɵelementStart(4, "div", 8)(5, "mat-form-field");
-    i0.ɵɵelement(6, "input", 42);
+    i0.ɵɵelement(6, "input", 40);
     i0.ɵɵpipe(7, "transloco");
     i0.ɵɵelementEnd()();
     i0.ɵɵelementStart(8, "div", 8)(9, "mat-form-field");
-    i0.ɵɵelement(10, "input", 43);
+    i0.ɵɵelement(10, "input", 41);
     i0.ɵɵpipe(11, "transloco");
     i0.ɵɵelementEnd()();
-    i0.ɵɵelementStart(12, "div", 8)(13, "mat-form-field")(14, "mat-select", 44);
+    i0.ɵɵelementStart(12, "div", 8)(13, "mat-form-field")(14, "mat-select", 42);
     i0.ɵɵpipe(15, "transloco");
-    i0.ɵɵelementStart(16, "mat-option", 36);
+    i0.ɵɵelementStart(16, "mat-option", 34);
     i0.ɵɵtext(17);
     i0.ɵɵpipe(18, "transloco");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(19, "mat-option", 45);
+    i0.ɵɵelementStart(19, "mat-option", 43);
     i0.ɵɵtext(20);
     i0.ɵɵpipe(21, "transloco");
     i0.ɵɵelementEnd()()()();
@@ -2856,7 +2849,7 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_tem
     i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(21, 17, "Rating"));
 } }
 function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_50_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "div", 46);
+    i0.ɵɵelementStart(0, "div", 44);
     i0.ɵɵtext(1);
     i0.ɵɵpipe(2, "transloco");
     i0.ɵɵelementEnd();
@@ -2866,7 +2859,7 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_50
 } }
 function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_51_Template(rf, ctx) { if (rf & 1) {
     const _r9 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "div", 47)(1, "button", 22);
+    i0.ɵɵelementStart(0, "div", 45)(1, "button", 22);
     i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_51_Template_button_click_1_listener() { const idx_r10 = i0.ɵɵrestoreView(_r9).index; const ctx_r1 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r1.editValidationCondition(idx_r10)); });
     i0.ɵɵelementStart(2, "div", 17)(3, "mat-icon");
     i0.ɵɵtext(4, "edit");
@@ -2874,7 +2867,7 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_51
     i0.ɵɵelementStart(5, "span")(6, "code");
     i0.ɵɵtext(7);
     i0.ɵɵelementEnd()()()();
-    i0.ɵɵelementStart(8, "mat-icon", 32);
+    i0.ɵɵelementStart(8, "mat-icon", 31);
     i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_51_Template_mat_icon_click_8_listener() { const idx_r10 = i0.ɵɵrestoreView(_r9).index; const ctx_r1 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r1.removeValidationCondition(idx_r10)); });
     i0.ɵɵtext(9, "remove_circle_outline");
     i0.ɵɵelementEnd()();
@@ -2885,48 +2878,18 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_51
     i0.ɵɵadvance(6);
     i0.ɵɵtextInterpolate(validationCondition_r11.condition);
 } }
-function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_63_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "div", 46);
+function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_mat_option_7_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "mat-option", 34);
     i0.ɵɵtext(1);
     i0.ɵɵpipe(2, "transloco");
     i0.ɵɵelementEnd();
 } if (rf & 2) {
+    const choicesOrigin_r13 = ctx.$implicit;
+    i0.ɵɵproperty("value", choicesOrigin_r13.name);
     i0.ɵɵadvance();
-    i0.ɵɵtextInterpolate1(" ", i0.ɵɵpipeBind1(2, 1, "No warnings"), " ");
+    i0.ɵɵtextInterpolate1(" ", i0.ɵɵpipeBind1(2, 2, choicesOrigin_r13.label || choicesOrigin_r13.name), " ");
 } }
-function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_64_Template(rf, ctx) { if (rf & 1) {
-    const _r12 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "div", 47)(1, "button", 22);
-    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_64_Template_button_click_1_listener() { const idx_r13 = i0.ɵɵrestoreView(_r12).index; const ctx_r1 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r1.editWarningCondition(idx_r13)); });
-    i0.ɵɵelementStart(2, "div", 17)(3, "mat-icon");
-    i0.ɵɵtext(4, "edit");
-    i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(5, "span")(6, "code");
-    i0.ɵɵtext(7);
-    i0.ɵɵelementEnd()()()();
-    i0.ɵɵelementStart(8, "mat-icon", 32);
-    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_64_Template_mat_icon_click_8_listener() { const idx_r13 = i0.ɵɵrestoreView(_r12).index; const ctx_r1 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r1.removeWarningCondition(idx_r13)); });
-    i0.ɵɵtext(9, "remove_circle_outline");
-    i0.ɵɵelementEnd()();
-} if (rf & 2) {
-    const warningCondition_r14 = ctx.$implicit;
-    i0.ɵɵadvance();
-    i0.ɵɵproperty("matTooltip", warningCondition_r14.condition);
-    i0.ɵɵadvance(6);
-    i0.ɵɵtextInterpolate(warningCondition_r14.condition);
-} }
-function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_mat_option_7_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "mat-option", 36);
-    i0.ɵɵtext(1);
-    i0.ɵɵpipe(2, "transloco");
-    i0.ɵɵelementEnd();
-} if (rf & 2) {
-    const choicesOrigin_r16 = ctx.$implicit;
-    i0.ɵɵproperty("value", choicesOrigin_r16.name);
-    i0.ɵɵadvance();
-    i0.ɵɵtextInterpolate1(" ", i0.ɵɵpipeBind1(2, 2, choicesOrigin_r16.label || choicesOrigin_r16.name), " ");
-} }
-function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_mat_error_8_Template(rf, ctx) { if (rf & 1) {
+function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_mat_error_8_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementStart(0, "mat-error");
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
@@ -2936,8 +2899,8 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_tem
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate1(" ", ctx_r1.fieldErrorMessage(pf_r3.get("choicesOriginRef"), "choicesOriginRef"), " ");
 } }
-function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_div_39_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "div", 46);
+function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_div_39_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "div", 44);
     i0.ɵɵtext(1);
     i0.ɵɵpipe(2, "transloco");
     i0.ɵɵelementEnd();
@@ -2945,58 +2908,58 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_tem
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate1(" ", i0.ɵɵpipeBind1(2, 1, "No trigger condition"), " ");
 } }
-function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_div_40_Template(rf, ctx) { if (rf & 1) {
-    const _r19 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "div", 47)(1, "button", 22);
-    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_div_40_Template_button_click_1_listener() { const idx_r20 = i0.ɵɵrestoreView(_r19).index; const ctx_r1 = i0.ɵɵnextContext(5); return i0.ɵɵresetView(ctx_r1.editTriggerCondition(idx_r20)); });
+function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_div_40_Template(rf, ctx) { if (rf & 1) {
+    const _r16 = i0.ɵɵgetCurrentView();
+    i0.ɵɵelementStart(0, "div", 45)(1, "button", 22);
+    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_div_40_Template_button_click_1_listener() { const idx_r17 = i0.ɵɵrestoreView(_r16).index; const ctx_r1 = i0.ɵɵnextContext(5); return i0.ɵɵresetView(ctx_r1.editTriggerCondition(idx_r17)); });
     i0.ɵɵelementStart(2, "div", 17)(3, "mat-icon");
     i0.ɵɵtext(4, "edit");
     i0.ɵɵelementEnd();
     i0.ɵɵelementStart(5, "span")(6, "code");
     i0.ɵɵtext(7);
     i0.ɵɵelementEnd()()()();
-    i0.ɵɵelementStart(8, "mat-icon", 51);
-    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_div_40_Template_mat_icon_click_8_listener() { const idx_r20 = i0.ɵɵrestoreView(_r19).index; const ctx_r1 = i0.ɵɵnextContext(5); return i0.ɵɵresetView(ctx_r1.removeTriggerCondition(idx_r20)); });
+    i0.ɵɵelementStart(8, "mat-icon", 49);
+    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_div_40_Template_mat_icon_click_8_listener() { const idx_r17 = i0.ɵɵrestoreView(_r16).index; const ctx_r1 = i0.ɵɵnextContext(5); return i0.ɵɵresetView(ctx_r1.removeTriggerCondition(idx_r17)); });
     i0.ɵɵtext(9, "remove_circle_outline");
     i0.ɵɵelementEnd()();
 } if (rf & 2) {
-    const triggerCondition_r21 = ctx.$implicit;
+    const triggerCondition_r18 = ctx.$implicit;
     i0.ɵɵadvance();
-    i0.ɵɵproperty("matTooltip", triggerCondition_r21);
+    i0.ɵɵproperty("matTooltip", triggerCondition_r18);
     i0.ɵɵadvance(6);
-    i0.ɵɵtextInterpolate(triggerCondition_r21);
+    i0.ɵɵtextInterpolate(triggerCondition_r18);
 } }
-function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_Template(rf, ctx) { if (rf & 1) {
-    const _r15 = i0.ɵɵgetCurrentView();
+function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_Template(rf, ctx) { if (rf & 1) {
+    const _r12 = i0.ɵɵgetCurrentView();
     i0.ɵɵelementStart(0, "div", 8)(1, "mat-form-field")(2, "mat-label");
     i0.ɵɵtext(3);
     i0.ɵɵpipe(4, "transloco");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(5, "mat-select", 48);
+    i0.ɵɵelementStart(5, "mat-select", 46);
     i0.ɵɵpipe(6, "transloco");
-    i0.ɵɵtemplate(7, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_mat_option_7_Template, 3, 4, "mat-option", 27);
+    i0.ɵɵtemplate(7, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_mat_option_7_Template, 3, 4, "mat-option", 26);
     i0.ɵɵelementEnd();
-    i0.ɵɵtemplate(8, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_mat_error_8_Template, 2, 1, "mat-error", 3);
+    i0.ɵɵtemplate(8, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_mat_error_8_Template, 2, 1, "mat-error", 3);
     i0.ɵɵelementEnd()();
     i0.ɵɵelementStart(9, "div", 8)(10, "div")(11, "label");
     i0.ɵɵtext(12);
     i0.ɵɵpipe(13, "transloco");
     i0.ɵɵelementEnd()();
     i0.ɵɵelementStart(14, "div")(15, "button", 22);
-    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_Template_button_click_15_listener() { i0.ɵɵrestoreView(_r15); const ctx_r1 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r1.editChoicesFilter()); });
+    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_Template_button_click_15_listener() { i0.ɵɵrestoreView(_r12); const ctx_r1 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r1.editChoicesFilter()); });
     i0.ɵɵelementStart(16, "div", 17)(17, "mat-icon");
     i0.ɵɵtext(18, "edit");
     i0.ɵɵelementEnd();
     i0.ɵɵelementStart(19, "span")(20, "code");
     i0.ɵɵtext(21);
     i0.ɵɵelementEnd()()()()()();
-    i0.ɵɵelementStart(22, "div", 8)(23, "mat-checkbox", 49, 0);
-    i0.ɵɵlistener("change", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_Template_mat_checkbox_change_23_listener($event) { i0.ɵɵrestoreView(_r15); const forceNarrow_r17 = i0.ɵɵreference(29); const ctx_r1 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r1.forceCheckbox($event.checked, forceNarrow_r17)); });
+    i0.ɵɵelementStart(22, "div", 8)(23, "mat-checkbox", 47, 0);
+    i0.ɵɵlistener("change", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_Template_mat_checkbox_change_23_listener($event) { i0.ɵɵrestoreView(_r12); const forceNarrow_r14 = i0.ɵɵreference(29); const ctx_r1 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r1.forceCheckbox($event.checked, forceNarrow_r14)); });
     i0.ɵɵtext(25);
     i0.ɵɵpipe(26, "transloco");
     i0.ɵɵelementEnd()();
-    i0.ɵɵelementStart(27, "div", 8)(28, "mat-checkbox", 50, 1);
-    i0.ɵɵlistener("change", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_Template_mat_checkbox_change_28_listener($event) { i0.ɵɵrestoreView(_r15); const forceExpanded_r18 = i0.ɵɵreference(24); const ctx_r1 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r1.forceCheckbox($event.checked, forceExpanded_r18)); });
+    i0.ɵɵelementStart(27, "div", 8)(28, "mat-checkbox", 48, 1);
+    i0.ɵɵlistener("change", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_Template_mat_checkbox_change_28_listener($event) { i0.ɵɵrestoreView(_r12); const forceExpanded_r15 = i0.ɵɵreference(24); const ctx_r1 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r1.forceCheckbox($event.checked, forceExpanded_r15)); });
     i0.ɵɵtext(30);
     i0.ɵɵpipe(31, "transloco");
     i0.ɵɵelementEnd()();
@@ -3004,11 +2967,11 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_tem
     i0.ɵɵtext(35);
     i0.ɵɵpipe(36, "transloco");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(37, "mat-icon", 32);
-    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_Template_mat_icon_click_37_listener() { i0.ɵɵrestoreView(_r15); const ctx_r1 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r1.addTriggerCondition()); });
+    i0.ɵɵelementStart(37, "mat-icon", 31);
+    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_Template_mat_icon_click_37_listener() { i0.ɵɵrestoreView(_r12); const ctx_r1 = i0.ɵɵnextContext(4); return i0.ɵɵresetView(ctx_r1.addTriggerCondition()); });
     i0.ɵɵtext(38, "add_circle_outline");
     i0.ɵɵelementEnd()();
-    i0.ɵɵtemplate(39, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_div_39_Template, 3, 3, "div", 33)(40, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_div_40_Template, 10, 2, "div", 34);
+    i0.ɵɵtemplate(39, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_div_39_Template, 3, 3, "div", 32)(40, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_div_40_Template, 10, 2, "div", 33);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
     let tmp_11_0;
@@ -3039,7 +3002,7 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_tem
     i0.ɵɵadvance();
     i0.ɵɵproperty("ngForOf", ctx_r1.triggerConditions);
 } }
-function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_container_79_mat_error_8_Template(rf, ctx) { if (rf & 1) {
+function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_container_66_mat_error_8_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementStart(0, "mat-error");
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
@@ -3049,16 +3012,16 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_con
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate1(" ", ctx_r1.fieldErrorMessage(pf_r3.get("tableDef"), "tableDef"), " ");
 } }
-function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_container_79_Template(rf, ctx) { if (rf & 1) {
+function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_container_66_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementContainerStart(0);
-    i0.ɵɵelementStart(1, "div", 8)(2, "mat-checkbox", 52);
+    i0.ɵɵelementStart(1, "div", 8)(2, "mat-checkbox", 50);
     i0.ɵɵtext(3);
     i0.ɵɵpipe(4, "transloco");
     i0.ɵɵelementEnd();
     i0.ɵɵelementStart(5, "mat-form-field");
-    i0.ɵɵelement(6, "textarea", 53);
+    i0.ɵɵelement(6, "textarea", 51);
     i0.ɵɵpipe(7, "transloco");
-    i0.ɵɵtemplate(8, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_container_79_mat_error_8_Template, 2, 1, "mat-error", 3);
+    i0.ɵɵtemplate(8, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_container_66_mat_error_8_Template, 2, 1, "mat-error", 3);
     i0.ɵɵelementEnd()();
     i0.ɵɵelementContainerEnd();
 } if (rf & 2) {
@@ -3073,7 +3036,7 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_con
 } }
 function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_Template(rf, ctx) { if (rf & 1) {
     const _r7 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "div", 8)(1, "mat-checkbox", 25);
+    i0.ɵɵelementStart(0, "div", 8)(1, "mat-checkbox", 24);
     i0.ɵɵtext(2);
     i0.ɵɵpipe(3, "transloco");
     i0.ɵɵelementEnd()();
@@ -3081,20 +3044,20 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_Templa
     i0.ɵɵtext(7);
     i0.ɵɵpipe(8, "transloco");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(9, "mat-select", 26);
+    i0.ɵɵelementStart(9, "mat-select", 25);
     i0.ɵɵpipe(10, "transloco");
-    i0.ɵɵtemplate(11, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_mat_option_11_Template, 3, 4, "mat-option", 27);
+    i0.ɵɵtemplate(11, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_mat_option_11_Template, 3, 4, "mat-option", 26);
     i0.ɵɵelementEnd()()();
     i0.ɵɵelementStart(12, "div", 8)(13, "mat-form-field");
-    i0.ɵɵelement(14, "input", 28);
+    i0.ɵɵelement(14, "input", 27);
     i0.ɵɵpipe(15, "transloco");
     i0.ɵɵelementEnd()();
     i0.ɵɵelementStart(16, "div", 8)(17, "mat-form-field");
-    i0.ɵɵelement(18, "textarea", 29);
+    i0.ɵɵelement(18, "textarea", 28);
     i0.ɵɵpipe(19, "transloco");
     i0.ɵɵelementEnd()();
     i0.ɵɵelementStart(20, "div", 8)(21, "mat-form-field");
-    i0.ɵɵelement(22, "input", 30);
+    i0.ɵɵelement(22, "input", 29);
     i0.ɵɵpipe(23, "transloco");
     i0.ɵɵelementEnd()();
     i0.ɵɵelementStart(24, "div", 8)(25, "div")(26, "label");
@@ -3109,7 +3072,7 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_Templa
     i0.ɵɵelementStart(34, "span")(35, "code");
     i0.ɵɵtext(36);
     i0.ɵɵelementEnd()()()()()();
-    i0.ɵɵelementStart(37, "div", 8)(38, "mat-checkbox", 31);
+    i0.ɵɵelementStart(37, "div", 8)(38, "mat-checkbox", 30);
     i0.ɵɵtext(39);
     i0.ɵɵpipe(40, "transloco");
     i0.ɵɵelementEnd()();
@@ -3118,92 +3081,70 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_Templa
     i0.ɵɵtext(46);
     i0.ɵɵpipe(47, "transloco");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(48, "mat-icon", 32);
+    i0.ɵɵelementStart(48, "mat-icon", 31);
     i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_Template_mat_icon_click_48_listener() { i0.ɵɵrestoreView(_r7); const ctx_r1 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r1.addValidationCondition()); });
     i0.ɵɵtext(49, "add_circle_outline");
     i0.ɵɵelementEnd()();
-    i0.ɵɵtemplate(50, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_50_Template, 3, 3, "div", 33)(51, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_51_Template, 10, 2, "div", 34);
+    i0.ɵɵtemplate(50, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_50_Template, 3, 3, "div", 32)(51, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_51_Template, 10, 2, "div", 33);
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(52, "div", 8)(53, "mat-checkbox", 35);
-    i0.ɵɵtext(54);
-    i0.ɵɵpipe(55, "transloco");
+    i0.ɵɵelementStart(52, "div", 8)(53, "div")(54, "label");
+    i0.ɵɵtext(55);
+    i0.ɵɵpipe(56, "transloco");
     i0.ɵɵelementEnd()();
-    i0.ɵɵelementStart(56, "div", 8)(57, "div", 4)(58, "label");
-    i0.ɵɵtext(59);
-    i0.ɵɵpipe(60, "transloco");
+    i0.ɵɵelementStart(57, "div")(58, "button", 22);
+    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_Template_button_click_58_listener() { i0.ɵɵrestoreView(_r7); const ctx_r1 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r1.editNextSlideCondition()); });
+    i0.ɵɵelementStart(59, "div", 17)(60, "mat-icon");
+    i0.ɵɵtext(61, "edit");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(61, "mat-icon", 32);
-    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_Template_mat_icon_click_61_listener() { i0.ɵɵrestoreView(_r7); const ctx_r1 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r1.addWarningCondition()); });
-    i0.ɵɵtext(62, "add_circle_outline");
-    i0.ɵɵelementEnd()();
-    i0.ɵɵtemplate(63, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_63_Template, 3, 3, "div", 33)(64, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_div_64_Template, 10, 2, "div", 34);
-    i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(65, "div", 8)(66, "div")(67, "label");
-    i0.ɵɵtext(68);
-    i0.ɵɵpipe(69, "transloco");
-    i0.ɵɵelementEnd()();
-    i0.ɵɵelementStart(70, "div")(71, "button", 22);
-    i0.ɵɵlistener("click", function AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_Template_button_click_71_listener() { i0.ɵɵrestoreView(_r7); const ctx_r1 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r1.editNextSlideCondition()); });
-    i0.ɵɵelementStart(72, "div", 17)(73, "mat-icon");
-    i0.ɵɵtext(74, "edit");
-    i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(75, "span")(76, "code");
-    i0.ɵɵtext(77);
+    i0.ɵɵelementStart(62, "span")(63, "code");
+    i0.ɵɵtext(64);
     i0.ɵɵelementEnd()()()()()();
-    i0.ɵɵtemplate(78, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_78_Template, 41, 24, "ng-template", 11)(79, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_container_79_Template, 9, 7, "ng-container", 3);
+    i0.ɵɵtemplate(65, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_template_65_Template, 41, 24, "ng-template", 11)(66, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_ng_container_66_Template, 9, 7, "ng-container", 3);
 } if (rf & 2) {
-    const ne_r22 = i0.ɵɵnextContext(2).ngIf;
+    const ne_r19 = i0.ɵɵnextContext(2).ngIf;
     const ctx_r1 = i0.ɵɵnextContext();
     i0.ɵɵadvance(2);
-    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(3, 25, "Readonly"));
+    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(3, 21, "Readonly"));
     i0.ɵɵadvance(5);
-    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(8, 27, "Field size"));
+    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(8, 23, "Field size"));
     i0.ɵɵadvance(2);
-    i0.ɵɵproperty("placeholder", i0.ɵɵpipeBind1(10, 29, "Size"));
+    i0.ɵɵproperty("placeholder", i0.ɵɵpipeBind1(10, 25, "Size"));
     i0.ɵɵadvance(2);
     i0.ɵɵproperty("ngForOf", ctx_r1.fieldSizes);
     i0.ɵɵadvance(3);
-    i0.ɵɵproperty("placeholder", i0.ɵɵpipeBind1(15, 31, "Hint"));
+    i0.ɵɵproperty("placeholder", i0.ɵɵpipeBind1(15, 27, "Hint"));
     i0.ɵɵadvance(4);
-    i0.ɵɵproperty("placeholder", i0.ɵɵpipeBind1(19, 33, "Description"));
+    i0.ɵɵproperty("placeholder", i0.ɵɵpipeBind1(19, 29, "Description"));
     i0.ɵɵadvance(4);
-    i0.ɵɵproperty("placeholder", i0.ɵɵpipeBind1(23, 35, "Default value"));
+    i0.ɵɵproperty("placeholder", i0.ɵɵpipeBind1(23, 31, "Default value"));
     i0.ɵɵadvance(5);
-    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(28, 37, "Formula"));
+    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(28, 33, "Formula"));
     i0.ɵɵadvance(3);
     i0.ɵɵproperty("matTooltip", ctx_r1.curFormula || "");
     i0.ɵɵadvance(6);
     i0.ɵɵtextInterpolate(ctx_r1.curFormula);
     i0.ɵɵadvance(3);
-    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(40, 39, "Not empty"));
+    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(40, 35, "Not empty"));
     i0.ɵɵadvance(2);
-    i0.ɵɵproperty("ngIf", ctx_r1.isNumericField(ne_r22.node));
+    i0.ɵɵproperty("ngIf", ctx_r1.isNumericField(ne_r19.node));
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", ctx_r1.isRangeField(ne_r22.node));
+    i0.ɵɵproperty("ngIf", ctx_r1.isRangeField(ne_r19.node));
     i0.ɵɵadvance(4);
-    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(47, 41, "Validation"));
+    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(47, 37, "Validation"));
     i0.ɵɵadvance(4);
     i0.ɵɵproperty("ngIf", ctx_r1.validationConditions.length === 0);
     i0.ɵɵadvance();
     i0.ɵɵproperty("ngForOf", ctx_r1.validationConditions);
-    i0.ɵɵadvance(3);
-    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(55, 43, "Not empty warning"));
-    i0.ɵɵadvance(5);
-    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(60, 45, "Warnings"));
     i0.ɵɵadvance(4);
-    i0.ɵɵproperty("ngIf", ctx_r1.warningConditions.length === 0);
-    i0.ɵɵadvance();
-    i0.ɵɵproperty("ngForOf", ctx_r1.warningConditions);
-    i0.ɵɵadvance(4);
-    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(69, 47, "Go to next slide condition"));
+    i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(56, 39, "Go to next slide condition"));
     i0.ɵɵadvance(3);
     i0.ɵɵproperty("matTooltip", ctx_r1.nextSlideCondition || "");
     i0.ɵɵadvance(6);
     i0.ɵɵtextInterpolate(ctx_r1.nextSlideCondition);
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", ctx_r1.isFieldWithChoices(ne_r22.node));
+    i0.ɵɵproperty("ngIf", ctx_r1.isFieldWithChoices(ne_r19.node));
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", ctx_r1.isTableField(ne_r22.node));
+    i0.ɵɵproperty("ngIf", ctx_r1.isTableField(ne_r19.node));
 } }
 function AjfFbNodeProperties_ng_container_2_ng_container_1_Template(rf, ctx) { if (rf & 1) {
     const _r1 = i0.ɵɵgetCurrentView();
@@ -3269,14 +3210,14 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_Template(rf, ctx) { i
     i0.ɵɵelementEnd()();
     i0.ɵɵtemplate(55, AjfFbNodeProperties_ng_container_2_ng_container_1_div_55_Template, 8, 2, "div", 20);
     i0.ɵɵelementEnd();
-    i0.ɵɵtemplate(56, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_56_Template, 15, 6, "ng-template", 11)(57, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_Template, 80, 49, "ng-template", 11);
+    i0.ɵɵtemplate(56, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_56_Template, 8, 3, "ng-template", 11)(57, AjfFbNodeProperties_ng_container_2_ng_container_1_ng_template_57_Template, 67, 41, "ng-template", 11);
     i0.ɵɵelementEnd();
     i0.ɵɵelementContainerEnd();
 } if (rf & 2) {
     let tmp_9_0;
     let tmp_11_0;
     const pf_r3 = ctx.ngIf;
-    const ne_r22 = i0.ɵɵnextContext().ngIf;
+    const ne_r19 = i0.ɵɵnextContext().ngIf;
     const ctx_r1 = i0.ɵɵnextContext();
     i0.ɵɵadvance(3);
     i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(4, 21, "Properties"));
@@ -3295,7 +3236,7 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_Template(rf, ctx) { i
     i0.ɵɵadvance(2);
     i0.ɵɵproperty("ngIf", (tmp_11_0 = pf_r3.get("label")) == null ? null : tmp_11_0.invalid);
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", ctx_r1.isEmptyField(ne_r22.node));
+    i0.ɵɵproperty("ngIf", ctx_r1.isEmptyField(ne_r19.node));
     i0.ɵɵadvance(4);
     i0.ɵɵtextInterpolate(i0.ɵɵpipeBind1(28, 27, "Visibility"));
     i0.ɵɵadvance(2);
@@ -3315,9 +3256,9 @@ function AjfFbNodeProperties_ng_container_2_ng_container_1_Template(rf, ctx) { i
     i0.ɵɵadvance(5);
     i0.ɵɵproperty("ngForOf", ctx_r1.conditionalBranches);
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", ctx_r1.isRepeatingContainerNode(ne_r22));
+    i0.ɵɵproperty("ngIf", ctx_r1.isRepeatingContainerNode(ne_r19));
     i0.ɵɵadvance();
-    i0.ɵɵproperty("ngIf", ctx_r1.isField(ne_r22));
+    i0.ɵɵproperty("ngIf", ctx_r1.isField(ne_r19));
 } }
 function AjfFbNodeProperties_ng_container_2_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelementContainerStart(0);
@@ -3329,14 +3270,6 @@ function AjfFbNodeProperties_ng_container_2_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance();
     i0.ɵɵproperty("ngIf", i0.ɵɵpipeBind1(2, 1, ctx_r1.propertiesForm));
 } }
-function checkRepsValidity(c) {
-    const minReps = c.value.minReps;
-    const maxReps = c.value.maxReps;
-    if (minReps && maxReps && minReps > maxReps) {
-        return { reps: 'Min repetions cannot be greater than max repetitions' };
-    }
-    return null;
-}
 function checkValueLimitsValidity(c) {
     const minValue = c.value.minValue;
     const maxValue = c.value.maxValue;
@@ -3784,10 +3717,8 @@ class AjfFbNodeProperties {
                 const rn = n.node;
                 const formulaReps = rn.formulaReps != null ? rn.formulaReps.formula : null;
                 controls.formulaReps = [formulaReps];
-                controls.minReps = rn.minReps;
                 controls.maxReps = rn.maxReps;
                 this._curFormulaReps = formulaReps;
-                validators.push(checkRepsValidity);
             }
             const { node } = n;
             if (isField(node)) {
@@ -4404,7 +4335,7 @@ class AjfFbNodeProperties {
         return 'condition';
     }
     static { this.ɵfac = function AjfFbNodeProperties_Factory(__ngFactoryType__) { return new (__ngFactoryType__ || AjfFbNodeProperties)(i0.ɵɵdirectiveInject(i0.ChangeDetectorRef), i0.ɵɵdirectiveInject(AjfFormBuilderService), i0.ɵɵdirectiveInject(i2.MatDialog), i0.ɵɵdirectiveInject(i3$1.UntypedFormBuilder), i0.ɵɵdirectiveInject(AjfNodePropertiesNameMatchValidator)); }; }
-    static { this.ɵcmp = /*@__PURE__*/ i0.ɵɵdefineComponent({ type: AjfFbNodeProperties, selectors: [["ajf-fb-node-properties"]], decls: 4, vars: 7, consts: [["forceExpanded", ""], ["forceNarrow", ""], [1, "ajf-disabled-overlay"], [4, "ngIf"], [1, "ajf-header"], ["mat-icon-button", "", 3, "click", "disabled"], ["mat-icon-button", "", 3, "click"], ["novalidate", "", 3, "formGroup"], [1, "ajf-prop"], ["matInput", "", "formControlName", "name", 3, "placeholder"], ["matInput", "", "formControlName", "label", 3, "placeholder"], [3, "ngIf"], ["formControlName", "visibilityOpt", 3, "placeholder"], ["value", "always"], ["value", "never"], ["value", "condition"], ["mat-raised-button", "", 3, "click", "disabled", "matTooltip"], [1, "ajf-icon-cont"], ["discrete", "", "min", "1", "max", "5", "step", "1"], ["matSliderThumb", "", "formControlName", "conditionalBranchesNum"], [4, "ngFor", "ngForOf"], ["matInput", "", "formControlName", "HTML", 3, "placeholder"], ["mat-raised-button", "", 3, "click", "matTooltip"], ["formControlName", "minReps", "matSliderThumb", ""], ["formControlName", "maxReps", "matSliderThumb", ""], ["formControlName", "readonlyField"], ["formControlName", "size", 3, "placeholder"], [3, "value", 4, "ngFor", "ngForOf"], ["matInput", "", "formControlName", "hint", 3, "placeholder"], ["matInput", "", "formControlName", "description", 3, "placeholder"], ["matInput", "", "formControlName", "defaultValue", 3, "placeholder"], ["formControlName", "notEmpty"], [1, "ajf-pointer", 3, "click"], ["class", "ajf-validation-row ajf-emph", 4, "ngIf"], ["class", "ajf-validation-row", 4, "ngFor", "ngForOf"], ["formControlName", "notEmptyWarning"], [3, "value"], ["matInput", "", "formControlName", "minValue", 3, "placeholder"], ["matInput", "", "formControlName", "maxValue", 3, "placeholder"], ["matInput", "", "formControlName", "minDigits", 3, "placeholder"], ["matInput", "", "formControlName", "maxDigits", 3, "placeholder"], ["matInput", "", "type", "number", "formControlName", "start", 3, "placeholder"], ["matInput", "", "type", "number", "formControlName", "end", 3, "placeholder"], ["matInput", "", "type", "number", "formControlName", "step", 3, "placeholder"], ["formControlName", "appearance", 3, "placeholder"], ["value", "rating"], [1, "ajf-validation-row", "ajf-emph"], [1, "ajf-validation-row"], ["formControlName", "choicesOriginRef", 3, "placeholder"], ["formControlName", "forceExpanded", 3, "change"], ["formControlName", "forceNarrow", 3, "change"], [1, "pointer", 3, "click"], ["formControlName", "hideEmptyRows"], ["matInput", "", "formControlName", "tableDef", 3, "placeholder"]], template: function AjfFbNodeProperties_Template(rf, ctx) { if (rf & 1) {
+    static { this.ɵcmp = /*@__PURE__*/ i0.ɵɵdefineComponent({ type: AjfFbNodeProperties, selectors: [["ajf-fb-node-properties"]], decls: 4, vars: 7, consts: [["forceExpanded", ""], ["forceNarrow", ""], [1, "ajf-disabled-overlay"], [4, "ngIf"], [1, "ajf-header"], ["mat-icon-button", "", 3, "click", "disabled"], ["mat-icon-button", "", 3, "click"], ["novalidate", "", 3, "formGroup"], [1, "ajf-prop"], ["matInput", "", "formControlName", "name", 3, "placeholder"], ["matInput", "", "formControlName", "label", 3, "placeholder"], [3, "ngIf"], ["formControlName", "visibilityOpt", 3, "placeholder"], ["value", "always"], ["value", "never"], ["value", "condition"], ["mat-raised-button", "", 3, "click", "disabled", "matTooltip"], [1, "ajf-icon-cont"], ["discrete", "", "min", "1", "max", "5", "step", "1"], ["matSliderThumb", "", "formControlName", "conditionalBranchesNum"], [4, "ngFor", "ngForOf"], ["matInput", "", "formControlName", "HTML", 3, "placeholder"], ["mat-raised-button", "", 3, "click", "matTooltip"], ["formControlName", "maxReps", "matSliderThumb", ""], ["formControlName", "readonlyField"], ["formControlName", "size", 3, "placeholder"], [3, "value", 4, "ngFor", "ngForOf"], ["matInput", "", "formControlName", "hint", 3, "placeholder"], ["matInput", "", "formControlName", "description", 3, "placeholder"], ["matInput", "", "formControlName", "defaultValue", 3, "placeholder"], ["formControlName", "notEmpty"], [1, "ajf-pointer", 3, "click"], ["class", "ajf-validation-row ajf-emph", 4, "ngIf"], ["class", "ajf-validation-row", 4, "ngFor", "ngForOf"], [3, "value"], ["matInput", "", "formControlName", "minValue", 3, "placeholder"], ["matInput", "", "formControlName", "maxValue", 3, "placeholder"], ["matInput", "", "formControlName", "minDigits", 3, "placeholder"], ["matInput", "", "formControlName", "maxDigits", 3, "placeholder"], ["matInput", "", "type", "number", "formControlName", "start", 3, "placeholder"], ["matInput", "", "type", "number", "formControlName", "end", 3, "placeholder"], ["matInput", "", "type", "number", "formControlName", "step", 3, "placeholder"], ["formControlName", "appearance", 3, "placeholder"], ["value", "rating"], [1, "ajf-validation-row", "ajf-emph"], [1, "ajf-validation-row"], ["formControlName", "choicesOriginRef", 3, "placeholder"], ["formControlName", "forceExpanded", 3, "change"], ["formControlName", "forceNarrow", 3, "change"], [1, "pointer", 3, "click"], ["formControlName", "hideEmptyRows"], ["matInput", "", "formControlName", "tableDef", 3, "placeholder"]], template: function AjfFbNodeProperties_Template(rf, ctx) { if (rf & 1) {
             i0.ɵɵelement(0, "div", 2);
             i0.ɵɵpipe(1, "async");
             i0.ɵɵtemplate(2, AjfFbNodeProperties_ng_container_2_Template, 3, 3, "ng-container", 3);
@@ -4417,9 +4348,9 @@ class AjfFbNodeProperties {
 }
 (() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(AjfFbNodeProperties, [{
         type: Component,
-        args: [{ selector: 'ajf-fb-node-properties', encapsulation: ViewEncapsulation.None, changeDetection: ChangeDetectionStrategy.OnPush, template: "<div [style.display]=\"(enabled|async) ? 'none' : 'block'\" class=\"ajf-disabled-overlay\"></div>\n<ng-container *ngIf=\"nodeEntry|async as ne\">\n  <ng-container *ngIf=\"propertiesForm|async as pf\">\n    <div class=\"ajf-header\">\n      <h3>{{'Properties'|transloco}}</h3>\n      <button\n        mat-icon-button\n        [disabled]=\"pf.status !== 'VALID'\"\n        (click)=\"save()\"\n      >\n        <mat-icon>save</mat-icon>\n      </button>\n      <button mat-icon-button (click)=\"cancel()\">\n        <mat-icon>cancel</mat-icon>\n      </button>  \n    </div>\n    <mat-error *ngIf=\"pf?.invalid\">\n      {{allErrorMessages(pf)}}\n    </mat-error>\n    <form [formGroup]=\"pf!\" novalidate>\n      <div class=\"ajf-prop\">\n        <mat-form-field>\n          <input matInput formControlName=\"name\" [placeholder]=\"'Name' | transloco\" />\n          <mat-error *ngIf=\"pf.get('name')?.invalid\">\n            {{fieldErrorMessage(pf.get('name'), 'Name')}}\n          </mat-error>\n        </mat-form-field>\n      </div>\n      <div class=\"ajf-prop\">\n        <mat-form-field>\n          <input matInput formControlName=\"label\" [placeholder]=\"'Label' | transloco\" />\n          <mat-error *ngIf=\"pf.get('label')?.invalid\">\n            {{fieldErrorMessage(pf.get('label'), 'Label')}}\n          </mat-error>\n        </mat-form-field>\n      </div>\n      <ng-template [ngIf]=\"isEmptyField(ne!.node)\">\n        <div class=\"ajf-prop\">\n          <mat-form-field>\n            <input matInput formControlName=\"HTML\" [placeholder]=\"'HTML' | transloco\" />\n          </mat-form-field>\n        </div>\n      </ng-template>\n      <div class=\"ajf-prop\">\n        <mat-form-field>\n          <mat-label>{{'Visibility'|transloco}}</mat-label>\n          <mat-select formControlName=\"visibilityOpt\" [placeholder]=\"'Visible' | transloco\">\n            <mat-option value=\"always\">{{'Always'|transloco}}</mat-option>\n            <mat-option value=\"never\">{{'Never'|transloco}}</mat-option>\n            <mat-option value=\"condition\">{{'Condition...'|transloco}}</mat-option>\n          </mat-select>\n        </mat-form-field>\n        <button\n          (click)=\"editVisibility()\"\n          [disabled]=\"pf!.value.visibilityOpt !== 'condition'\"\n          mat-raised-button\n          [matTooltip]=\"curVisibility || ''\"\n        >\n          <div class=\"ajf-icon-cont\">\n            <mat-icon>edit</mat-icon>\n            <span><code>{{ curVisibility }}</code></span>\n          </div>\n        </button>\n      </div>\n      <div class=\"ajf-prop\">\n        <div><label>{{'Branches'|transloco}}</label></div>\n        <div>\n          <mat-slider discrete min=\"1\" max=\"5\" step=\"1\"\n            ><input matSliderThumb formControlName=\"conditionalBranchesNum\"\n          /></mat-slider>\n        </div>\n        <div *ngFor=\"let branch of conditionalBranches; let idx = index\">\n          <button (click)=\"editConditionalBranch(idx)\" mat-raised-button [matTooltip]=\"branch\">\n            <div class=\"ajf-icon-cont\">\n              <mat-icon>edit</mat-icon>\n              <span><code>{{ branch }}</code></span>\n            </div>\n          </button>\n        </div>\n      </div>\n      <ng-template [ngIf]=\"isRepeatingContainerNode(ne)\">\n        <div class=\"ajf-prop\">\n          <div><label>{{'Min repetitions'|transloco}}</label></div>\n          <div>\n            <mat-slider discrete min=\"1\" max=\"5\" step=\"1\"\n              ><input  formControlName=\"minReps\" matSliderThumb\n            /></mat-slider>\n          </div>\n          <div><label>{{'Max repetitions'|transloco}}</label></div>\n          <div>\n            <mat-slider discrete min=\"1\" max=\"5\" step=\"1\"\n              ><input formControlName=\"maxReps\" matSliderThumb\n            /></mat-slider>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"isField(ne)\">\n        <div class=\"ajf-prop\">\n          <mat-checkbox formControlName=\"readonlyField\">{{'Readonly'|transloco}}</mat-checkbox>\n        </div>\n        <div class=\"ajf-prop\">\n          <mat-form-field>\n            <mat-label>{{'Field size'|transloco}}</mat-label>\n            <mat-select formControlName=\"size\" [placeholder]=\"'Size' | transloco\">\n              <mat-option *ngFor=\"let fieldSize of fieldSizes\" [value]=\"fieldSize.value\">\n                {{ fieldSize.label|transloco }}\n              </mat-option>\n            </mat-select>\n          </mat-form-field>\n        </div>\n        <div class=\"ajf-prop\">\n          <mat-form-field>\n            <input matInput formControlName=\"hint\" [placeholder]=\"'Hint' | transloco\" />\n          </mat-form-field>\n        </div>\n        <div class=\"ajf-prop\">\n          <mat-form-field>\n            <textarea\n              matInput\n              formControlName=\"description\"\n              [placeholder]=\"'Description' | transloco\"\n            ></textarea>\n          </mat-form-field>\n        </div>\n        <div class=\"ajf-prop\">\n          <mat-form-field>\n            <input\n              matInput\n              formControlName=\"defaultValue\"\n              [placeholder]=\"'Default value' | transloco\"\n            />\n          </mat-form-field>\n        </div>\n        <div class=\"ajf-prop\">\n          <div><label>{{'Formula'|transloco}}</label></div>\n          <div>\n            <button (click)=\"editFormula()\" mat-raised-button [matTooltip]=\"curFormula || ''\">\n              <div class=\"ajf-icon-cont\">\n                <mat-icon>edit</mat-icon>\n                <span><code>{{ curFormula }}</code></span>\n              </div>\n            </button>\n          </div>\n        </div>\n        <!-- <div class=\"ajf-prop\">\n          <div><label>{{'Force value'|translco}}</label></div>\n          <div>\n            <button (click)=\"editForceValue()\" mat-raised-button [matTooltip]=\"curForceValue\">\n              <div class=\"ajf-icon-cont\">\n                <mat-icon>edit</mat-icon>\n                <span>{{ curForceValue }}</span>\n              </div>\n            </button>\n          </div>\n        </div> -->\n        <div class=\"ajf-prop\">\n          <mat-checkbox formControlName=\"notEmpty\">{{'Not empty'|transloco}}</mat-checkbox>\n        </div>\n        <ng-template [ngIf]=\"isNumericField(ne!.node)\">\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input matInput formControlName=\"minValue\" [placeholder]=\"'Min value' | transloco\" />\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input matInput formControlName=\"maxValue\" [placeholder]=\"'Max value' | transloco\" />\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input\n                matInput\n                formControlName=\"minDigits\"\n                [placeholder]=\"'Min digits' | transloco\"\n              />\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input\n                matInput\n                formControlName=\"maxDigits\"\n                [placeholder]=\"'Max digits' | transloco\"\n              />\n            </mat-form-field>\n          </div>\n        </ng-template>\n        <ng-template [ngIf]=\"isRangeField(ne!.node)\">\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input\n                matInput\n                type=\"number\"\n                formControlName=\"start\"\n                [placeholder]=\"'Start' | transloco\"\n              />\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input\n                matInput\n                type=\"number\"\n                formControlName=\"end\"\n                [placeholder]=\"'End' | transloco\"\n              />\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input\n                matInput\n                type=\"number\"\n                formControlName=\"step\"\n                [placeholder]=\"'Step' | transloco\"\n              />\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <mat-select formControlName=\"appearance\" [placeholder]=\"'Appearance' | transloco\">\n                <mat-option [value]=\"null\">{{'Default'|transloco}}</mat-option>\n                <mat-option value=\"rating\">{{'Rating'|transloco}}</mat-option>\n              </mat-select>\n            </mat-form-field>\n          </div>\n        </ng-template>\n        <div class=\"ajf-prop\">\n          <div class=\"ajf-header\">\n            <label>{{ 'Validation' | transloco }}</label>\n            <mat-icon class=\"ajf-pointer\" (click)=\"addValidationCondition()\"\n              >add_circle_outline</mat-icon\n            >\n          </div>\n          <div *ngIf=\"validationConditions.length === 0\" class=\"ajf-validation-row ajf-emph\">\n            {{'No conditions'|transloco}}\n          </div>\n          <div\n            class=\"ajf-validation-row\"\n            *ngFor=\"let validationCondition of validationConditions; let idx = index\"\n          >\n            <button\n              (click)=\"editValidationCondition(idx)\"\n              mat-raised-button\n              [matTooltip]=\"validationCondition.condition\"\n            >\n              <div class=\"ajf-icon-cont\">\n                <mat-icon>edit</mat-icon>\n                <span><code>{{ validationCondition.condition }}</code></span>\n              </div>\n            </button>\n            <mat-icon class=\"ajf-pointer\" (click)=\"removeValidationCondition(idx)\"\n              >remove_circle_outline</mat-icon\n            >\n          </div>\n        </div>\n        <div class=\"ajf-prop\">\n          <mat-checkbox formControlName=\"notEmptyWarning\"\n            >{{'Not empty warning'|transloco}}</mat-checkbox\n          >\n        </div>\n        <div class=\"ajf-prop\">\n          <div class=\"ajf-header\">\n            <label>{{'Warnings'|transloco}}</label>\n            <mat-icon class=\"ajf-pointer\" (click)=\"addWarningCondition()\"\n              >add_circle_outline</mat-icon\n            >\n          </div>\n          <div *ngIf=\"warningConditions.length === 0\" class=\"ajf-validation-row ajf-emph\">\n            {{'No warnings'|transloco}}\n          </div>\n          <div\n            class=\"ajf-validation-row\"\n            *ngFor=\"let warningCondition of warningConditions; let idx = index\"\n          >\n            <button\n              (click)=\"editWarningCondition(idx)\"\n              mat-raised-button\n              [matTooltip]=\"warningCondition.condition\"\n            >\n              <div class=\"ajf-icon-cont\">\n                <mat-icon>edit</mat-icon>\n                <span><code>{{ warningCondition.condition }}</code></span>\n              </div>\n            </button>\n            <mat-icon class=\"ajf-pointer\" (click)=\"removeWarningCondition(idx)\"\n              >remove_circle_outline</mat-icon\n            >\n          </div>\n        </div>\n        <div class=\"ajf-prop\">\n          <div><label>{{'Go to next slide condition'|transloco}}</label></div>\n          <div>\n            <button\n              (click)=\"editNextSlideCondition()\"\n              mat-raised-button\n              [matTooltip]=\"nextSlideCondition || ''\"\n            >\n              <div class=\"ajf-icon-cont\">\n                <mat-icon>edit</mat-icon>\n                <span><code>{{ nextSlideCondition }}</code></span>\n              </div>\n            </button>\n          </div>\n        </div>\n        <ng-template [ngIf]=\"isFieldWithChoices(ne!.node)\">\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <mat-label>{{'Choices origins'|transloco}}</mat-label>\n              <mat-select formControlName=\"choicesOriginRef\" [placeholder]=\"'Choices' | transloco\">\n                <mat-option\n                  *ngFor=\"let choicesOrigin of choicesOrigins\"\n                  [value]=\"choicesOrigin.name\"\n                >\n                  {{ (choicesOrigin.label || choicesOrigin.name)|transloco }}\n                </mat-option>\n              </mat-select>\n              <mat-error *ngIf=\"pf.get('choicesOriginRef')?.invalid\">\n                {{fieldErrorMessage(pf.get('choicesOriginRef'), 'choicesOriginRef')}}\n              </mat-error>\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <div><label>{{'Choices filter'|transloco}}</label></div>\n            <div>\n              <button\n                (click)=\"editChoicesFilter()\"\n                mat-raised-button\n                [matTooltip]=\"curChoicesFilter || ''\"\n              >\n                <div class=\"ajf-icon-cont\">\n                  <mat-icon>edit</mat-icon>\n                  <span><code>{{ curChoicesFilter }}</code></span>\n                </div>\n              </button>\n            </div>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-checkbox\n              formControlName=\"forceExpanded\"\n              #forceExpanded\n              (change)=\"forceCheckbox($event.checked, forceNarrow)\"\n              >{{'Force expanded selection'|transloco}}</mat-checkbox\n            >\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-checkbox\n              formControlName=\"forceNarrow\"\n              #forceNarrow\n              (change)=\"forceCheckbox($event.checked, forceExpanded)\"\n              >{{'Force narrow selection'|transloco}}</mat-checkbox\n            >\n          </div>\n          <div class=\"ajf-prop\">\n            <div class=\"ajf-header\">\n              <label>{{'Trigger selection'|transloco}}</label>\n              <mat-icon class=\"ajf-pointer\" (click)=\"addTriggerCondition()\"\n                >add_circle_outline</mat-icon\n              >\n            </div>\n            <div\n              *ngIf=\"!triggerConditions || triggerConditions.length === 0\"\n              class=\"ajf-validation-row ajf-emph\"\n            >\n              {{'No trigger condition'|transloco}}\n            </div>\n            <div\n              class=\"ajf-validation-row\"\n              *ngFor=\"let triggerCondition of triggerConditions; let idx = index\"\n            >\n              <button\n                (click)=\"editTriggerCondition(idx)\"\n                mat-raised-button\n                [matTooltip]=\"triggerCondition\"\n              >\n                <div class=\"ajf-icon-cont\">\n                  <mat-icon>edit</mat-icon>\n                  <span><code>{{ triggerCondition }}</code></span>\n                </div>\n              </button>\n              <mat-icon class=\"pointer\" (click)=\"removeTriggerCondition(idx)\"\n                >remove_circle_outline</mat-icon\n              >\n            </div>\n          </div>\n        </ng-template>\n        <ng-container *ngIf=\"isTableField(ne!.node)\">\n          <div class=\"ajf-prop\">\n            <mat-checkbox formControlName=\"hideEmptyRows\"\n              >{{'Hide empty rows'|transloco}}</mat-checkbox\n            >\n            <mat-form-field>\n              <textarea\n                matInput\n                formControlName=\"tableDef\"\n                [placeholder]=\"'Table definition' | transloco\"\n              ></textarea>\n              <mat-error *ngIf=\"pf.get('tableDef')?.invalid\">\n                {{fieldErrorMessage(pf.get('tableDef'), 'tableDef')}}\n              </mat-error>\n            </mat-form-field>\n          </div>\n        </ng-container>\n      </ng-template>\n    </form>\n  </ng-container>\n</ng-container>\n", styles: ["ajf-fb-node-properties{display:block;padding:2px 2px 2px 5px;position:relative}ajf-fb-node-properties mat-icon{cursor:pointer}ajf-fb-node-properties .ajf-header{display:flex;flex-direction:row;align-items:center;flex-wrap:nowrap}ajf-fb-node-properties .ajf-header>h3,ajf-fb-node-properties .ajf-header>label{flex:1 0 auto;margin-right:.5em}ajf-fb-node-properties .ajf-header>mat-icon{flex:0 0 auto;margin-left:.5em}ajf-fb-node-properties .ajf-disabled-overlay{position:absolute;inset:0;opacity:.4;background-color:currentColor}ajf-fb-node-properties .ajf-emph{font-style:italic}ajf-fb-node-properties [mat-raised-button]{margin:.5em 0}ajf-fb-node-properties [mat-raised-button].ajf-pointer{cursor:pointer}ajf-fb-node-properties [mat-raised-button] .ajf-icon-cont{display:flex;flex-direction:row;align-items:center;position:relative}ajf-fb-node-properties [mat-raised-button] .ajf-icon-cont span{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;display:block;margin:auto;position:relative;max-height:30px;max-width:100%}ajf-fb-node-properties .ajf-validation-row{margin:.5em 0;display:flex;flex-direction:row;align-items:center}ajf-fb-node-properties .ajf-validation-row button{flex:1 1 auto}ajf-fb-node-properties .ajf-validation-row mat-icon{flex:0 0 auto}ajf-fb-node-properties .ajf-prop{margin:.5em 0}ajf-fb-node-properties .ajf-prop .mdc-button__label{max-width:100%}ajf-fb-node-properties mat-form-field,ajf-fb-node-properties mat-slider,ajf-fb-node-properties [mat-raised-button]{width:100%}\n"] }]
+        args: [{ selector: 'ajf-fb-node-properties', encapsulation: ViewEncapsulation.None, changeDetection: ChangeDetectionStrategy.OnPush, template: "<div [style.display]=\"(enabled|async) ? 'none' : 'block'\" class=\"ajf-disabled-overlay\"></div>\n<ng-container *ngIf=\"nodeEntry|async as ne\">\n  <ng-container *ngIf=\"propertiesForm|async as pf\">\n    <div class=\"ajf-header\">\n      <h3>{{'Properties'|transloco}}</h3>\n      <button\n        mat-icon-button\n        [disabled]=\"pf.status !== 'VALID'\"\n        (click)=\"save()\"\n      >\n        <mat-icon>save</mat-icon>\n      </button>\n      <button mat-icon-button (click)=\"cancel()\">\n        <mat-icon>cancel</mat-icon>\n      </button>  \n    </div>\n    <mat-error *ngIf=\"pf?.invalid\">\n      {{allErrorMessages(pf)}}\n    </mat-error>\n    <form [formGroup]=\"pf!\" novalidate>\n      <div class=\"ajf-prop\">\n        <mat-form-field>\n          <input matInput formControlName=\"name\" [placeholder]=\"'Name' | transloco\" />\n          <mat-error *ngIf=\"pf.get('name')?.invalid\">\n            {{fieldErrorMessage(pf.get('name'), 'Name')}}\n          </mat-error>\n        </mat-form-field>\n      </div>\n      <div class=\"ajf-prop\">\n        <mat-form-field>\n          <input matInput formControlName=\"label\" [placeholder]=\"'Label' | transloco\" />\n          <mat-error *ngIf=\"pf.get('label')?.invalid\">\n            {{fieldErrorMessage(pf.get('label'), 'Label')}}\n          </mat-error>\n        </mat-form-field>\n      </div>\n      <ng-template [ngIf]=\"isEmptyField(ne!.node)\">\n        <div class=\"ajf-prop\">\n          <mat-form-field>\n            <input matInput formControlName=\"HTML\" [placeholder]=\"'HTML' | transloco\" />\n          </mat-form-field>\n        </div>\n      </ng-template>\n      <div class=\"ajf-prop\">\n        <mat-form-field>\n          <mat-label>{{'Visibility'|transloco}}</mat-label>\n          <mat-select formControlName=\"visibilityOpt\" [placeholder]=\"'Visible' | transloco\">\n            <mat-option value=\"always\">{{'Always'|transloco}}</mat-option>\n            <mat-option value=\"never\">{{'Never'|transloco}}</mat-option>\n            <mat-option value=\"condition\">{{'Condition...'|transloco}}</mat-option>\n          </mat-select>\n        </mat-form-field>\n        <button\n          (click)=\"editVisibility()\"\n          [disabled]=\"pf!.value.visibilityOpt !== 'condition'\"\n          mat-raised-button\n          [matTooltip]=\"curVisibility || ''\"\n        >\n          <div class=\"ajf-icon-cont\">\n            <mat-icon>edit</mat-icon>\n            <span><code>{{ curVisibility }}</code></span>\n          </div>\n        </button>\n      </div>\n      <div class=\"ajf-prop\">\n        <div><label>{{'Branches'|transloco}}</label></div>\n        <div>\n          <mat-slider discrete min=\"1\" max=\"5\" step=\"1\"\n            ><input matSliderThumb formControlName=\"conditionalBranchesNum\"\n          /></mat-slider>\n        </div>\n        <div *ngFor=\"let branch of conditionalBranches; let idx = index\">\n          <button (click)=\"editConditionalBranch(idx)\" mat-raised-button [matTooltip]=\"branch\">\n            <div class=\"ajf-icon-cont\">\n              <mat-icon>edit</mat-icon>\n              <span><code>{{ branch }}</code></span>\n            </div>\n          </button>\n        </div>\n      </div>\n      <ng-template [ngIf]=\"isRepeatingContainerNode(ne)\">\n        <div class=\"ajf-prop\">\n          <div><label>{{'Max repetitions'|transloco}}</label></div>\n          <div>\n            <mat-slider discrete min=\"1\" max=\"5\" step=\"1\"\n              ><input formControlName=\"maxReps\" matSliderThumb\n            /></mat-slider>\n          </div>\n        </div>\n      </ng-template>\n      <ng-template [ngIf]=\"isField(ne)\">\n        <div class=\"ajf-prop\">\n          <mat-checkbox formControlName=\"readonlyField\">{{'Readonly'|transloco}}</mat-checkbox>\n        </div>\n        <div class=\"ajf-prop\">\n          <mat-form-field>\n            <mat-label>{{'Field size'|transloco}}</mat-label>\n            <mat-select formControlName=\"size\" [placeholder]=\"'Size' | transloco\">\n              <mat-option *ngFor=\"let fieldSize of fieldSizes\" [value]=\"fieldSize.value\">\n                {{ fieldSize.label|transloco }}\n              </mat-option>\n            </mat-select>\n          </mat-form-field>\n        </div>\n        <div class=\"ajf-prop\">\n          <mat-form-field>\n            <input matInput formControlName=\"hint\" [placeholder]=\"'Hint' | transloco\" />\n          </mat-form-field>\n        </div>\n        <div class=\"ajf-prop\">\n          <mat-form-field>\n            <textarea\n              matInput\n              formControlName=\"description\"\n              [placeholder]=\"'Description' | transloco\"\n            ></textarea>\n          </mat-form-field>\n        </div>\n        <div class=\"ajf-prop\">\n          <mat-form-field>\n            <input\n              matInput\n              formControlName=\"defaultValue\"\n              [placeholder]=\"'Default value' | transloco\"\n            />\n          </mat-form-field>\n        </div>\n        <div class=\"ajf-prop\">\n          <div><label>{{'Formula'|transloco}}</label></div>\n          <div>\n            <button (click)=\"editFormula()\" mat-raised-button [matTooltip]=\"curFormula || ''\">\n              <div class=\"ajf-icon-cont\">\n                <mat-icon>edit</mat-icon>\n                <span><code>{{ curFormula }}</code></span>\n              </div>\n            </button>\n          </div>\n        </div>\n        <!-- <div class=\"ajf-prop\">\n          <div><label>{{'Force value'|translco}}</label></div>\n          <div>\n            <button (click)=\"editForceValue()\" mat-raised-button [matTooltip]=\"curForceValue\">\n              <div class=\"ajf-icon-cont\">\n                <mat-icon>edit</mat-icon>\n                <span>{{ curForceValue }}</span>\n              </div>\n            </button>\n          </div>\n        </div> -->\n        <div class=\"ajf-prop\">\n          <mat-checkbox formControlName=\"notEmpty\">{{'Not empty'|transloco}}</mat-checkbox>\n        </div>\n        <ng-template [ngIf]=\"isNumericField(ne!.node)\">\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input matInput formControlName=\"minValue\" [placeholder]=\"'Min value' | transloco\" />\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input matInput formControlName=\"maxValue\" [placeholder]=\"'Max value' | transloco\" />\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input\n                matInput\n                formControlName=\"minDigits\"\n                [placeholder]=\"'Min digits' | transloco\"\n              />\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input\n                matInput\n                formControlName=\"maxDigits\"\n                [placeholder]=\"'Max digits' | transloco\"\n              />\n            </mat-form-field>\n          </div>\n        </ng-template>\n        <ng-template [ngIf]=\"isRangeField(ne!.node)\">\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input\n                matInput\n                type=\"number\"\n                formControlName=\"start\"\n                [placeholder]=\"'Start' | transloco\"\n              />\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input\n                matInput\n                type=\"number\"\n                formControlName=\"end\"\n                [placeholder]=\"'End' | transloco\"\n              />\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <input\n                matInput\n                type=\"number\"\n                formControlName=\"step\"\n                [placeholder]=\"'Step' | transloco\"\n              />\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <mat-select formControlName=\"appearance\" [placeholder]=\"'Appearance' | transloco\">\n                <mat-option [value]=\"null\">{{'Default'|transloco}}</mat-option>\n                <mat-option value=\"rating\">{{'Rating'|transloco}}</mat-option>\n              </mat-select>\n            </mat-form-field>\n          </div>\n        </ng-template>\n        <div class=\"ajf-prop\">\n          <div class=\"ajf-header\">\n            <label>{{ 'Validation' | transloco }}</label>\n            <mat-icon class=\"ajf-pointer\" (click)=\"addValidationCondition()\"\n              >add_circle_outline</mat-icon\n            >\n          </div>\n          <div *ngIf=\"validationConditions.length === 0\" class=\"ajf-validation-row ajf-emph\">\n            {{'No conditions'|transloco}}\n          </div>\n          <div\n            class=\"ajf-validation-row\"\n            *ngFor=\"let validationCondition of validationConditions; let idx = index\"\n          >\n            <button\n              (click)=\"editValidationCondition(idx)\"\n              mat-raised-button\n              [matTooltip]=\"validationCondition.condition\"\n            >\n              <div class=\"ajf-icon-cont\">\n                <mat-icon>edit</mat-icon>\n                <span><code>{{ validationCondition.condition }}</code></span>\n              </div>\n            </button>\n            <mat-icon class=\"ajf-pointer\" (click)=\"removeValidationCondition(idx)\"\n              >remove_circle_outline</mat-icon\n            >\n          </div>\n        </div>\n        <!-- The warning editor used to sit here: a `notEmptyWarning` checkbox and\n             the list of warning conditions. Both are gone from the UI, while the\n             component keeps the properties, the form controls and the dialog that\n             drove them, so putting the block back is a template-only change. -->\n        <div class=\"ajf-prop\">\n          <div><label>{{'Go to next slide condition'|transloco}}</label></div>\n          <div>\n            <button\n              (click)=\"editNextSlideCondition()\"\n              mat-raised-button\n              [matTooltip]=\"nextSlideCondition || ''\"\n            >\n              <div class=\"ajf-icon-cont\">\n                <mat-icon>edit</mat-icon>\n                <span><code>{{ nextSlideCondition }}</code></span>\n              </div>\n            </button>\n          </div>\n        </div>\n        <ng-template [ngIf]=\"isFieldWithChoices(ne!.node)\">\n          <div class=\"ajf-prop\">\n            <mat-form-field>\n              <mat-label>{{'Choices origins'|transloco}}</mat-label>\n              <mat-select formControlName=\"choicesOriginRef\" [placeholder]=\"'Choices' | transloco\">\n                <mat-option\n                  *ngFor=\"let choicesOrigin of choicesOrigins\"\n                  [value]=\"choicesOrigin.name\"\n                >\n                  {{ (choicesOrigin.label || choicesOrigin.name)|transloco }}\n                </mat-option>\n              </mat-select>\n              <mat-error *ngIf=\"pf.get('choicesOriginRef')?.invalid\">\n                {{fieldErrorMessage(pf.get('choicesOriginRef'), 'choicesOriginRef')}}\n              </mat-error>\n            </mat-form-field>\n          </div>\n          <div class=\"ajf-prop\">\n            <div><label>{{'Choices filter'|transloco}}</label></div>\n            <div>\n              <button\n                (click)=\"editChoicesFilter()\"\n                mat-raised-button\n                [matTooltip]=\"curChoicesFilter || ''\"\n              >\n                <div class=\"ajf-icon-cont\">\n                  <mat-icon>edit</mat-icon>\n                  <span><code>{{ curChoicesFilter }}</code></span>\n                </div>\n              </button>\n            </div>\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-checkbox\n              formControlName=\"forceExpanded\"\n              #forceExpanded\n              (change)=\"forceCheckbox($event.checked, forceNarrow)\"\n              >{{'Force expanded selection'|transloco}}</mat-checkbox\n            >\n          </div>\n          <div class=\"ajf-prop\">\n            <mat-checkbox\n              formControlName=\"forceNarrow\"\n              #forceNarrow\n              (change)=\"forceCheckbox($event.checked, forceExpanded)\"\n              >{{'Force narrow selection'|transloco}}</mat-checkbox\n            >\n          </div>\n          <div class=\"ajf-prop\">\n            <div class=\"ajf-header\">\n              <label>{{'Trigger selection'|transloco}}</label>\n              <mat-icon class=\"ajf-pointer\" (click)=\"addTriggerCondition()\"\n                >add_circle_outline</mat-icon\n              >\n            </div>\n            <div\n              *ngIf=\"!triggerConditions || triggerConditions.length === 0\"\n              class=\"ajf-validation-row ajf-emph\"\n            >\n              {{'No trigger condition'|transloco}}\n            </div>\n            <div\n              class=\"ajf-validation-row\"\n              *ngFor=\"let triggerCondition of triggerConditions; let idx = index\"\n            >\n              <button\n                (click)=\"editTriggerCondition(idx)\"\n                mat-raised-button\n                [matTooltip]=\"triggerCondition\"\n              >\n                <div class=\"ajf-icon-cont\">\n                  <mat-icon>edit</mat-icon>\n                  <span><code>{{ triggerCondition }}</code></span>\n                </div>\n              </button>\n              <mat-icon class=\"pointer\" (click)=\"removeTriggerCondition(idx)\"\n                >remove_circle_outline</mat-icon\n              >\n            </div>\n          </div>\n        </ng-template>\n        <ng-container *ngIf=\"isTableField(ne!.node)\">\n          <div class=\"ajf-prop\">\n            <mat-checkbox formControlName=\"hideEmptyRows\"\n              >{{'Hide empty rows'|transloco}}</mat-checkbox\n            >\n            <mat-form-field>\n              <textarea\n                matInput\n                formControlName=\"tableDef\"\n                [placeholder]=\"'Table definition' | transloco\"\n              ></textarea>\n              <mat-error *ngIf=\"pf.get('tableDef')?.invalid\">\n                {{fieldErrorMessage(pf.get('tableDef'), 'tableDef')}}\n              </mat-error>\n            </mat-form-field>\n          </div>\n        </ng-container>\n      </ng-template>\n    </form>\n  </ng-container>\n</ng-container>\n", styles: ["ajf-fb-node-properties{display:block;padding:2px 2px 2px 5px;position:relative}ajf-fb-node-properties mat-icon{cursor:pointer}ajf-fb-node-properties .ajf-header{display:flex;flex-direction:row;align-items:center;flex-wrap:nowrap}ajf-fb-node-properties .ajf-header>h3,ajf-fb-node-properties .ajf-header>label{flex:1 0 auto;margin-right:.5em}ajf-fb-node-properties .ajf-header>mat-icon{flex:0 0 auto;margin-left:.5em}ajf-fb-node-properties .ajf-disabled-overlay{position:absolute;inset:0;opacity:.4;background-color:currentColor}ajf-fb-node-properties .ajf-emph{font-style:italic}ajf-fb-node-properties [mat-raised-button]{margin:.5em 0}ajf-fb-node-properties [mat-raised-button].ajf-pointer{cursor:pointer}ajf-fb-node-properties [mat-raised-button] .ajf-icon-cont{display:flex;flex-direction:row;align-items:center;position:relative}ajf-fb-node-properties [mat-raised-button] .ajf-icon-cont span{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;display:block;margin:auto;position:relative;max-height:30px;max-width:100%}ajf-fb-node-properties .ajf-validation-row{margin:.5em 0;display:flex;flex-direction:row;align-items:center}ajf-fb-node-properties .ajf-validation-row button{flex:1 1 auto}ajf-fb-node-properties .ajf-validation-row mat-icon{flex:0 0 auto}ajf-fb-node-properties .ajf-prop{margin:.5em 0}ajf-fb-node-properties .ajf-prop .mdc-button__label{max-width:100%}ajf-fb-node-properties mat-form-field,ajf-fb-node-properties mat-slider,ajf-fb-node-properties [mat-raised-button]{width:100%}\n"] }]
     }], () => [{ type: i0.ChangeDetectorRef }, { type: AjfFormBuilderService }, { type: i2.MatDialog }, { type: i3$1.UntypedFormBuilder }, { type: AjfNodePropertiesNameMatchValidator }], null); })();
-(() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassDebugInfo(AjfFbNodeProperties, { className: "AjfFbNodeProperties", filePath: "node-properties.ts", lineNumber: 147 }); })();
+(() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassDebugInfo(AjfFbNodeProperties, { className: "AjfFbNodeProperties", filePath: "node-properties.ts", lineNumber: 138 }); })();
 
 /**
  * @license
