@@ -62,29 +62,17 @@
       "esm": "./esm2022/barcode/ajf-core-barcode.mjs",
       "default": "./fesm2022/ajf-core-barcode.mjs"
     },
-    "./chart": {
-      "types": "./chart/index.d.ts",
-      "esm2022": "./esm2022/chart/ajf-core-chart.mjs",
-      "esm": "./esm2022/chart/ajf-core-chart.mjs",
-      "default": "./fesm2022/ajf-core-chart.mjs"
-    },
-    "./common": {
-      "types": "./common/index.d.ts",
-      "esm2022": "./esm2022/common/ajf-core-common.mjs",
-      "esm": "./esm2022/common/ajf-core-common.mjs",
-      "default": "./fesm2022/ajf-core-common.mjs"
-    },
     "./calendar": {
       "types": "./calendar/index.d.ts",
       "esm2022": "./esm2022/calendar/ajf-core-calendar.mjs",
       "esm": "./esm2022/calendar/ajf-core-calendar.mjs",
       "default": "./fesm2022/ajf-core-calendar.mjs"
     },
-    "./echarts": {
-      "types": "./echarts/index.d.ts",
-      "esm2022": "./esm2022/echarts/ajf-core-echarts.mjs",
-      "esm": "./esm2022/echarts/ajf-core-echarts.mjs",
-      "default": "./fesm2022/ajf-core-echarts.mjs"
+    "./chart": {
+      "types": "./chart/index.d.ts",
+      "esm2022": "./esm2022/chart/ajf-core-chart.mjs",
+      "esm": "./esm2022/chart/ajf-core-chart.mjs",
+      "default": "./fesm2022/ajf-core-chart.mjs"
     },
     "./checkbox-group": {
       "types": "./checkbox-group/index.d.ts",
@@ -92,23 +80,35 @@
       "esm": "./esm2022/checkbox-group/ajf-core-checkbox-group.mjs",
       "default": "./fesm2022/ajf-core-checkbox-group.mjs"
     },
+    "./common": {
+      "types": "./common/index.d.ts",
+      "esm2022": "./esm2022/common/ajf-core-common.mjs",
+      "esm": "./esm2022/common/ajf-core-common.mjs",
+      "default": "./fesm2022/ajf-core-common.mjs"
+    },
+    "./echarts": {
+      "types": "./echarts/index.d.ts",
+      "esm2022": "./esm2022/echarts/ajf-core-echarts.mjs",
+      "esm": "./esm2022/echarts/ajf-core-echarts.mjs",
+      "default": "./fesm2022/ajf-core-echarts.mjs"
+    },
     "./file-input": {
       "types": "./file-input/index.d.ts",
       "esm2022": "./esm2022/file-input/ajf-core-file-input.mjs",
       "esm": "./esm2022/file-input/ajf-core-file-input.mjs",
       "default": "./fesm2022/ajf-core-file-input.mjs"
     },
-    "./forms": {
-      "types": "./forms/index.d.ts",
-      "esm2022": "./esm2022/forms/ajf-core-forms.mjs",
-      "esm": "./esm2022/forms/ajf-core-forms.mjs",
-      "default": "./fesm2022/ajf-core-forms.mjs"
-    },
     "./geolocation": {
       "types": "./geolocation/index.d.ts",
       "esm2022": "./esm2022/geolocation/ajf-core-geolocation.mjs",
       "esm": "./esm2022/geolocation/ajf-core-geolocation.mjs",
       "default": "./fesm2022/ajf-core-geolocation.mjs"
+    },
+    "./forms": {
+      "types": "./forms/index.d.ts",
+      "esm2022": "./esm2022/forms/ajf-core-forms.mjs",
+      "esm": "./esm2022/forms/ajf-core-forms.mjs",
+      "default": "./fesm2022/ajf-core-forms.mjs"
     },
     "./graph": {
       "types": "./graph/index.d.ts",
