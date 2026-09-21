@@ -253,6 +253,43 @@ bisogna rientrare per non perdere i dati.
 
 ---
 
+## 12. Il pulsante "nuovo schema" ⚠️
+
+**Cosa fare** — Con un amministratore, creare un gruppo che abbia **solo un ruolo** (per esempio
+supervisor) e nessuno schema selezionato, e assegnarci un utente B. Entrare come B e aprire la sezione
+Forms, poi la sezione Reports.
+
+**Cosa deve succedere** — Il pulsante tondo **+** per creare un nuovo schema **non compare** in nessuna
+delle due. Compare solo se il gruppo di B contiene la voce "All form schemas" (o "All report schemas"):
+il permesso di creare uno schema non dipende dal ruolo soltanto, serve il permesso su **tutti** gli
+schemi, perché uno schema che ancora non esiste non può essere elencato nel gruppo di nessuno.
+
+**La seconda metà della prova**, che richiede di scrivere l'indirizzo a mano — sempre come B, andare su
+`/forms/schema/create`, compilare nome ed etichetta e salvare. L'editor si apre lo stesso (non c'è
+ancora un guard sulla rotta) e lo schema viene scritto in locale, ma il server lo rifiuta: **il badge si
+accende subito** sull'icona di sync, arriva una notifica che nomina la collection e l'errore, e **non**
+compaiono gli snackbar "Resyncing". La sincronizzazione di quella collection si ferma al primo rifiuto.
+
+**È un bug se** — il pulsante + compare a un gruppo senza "All form schemas"; oppure se, dopo il
+salvataggio da URL diretto, non succede niente di visibile e la rotellina continua a girare.
+
+---
+
+## 13. Il gruppo amministratore ⚠️
+
+**Cosa fare** — Creare un nuovo gruppo e selezionare il ruolo **admin**.
+
+**Cosa deve succedere** — "All form schemas" e "All report schemas" entrano da soli negli elementi del
+gruppo, e accanto a ciascuno c'è un **lucchetto** al posto della × che toglie una voce: non si possono
+togliere, e finché il ruolo è admin la colonna "In group" degli schemi non ha nemmeno "Clear". Se si
+toglie il ruolo admin e se ne sceglie un altro, il lucchetto sparisce e tornano rimovibili. Con un
+ruolo diverso da admin non viene aggiunto niente: la scelta degli schemi resta libera.
+
+**È un bug se** — un gruppo admin si salva senza i due "All", o se il lucchetto resta anche dopo aver
+cambiato ruolo.
+
+---
+
 ## Se compare "i dati sono corrotti"
 
 Non è una prova da provocare, è una situazione da riconoscere. Se il server rifiuta dei documenti — di
