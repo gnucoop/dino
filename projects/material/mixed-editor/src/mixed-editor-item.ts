@@ -70,4 +70,13 @@ export interface MixedEditorItem {
    * If true, the item can't be added or removed.
    */
   disabled?: boolean;
+
+  /**
+   * If true, the Item is held in the saved list and cannot be taken out of it.
+   *
+   * Its own flag rather than a reading of `disabled`: that one marks an Item of the
+   * source list that cannot be added right now, and is recomputed every time a
+   * unique Item enters or leaves the list, which would wipe the lock.
+   */
+  locked?: boolean;
 }

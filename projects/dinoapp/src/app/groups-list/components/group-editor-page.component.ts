@@ -21,6 +21,13 @@ import {MixedEditorItem} from '@dino/material/mixed-editor';
 import {TranslocoService} from '@ngneat/transloco';
 import {combineLatest, Observable, Subscription} from 'rxjs';
 import {map, shareReplay, take} from 'rxjs/operators';
+import {environment} from 'src/environments/environment';
+
+/**
+ * The categories an administrator group always holds in full: every Form Schema
+ * and every Report Schema, through their "all" option.
+ */
+const ADMIN_GRANTED_TYPES = ['form_schema', 'report_schema'];
 
 /**
  * Static metadata (label + icon + display order) for every category the
@@ -107,6 +114,20 @@ export class GroupEditorPage implements OnDestroy {
    * True when the active category holds a single item (user role).
    */
   uniqueCat = false;
+  /** True when the active category holds an item the group cannot give up. */
+  lockedCat = false;
+
+  /**
+   * The role names that grant every Form and Report Schema, lowercased for
+   * comparison. Read from the instance configuration: the administrator role is not
+   * named the same way in every deployment.
+   */
+  private readonly _adminRoles: string[] = (environment.usersConfig.adminRoles ?? ['admin']).map(
+    roleName => roleName.toLowerCase(),
+  );
+
+  /** The ids of the assigned items that cannot be taken out of the group. */
+  private _lockedIds = new Set<string>();
 
   private _subs = new Subscription();
 
@@ -207,7 +228,7 @@ export class GroupEditorPage implements OnDestroy {
 
   // ---- Assignment mutations -------------------------------------------------
   add(item: MixedEditorItem): void {
-    if (this.viewOnly) {
+    if (this.viewOnly || this._isCatLocked(item.itemType)) {
       return;
     }
     const type = item.itemType;
@@ -229,6 +250,7 @@ export class GroupEditorPage implements OnDestroy {
       });
     }
     this._assigned[type] = arr.sort((a, b) => this._sortAlphabetically(a, b));
+    this._applyAdminGrants();
     this._recompute();
   }
 
@@ -236,7 +258,7 @@ export class GroupEditorPage implements OnDestroy {
    * Adds every item currently shown by the results list.
    */
   addAllShown(): void {
-    if (this.viewOnly || this.uniqueCat) {
+    if (this.viewOnly || this.uniqueCat || this.lockedCat) {
       return;
     }
     // One pass and a single recompute: routing every item through add() re-ran the cascade
@@ -263,13 +285,14 @@ export class GroupEditorPage implements OnDestroy {
   }
 
   remove(item: MixedEditorItem): void {
-    if (this.viewOnly) {
+    if (this.viewOnly || this.isLocked(item)) {
       return;
     }
     const type = item.itemType;
     const toRemove = new Set<string>([item.itemId]);
     this._descendants(item, this._assigned[type] ?? []).forEach(c => toRemove.add(c.itemId));
     this._assigned[type] = (this._assigned[type] ?? []).filter(x => !toRemove.has(x.itemId));
+    this._applyAdminGrants();
     this._recompute();
   }
 
@@ -277,12 +300,20 @@ export class GroupEditorPage implements OnDestroy {
     if (this.viewOnly) {
       return;
     }
-    this._assigned[this.activeCat] = [];
+    this._assigned[this.activeCat] = (this._assigned[this.activeCat] ?? []).filter(x =>
+      this.isLocked(x),
+    );
+    this._applyAdminGrants();
     this._recompute();
   }
 
   isAdded(item: MixedEditorItem): boolean {
     return this.allSelected || this._assignedIds.has(item.itemId);
+  }
+
+  /** True when the item is held in the group and the editor cannot take it out. */
+  isLocked(item: MixedEditorItem): boolean {
+    return this._lockedIds.has(item.itemId);
   }
 
   trackById(_index: number, item: MixedEditorItem): string {
@@ -394,6 +425,7 @@ export class GroupEditorPage implements OnDestroy {
           this._seed('project', group.project_ref_id);
           this._seed('location', group.location_ref_id);
           this._seed('organization', group.organization_ref_id);
+          this._applyAdminGrants();
 
           this.loading = false;
           this._recompute();
@@ -418,6 +450,45 @@ export class GroupEditorPage implements OnDestroy {
     this._assigned[type] = found.sort((a, b) => this._sortAlphabetically(a, b));
   }
 
+  /**
+   * Keeps the schemas an administrator group always holds in step with the role the
+   * group is being given.
+   *
+   * The backend grants the creation of a Form or Report Schema only to a group
+   * holding the `'all'` wildcard on it - a schema that does not exist yet cannot be
+   * listed in anyone's group, so the wildcard is the only way to express the right.
+   * An administrator group saved without it could open the schema editor and then
+   * have every push refused by the server. Choosing an administrator role therefore
+   * takes both wildcards and holds them in place; choosing any other role only
+   * releases them, and what the group grants stays the editor's choice.
+   */
+  private _applyAdminGrants(): void {
+    this._lockedIds = new Set<string>();
+    if (this.viewOnly) {
+      // Nothing is editable here, and the group has to be shown as it was saved.
+      return;
+    }
+    const role = (this._assigned['user_role'] ?? [])[0];
+    if (role == null || !this._adminRoles.includes(role.itemName.toLowerCase())) {
+      return;
+    }
+    ADMIN_GRANTED_TYPES.forEach(type => {
+      const allItem = (this._pools[type] ?? []).find(item => item.allOptionItem);
+      if (allItem == null) {
+        return;
+      }
+      // The wildcard covers every schema of the category, so it replaces whatever
+      // single schema was assigned: nothing the group could grant is lost.
+      this._assigned[type] = [allItem];
+      this._lockedIds.add(allItem.itemId);
+    });
+  }
+
+  /** True when the category holds an item the group cannot give up. */
+  private _isCatLocked(type: string): boolean {
+    return (this._assigned[type] ?? []).some(item => this._lockedIds.has(item.itemId));
+  }
+
   /** Recomputes every derived view field. */
   private _recompute(): void {
     const assigned = this._assigned[this.activeCat] ?? [];
@@ -425,6 +496,7 @@ export class GroupEditorPage implements OnDestroy {
     this.uniqueCat = (this._pools[this.activeCat] ?? []).some(
       x => x.uniqueItem && !x.allOptionItem,
     );
+    this.lockedCat = this._isCatLocked(this.activeCat);
     this._assignedIds = new Set(assigned.map(x => x.itemId));
     this.assignedCount = assigned.length;
     this.activeLabel = this._ts.translate(
