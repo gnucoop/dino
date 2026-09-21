@@ -288,6 +288,16 @@ session: a logout here would destroy the very data still to be exported, and a l
 since the token is fine and the documents are refused. The three "Resyncing" snackbars per round still
 appear.
 
+**A push refused for lack of permission gives up at once.** Hasura answers `permission-error` when the
+row fails the check of the role's insert or update permission — the user is not allowed to write that
+document, whatever the order the replications ran in. Retrying cannot change the answer, so the
+collection is abandoned on the first refusal instead of climbing the three-attempt ladder: same badge,
+same notification, same Sentry report, no "Resyncing" snackbars. The round that can still change the
+answer is the one a token renewal starts, which is where a permission granted in the meantime is picked
+up. Before this, `permission-error` matched no branch at all: the push was retried every `retryTime`
+for the life of the page, in silence, with the rest of the collection's queue stuck behind the refused
+document and nothing shown to the user or sent to Sentry.
+
 ## 5. What destroys local data
 
 ```mermaid

@@ -2344,19 +2344,33 @@ export class DataService implements IDataService {
           console.log(errors.map(err => err?.message).join(' | '));
         }
         this._refreshEvt.emit();
-      } else if (
-        error.code === 'RC_PUSH' &&
-        errors[0]?.extensions?.code &&
-        String(errors[0].extensions.code).indexOf('constraint-violation') >= 0
-      ) {
-        if (actSyncs[collection.name].retrySyncAttempts !== -1) {
+      } else if (error.code === 'RC_PUSH') {
+        // Read from every error of the array rather than from the first one only:
+        // a rejected mutation can report more than one problem.
+        const rejectionCodes = errors
+          .map(err => err?.extensions?.code)
+          .filter((code): code is string => typeof code === 'string');
+        const isConstraintViolation = rejectionCodes.some(
+          code => code.indexOf('constraint-violation') >= 0,
+        );
+        const isPermissionError = rejectionCodes.some(code => code === 'permission-error');
+        const alreadyGaveUp = actSyncs[collection.name].retrySyncAttempts === -1;
+        if ((isConstraintViolation || isPermissionError) && !alreadyGaveUp) {
           console.error(`Sync replication error: ${error}`);
           const retrySyncAttempts =
             actSyncs[collection.name].retrySyncAttempts !== undefined
               ? 1 + actSyncs[collection.name].retrySyncAttempts!
               : 1;
           const maxAttempts: number = this.config.syncOptions.retrySyncMaxAttempts ?? 3;
-          if (retrySyncAttempts <= maxAttempts) {
+          // A `permission-error` is not a race between replications: the server refuses
+          // this document for this user, and the same mutation will be refused again. The
+          // retry ladder would spend three round trips and three snackbars to reach the
+          // same place, so the collection is given up at once. The retry that can still
+          // change the answer happens on its own - every token renewal registers the
+          // collection again, and that is what would pick up a permission granted in the
+          // meantime. Without this the push was retried every `retryTime` in silence,
+          // with the whole queue of the collection stuck behind the refused document.
+          if (!isPermissionError && retrySyncAttempts <= maxAttempts) {
             this.syncErrorEvt.emit({collection: collection.name, retrySyncAttempts, error});
           } else {
             this.couldNotSyncEvt.emit({
