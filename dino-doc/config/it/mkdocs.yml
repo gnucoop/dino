@@ -35,7 +35,7 @@ nav:
     - Progetti: metrics/projects.md
   - Aggregazione: aggregation/index.md
   - Notifiche: notifications/index.md
-  - Moduli Pubblici: public-forms/index.md
+  - Form Pubblici: public-forms/index.md
   - Amministrazione:
     - Gestire Utenti e Gruppi: administration/users.md
     - Gestire le Lingue: administration/languages.md
