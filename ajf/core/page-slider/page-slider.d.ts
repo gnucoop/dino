@@ -37,6 +37,18 @@ export declare class AjfPageSlider implements AfterContentInit, OnDestroy {
     private _orientationChange;
     readonly orientationChange: Observable<AjfPageSliderOrientation>;
     duration: number;
+    /**
+     * True while the page on screen has more below the fold. The slider hides its
+     * scrollbars behind a thin, quiet one, and a page that starts with a screenful
+     * of content gives the reader no reason to suspect there is more of it: this
+     * drives the hint that says so.
+     */
+    showScrollHint: boolean;
+    /**
+     * How much has to be left below the fold before the hint is worth showing --
+     * a couple of lines, rather than the last pixel of a rounding error.
+     */
+    private static readonly _scrollHintThreshold;
     private _orientation;
     get orientation(): AjfPageSliderOrientation;
     set orientation(orientation: AjfPageSliderOrientation);
@@ -56,12 +68,31 @@ export declare class AjfPageSlider implements AfterContentInit, OnDestroy {
     private _disableTouchMovement;
     private _animating;
     private _pagesSub;
+    private _scrollHintTeardown;
     private _currentOrigin;
     private _mouseWheelEvt;
     private _mouseWheelSub;
     constructor(_animationBuilder: AnimationBuilder, _cdr: ChangeDetectorRef, _renderer: Renderer2);
     ngAfterContentInit(): void;
     ngOnDestroy(): void;
+    /**
+     * Pages down by most of a screenful, from the hint. Most, not all: an overlap
+     * keeps the reader's place.
+     */
+    scrollHintDown(): void;
+    /**
+     * The element the page on screen scrolls with, or null when it does not
+     * scroll at all.
+     */
+    private _scroller;
+    /**
+     * Listens for everything that can change how much is left below the fold: the
+     * page being scrolled -- in the capture phase, since the event does not bubble
+     * -- and the slider being resized, which covers the content growing as a form
+     * is filled in.
+     */
+    private _watchScrollHint;
+    private _updateScrollHint;
     switchOrientation(): void;
     slide(opts: AjfPageSliderSlideOptions): void;
     onMouseWheel(event: Event): void;
