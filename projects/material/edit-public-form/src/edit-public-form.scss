@@ -229,11 +229,10 @@ dino-edit-public-form {
     }
   }
 
-  // Wraps <ajf-form> and hosts the "scroll for more" hint, filling the space
-  // above the footer. Same centred column as `.dino-survey-footer`, so the
-  // renderer lines up with the navigation buttons -- carried by the wrapper
-  // rather than by <ajf-form> so that the scroll hint, which is positioned
-  // against this box, stays over the form instead of fading the full bleed.
+  // Wraps <ajf-form>, filling the space above the footer. Same centred column
+  // as `.dino-survey-footer`, so the renderer lines up with the navigation
+  // buttons. The "scroll for more" hint the renderer now draws is positioned
+  // against its own page slider, so it stays inside this column too.
   .dino-survey-slider-wrap {
     position: relative;
     flex: 1 1 auto;
@@ -253,53 +252,6 @@ dino-edit-public-form {
     flex: 1 1 auto;
     min-height: 0;
     position: relative;
-  }
-
-  // ---- "Scroll for more" hint: bottom fade + animated chevron ----
-  // Shown only when the active section can still scroll down (see component).
-  .dino-survey-scroll-hint {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 56px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 4px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    background: linear-gradient(
-      to top,
-      var(--dino-survey-card-bg) 15%,
-      color-mix(in srgb, var(--dino-survey-card-bg) 0%, transparent)
-    );
-
-    &.is-visible {
-      opacity: 1;
-    }
-
-    .mat-icon {
-      pointer-events: auto;
-      cursor: pointer;
-      color: var(--dino-survey-accent);
-      width: 32px;
-      height: 32px;
-      font-size: 32px;
-      line-height: 32px;
-      animation: dino-survey-bounce 1.6s ease-in-out infinite;
-    }
-  }
-
-  @keyframes dino-survey-bounce {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(4px);
-    }
   }
 
   // ---- Custom footer navigation (Indietro / Avanti / Invia) ----
@@ -345,24 +297,5 @@ dino-edit-public-form {
         cursor: default;
       }
     }
-  }
-
-  // Subtle scrollbars inside the survey (the app-wide default paints them with
-  // the accent color, which reads as a solid bar on barely-scrolling slides).
-  ::-webkit-scrollbar {
-    width: 8px !important;
-    height: 8px !important;
-    max-width: 8px !important;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: rgba(120, 120, 120, 0.35) !important;
-    border-radius: 8px !important;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent !important;
-  }
-  ajf-page-slider-item {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(120, 120, 120, 0.35) transparent;
   }
 }

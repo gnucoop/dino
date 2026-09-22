@@ -41,6 +41,17 @@ body {
     background-color: mat-css-vars.mat-css-color-primary(500) !important;
   }
 
+  // The Ajf renderer draws the scrollbar of a slide that runs past the fold and
+  // takes its colour from here; left unset it would paint a neutral tone of its
+  // own, since its selector outweighs the app-wide rules below.
+  //
+  // Interpolated, or Sass would hand the function call through to the browser
+  // verbatim inside a custom property. And asked for with an opacity, or the
+  // helper yields the bare `r, g, b` triplet these palettes are stored as --
+  // which is only a colour once it is inside an rgba().
+  --ajf-scrollbar: #{mat-css-vars.mat-css-color-primary(500, 1)};
+  --ajf-scrollbar-hover: #{mat-css-vars.mat-css-color-primary(700, 1)};
+
   ::-webkit-scrollbar {
     max-width: 5px !important;
     max-height: 5px !important;

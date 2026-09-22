@@ -50,6 +50,12 @@ export declare class AjfPageSliderItem implements OnDestroy {
     private _resizeObserver;
     private _resizeEvent;
     private _resizeSub;
+    /**
+     * The element that scrolls when the page holds more than fits: the host
+     * itself, which carries `overflow: auto`. Exposed for the slider, which
+     * reports how much of it is left below the fold.
+     */
+    get scroller(): HTMLElement;
     constructor(_el: ElementRef, _renderer: Renderer2);
     ngOnDestroy(): void;
     setScroll(dir: AjfPageSliderItemScrollDirection, amount: number, _duration: number): boolean;

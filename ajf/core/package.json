@@ -98,17 +98,17 @@
       "esm": "./esm2022/file-input/ajf-core-file-input.mjs",
       "default": "./fesm2022/ajf-core-file-input.mjs"
     },
-    "./geolocation": {
-      "types": "./geolocation/index.d.ts",
-      "esm2022": "./esm2022/geolocation/ajf-core-geolocation.mjs",
-      "esm": "./esm2022/geolocation/ajf-core-geolocation.mjs",
-      "default": "./fesm2022/ajf-core-geolocation.mjs"
-    },
     "./forms": {
       "types": "./forms/index.d.ts",
       "esm2022": "./esm2022/forms/ajf-core-forms.mjs",
       "esm": "./esm2022/forms/ajf-core-forms.mjs",
       "default": "./fesm2022/ajf-core-forms.mjs"
+    },
+    "./geolocation": {
+      "types": "./geolocation/index.d.ts",
+      "esm2022": "./esm2022/geolocation/ajf-core-geolocation.mjs",
+      "esm": "./esm2022/geolocation/ajf-core-geolocation.mjs",
+      "default": "./fesm2022/ajf-core-geolocation.mjs"
     },
     "./graph": {
       "types": "./graph/index.d.ts",
