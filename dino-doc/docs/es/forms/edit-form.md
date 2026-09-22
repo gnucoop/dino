@@ -1,55 +1,55 @@
 ---
-title: Editar un envío de formulario
-description: Aprende a editar un envío de formulario existente en Dino.
+title: Editar el envío de un formulario
+description: Aprende a editar el envío de un formulario existente en Dino.
 ---
 
-# Editar un envío de formulario
+# Editar el envío de un formulario
 
-La pantalla Editar formulario te permite modificar un envío de formulario existente. Puedes actualizar datos, añadir nueva información o guardar los cambios como borrador para completarlos más tarde.
+La pantalla de Editar formulario te permite modificar el envío de un formulario existente. Puedes actualizar los datos, añadir información nueva o guardar los cambios como borrador para completarlo más tarde.
 
-Cuando abres un envío de formulario para editarlo, ves la misma interfaz de formulario utilizada para la entrada de datos, pero con todos los datos guardados previamente ya rellenados.
+Cuando abres el envío de un formulario para editarlo, ves la misma interfaz de formulario que se usa para la introducción de datos, pero con todos los datos guardados previamente ya rellenados.
 
-![Main view of the Edit Form page](../imgs/forms/edit-form.png)
+![Vista principal de la página Editar formulario](../imgs/forms/edit-form.png)
 
 ## Cómo editar un envío
 
-1.  Navega hasta la lista de envíos de tu formulario.
-2.  Localiza el envío específico que deseas editar.
-3.  Haz clic en el botón **Editar** (normalmente representado por un icono de lápiz) para ese envío. Esto abre el formulario en modo de edición.
-4.  Realiza los cambios deseados en cualquier campo del formulario.
+1.  Ve a la lista de envíos de tu formulario.
+2.  Localiza el envío específico que quieres editar.
+3.  Haz clic en el botón **Editar** (normalmente representado por un icono de lápiz) de ese envío. Esto abre el formulario en modo de edición.
+4.  Realiza los cambios que desees en cualquier campo del formulario.
 5.  Elige una acción en la parte inferior del formulario:
-    *   **Guardar borrador**: Guarda los cambios actuales sin enviar el formulario. Puedes volver y editarlo más tarde.
-    *   **Enviar**: Guarda todos los cambios y envía los datos del formulario actualizados.
+    *   **Guardar borrador**: guarda tus cambios actuales sin enviar el formulario. Puedes volver y editarlo de nuevo más tarde.
+    *   **Enviar**: guarda todos los cambios y envía los datos actualizados del formulario.
 
 !!! tip "Seguimiento de cambios"
-    Dino registra automáticamente los cambios que realizas entre el envío original y la versión editada. Esto crea un historial de quién cambió qué y cuándo.
+    Dino registra automáticamente los cambios que haces entre el envío original y la versión editada. Esto crea un historial de quién cambió qué y cuándo.
 
-## Funciones disponibles
+<!-- ## Available Features
 
-Mientras editas, tienes acceso a las mismas funciones que al crear un nuevo envío:
+While editing, you have access to the same features as when creating a new submission:
 
-*   **Métricas opcionales**: Algunos formularios pueden tener secciones o preguntas opcionales que puedes elegir completar.
-*   **Carga de archivos**: Adjunta archivos nuevos o reemplaza los existentes si esta función está habilitada para tu formulario.
-*   **Campos secundarios**: Para ciertos puntos de datos, se pueden mostrar campos relacionados adicionales para una entrada más detallada.
-*   **Relaciones de formulario (dependencias)**: Si el formulario incluye campos dependientes, es posible que veas indicaciones adicionales basadas en respuestas anteriores. Las dependencias se definen al crear el esquema del formulario.
+*   **Optional Metrics**: Some forms may have optional sections or questions that you can choose to fill out.
+*   **File Upload**: Attach new files or replace existing ones if this feature is enabled for your form.
+*   **Secondary Fields**: For certain data points, additional related fields may be displayed for more detailed entry.
+*   **Form Relationships (Dependencies)**: If the form includes dependent fields, you may see additional prompts based on previous answers. The dependencies are defined when the form schema is created.
 
 ![Form relationships (dependencies) editor dialog](../imgs/forms/edit-form-schema-relationships.png)
 
-!!! warning "Integridad de los datos"
-    Ten cuidado al editar datos críticos. Otros informes o análisis pueden depender de los valores enviados originalmente. Considera si crear un envío nuevo y corregido podría ser más apropiado que editar uno anterior.
+!!! warning "Data Integrity"
+    Be cautious when editing critical data. Other reports or analyses may depend on the original submitted values. Consider if creating a new, corrected submission might be more appropriate than editing an old one. -->
 
-## Comprender la estructura del formulario
+<!-- ## Understanding the Form Structure
 
-El formulario que ves mientras editas se basa en un **esquema de formulario**: el modelo subyacente que define todos los campos, secciones y reglas. Puedes ver una vista previa compilada del esquema del formulario desde el diseñador.
+The form you see while editing is based on a **form schema** — the underlying blueprint that defines all fields, sections, and rules. You can view a compiled preview of the form schema from the designer.
 
 ![Compiled form view after clicking View the Form](../imgs/forms/edit-form-view.png)
 
-El esquema en sí se puede editar por separado. Si necesitas cambiar la estructura de un formulario (añadir o quitar campos, ajustar la validación), consulta [Editar esquema de formulario](edit-form-schema.md).
+The schema itself can be edited separately. If you need to change the structure of a form (add or remove fields, adjust validation), see [Edit Form Schema](edit-form-schema.md).
 
 ![Main view of the Edit Form Schema page](../imgs/forms/edit-form-schema.png)
 
-## Acciones relacionadas
+## Related Actions
 
-*   Para comprender la estructura del formulario en sí, consulta [Editar esquema de formulario](edit-form-schema.md).
-*   Para crear un envío completamente nuevo, normalmente comienzas desde la página principal de [Formularios](index.md).
-*   Para explorar tus formularios y envíos en un mapa, consulta [Mapa de formularios](forms-map.md).
+*   To understand the structure of the form itself, see [Edit Form Schema](edit-form-schema.md).
+*   To create a brand new submission, you typically start from the main [Forms](index.md) page.
+*   To browse your forms and submissions on a map, see [Forms Map](forms-map.md). -->

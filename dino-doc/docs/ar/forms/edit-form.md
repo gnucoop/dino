@@ -1,55 +1,55 @@
 ---
-title: تحرير إرسال نموذج
-description: تعرّف على كيفية تحرير إرسال نموذج موجود في Dino.
+title: تعديل بيانات نموذج
+description: تعلّم كيفية تعديل بيانات نموذج موجودة في Dino.
 ---
 
-# تحرير إرسال نموذج
+# تعديل بيانات نموذج
 
-تتيح لك شاشة تحرير النموذج تعديل إرسال نموذج موجود. يمكنك تحديث البيانات، أو إضافة معلومات جديدة، أو حفظ تغييراتك كمسودة لإكمالها لاحقًا.
+تتيح لك شاشة تعديل النموذج تعديل بيانات نموذج موجودة. يمكنك تحديث البيانات، أو إضافة معلومات جديدة، أو حفظ تغييراتك كمسودة لإكمالها لاحقًا.
 
-عند فتح إرسال نموذج للتعديل، ترى واجهة النموذج نفسها المستخدمة لإدخال البيانات، ولكن مع جميع البيانات المحفوظة مسبقًا معبأة بالفعل.
+عند فتح بيانات نموذج لتعديلها، ترى واجهة النموذج نفسها المستخدمة لإدخال البيانات، ولكن مع تعبئة جميع البيانات المحفوظة سابقًا مسبقًا.
 
-![Main view of the Edit Form page](../imgs/forms/edit-form.png)
+![العرض الرئيسي لصفحة تعديل النموذج](../imgs/forms/edit-form.png)
 
-## كيفية تحرير إرسال
+## كيفية تعديل البيانات
 
-1. انتقل إلى قائمة الإرسالات الخاصة بنموذجك.
-2. اعثر على الإرسال المحدد الذي تريد تحريره.
-3. انقر فوق الزر **تحرير** (عادةً ما يظهر كأيقونة قلم رصاص) لهذا الإرسال. يؤدي ذلك إلى فتح النموذج في وضع التحرير.
-4. قم بإجراء التغييرات المطلوبة على أي حقل في النموذج.
-5. اختر أحد الإجراءات في أسفل النموذج:
-    * **حفظ كمسودة**: يحفظ تغييراتك الحالية دون إرسال النموذج. يمكنك العودة وتحريره مرة أخرى لاحقًا.
-    * **إرسال**: يحفظ جميع التغييرات ويُرسل بيانات النموذج المحدّثة.
+1.  انتقل إلى قائمة النماذج الخاصة بنموذجك.
+2.  حدّد البيانات المحددة التي تريد تعديلها.
+3.  انقر على زر **تعديل** (الذي يظهر عادةً على شكل أيقونة قلم رصاص) لتلك البيانات. يؤدي هذا إلى فتح النموذج في وضع التعديل.
+4.  أجرِ التغييرات المطلوبة على أي حقل في النموذج.
+5.  اختر إجراءً في أسفل النموذج:
+    *   **حفظ كمسودة**: يحفظ تغييراتك الحالية دون إرسال النموذج. يمكنك العودة وتعديله مرة أخرى لاحقًا.
+    *   **إرسال**: يحفظ جميع التغييرات ويرسل بيانات النموذج المحدّثة.
 
-!!! tip "تتبع التغييرات"
-    يسجّل Dino تلقائيًا التغييرات التي تجريها بين الإرسال الأصلي والنسخة المعدّلة. وينشئ ذلك سجلًا يوضح من غيّر ماذا ومتى.
+!!! tip "تتبّع التغييرات"
+    يسجّل Dino تلقائيًا التغييرات التي تجريها بين البيانات الأصلية والنسخة المعدّلة. يؤدي هذا إلى إنشاء سجلّ لمن غيّر ماذا ومتى.
 
-## الميزات المتاحة
+<!-- ## Available Features
 
-أثناء التحرير، تتوفر لديك نفس الميزات المتاحة عند إنشاء إرسال جديد:
+While editing, you have access to the same features as when creating a new submission:
 
-* **المقاييس الاختيارية**: قد تحتوي بعض النماذج على أقسام أو أسئلة اختيارية يمكنك اختيار تعبئتها.
-* **رفع الملفات**: إرفاق ملفات جديدة أو استبدال الملفات الحالية إذا كانت هذه الميزة مفعّلة لنموذجك.
-* **الحقول الثانوية**: بالنسبة لنقاط بيانات معينة، قد تظهر حقول إضافية ذات صلة لإدخال أكثر تفصيلًا.
-* **علاقات النموذج (التبعيات)**: إذا كان النموذج يتضمن حقولًا تابعة، فقد ترى مطالبات إضافية بناءً على الإجابات السابقة. تُحدَّد التبعيات عند إنشاء مخطط النموذج (form schema).
+*   **Optional Metrics**: Some forms may have optional sections or questions that you can choose to fill out.
+*   **File Upload**: Attach new files or replace existing ones if this feature is enabled for your form.
+*   **Secondary Fields**: For certain data points, additional related fields may be displayed for more detailed entry.
+*   **Form Relationships (Dependencies)**: If the form includes dependent fields, you may see additional prompts based on previous answers. The dependencies are defined when the form schema is created.
 
 ![Form relationships (dependencies) editor dialog](../imgs/forms/edit-form-schema-relationships.png)
 
-!!! warning "سلامة البيانات"
-    كن حذرًا عند تحرير بيانات حرجة. قد تعتمد تقارير أو تحليلات أخرى على القيم الأصلية المُرسلة. فكّر فيما إذا كان إنشاء إرسال جديد مصحّح قد يكون أكثر ملاءمة من تعديل إرسال قديم.
+!!! warning "Data Integrity"
+    Be cautious when editing critical data. Other reports or analyses may depend on the original submitted values. Consider if creating a new, corrected submission might be more appropriate than editing an old one. -->
 
-## فهم بنية النموذج
+<!-- ## Understanding the Form Structure
 
-النموذج الذي تراه أثناء التحرير يعتمد على **مخطط النموذج (form schema)** — المخطط الأساسي الذي يحدد جميع الحقول والأقسام والقواعد. يمكنك عرض معاينة مجمّعة لمخطط النموذج من المصمّم.
+The form you see while editing is based on a **form schema** — the underlying blueprint that defines all fields, sections, and rules. You can view a compiled preview of the form schema from the designer.
 
 ![Compiled form view after clicking View the Form](../imgs/forms/edit-form-view.png)
 
-يمكن تحرير المخطط نفسه بشكل منفصل. إذا كنت بحاجة إلى تغيير بنية نموذج (إضافة حقول أو إزالتها، أو ضبط التحقق)، فانظر [تحرير مخطط النموذج](edit-form-schema.md).
+The schema itself can be edited separately. If you need to change the structure of a form (add or remove fields, adjust validation), see [Edit Form Schema](edit-form-schema.md).
 
 ![Main view of the Edit Form Schema page](../imgs/forms/edit-form-schema.png)
 
-## الإجراءات ذات الصلة
+## Related Actions
 
-* لفهم بنية النموذج نفسه، راجع [تحرير مخطط النموذج](edit-form-schema.md).
-* لإنشاء إرسال جديد تمامًا، تبدأ عادةً من صفحة [النماذج](index.md) الرئيسية.
-* لاستعراض نماذجك وإرسالاتك على الخريطة، راجع [خريطة النماذج](forms-map.md).
+*   To understand the structure of the form itself, see [Edit Form Schema](edit-form-schema.md).
+*   To create a brand new submission, you typically start from the main [Forms](index.md) page.
+*   To browse your forms and submissions on a map, see [Forms Map](forms-map.md). -->

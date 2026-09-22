@@ -19,6 +19,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DOC_ROOT = path.resolve(__dirname, '..');
 
+import {EXTRA_PAGES} from './docs-extra-pages.mjs';
+
 function absFromDocRoot(p) {
   return path.isAbsolute(p) ? p : path.join(DOC_ROOT, p);
 }
@@ -79,6 +81,8 @@ const ENTRY_ORDER = {
     'reports/edit-report-schema.md',
     'reports/edit-report.md',
     'reports/reports-list.md',
+    'reports/autoreports.md',
+    'reports/xlsreport.md',
   ],
   'Metrics': [
     'metrics/index.md',
@@ -145,6 +149,18 @@ function buildNavFromRouteMap(routeMap) {
       title: route.title,
       path: relPath,
     });
+  }
+
+  // Hand-written pages have no route to be discovered from, so fold them in here:
+  // from this point on they are ordinary nav entries, ordered by ENTRY_ORDER like
+  // any other. Without this they would be dropped on every rebuild.
+  for (const extra of EXTRA_PAGES) {
+    if (!sections[extra.section]) {
+      sections[extra.section] = [];
+    }
+    if (!sections[extra.section].some(e => e.path === extra.path)) {
+      sections[extra.section].push({title: extra.title, path: extra.path});
+    }
   }
 
   return sections;

@@ -25,6 +25,7 @@ import {fileURLToPath} from 'url';
 import {scanRoutes, exportRouteMapForCypress} from './docs-route-scanner.mjs';
 import {syncNav} from './docs-nav-sync.mjs';
 import {sanitizeGenerated, stripBrokenImageRefs} from './docs-sanitize.mjs';
+import {EXTRA_PAGES, extraPageKey} from './docs-extra-pages.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -73,6 +74,13 @@ const CLAUDE_MODEL = process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6';
 // worst of all — so a cap tuned to the English length truncates every large
 // page. 16k stays well under the HTTP timeout for non-streaming requests.
 const MAX_TOKENS = 16000;
+// Some Anthropic-compatible endpoints (DeepSeek's /anthropic, for one) turn
+// reasoning on by default and ignore `budget_tokens`, so thinking blocks eat the
+// whole MAX_TOKENS budget and the response carries no text at all — the caller
+// then sees an empty result and retries forever. Translation needs no reasoning,
+// so set DISABLE_THINKING=1 against those endpoints. It stays off by default
+// because `{type: "disabled"}` is rejected by some first-party Claude models.
+const DISABLE_THINKING = process.env.DISABLE_THINKING === '1';
 // A single response can hit the MAX_TOKENS cap and stop mid-document. We resume
 // via continuation turns; this bounds how many times, so a page that keeps
 // truncating fails loudly instead of looping forever.
@@ -96,6 +104,7 @@ async function anthropicRaw({system, messages}) {
     body: JSON.stringify({
       model: CLAUDE_MODEL,
       max_tokens: MAX_TOKENS,
+      ...(DISABLE_THINKING ? {thinking: {type: 'disabled'}} : {}),
       system,
       messages,
     }),
@@ -192,6 +201,17 @@ Rules:
 - Same-page anchor links are the ONE exception to leaving link targets alone. An anchor like ](#user-area) points at a heading on this page, and the heading id is derived from the heading text — which you are translating — so the anchor must be translated in step with it, or the link breaks. Build it from the translated heading: lowercase it and replace each space with a hyphen, keeping the original letters (do not transliterate to ASCII). If "## User Area" becomes "## Area utente", then ](#user-area) becomes ](#area-utente). If the translated heading is identical to the English one, leave the anchor as it is. This applies ONLY to targets starting with "#" — file paths in link targets stay untouched.
 - Terminology glossary (translate these terms consistently, including in headings, titles and frontmatter values):
   - Italian: always translate "location" / "locations" as "posizione" / "posizioni" — never "sede" / "sedi".
+  - Italian: use these renderings exactly, keeping the Italian form invariant in the plural where noted:
+    - "form schema" / "form schemas" -> "form schema" (invariant, leave in English)
+    - "report schema" / "report schemas" -> "report schema" (invariant, leave in English)
+    - "form" / "forms" -> "form" (invariant, leave in English — never "modulo" / "moduli")
+    - "record information" -> "raccogliere informazioni"
+    - "submission" / "submissions" -> "dati"
+    - "submission list" -> "lista di form"
+    - "view" / "views" -> "visualizzazione" / "visualizzazioni"
+    - "report" / "reports" -> "report" (invariant, leave in English)
+    - "breadcrumb" -> "percorso di navigazione"
+    - "filtering" -> "filtro"
 - Output ONLY the translated Markdown content, no code fences or explanations.
 - The translation must read naturally — do not produce word-by-word literal translations.`;
 
@@ -219,6 +239,21 @@ function parseListFlag(name) {
 // e.g. mat-forms) or pages (route key, e.g. forms/index) regardless of git diff.
 const manualModules = parseListFlag('modules');
 const manualPages = parseListFlag('pages');
+
+// Restrict translation to specific languages, e.g. `--langs=it`. Absent means
+// every language in LANGUAGES. Only the translation loops honour this — cleanup
+// of orphaned translations always sweeps all languages, so a targeted run can
+// never leave stale files behind in the languages it skipped.
+const manualLangs = parseListFlag('langs');
+for (const code of manualLangs) {
+  if (!LANGUAGES.some(l => l.code === code)) console.warn(`  WARN: --langs "${code}" is not a known language`);
+}
+const targetLanguages = manualLangs.length
+  ? LANGUAGES.filter(l => manualLangs.includes(l.code))
+  : LANGUAGES;
+if (manualLangs.length) {
+  console.log(`Target languages: ${targetLanguages.map(l => l.code).join(', ') || '(none)'}`);
+}
 
 // ---------------------------------------------------------------------------
 // Step 1: Detect changed files
@@ -323,8 +358,12 @@ if (manualModules.length) {
   console.log(`Manual modules: ${manualModules.join(', ')}`);
 }
 if (manualPages.length) {
+  const extraKeys = new Set(EXTRA_PAGES.map(extraPageKey));
   for (const p of manualPages) {
-    if (!routeMap[p]) console.warn(`  WARN: --pages "${p}" matches no route key in the map`);
+    // `index` and the hand-written pages are legitimate targets that no route produces.
+    if (!routeMap[p] && p !== 'index' && !extraKeys.has(p)) {
+      console.warn(`  WARN: --pages "${p}" matches no route key, extra page or "index"`);
+    }
   }
   console.log(`Manual pages: ${manualPages.join(', ')}`);
 }
@@ -345,7 +384,18 @@ function routeChanged(key, r) {
 
 let modulesToProcess;
 
-if (routingChanged) {
+// --translate-only forces the routing-changed path (it fakes a routing diff), so
+// without this the manual overrides would be ignored and every page retranslated.
+// Narrow to the named pages/modules instead, which is what re-running a single
+// failed page across languages needs.
+const narrowedTranslateOnly = onlyTranslate && (manualPages.length || manualModules.length);
+
+if (narrowedTranslateOnly) {
+  modulesToProcess = Object.entries(routeMap)
+    .filter(([key, r]) => routeChanged(key, r))
+    .map(([, r]) => r);
+  console.log(`Translate-only, narrowed to ${modulesToProcess.length} page(s)`);
+} else if (routingChanged) {
   // Full regeneration on routing changes
   modulesToProcess = Object.values(routeMap);
   console.log(`Full regeneration: ${modulesToProcess.length} pages`);
@@ -434,41 +484,7 @@ if (modulesToProcess.length > 0) {
 
     // ----- Translations -----
     if (!skipTranslations && englishContent && englishContent.trim()) {
-      for (const lang of LANGUAGES) {
-        const langDocFile = route.docFile.replace(/^docs\/en\//, `docs/${lang.code}/`);
-        const langDocPath = absFromDocRoot(langDocFile);
-
-        // Check if translation already exists and English hasn't changed
-        if (!forceFullScan && !onlyTranslate && fs.existsSync(langDocPath)) {
-          // Skip if we're in targeted mode and translation exists
-          console.log(`  Skipping ${lang.code} — translation exists (use --full to regenerate)`);
-          continue;
-        }
-
-        console.log(`  Translating to ${lang.name} (${lang.code})...`);
-
-        const translationPrompt = `Translate the following English documentation page into ${lang.name}.
-
-Keep all image references (![...](../imgs/...)) exactly as-is — they are shared across all languages and the paths are already correct.
-
---- ENGLISH SOURCE ---
-${englishContent}`;
-
-        try {
-          let translatedContent = await anthropicMessage({
-            system: TRANSLATION_SYSTEM_PROMPT,
-            user: translationPrompt,
-          });
-          translatedContent = dropBrokenImages(translatedContent, langDocPath);
-          fs.mkdirSync(path.dirname(langDocPath), {recursive: true});
-          fs.writeFileSync(langDocPath, translatedContent);
-          console.log(`  Written: ${langDocFile} (${translatedContent.length} chars)`);
-        } catch (err) {
-          console.error(`  Error translating ${langDocFile}: ${err.message}`);
-        }
-
-        await sleep(500);
-      }
+      await translateDocFile(route.docFile, englishContent);
     }
   }
 }
@@ -477,19 +493,59 @@ ${englishContent}`;
 // Step 6: Generate + translate the index page (docs/en/index.md)
 // ---------------------------------------------------------------------------
 // The index page is NOT part of the route map — it's a standalone welcome /
-// table-of-contents page.  We generate it from the route map so it always has
-// correct links and automatically updates when routes change.
+// table-of-contents page.  It is generated from the route map so its links are
+// correct, but it is hand-maintained afterwards, so a run only rewrites it when
+// asked to (see regenerateIndex below).
+
+// ---------------------------------------------------------------------------
+// Step 6: Hand-written pages
+// ---------------------------------------------------------------------------
+
+// These have no route and are never generated, but they do need translating, and
+// nothing else in the run would pick them up.
+if (!skipTranslations) {
+  const extraPages = manualPages.length
+    ? EXTRA_PAGES.filter(page => manualPages.includes(extraPageKey(page)))
+    : EXTRA_PAGES;
+
+  for (const page of extraPages) {
+    const docFile = `docs/en/${page.path}`;
+    const docPath = absFromDocRoot(docFile);
+    if (!fs.existsSync(docPath)) {
+      console.warn(`\n  WARN: extra page ${docFile} is listed but does not exist — skipping`);
+      continue;
+    }
+    console.log(`\nExtra page: ${docFile}`);
+    await translateDocFile(docFile, fs.readFileSync(docPath, 'utf8'));
+  }
+}
 
 const INDEX_DOC_FILE = 'docs/en/index.md';
 
-{
+// A narrowed --translate-only run asked for specific pages; the index is not one
+// of them unless --pages=index says so, and retranslating it anyway would cost a
+// call per language for nothing.
+if (narrowedTranslateOnly && !manualPages.includes('index')) {
+  console.log('\nSkipping index page (narrowed run).');
+} else {
   let englishContent;
+  const indexDocPath = absFromDocRoot(INDEX_DOC_FILE);
 
-  if (onlyTranslate) {
-    const indexDocPath = absFromDocRoot(INDEX_DOC_FILE);
+  // This page used to be regenerated on every run, which quietly threw away the
+  // hand-written edits it has accumulated — a CI deploy passes no flags, so it
+  // published model output instead of what the repository holds. Rewrite it only
+  // when it is missing or when the run says so explicitly (--full, --pages=index).
+  // Translations below still run either way.
+  const regenerateIndex =
+    forceFullScan || manualPages.includes('index') || !fs.existsSync(indexDocPath);
+
+  if (onlyTranslate || !regenerateIndex) {
     if (fs.existsSync(indexDocPath)) {
       englishContent = fs.readFileSync(indexDocPath, 'utf8');
-      console.log(`\nRead existing index: ${INDEX_DOC_FILE}`);
+      console.log(
+        `\nKeeping existing index: ${INDEX_DOC_FILE}` +
+          (onlyTranslate ? '' : ' (use --pages=index to regenerate it)'),
+      );
     }
   } else {
     console.log(`\nGenerating index page: ${INDEX_DOC_FILE}`);
@@ -516,7 +572,6 @@ const INDEX_DOC_FILE = 'docs/en/index.md';
       })
       .join('\n\n');
 
-    const indexDocPath = absFromDocRoot(INDEX_DOC_FILE);
     const existingDoc = fs.existsSync(indexDocPath) ? fs.readFileSync(indexDocPath, 'utf8') : '';
 
     const indexPrompt = `Generate the welcome / index page for the Dino documentation site.
@@ -558,7 +613,7 @@ Instructions:
 
   // Translate the index page
   if (!skipTranslations && englishContent && englishContent.trim()) {
-    for (const lang of LANGUAGES) {
+    for (const lang of targetLanguages) {
       const langDocFile = INDEX_DOC_FILE.replace(/^docs\/en\//, `docs/${lang.code}/`);
       const langDocPath = absFromDocRoot(langDocFile);
 
@@ -689,6 +744,86 @@ function sleep(ms) {
  * (resolved relative to the target page), logging what was removed. Guards
  * against the model inventing screenshot/icon paths that would render broken.
  */
+/**
+ * Reference-style link definitions pointing at a `data:` URI are pure payload:
+ * docs/en/forms/import.md carries a 21kB base64 PNG on a single line, two thirds
+ * of the file. Sending it to a translator costs more tokens than the prose, and
+ * the model dutifully copies it back one base64 chunk at a time until it runs out
+ * of max_tokens — the page can never finish. Pull those definitions out before
+ * translating and append them afterwards: Markdown resolves reference definitions
+ * from anywhere in the document, so where they land doesn't matter.
+ */
+/**
+ * Translate one English page into every target language and write the results.
+ * Shared by the route-driven pages and the hand-written EXTRA_PAGES so the two
+ * cannot drift apart: the skip rules, the data-URI handling and the error
+ * behaviour are the same for both.
+ */
+async function translateDocFile(docFile, englishContent) {
+  const {stripped: translatableEnglish, defs: dataUriDefs} = extractDataUriRefs(englishContent);
+
+  for (const lang of targetLanguages) {
+    const langDocFile = docFile.replace(/^docs\/en\//, `docs/${lang.code}/`);
+    const langDocPath = absFromDocRoot(langDocFile);
+
+    // Check if translation already exists and English hasn't changed
+    if (!forceFullScan && !onlyTranslate && fs.existsSync(langDocPath)) {
+      // Skip if we're in targeted mode and translation exists
+      console.log(`  Skipping ${lang.code} — translation exists (use --full to regenerate)`);
+      continue;
+    }
+
+    console.log(`  Translating to ${lang.name} (${lang.code})...`);
+
+    const translationPrompt = `Translate the following English documentation page into ${lang.name}.
+
+Keep all image references (![...](../imgs/...)) exactly as-is — they are shared across all languages and the paths are already correct.
+
+--- ENGLISH SOURCE ---
+${translatableEnglish}`;
+
+    try {
+      let translatedContent = await anthropicMessage({
+        system: TRANSLATION_SYSTEM_PROMPT,
+        user: translationPrompt,
+      });
+      translatedContent = restoreDataUriRefs(translatedContent, dataUriDefs);
+      translatedContent = dropBrokenImages(translatedContent, langDocPath);
+      fs.mkdirSync(path.dirname(langDocPath), {recursive: true});
+      fs.writeFileSync(langDocPath, translatedContent);
+      console.log(`  Written: ${langDocFile} (${translatedContent.length} chars)`);
+    } catch (err) {
+      console.error(`  Error translating ${langDocFile}: ${err.message}`);
+    }
+
+    await sleep(500);
+  }
+}
+
+function extractDataUriRefs(md) {
+  const defs = [];
+  const stripped = md
+    .split('\n')
+    .filter(line => {
+      if (/^\s*\[[^\]]+\]:\s*<?data:/i.test(line)) {
+        defs.push(line);
+        return false;
+      }
+      return true;
+    })
+    .join('\n');
+  if (defs.length) {
+    const bytes = defs.reduce((n, d) => n + d.length, 0);
+    console.log(`  Held back ${defs.length} embedded data URI(s) (${bytes} chars) from translation`);
+  }
+  return {stripped, defs};
+}
+
+function restoreDataUriRefs(md, defs) {
+  if (!defs.length) return md;
+  return `${md.replace(/\s+$/, '')}\n\n${defs.join('\n')}\n`;
+}
+
 function dropBrokenImages(content, targetPath) {
   const {content: clean, removed} = stripBrokenImageRefs(content, path.dirname(targetPath));
   if (removed.length) {

@@ -1,15 +1,15 @@
 ---
-title: Elenco Utenti
+title: Lista utenti
 description: Visualizza, modifica e gestisci gli account utente nella tua organizzazione Dino.
 ---
 
-# Elenco Utenti
+# Lista utenti
 
-La pagina Elenco Utenti fornisce un elenco completo di tutti gli account utente nella tua organizzazione Dino. Da qui puoi visualizzare i dettagli degli utenti, modificare gli account e creare nuovi utenti.
+La pagina Lista utenti fornisce un elenco completo di tutti gli account utente nella tua organizzazione Dino. Da qui puoi visualizzare i dettagli degli utenti, modificare gli account e creare nuovi utenti.
 
-![Main view of the Users List page](../imgs/administration/users-list.png)
+![Visualizzazione principale della pagina Lista utenti](../imgs/administration/users-list.png)
 
-## Informazioni sull'elenco utenti
+## Comprendere la Lista utenti
 
 L'elenco principale mostra le informazioni chiave per ogni utente:
 
@@ -19,43 +19,43 @@ L'elenco principale mostra le informazioni chiave per ogni utente:
 
 Puoi ordinare l'elenco per la colonna **Data di creazione**. La colonna **ID** è nascosta per impostazione predefinita.
 
-## Utilizzo dell'elenco
+## Lavorare con l'elenco
 
-### Ricerca e filtri
+### Ricerca e filtro
 
-Usa la barra di ricerca nella parte superiore della pagina per trovare gli utenti tramite email o nome completo.
+Usa la barra di ricerca nella parte superiore della pagina per trovare gli utenti tramite la loro email o il nome completo.
 
 Per applicare filtri più specifici:
 
 1.  Fai clic sull'icona del filtro nella barra di ricerca.
-2.  Nella sezione **Gruppi di autorizzazione utente**, puoi selezionare uno o più gruppi di utenti per filtrare l'elenco e mostrare solo i membri di quei gruppi.
+2.  Nella sezione **Gruppi di autorizzazioni utente**, puoi selezionare uno o più gruppi di utenti per filtrare l'elenco e mostrare solo i membri di tali gruppi.
 
-### Azioni utente
+### Azioni sugli utenti
 
-Ogni riga utente ha un menu di azioni (tre puntini verticali) sul lato destro. Fai clic su di esso per accedere alle seguenti opzioni:
+Ogni riga relativa a un utente ha un menu di azioni (tre punti verticali) sul lato destro. Fai clic su di esso per accedere alle seguenti opzioni:
 
-*   **Modifica:** Apre l'editor utente per modificare i dettagli dell'account.
-*   **Elimina:** Rimuove definitivamente l'account utente. Ti verrà chiesto di confermare questa azione.
-*   **Visualizza:** Apre una vista di sola lettura dei dettagli dell'utente.
+*   **Modifica:** Apri l'editor dell'utente per modificare i dettagli dell'account.
+*   **Elimina:** Rimuovi definitivamente l'account utente. Ti verrà chiesto di confermare questa operazione.
+*   **Visualizza:** Apri una visualizzazione in sola lettura dei dettagli dell'utente.
 
 Puoi anche fare clic in un punto qualsiasi della riga di un utente per selezionarla, oppure fare clic sull'icona di espansione per visualizzare un riepilogo delle informazioni dell'utente direttamente nell'elenco.
 
-## Creazione di un nuovo utente
+## Creare un nuovo utente
 
 Per aggiungere un nuovo utente alla tua organizzazione:
 
 1.  Fai clic sul pulsante fluttuante blu **+** nell'angolo in basso a destra dello schermo.
-2.  Si aprirà un modulo. Inserisci i dettagli del nuovo utente, inclusi email e nome, e assegnalo ai gruppi di utenti appropriati. Per maggiori informazioni sui gruppi, consulta [Elenco gruppi](groups-list.md).
-3.  Fai clic su **Salva** per creare l'account. Il nuovo utente riceverà un'email con le istruzioni per impostare la password.
+2.  Si aprirà un form. Inserisci i dettagli del nuovo utente, tra cui email e nome, e assegnalo ai gruppi di utenti appropriati. Per maggiori informazioni sui gruppi, consulta [Lista gruppi](groups-list.md).
+3.  Fai clic su **Salva** per creare l'account. Il nuovo utente riceverà un'email con le istruzioni per impostare la propria password.
 
 !!! warning "Limitazione offline"
-    Il pulsante **+** sarà disabilitato (mostra un'icona Wi-Fi spento) se non sei connesso a internet. Non è possibile creare nuovi account utente mentre si è offline. Puoi comunque visualizzare e modificare gli utenti esistenti offline.
+    Il pulsante **+** sarà disabilitato (mostrando un'icona Wi-Fi disattivato) se non sei connesso a internet. Non è possibile creare nuovi account utente mentre sei offline. Puoi comunque visualizzare e modificare gli utenti esistenti offline.
 
-## Modifica di un utente
+## Modificare un utente
 
 Per modificare le informazioni di un utente esistente:
 
-1.  Fai clic sul menu di azioni (tre puntini) nella riga dell'utente.
+1.  Fai clic sul menu di azioni (tre punti) nella riga dell'utente.
 2.  Seleziona **Modifica**.
 3.  Nell'editor, aggiorna i dettagli dell'utente o le assegnazioni ai gruppi.
 4.  Fai clic su **Salva** per applicare le modifiche.

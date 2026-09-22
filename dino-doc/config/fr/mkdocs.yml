@@ -24,6 +24,8 @@ nav:
     - Aperçu: reports/index.md
     - Modifier le schéma de rapport: reports/edit-report-schema.md
     - Modifier un rapport: reports/edit-report.md
+    - Rapport automatique: reports/autoreports.md
+    - XLSReport: reports/xlsreport.md
   - Métriques:
     - Aperçu: metrics/index.md
     - Domaines thématiques: metrics/areas.md

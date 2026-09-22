@@ -1,57 +1,57 @@
 ---
-title: Editar Esquema de Relatório
-description: Crie ou modifique um esquema de relatório para definir a estrutura, o layout e as fontes de dados para relatórios no Dino.
+title: Editar Report Schema
+description: Crie ou modifique um report schema para definir a estrutura, o layout e as fontes de dados dos relatórios no Dino.
 ---
 
-# Editar Esquema de Relatório
+# Editar Report Schema
 
-A página **Editar Esquema de Relatório** permite criar um novo esquema de relatório ou modificar um existente. Um esquema de relatório define a estrutura, o layout e as fontes de dados para um relatório no Dino.
+A página **Editar Report Schema** permite criar um novo report schema ou modificar um existente. Um report schema define a estrutura, o layout e as fontes de dados de um relatório no Dino.
 
-![Main view of the Edit Report Schema page](../imgs/reports/edit-report-schema.png)
+![Visualização principal da página Editar Report Schema](../imgs/reports/edit-report-schema.png)
 
-Nesta página, você configura o nome, a descrição e os campos de dados específicos que aparecerão no relatório a partir dos envios do seu formulário.
+Nesta página, você configura o nome, a descrição e os campos de dados específicos que aparecerão no relatório a partir dos dados dos seus form.
 
-## Criando um Novo Esquema de Relatório
+## Criar um Novo Report Schema
 
-Para criar um novo esquema de relatório:
+Para criar um novo report schema:
 
-1. Navegue até a seção **Relatórios** no menu principal.
-2. Clique em **Criar Esquema de Relatório**.
-3. Você será levado à página Editar Esquema de Relatório.
+1. Acesse a seção **Relatórios** no menu principal.
+2. Clique em **Criar Report Schema**.
+3. Você será direcionado para a página Editar Report Schema.
 4. Insira um **Nome** descritivo para o seu relatório.
-5. (Opcional) Forneça uma **Descrição** para explicar o propósito do relatório.
-6. Configure os dados e o layout do relatório usando as opções disponíveis.
-7. Clique em **Salvar** para criar o esquema.
+5. (Opcional) Forneça uma **Descrição** para explicar a finalidade do relatório.
+6. Importe um arquivo XLSReport
+7. Clique em **Salvar** para criar o schema.
 
-## Editando um Esquema de Relatório Existente
+## Editar um Report Schema Existente
 
-Para modificar um esquema de relatório que você já criou:
+Para modificar um report schema que você já criou:
 
-1. Navegue até a seção **Relatórios**.
-2. Encontre o esquema de relatório que deseja editar na lista e clique nele.
+1. Acesse a seção **Relatórios**.
+2. Encontre o report schema que deseja editar na lista e clique nele.
 3. Clique no botão **Editar** (geralmente representado por um ícone de lápis).
-4. Você será levado à página Editar Esquema de Relatório com a configuração atual carregada.
-5. Faça as alterações desejadas no nome, na descrição ou na configuração dos dados.
-6. Clique em **Salvar** para atualizar o esquema.
+4. Você será direcionado para a página Editar Report Schema com a configuração atual carregada.
+5. Faça as alterações desejadas no nome, na descrição ou na configuração de dados.
+6. Clique em **Salvar** para atualizar o schema.
 
-!!! tip "Salvando seu trabalho"
-    Lembre-se sempre de clicar em **Salvar** após fazer alterações. Suas modificações não são aplicadas até que você salve o esquema.
+!!! tip "Salvando Seu Trabalho"
+    Lembre-se sempre de clicar em **Salvar** após fazer alterações. Suas modificações não são aplicadas até que você salve o schema.
 
-## Configurando os Dados do Relatório
+## Configurar os Dados do Relatório
 
-O núcleo do esquema de relatório é definir quais dados dos envios do seu formulário aparecerão no relatório. Normalmente, você pode:
+O cerne do report schema é definir quais dados dos seus enviados aparecerão no relatório. Normalmente, você pode:
 
-* **Selecionar a Fonte de Dados:** Escolha o esquema de formulário que contém os dados sobre os quais deseja gerar o relatório.
-* **Selecionar os Campos de Dados:** Escolha campos específicos dos seus esquemas de formulário conectados para incluir como colunas no relatório.
-* **Definir Nomes de Exibição:** Personalize o cabeçalho da coluna mostrado no relatório para cada campo selecionado.
-* **Definir Filtros:** Defina condições para incluir apenas envios específicos que atendam aos seus critérios (por exemplo, envios de um determinado intervalo de datas).
+* **Selecionar a Fonte de Dados:** Escolha o form schema que contém os dados sobre os quais deseja gerar o relatório.
+* **Selecionar os Campos de Dados:** Escolha campos específicos dos form schema conectados para incluir como colunas no relatório.
+* **Definir os Nomes de Exibição:** Personalize o cabeçalho da coluna exibido no relatório para cada campo selecionado.
+* **Definir Filtros:** Estabeleça condições para incluir apenas os enviados específicos que atendam aos seus critérios (por exemplo, enviados de um determinado intervalo de datas).
 
 !!! warning "Fonte de Dados"
-    Um esquema de relatório deve estar conectado a pelo menos um esquema de formulário para ter dados a exibir. Certifique-se de que o formulário relevante exista antes de criar seu relatório.
+    Um report schema deve estar conectado a pelo menos um form schema para ter dados a exibir. Certifique-se de que o form relevante existe antes de criar seu relatório.
 
 ## Próximos Passos
 
-Após salvar seu esquema de relatório, você pode:
+Após salvar seu report schema, você pode:
 
-* Navegue até a página [Relatórios](index.md) para visualizar e executar seu novo relatório.
-* Volte a esta página para fazer os ajustes adicionais necessários.
+* Acessar a página [Relatórios](index.md) para visualizar e executar seu novo relatório.
+* Retornar a esta página para fazer mais ajustes conforme necessário.

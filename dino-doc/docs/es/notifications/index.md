@@ -5,64 +5,64 @@ description: Cómo ver, buscar y abrir tus notificaciones dentro de la aplicaci�
 
 # Notificaciones
 
-La página de Notificaciones muestra todos los mensajes que el sistema o tu administrador te han enviado. Desde aquí puedes explorar, buscar y abrir notificaciones individuales, incluso aquellas que enlazan directamente con un área relevante de la aplicación.
+La página de Notificaciones muestra todos los mensajes que te ha enviado el sistema o tu administrador. Desde aquí puedes explorar, buscar y abrir notificaciones individuales, incluidas aquellas que enlazan directamente a un área relevante de la aplicación.
 
-![Main view of the Notifications page](../imgs/notifications/index.png)
+![Vista principal de la página de Notificaciones](../imgs/notifications/index.png)
 
 ---
 
-## Lectura de tus notificaciones
+## Leer tus notificaciones
 
 La lista muestra todas las notificaciones que has recibido, indicando su **texto del mensaje** y la **fecha en que se creó**.
 
-Las notificaciones que aún no has abierto aparecen **resaltadas** en la lista para que puedas identificarlas de un vistazo. Un pequeño icono de enlace junto al texto del mensaje indica que la notificación te llevará a algún lugar al hacer clic.
+Las notificaciones que aún no has abierto aparecen **resaltadas** en la lista para que puedas identificarlas de un vistazo. Un pequeño icono de enlace junto al texto del mensaje indica que la notificación te llevará a algún lugar cuando hagas clic en ella.
 
 El número total de notificaciones que coinciden con tu búsqueda actual se muestra en la parte superior de la página.
 
 ---
 
-## Búsqueda y filtrado
+## Buscar y filtrar
 
-Usa la barra de filtros situada encima de la lista para acotar lo que se muestra.
+Utiliza la barra de filtros situada encima de la lista para acotar lo que se muestra.
 
-### Búsqueda por palabra clave
+### Buscar por palabra clave
 
 1. Haz clic dentro del campo **buscar por palabra clave** en la parte superior de la lista.
 2. Empieza a escribir cualquier palabra o frase del texto de la notificación.
 3. La lista se actualiza automáticamente mientras escribes.
 4. Para borrar la búsqueda, haz clic en el icono **×** que aparece dentro del campo.
 
-### Filtrado por fecha
+### Filtrar por fecha
 
-1. Haz clic en el campo **Fecha desde** y selecciona una fecha de inicio en el calendario.
-2. Haz clic en el campo **Fecha hasta** y selecciona una fecha de fin.
+1. Haz clic en el campo **Desde la fecha** y selecciona una fecha de inicio en el calendario.
+2. Haz clic en el campo **Hasta la fecha** y selecciona una fecha de fin.
 3. La lista mostrará únicamente las notificaciones creadas dentro de ese rango de fechas.
-4. Para eliminar un filtro de fecha, haz clic en el icono **×** situado junto al campo correspondiente.
+4. Para eliminar un filtro de fecha, haz clic en el icono **×** junto al campo correspondiente.
 
 ---
 
-## Navegación por la lista
+## Navegar por la lista
 
-Si hay más notificaciones de las que caben en una página, usa los **controles de paginación** que se encuentran en la parte superior de la lista para moverte entre páginas. Puedes saltar a la primera o a la última página, o avanzar y retroceder una página cada vez.
+Si hay más notificaciones de las que caben en una página, utiliza los **controles de paginación** en la parte superior de la lista para moverte entre páginas. Puedes saltar a la primera o a la última página, o avanzar y retroceder de una en una.
 
 ---
 
-## Apertura de una notificación
+## Abrir una notificación
 
 Haz clic en cualquier fila para abrir esa notificación.
 
-- Si la notificación contiene un **enlace** (indicado por el icono de enlace junto al mensaje), al hacer clic se marcará como leída y te llevará directamente a la página correspondiente de la aplicación.
-- Si la notificación no contiene un enlace, al hacer clic se expandirá la fila para mostrar su contenido completo en el mismo lugar.
+- Si la notificación contiene un **enlace** (indicado por el icono de enlace junto al mensaje), al hacer clic en ella se marcará como leída y te llevará directamente a la página correspondiente de la aplicación.
+- Si la notificación no contiene un enlace, al hacer clic en ella se expandirá la fila para mostrar su contenido completo en el mismo lugar.
 
-Para contraer una notificación expandida, haz clic de nuevo en su fila.
+Para contraer una notificación expandida, vuelve a hacer clic en su fila.
 
-Para expandir o contraer todas las filas a la vez, usa el **botón de plegar/desplegar** que se encuentra encima de la lista.
+Para expandir o contraer todas las filas a la vez, utiliza el **botón de plegar/desplegar** situado encima de la lista.
 
 ---
 
-## Personalización de las columnas
+## Personalizar las columnas
 
-Puedes cambiar qué columnas son visibles en la lista.
+Puedes cambiar qué columnas se muestran en la lista.
 
 1. Haz clic en el **botón selector de columnas** (icono de cuadrícula) en la esquina superior derecha del encabezado de la tabla.
 2. Se abrirá un panel con todas las columnas disponibles.
@@ -70,4 +70,4 @@ Puedes cambiar qué columnas son visibles en la lista.
 4. Cierra el panel cuando termines: tu selección se aplica de inmediato.
 
 !!! tip "Marcar como leída"
-    Cuando haces clic en una notificación que tiene un enlace, se marca automáticamente como leída. Las notificaciones sin enlace no se marcan automáticamente como leídas al expandirlas.
+    Cuando haces clic en una notificación que tiene un enlace, se marca automáticamente como leída. Las notificaciones sin enlace no se marcan automáticamente como leídas cuando las expandes.

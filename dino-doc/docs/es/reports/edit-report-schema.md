@@ -1,57 +1,57 @@
 ---
-title: Editar esquema de informe
-description: Cree o modifique un esquema de informe para definir la estructura, el diseño y las fuentes de datos de los informes en Dino.
+title: Editar report schema
+description: Crea o modifica un report schema para definir la estructura, el diseño y las fuentes de datos de los report en Dino.
 ---
 
-# Editar esquema de informe
+# Editar report schema
 
-La página **Editar esquema de informe** le permite crear un nuevo esquema de informe o modificar uno existente. Un esquema de informe define la estructura, el diseño y las fuentes de datos de un informe en Dino.
+La página **Editar report schema** te permite crear un nuevo report schema o modificar uno existente. Un report schema define la estructura, el diseño y las fuentes de datos de un report en Dino.
 
-![Main view of the Edit Report Schema page](../imgs/reports/edit-report-schema.png)
+![Vista principal de la página Editar report schema](../imgs/reports/edit-report-schema.png)
 
-En esta página, configura el nombre del informe, la descripción y los campos de datos específicos que aparecerán en el informe a partir de sus envíos de formulario.
+En esta página, configuras el nombre del report, su descripción y los campos de datos específicos que aparecerán en el report a partir de tus datos de form.
 
-## Creación de un nuevo esquema de informe
+## Crear un nuevo report schema
 
-Para crear un nuevo esquema de informe:
+Para crear un nuevo report schema:
 
-1. Vaya a la sección **Informes** en el menú principal.
-2. Haga clic en **Crear esquema de informe**.
-3. Se le llevará a la página Editar esquema de informe.
-4. Introduzca un **nombre** descriptivo para su informe.
-5. (Opcional) Proporcione una **descripción** para explicar el propósito del informe.
-6. Configure los datos y el diseño del informe utilizando las opciones disponibles.
-7. Haga clic en **Guardar** para crear el esquema.
+1. Ve a la sección **Reports** en el menú principal.
+2. Haz clic en **Create Report Schema**.
+3. Se te llevará a la página Editar report schema.
+4. Introduce un **Name** descriptivo para tu report.
+5. (Opcional) Proporciona una **Description** para explicar el propósito del report.
+6. Importa un archivo XLSReport
+7. Haz clic en **Save** para crear el schema.
 
-## Edición de un esquema de informe existente
+## Editar un report schema existente
 
-Para modificar un esquema de informe que ya haya creado:
+Para modificar un report schema que ya has creado:
 
-1. Vaya a la sección **Informes**.
-2. Busque en la lista el esquema de informe que desee editar y haga clic en él.
-3. Haga clic en el botón **Editar** (a menudo representado por un icono de lápiz).
-4. Se le llevará a la página Editar esquema de informe con la configuración actual cargada.
-5. Realice los cambios deseados en el nombre, la descripción o la configuración de datos.
-6. Haga clic en **Guardar** para actualizar el esquema.
+1. Ve a la sección **Reports**.
+2. Busca en la lista el report schema que deseas editar y haz clic en él.
+3. Haz clic en el botón **Edit** (a menudo representado por un icono de lápiz).
+4. Se te llevará a la página Editar report schema con la configuración actual cargada.
+5. Realiza los cambios que desees en el nombre, la descripción o la configuración de datos.
+6. Haz clic en **Save** para actualizar el schema.
 
-!!! tip "Guarde su trabajo"
-    Recuerde siempre hacer clic en **Guardar** después de realizar cambios. Sus modificaciones no se aplican hasta que guarde el esquema.
+!!! tip "Guardar tu trabajo"
+    Recuerda siempre hacer clic en **Save** después de realizar cambios. Tus modificaciones no se aplican hasta que guardes el schema.
 
-## Configuración de los datos del informe
+## Configurar los datos del report
 
-El núcleo del esquema de informe es definir qué datos de sus envíos de formulario aparecerán en el informe. Normalmente puede:
+El núcleo del report schema es definir qué datos de tus datos de form aparecerán en el report. Normalmente puedes:
 
-* **Seleccionar la fuente de datos:** Elija el esquema de formulario que contenga los datos sobre los que desea informar.
-* **Seleccionar los campos de datos:** Elija campos específicos de sus esquemas de formulario conectados para incluirlos como columnas en el informe.
-* **Establecer los nombres mostrados:** Personalice el encabezado de columna que se muestra en el informe para cada campo seleccionado.
-* **Definir filtros:** Establezca condiciones para incluir solo los envíos específicos que cumplan sus criterios (por ejemplo, envíos de un determinado rango de fechas).
+* **Seleccionar la fuente de datos:** Elige el form schema que contiene los datos sobre los que quieres generar el report.
+* **Seleccionar campos de datos:** Elige campos específicos de tus form schema conectados para incluirlos como columnas en el report.
+* **Establecer nombres para mostrar:** Personaliza el encabezado de columna que se muestra en el report para cada campo seleccionado.
+* **Definir filtros:** Establece condiciones para incluir solo los datos específicos que cumplan tus criterios (por ejemplo, datos de un rango de fechas determinado).
 
 !!! warning "Fuente de datos"
-    Un esquema de informe debe estar conectado al menos a un esquema de formulario para tener datos que mostrar. Asegúrese de que el formulario correspondiente exista antes de crear su informe.
+    Un report schema debe estar conectado al menos a un form schema para tener datos que mostrar. Asegúrate de que el form correspondiente existe antes de crear tu report.
 
-## Pasos siguientes
+## Próximos pasos
 
-Después de guardar su esquema de informe, puede:
+Después de guardar tu report schema, puedes:
 
-* Ir a la página [Informes](index.md) para ver y ejecutar su nuevo informe.
-* Volver a esta página para realizar los ajustes adicionales que necesite.
+* Ir a la página [Reports](index.md) para ver y ejecutar tu nuevo report.
+* Volver a esta página para realizar más ajustes según sea necesario.

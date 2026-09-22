@@ -25,6 +25,8 @@ nav:
     - نظرة عامة: reports/index.md
     - تحرير مخطط التقرير: reports/edit-report-schema.md
     - تعديل التقرير: reports/edit-report.md
+    - التقرير التلقائي: reports/autoreports.md
+    - XLSReport: reports/xlsreport.md
   - المقاييس:
     - نظرة عامة: metrics/index.md
     - المجالات الموضوعية: metrics/areas.md

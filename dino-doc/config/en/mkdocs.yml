@@ -24,6 +24,8 @@ nav:
     - Overview: reports/index.md
     - Edit Report Schema: reports/edit-report-schema.md
     - Edit Report: reports/edit-report.md
+    - Auto Report: reports/autoreports.md
+    - XLSReport: reports/xlsreport.md
   - Metrics:
     - Overview: metrics/index.md
     - Thematic Areas: metrics/areas.md

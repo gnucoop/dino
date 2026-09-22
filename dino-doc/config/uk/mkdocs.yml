@@ -24,6 +24,8 @@ nav:
     - Огляд: reports/index.md
     - Редагувати схему звіту: reports/edit-report-schema.md
     - Редагувати звіт: reports/edit-report.md
+    - Автоматичний звіт: reports/autoreports.md
+    - XLSReport: reports/xlsreport.md
   - Метрики:
     - Огляд: metrics/index.md
     - тематичні області: metrics/areas.md

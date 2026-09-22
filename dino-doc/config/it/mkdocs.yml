@@ -24,6 +24,8 @@ nav:
     - Panoramica: reports/index.md
     - Modifica Report Schema: reports/edit-report-schema.md
     - Modifica Report: reports/edit-report.md
+    - Report automatico: reports/autoreports.md
+    - XLSReport: reports/xlsreport.md
   - Metriche:
     - Panoramica: metrics/index.md
     - Aree Tematiche: metrics/areas.md
