@@ -35,15 +35,6 @@
         [centeredFieldsContent]="centeredFieldsContent"
         (formAction)="onFormAction($event)"
       ></ajf-form>
-
-      <div
-        class="dino-survey-scroll-hint"
-        [class.is-visible]="showScrollHint$ | async"
-        (click)="scrollDown()"
-        aria-hidden="true"
-      >
-        <mat-icon>keyboard_arrow_down</mat-icon>
-      </div>
     </div>
 
     <div class="dino-survey-footer">

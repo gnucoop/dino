@@ -44,6 +44,14 @@ class AjfPageSliderItem {
     set isRepeatingLast(rep) {
         this._isRepeatingLast = rep;
     }
+    /**
+     * The element that scrolls when the page holds more than fits: the host
+     * itself, which carries `overflow: auto`. Exposed for the slider, which
+     * reports how much of it is left below the fold.
+     */
+    get scroller() {
+        return this._el.nativeElement;
+    }
     constructor(_el, _renderer) {
         this._el = _el;
         this._renderer = _renderer;
@@ -155,11 +163,11 @@ class AjfPageSliderItem {
             i0.ɵɵelementStart(0, "div", 2, 0)(2, "div", 3, 1);
             i0.ɵɵprojection(4);
             i0.ɵɵelementEnd()();
-        } }, styles: ["ajf-page-slider-item{display:block;position:relative;overflow:auto;-ms-overflow-style:none;scrollbar-width:none}ajf-page-slider-item::-webkit-scrollbar{display:none}ajf-page-slider-item .ajf-page-slider-item-content{position:absolute;top:0;right:0;left:0;padding:0;margin:0;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;box-sizing:border-box}ajf-page-slider-item .ajf-page-slider-item-content .ajf-page-slider-item-content-wrapper{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-width:100%;min-height:100%}\n"], encapsulation: 2, changeDetection: 0 }); }
+        } }, styles: ["ajf-page-slider-item{display:block;position:relative;overflow:auto}ajf-page-slider-item .ajf-page-slider-item-content{position:absolute;top:0;right:0;left:0;padding:0;margin:0;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;box-sizing:border-box}ajf-page-slider-item .ajf-page-slider-item-content .ajf-page-slider-item-content-wrapper{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-width:100%;min-height:100%}ajf-page-slider ajf-page-slider-item::-webkit-scrollbar{width:6px;height:6px}ajf-page-slider ajf-page-slider-item::-webkit-scrollbar-track{background:transparent}ajf-page-slider ajf-page-slider-item::-webkit-scrollbar-thumb{border-radius:6px;background:var(--ajf-scrollbar, color-mix(in srgb, currentColor 25%, transparent))}ajf-page-slider ajf-page-slider-item::-webkit-scrollbar-thumb:hover{background:var(--ajf-scrollbar-hover, var(--ajf-scrollbar, color-mix(in srgb, currentColor 40%, transparent)))}@supports not selector(::-webkit-scrollbar){ajf-page-slider ajf-page-slider-item{scrollbar-width:thin;scrollbar-color:var(--ajf-scrollbar, color-mix(in srgb, currentColor 25%, transparent)) transparent}}\n"], encapsulation: 2, changeDetection: 0 }); }
 }
 (() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(AjfPageSliderItem, [{
         type: Component,
-        args: [{ selector: 'ajf-page-slider-item', changeDetection: ChangeDetectionStrategy.OnPush, encapsulation: ViewEncapsulation.None, template: "<div #content class=\"ajf-page-slider-item-content\">\n  <div #wrapper class=\"ajf-page-slider-item-content-wrapper\">\n    <ng-content></ng-content>\n  </div>\n</div>\n", styles: ["ajf-page-slider-item{display:block;position:relative;overflow:auto;-ms-overflow-style:none;scrollbar-width:none}ajf-page-slider-item::-webkit-scrollbar{display:none}ajf-page-slider-item .ajf-page-slider-item-content{position:absolute;top:0;right:0;left:0;padding:0;margin:0;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;box-sizing:border-box}ajf-page-slider-item .ajf-page-slider-item-content .ajf-page-slider-item-content-wrapper{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-width:100%;min-height:100%}\n"] }]
+        args: [{ selector: 'ajf-page-slider-item', changeDetection: ChangeDetectionStrategy.OnPush, encapsulation: ViewEncapsulation.None, template: "<div #content class=\"ajf-page-slider-item-content\">\n  <div #wrapper class=\"ajf-page-slider-item-content-wrapper\">\n    <ng-content></ng-content>\n  </div>\n</div>\n", styles: ["ajf-page-slider-item{display:block;position:relative;overflow:auto}ajf-page-slider-item .ajf-page-slider-item-content{position:absolute;top:0;right:0;left:0;padding:0;margin:0;display:flex;align-items:flex-start;justify-content:flex-start;overflow:hidden;box-sizing:border-box}ajf-page-slider-item .ajf-page-slider-item-content .ajf-page-slider-item-content-wrapper{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-width:100%;min-height:100%}ajf-page-slider ajf-page-slider-item::-webkit-scrollbar{width:6px;height:6px}ajf-page-slider ajf-page-slider-item::-webkit-scrollbar-track{background:transparent}ajf-page-slider ajf-page-slider-item::-webkit-scrollbar-thumb{border-radius:6px;background:var(--ajf-scrollbar, color-mix(in srgb, currentColor 25%, transparent))}ajf-page-slider ajf-page-slider-item::-webkit-scrollbar-thumb:hover{background:var(--ajf-scrollbar-hover, var(--ajf-scrollbar, color-mix(in srgb, currentColor 40%, transparent)))}@supports not selector(::-webkit-scrollbar){ajf-page-slider ajf-page-slider-item{scrollbar-width:thin;scrollbar-color:var(--ajf-scrollbar, color-mix(in srgb, currentColor 25%, transparent)) transparent}}\n"] }]
     }], () => [{ type: i0.ElementRef }, { type: i0.Renderer2 }], { wrapper: [{
             type: ViewChild,
             args: ['wrapper', { static: true }]
@@ -242,6 +250,11 @@ class AjfPageSliderItem {
  */
 const _c0 = ["body"];
 class AjfPageSlider {
+    /**
+     * How much has to be left below the fold before the hint is worth showing --
+     * a couple of lines, rather than the last pixel of a rounding error.
+     */
+    static { this._scrollHintThreshold = 24; }
     get orientation() {
         return this._orientation;
     }
@@ -289,6 +302,13 @@ class AjfPageSlider {
         this.orientationChange = this
             ._orientationChange;
         this.duration = 300;
+        /**
+         * True while the page on screen has more below the fold. The slider hides its
+         * scrollbars behind a thin, quiet one, and a page that starts with a screenful
+         * of content gives the reader no reason to suspect there is more of it: this
+         * drives the hint that says so.
+         */
+        this.showScrollHint = false;
         this._orientation = 'horizontal';
         this._fixedOrientation = true;
         this._currentPage = -1;
@@ -300,6 +320,7 @@ class AjfPageSlider {
         this._disableTouchMovement = true;
         this._animating = false;
         this._pagesSub = Subscription.EMPTY;
+        this._scrollHintTeardown = () => { };
         this._currentOrigin = null;
         this._mouseWheelEvt = new EventEmitter();
         this._mouseWheelSub = Subscription.EMPTY;
@@ -337,13 +358,69 @@ class AjfPageSlider {
         this._pagesSub = this.pages.changes.subscribe(() => {
             this._onSlidesChange();
             this._cdr.detectChanges();
+            this._updateScrollHint();
         });
+        this._watchScrollHint();
     }
     ngOnDestroy() {
         this._pagesSub.unsubscribe();
         this._mouseWheelEvt.complete();
         this._mouseWheelSub.unsubscribe();
         this._orientationChange.complete();
+        this._scrollHintTeardown();
+    }
+    /**
+     * Pages down by most of a screenful, from the hint. Most, not all: an overlap
+     * keeps the reader's place.
+     */
+    scrollHintDown() {
+        const el = this._scroller();
+        if (el != null) {
+            el.scrollBy({ top: Math.round(el.clientHeight * 0.8), behavior: 'smooth' });
+        }
+    }
+    /**
+     * The element the page on screen scrolls with, or null when it does not
+     * scroll at all.
+     */
+    _scroller() {
+        const page = this._getCurrentPage();
+        return page != null ? page.scroller : null;
+    }
+    /**
+     * Listens for everything that can change how much is left below the fold: the
+     * page being scrolled -- in the capture phase, since the event does not bubble
+     * -- and the slider being resized, which covers the content growing as a form
+     * is filled in.
+     */
+    _watchScrollHint() {
+        const body = this.body != null ? this.body.nativeElement : null;
+        if (body == null) {
+            return;
+        }
+        const onScroll = () => this._updateScrollHint();
+        body.addEventListener('scroll', onScroll, true);
+        let ro;
+        if (typeof ResizeObserver !== 'undefined') {
+            ro = new ResizeObserver(() => this._updateScrollHint());
+            ro.observe(body);
+        }
+        this._scrollHintTeardown = () => {
+            body.removeEventListener('scroll', onScroll, true);
+            ro?.disconnect();
+            this._scrollHintTeardown = () => { };
+        };
+        // The pages have not been laid out yet on the check that gets us here.
+        setTimeout(() => this._updateScrollHint());
+    }
+    _updateScrollHint() {
+        const el = this._scroller();
+        const more = el != null &&
+            el.scrollHeight - el.scrollTop - el.clientHeight > AjfPageSlider._scrollHintThreshold;
+        if (more !== this.showScrollHint) {
+            this.showScrollHint = more;
+            this._cdr.markForCheck();
+        }
     }
     switchOrientation() {
         if (this._orientation === 'horizontal') {
@@ -507,6 +584,8 @@ class AjfPageSlider {
         player.onDone(() => {
             this._animating = false;
             this._pageScrollFinish.emit();
+            // A different page, with its own content and its own scroll extent.
+            this._updateScrollHint();
         });
         player.play();
     }

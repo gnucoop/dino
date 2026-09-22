@@ -2,8 +2,8 @@ import * as i0 from '@angular/core';
 import { Pipe, EventEmitter, Injectable, Optional, isDevMode, Directive, Input, ViewChild, InjectionToken, Inject, ViewEncapsulation, ChangeDetectionStrategy, Component, Output, ViewChildren, NgModule } from '@angular/core';
 import * as i4 from '@angular/forms';
 import { UntypedFormGroup, UntypedFormControl, ReactiveFormsModule } from '@angular/forms';
-import { firstValueFrom, Subject, BehaviorSubject, Subscription, Observable, of, from, timer, defer } from 'rxjs';
-import { toArray, map, withLatestFrom, filter, share, startWith, scan, switchMap, pairwise, tap, delayWhen, shareReplay, catchError } from 'rxjs/operators';
+import { firstValueFrom, Subject, BehaviorSubject, Subscription, Observable, combineLatest, of, from, timer, defer } from 'rxjs';
+import { toArray, map, startWith, shareReplay, scan, share, switchMap, withLatestFrom, filter, pairwise, tap, delayWhen, catchError } from 'rxjs/operators';
 import { evaluateExpression, notEmpty, createFunction, alwaysCondition, neverCondition, renameArguments, createCondition, createFormula, AjfExpressionUtils, getArgumentNames, AjfError, AjfConditionSerializer, AjfFormulaSerializer } from '@ajf/core/models';
 import { deepCopy } from '@ajf/core/utils';
 import { format, parse, toDate } from 'date-fns';
@@ -3346,9 +3346,23 @@ class AjfFormRendererService {
      * Init the errors stream. Start on valueChanged
      */
     _initErrorsStreams() {
-        this._errorPositions = this._valueChanged.pipe(withLatestFrom(this._nodes, this._form), filter(([_, __, form]) => form != null &&
-            form.form != null), map(([_, nodes, formDef]) => {
-            const form = formDef.form;
+        // Recomputed when a value moves *or* when the tree does, and seeded by the
+        // tree. Driven off `_valueChanged` alone the stream stayed silent on a form
+        // that was only opened -- a saved draft, say, which never sees a value
+        // change -- and the renderer's error navigation, which reads the latest
+        // positions, had nothing to move to while the footer was already reporting
+        // the failing fields, counted off the instances themselves.
+        //
+        // The form is read from the subject rather than combined in: `_form.next()`
+        // notifies the node builder before this stream, and that builder feeds
+        // `_nodes` synchronously, so a `withLatestFrom(this._form)` here is still
+        // holding the previous value -- null, on the first form -- while the tree it
+        // is being handed was built from the new one. The positions belong to the
+        // tree anyway; the form only takes the verdict.
+        this._errorPositions = combineLatest([
+            this._valueChanged.pipe(startWith(undefined)),
+            this._nodes,
+        ]).pipe(map(([_, nodes]) => {
             let currentPosition = 0;
             const errors = [];
             nodes.forEach(node => {
@@ -3375,11 +3389,23 @@ class AjfFormRendererService {
                     }
                 }
             });
-            form.valid = errors.length == 0;
+            const formDef = this._form.getValue();
+            if (formDef != null && formDef.form != null) {
+                formDef.form.valid = errors.length == 0;
+            }
             this._slidesNum.next(currentPosition);
             return errors;
-        }), share());
-        this._errors = this._errorPositions.pipe(map(e => (e != null ? e.length : 0)), startWith(0), share());
+        }), 
+        // Replayed, not just multicast: the renderer wires its error-navigation
+        // handler only once the page slider exists, which is later than the first
+        // recount, and a plain `share()` left that handler with no positions until
+        // the next one.
+        shareReplay({ bufferSize: 1, refCount: true }));
+        // Replayed as well: `startWith` sits upstream of the multicast, so it only
+        // ever served the subscriber that connected the stream. Anyone subscribing
+        // later -- and the renderer's own validity subscription can be one of them --
+        // got nothing at all until the next recount.
+        this._errors = this._errorPositions.pipe(map(e => (e != null ? e.length : 0)), startWith(0), shareReplay({ bufferSize: 1, refCount: true }));
     }
     /**
      * Init all the update map stream for the form nodes
@@ -5732,9 +5758,11 @@ class AjfFormRenderer {
                     prevIdx = errorsLen - 1;
                     nextIdx = 0;
                 }
-                this.formSlider.slide({
-                    to: move ? errors[nextIdx] - 1 : errors[prevIdx] - 1,
-                });
+                // Positions count visible slides, pages count what the slider shows, and
+                // a start message takes the first of those: the same offset
+                // `currentPosition` takes out above has to go back in here.
+                const target = (move ? errors[nextIdx] : errors[prevIdx]) - 1 + +this.hasStartMessage;
+                this.formSlider.slide({ to: target });
                 this._changeDetectorRef.detectChanges();
             });
         }
