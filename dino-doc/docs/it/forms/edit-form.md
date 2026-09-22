@@ -1,55 +1,55 @@
 ---
-title: Modifica un invio di modulo
-description: Scopri come modificare un invio di modulo esistente in Dino.
+title: Modificare i dati di un form
+description: Scopri come modificare i dati di un form esistente in Dino.
 ---
 
-# Modifica un invio di modulo
+# Modificare i dati di un form
 
-La schermata Modifica modulo ti consente di modificare un invio di modulo esistente. Puoi aggiornare i dati, aggiungere nuove informazioni o salvare le modifiche come bozza per completarle in seguito.
+La schermata Modifica form ti permette di modificare i dati di un form esistente. Puoi aggiornare i dati, aggiungere nuove informazioni o salvare le modifiche come bozza per completarle in un secondo momento.
 
-Quando apri un invio di modulo per modificarlo, vedi la stessa interfaccia del modulo utilizzata per l'inserimento dei dati, ma con tutti i dati precedentemente salvati già compilati.
+Quando apri i dati di un form per modificarli, vedi la stessa interfaccia del form usata per l'inserimento, ma con tutti i dati già salvati compilati.
 
-![Vista principale della pagina Modifica modulo](../imgs/forms/edit-form.png)
+![Visualizzazione principale della pagina Modifica form](../imgs/forms/edit-form.png)
 
-## Come modificare un invio
+## Come modificare i dati
 
-1.  Vai all'elenco degli invii del tuo modulo.
-2.  Individua l'invio specifico che desideri modificare.
-3.  Fai clic sul pulsante **Modifica** (di solito rappresentato da un'icona a matita) per quell'invio. Questa azione apre il modulo in modalità di modifica.
-4.  Apporta le modifiche desiderate a qualsiasi campo del modulo.
-5.  Scegli un'azione in fondo al modulo:
-    *   **Salva bozza**: Salva le modifiche correnti senza inviare il modulo. Puoi tornare e modificarlo di nuovo in seguito.
-    *   **Invia**: Salva tutte le modifiche e invia i dati aggiornati del modulo.
+1.  Vai alla lista di form del tuo form.
+2.  Individua i dati specifici che vuoi modificare.
+3.  Clicca il pulsante **Edit** (di solito rappresentato da un'icona a matita) relativo a quei dati. Il form si apre in modalità di modifica.
+4.  Apporta le modifiche desiderate a qualsiasi campo del form.
+5.  Scegli un'azione in fondo al form:
+    *   **Salva bozza**: salva le modifiche attuali senza inviare il form. Puoi tornare a modificarlo in seguito.
+    *   **Invia**: salva tutte le modifiche e invia i dati aggiornati del form.
 
 !!! tip "Monitoraggio delle modifiche"
-    Dino registra automaticamente le modifiche apportate tra l'invio originale e la versione modificata. Questo crea uno storico di chi ha cambiato cosa e quando.
+    Dino registra automaticamente le modifiche che apporti tra i dati originali e la versione modificata. In questo modo si crea uno storico di chi ha modificato cosa e quando.
 
-## Funzionalità disponibili
+<!-- ## Funzionalità disponibili
 
-Durante la modifica, hai accesso alle stesse funzionalità che hai quando crei un nuovo invio:
+Durante la modifica hai accesso alle stesse funzionalità disponibili quando crei nuovi dati:
 
-*   **Metriche opzionali**: Alcuni moduli possono avere sezioni o domande facoltative che puoi scegliere di compilare.
-*   **Caricamento file**: Allega nuovi file o sostituisci quelli esistenti se questa funzionalità è abilitata per il tuo modulo.
-*   **Campi secondari**: Per alcuni dati, possono essere visualizzati campi aggiuntivi correlati per un inserimento più dettagliato.
-*   **Relazioni del modulo (dipendenze)**: Se il modulo include campi dipendenti, potresti vedere richieste aggiuntive in base alle risposte precedenti. Le dipendenze sono definite quando viene creato lo schema del modulo.
+*   **Metriche opzionali**: alcuni form possono avere sezioni o domande opzionali che puoi scegliere di compilare.
+*   **Caricamento file**: allega nuovi file o sostituisci quelli esistenti se questa funzionalità è abilitata per il tuo form.
+*   **Campi secondari**: per alcuni dati possono essere mostrati campi aggiuntivi correlati, per un inserimento più dettagliato.
+*   **Relazioni tra form (dipendenze)**: se il form include campi dipendenti, potresti vedere richieste aggiuntive basate sulle risposte precedenti. Le dipendenze vengono definite quando si crea il form schema.
 
-![Finestra di dialogo dell'editor delle relazioni del modulo (dipendenze)](../imgs/forms/edit-form-schema-relationships.png)
+![Finestra di modifica delle relazioni tra form (dipendenze)](../imgs/forms/edit-form-schema-relationships.png)
 
 !!! warning "Integrità dei dati"
-    Presta attenzione quando modifichi dati critici. Altri report o analisi potrebbero dipendere dai valori inviati originariamente. Valuta se creare un nuovo invio corretto possa essere più appropriato che modificarne uno vecchio.
+    Presta attenzione quando modifichi dati critici. Altri report o analisi potrebbero dipendere dai valori originariamente inviati. Valuta se creare nuovi dati corretti sia più appropriato che modificarne di vecchi. -->
 
-## Comprendere la struttura del modulo
+<!-- ## Comprendere la struttura del form
 
-Il modulo che vedi durante la modifica si basa su uno **schema del modulo** — il progetto sottostante che definisce tutti i campi, le sezioni e le regole. Puoi visualizzare un'anteprima compilata dello schema del modulo dal designer.
+Il form che vedi durante la modifica si basa su un **form schema**: il progetto sottostante che definisce tutti i campi, le sezioni e le regole. Dal designer puoi visualizzare un'anteprima compilata del form schema.
 
-![Vista del modulo compilata dopo aver fatto clic su Visualizza il modulo](../imgs/forms/edit-form-view.png)
+![Visualizzazione del form compilato dopo aver cliccato Visualizza il form](../imgs/forms/edit-form-view.png)
 
-Lo schema stesso può essere modificato separatamente. Se devi cambiare la struttura di un modulo (aggiungere o rimuovere campi, adattare la validazione), consulta [Modifica schema del modulo](edit-form-schema.md).
+Lo schema stesso può essere modificato separatamente. Se devi cambiare la struttura di un form (aggiungere o rimuovere campi, modificare la validazione), vedi [Modifica form schema](edit-form-schema.md).
 
-![Vista principale della pagina Modifica schema del modulo](../imgs/forms/edit-form-schema.png)
+![Visualizzazione principale della pagina Modifica form schema](../imgs/forms/edit-form-schema.png)
 
 ## Azioni correlate
 
-*   Per comprendere la struttura del modulo stesso, consulta [Modifica schema del modulo](edit-form-schema.md).
-*   Per creare un nuovo invio da zero, di solito si parte dalla pagina principale [Moduli](index.md).
-*   Per esplorare moduli e invii su una mappa, consulta [Mappa dei moduli](forms-map.md).
+*   Per capire la struttura del form stesso, vedi [Modifica form schema](edit-form-schema.md).
+*   Per creare nuovi dati da zero, di solito si parte dalla pagina principale [Form](index.md).
+*   Per sfogliare i tuoi form e i relativi dati su una mappa, vedi [Mappa dei form](forms-map.md). -->

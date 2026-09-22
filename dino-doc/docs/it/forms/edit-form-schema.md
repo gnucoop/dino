@@ -1,64 +1,64 @@
 ---
-title: Modifica schema del modulo
-description: Crea e modifica gli schemi dei moduli — imposta nome, icona, stati, metriche, visibilità e definisci le relazioni.
+title: Modifica form schema
+description: Crea e modifica i form schema — imposta nome, icona, stati, metriche, visibilità e definisci le relazioni.
 ---
 
-# Modifica schema del modulo
+# Modifica form schema
 
-La pagina Modifica schema del modulo consente di creare un nuovo schema di modulo o modificarne uno esistente. Qui è possibile definire gli attributi di base del modulo, gestirne stati e metriche, controllare la visibilità e collegare lo schema ad altri moduli tramite relazioni.
+La pagina Modifica form schema ti consente di creare un nuovo form schema o di modificarne uno esistente. Qui definisci gli attributi di base del form, ne gestisci stati e metriche, controlli la visibilità e colleghi lo schema ad altri form tramite le relazioni.
 
 Puoi raggiungere questa pagina:
 
-- Facendo clic su **Crea** nella [Panoramica dei moduli](index.md) per creare un nuovo schema.
-- Selezionando **Modifica** sulla scheda di uno schema esistente o dalla relativa vista di dettaglio.
+- Cliccando su **Crea** nella [panoramica dei form](index.md) per creare un nuovo schema.
+- Selezionando **Modifica** sulla scheda di uno schema esistente o dalla sua visualizzazione di dettaglio.
 
-Il breadcrumb in alto mostra la posizione corrente (ad es., **Moduli > Il mio sondaggio > Modifica**).
+Il percorso di navigazione in alto mostra la tua posizione attuale (ad es. **Form > My Survey > Modifica**).
 
 ![Main view of the Edit Form Schema page](../imgs/forms/edit-form-schema.png)
 
-## Attributi del modulo
+## Attributi del form
 
 Compila o modifica i seguenti campi:
 
 | Campo | Descrizione |
 |-------|-------------|
-| **Nome modulo** | Un identificatore di sistema univoco (ad es. `survey_2025`). Dino avvisa se il nome è già utilizzato. |
-| **Etichetta modulo** | Il nome leggibile visualizzato in elenchi e report. |
-| **Set di icone** | Scegli **Predefinito** (icone material) o **Umanitario** (icone SVG personalizzate). |
-| **Identificatore icona** | Seleziona un'icona dall'elenco di autocompletamento. L'anteprima si aggiorna in tempo reale. |
-| **Stati del modulo** | Una o più etichette che descrivono lo stato di un invio (ad es. Bozza, Approvato, Rifiutato). Seleziona stati esistenti oppure **Crea nuovo stato** per aggiungerne uno al volo. |
-| **Metriche del modulo** | Metriche da raccogliere per ogni invio. Selezionane una o più dall'elenco. |
-| **Visibilità** | **Privato** – solo i membri dei gruppi assegnati possono vedere il modulo. **Pubblico** – chiunque abbia il link può visualizzarlo e inviarlo. |
-| **Comportamento del set di metriche** | **Predefinito** – ogni valore di metrica può comparire più volte negli invii. **Univoco** – un valore di metrica (ad es. il nome di un distretto) può essere usato una sola volta per modulo. |
-| **Genera report** | Se **Sì**, Dino genera automaticamente un report dopo ogni invio. Questa opzione è nascosta se è già configurato un report automatico. |
+| **Nome del form** | Un identificatore di sistema univoco (ad es. `survey_2025`). Dino avvisa se il nome è già utilizzato. |
+| **Etichetta del form** | Il nome leggibile mostrato negli elenchi e nei report. |
+| **Set di icone** | Scegli **Default** (icone material) oppure **Humanitarian** (icone SVG personalizzate). |
+| **Identificatore dell'icona** | Scegli un'icona dall'elenco con completamento automatico. L'anteprima si aggiorna in tempo reale. |
+| **Stati del form** | Una o più etichette che descrivono lo stato di un dato (ad es. Bozza, Approvato, Rifiutato). Seleziona stati esistenti oppure **Crea nuovo stato** per aggiungerne uno al momento. È possibile associare un livello a ciascuno stato, per stabilire un ordine tra gli stati. Quando viene creato un nuovo dato del form, il dato viene creato con lo stato corrispondente al livello più basso.|
+| **Metriche del form** | Le metriche da raccogliere per ogni dato. Selezionane una o più dall'elenco. |
+| **Visibilità** | **Private** – il form schema può accettare dati solo dagli utenti DINO, purché abbiano il permesso di inviare dati per quello specifico form schema. Se invece un form è impostato su **Public** – chiunque abbia il link può inviare dati. Per maggiori dettagli, consulta la pagina sui [form pubblici](../public-forms/index.md).|
+| **Comportamento del set di metriche** | **Default** – il valore di ogni metrica può comparire più volte nei dati. **Unique** – il valore di una metrica (ad es. il nome di un distretto) può essere usato una sola volta per form. |
+| **Genera report** | Se impostato su **Sì**, Dino genera automaticamente un report. Questa opzione è nascosta se è già presente un report automatico. Per maggiori dettagli, consulta la sezione sui [report automatici](../reports/autoreports.md). |
 
-!!! warning "Comportamento del set di metriche univoco"
-    Usa **Univoco** con cautela: una volta che un valore è stato usato per una metrica, non può essere riutilizzato in un altro invio dello stesso modulo.
+!!! warning "Comportamento Unique del set di metriche"
+    Usa **Unique** con attenzione — una volta che un valore è stato usato per una metrica, non può essere riutilizzato in un altro dato dello stesso form schema.
 
-## Gestione degli stati del modulo
+## Gestire gli stati del form
 
-1. Fai clic sul campo **Stati del modulo** per espandere l'elenco.
-2. Per aggiungere uno stato esistente, seleziona la relativa casella.
-3. Per creare un nuovo stato, fai clic su **Crea nuovo stato**. Si apre una finestra di dialogo in cui puoi inserire un'etichetta, scegliere un colore e salvare.
-4. Per modificare uno stato esistente, fai clic sull'icona **modifica** (matita) accanto ad esso.
-5. Fai clic all'esterno del menu a discesa per chiuderlo.
+1. Clicca sul campo **Stati del form** per espandere l'elenco.
+2. Per aggiungere uno stato esistente, seleziona la relativa casella di controllo.
+3. Per creare un nuovo stato, clicca su **Crea nuovo stato**. Si apre una finestra di dialogo in cui puoi inserire un'etichetta, scegliere un colore e salvare.
+4. Per modificare uno stato esistente, clicca sull'icona **modifica** (matita) accanto ad esso.
+5. Clicca fuori dal menu a tendina per chiuderlo.
 
-## Definizione delle relazioni
+## Definire le relazioni
 
-Le relazioni consentono di collegare campi tra diversi schemi di modulo (ad es. un sotto-modulo che dipende da una scelta nel modulo principale).
+Le relazioni ti permettono di collegare i campi tra form schema diversi (ad es. un sotto-form che dipende da una scelta effettuata nel form principale).
 
-1. Fai clic sul pulsante **Relazioni**.
-2. Nella finestra di dialogo, aggiungi, modifica o rimuovi connessioni tra schemi.
+1. Clicca sul pulsante **Relazioni**.
+2. Nella finestra di dialogo puoi aggiungere, modificare o rimuovere le connessioni tra gli schemi.
 
 ![Form relationships (dependencies) editor dialog](../imgs/forms/edit-form-schema-relationships.png)
 
 !!! tip "Le relazioni sono disponibili solo quando si modifica uno schema esistente, non durante la creazione iniziale."
 
-## Salvataggio e importazione
+## Salvare e importare
 
-- **Salva** – archivia tutte le modifiche. Il pulsante è disabilitato se il modulo non è valido o se è ancora in fase di salvataggio.
-- **Importa** – apre un selettore di file per caricare uno schema di modulo da un file JSON o CSV. Usalo per riutilizzare la struttura di uno schema da un altro progetto.
+- **Salva** – memorizza tutte le modifiche. Il pulsante è disabilitato se il form non è valido o se il salvataggio è ancora in corso.
+- **Importa** – apre una finestra di selezione dei file per caricare un form schema da un file JSON o CSV. Usala per riutilizzare la struttura di uno schema proveniente da un altro progetto.
 
-## Il Form Builder
+## Il builder del form
 
-Sotto gli attributi, l'area **Form Builder** consente di trascinare, rilasciare e configurare i singoli campi (domande, sezioni, ecc.). Le modifiche vengono riflesse immediatamente nell'anteprima sul lato destro del builder.
+Sotto gli attributi, l'area **Builder del form** ti permette di trascinare, rilasciare e configurare i singoli campi (domande, sezioni, ecc.). Le modifiche si riflettono immediatamente nell'anteprima a destra del builder.

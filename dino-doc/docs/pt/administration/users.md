@@ -1,32 +1,32 @@
 ---
-title: Usuários
-description: Acesse as seções de gerenciamento de Usuários e Grupos para controlar contas de usuário e permissões no Dino.
+title: Utilizadores
+description: Acede às secções de gestão de Utilizadores e Grupos para controlar contas de utilizador e permissões no Dino.
 ---
 
-# Usuários
+# Utilizadores
 
-A área **Usuários** é o ponto central para gerenciar quem pode acessar o Dino e o que eles podem fazer. A partir daqui, você pode navegar para duas seções principais de administração: **Usuários** (para contas individuais) e **Grupos** (para conjuntos de permissões).
+A área **Utilizadores** é o hub central para gerir quem pode aceder ao Dino e o que pode fazer. A partir daqui, podes navegar para duas secções principais de administração: **Utilizadores** (para contas individuais) e **Grupos** (para conjuntos de permissões).
 
-![Main view of the Users page](../imgs/administration/users.png)
+![Vista principal da página Utilizadores](../imgs/administration/users.png)
 
-Quando você abre a página Usuários, verá um menu com as seguintes opções:
+Quando abres a página Utilizadores, vês um menu com as seguintes opções:
 
-*   **Usuários**: Abre a página [Gerenciar Usuários](users-list.md) para criar, editar e gerenciar contas de usuário individuais.
+*   **Utilizadores**: Abre a página [Gerir Utilizadores](users-list.md) para criar, editar e gerir contas de utilizador individuais.
 
-    Clicar nesta opção leva você à lista de usuários, onde você pode visualizar todas as contas, adicionar novos usuários, editar detalhes e desativar contas.
+    Ao clicar nesta opção, és levado para a lista de utilizadores, onde podes ver todas as contas, adicionar novos utilizadores, editar detalhes e desativar contas.
 
-    ![Main view of the Users List page](../imgs/administration/users-list.png)
+    ![Vista principal da página Lista de Utilizadores](../imgs/administration/users-list.png)
 
-*   **Grupos**: Abre a página [Grupos](groups-list.md) para criar e gerenciar grupos de permissões que controlam o acesso a formulários, relatórios e dados.
+*   **Grupos**: Abre a página [Grupos](groups-list.md) para criar e gerir grupos de permissões que controlam o acesso a formulários, relatórios e dados.
 
-Basta clicar em qualquer um dos itens do menu para navegar até a seção correspondente.
+Basta clicar em qualquer um dos itens do menu para navegar para a secção correspondente.
 
 !!! warning "Acesso de Administrador Necessário"
-    A área Usuários só é visível para usuários com a função de Administrador. Se você não conseguir ver esta página, entre em contato com o administrador do sistema.
+    A área Utilizadores só é visível para utilizadores com a função de Administrador. Se não consegues ver esta página, contacta o teu administrador de sistema.
 
 ---
 
 ## Páginas Relacionadas
 
-*   [Gerenciar Usuários](users-list.md): Guia detalhado sobre como criar, editar e gerenciar contas de usuário.
-*   [Grupos](groups-list.md): Guia detalhado sobre como criar e gerenciar grupos de permissões.
+*   [Gerir Utilizadores](users-list.md): Guia detalhado sobre como criar, editar e gerir contas de utilizador.
+*   [Grupos](groups-list.md): Guia detalhado sobre como criar e gerir grupos de permissões.

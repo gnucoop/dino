@@ -1,45 +1,45 @@
 ---
 title: Datachat
-description: Usa DinoGPT, un asistente de IA, para hacer preguntas sobre los datos de tus formularios.
+description: Utiliza DinoGPT, un asistente de IA, para hacer preguntas sobre los datos de tu formulario.
 ---
 
 # Datachat
 
-La página Datachat proporciona acceso a **DinoGPT**, un asistente impulsado por IA que puede responder preguntas sobre los datos recopilados en tus formularios. Puedes hacer preguntas en lenguaje natural para obtener información de tus envíos.
+La página Datachat da acceso a **Dino AI**, un asistente impulsado por IA que puede responder preguntas sobre los datos recopilados en tus formularios. Puedes hacer preguntas en lenguaje natural para obtener información a partir de tus datos.
 
-Cuando abres la página Datachat, verás la interfaz de DinoGPT y un acuerdo de términos de servicio. Debes leer y aceptar los términos antes de poder iniciar una sesión de chat.
+Cuando abras la página Datachat, verás la interfaz de Dino AI y un acuerdo de términos de servicio. Debes leer y aceptar los términos antes de poder iniciar una sesión de chat.
 
 !!! warning "Información generada por IA"
-    DinoGPT genera respuestas basadas en los datos específicos de la base de datos de tu formulario. Su conocimiento se limita a estos datos y puede no ser completo, preciso o estar actualizado. Eres responsable de verificar cualquier información proporcionada. DinoGPT no ofrece asesoramiento profesional.
+    Dino AI genera respuestas basándose en los datos específicos de la base de datos de tu formulario. Su conocimiento se limita a estos datos y puede no ser completo, preciso o estar actualizado. Eres responsable de verificar cualquier información proporcionada. Dino AI no ofrece asesoramiento profesional.
 
-## Aceptación de los Términos de Uso
+## Aceptar los términos de uso
 
-Antes de poder usar DinoGPT, debes leer y aceptar sus términos de uso.
+Antes de poder usar Dino AI, debes leer y aceptar sus términos de uso.
 
-1.  Lee atentamente los **Términos de Uso de DinoGPT** que se muestran en la página.
+1.  Lee atentamente los **Términos de uso de Dino AI** que se muestran en la página.
 2.  Si aceptas todos los términos y condiciones, continúa para iniciar una sesión de chat.
 
-## Inicio de una Sesión de Chat
+## Iniciar una sesión de chat
 
 Para empezar a hacer preguntas sobre tus datos:
 
-1.  Tras aceptar los términos, la interfaz principal de chat se activa.
+1.  Después de aceptar los términos, la interfaz principal de chat se activa.
 2.  Escribe tu pregunta sobre los datos del formulario en el campo de entrada.
 3.  Pulsa **Enter** o haz clic en el botón de enviar para enviar tu pregunta.
 
-El asistente de IA procesará tu pregunta y proporcionará una respuesta basada en los datos de envío disponibles.
+El asistente de IA procesará tu pregunta y proporcionará una respuesta basándose en los datos disponibles.
 
-!!! tip "Preguntas efectivas"
-    Para obtener mejores resultados, haz preguntas claras y específicas sobre los datos. Por ejemplo, "¿Cuál es la edad media de los encuestados?" o "Enumera todos los envíos de la semana pasada."
+!!! tip "Preguntas eficaces"
+    Para obtener mejores resultados, haz preguntas claras y específicas sobre los datos. Por ejemplo: "¿Cuál es la edad promedio de los encuestados?" o "Enumera todos los envíos de la semana pasada".
 
-## Durante una Sesión de Chat
+## Durante un chat
 
-- Puedes hacer preguntas de seguimiento en la misma sesión; DinoGPT mantendrá el contexto de tu conversación.
+- Puedes hacer preguntas de seguimiento en la misma sesión; DinoAI mantendrá el contexto de tu conversación.
 - El historial del chat es visible, lo que te permite revisar preguntas y respuestas anteriores.
 
-## Finalizar una Sesión de Chat
+## Finalizar una sesión de chat
 
-Tu sesión de chat finaliza automáticamente cuando sales de la página Datachat. Puedes cambiar a otras páginas, como la [lista de Formularios](index.md), y volver más tarde para iniciar una nueva sesión.
+Tu sesión de chat finaliza automáticamente cuando sales de la página Datachat. Puedes cambiar a otras páginas, como la [Lista de formularios](index.md), y volver más tarde para iniciar una nueva sesión.
 
 !!! warning "Privacidad de los datos"
-    DinoGPT solo accede a los datos del esquema de formulario actual. No puede ver datos de otros formularios ni de fuentes externas.
+    Dino AI solo accede a los datos del form schema actual. No puede ver datos de otros formularios ni de fuentes externas.

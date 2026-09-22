@@ -1,57 +1,57 @@
 ---
-title: Panel de control
-description: El panel de control de Dino es tu pantalla de inicio, que proporciona acceso rápido a formularios, informes y otras funciones.
+title: Panel
+description: El Panel de Dino es tu pantalla de inicio y proporciona acceso rápido a los form, los report y otras funciones.
 ---
 
-# Panel de control
+# Panel
 
-El panel de control es la primera pantalla que ves después de iniciar sesión en Dino. Sirve como centro de navegación de la aplicación. Según la configuración de tu sistema, tu panel de control aparecerá en uno de dos formatos: un **panel de menú** o un **panel de informes**.
+El Panel es la primera pantalla que ves después de iniciar sesión en Dino. Sirve como tu centro principal para navegar por la aplicación. Según la configuración de tu sistema, tu Panel aparecerá con uno de estos dos diseños: un **Panel de menú** o un **Panel de report**.
 
-![Vista principal de la página del panel de control](../imgs/dashboard/index.png)
+![Vista principal de la página Panel](../imgs/dashboard/index.png)
 
 ---
 
 ## Panel de menú
 
-En este formato, el panel de control presenta una cuadrícula de tarjetas de navegación. Cada tarjeta proporciona acceso rápido a un área principal de la aplicación para la que tienes permiso.
+En este diseño, el Panel presenta una cuadrícula de tarjetas de navegación. Cada tarjeta ofrece acceso rápido a un área principal de la aplicación para la que tienes permiso de uso.
 
 Normalmente verás las siguientes tarjetas:
 
-*   **Formularios**: Navega al área de [Formularios](../forms/index.md) para crear esquemas de formularios, recopilar datos y revisar envíos.
-*   **Informes**: Navega al área de [Informes](../reports/index.md) para crear, ver y gestionar informes basados en los datos recopilados.
-*   **Métricas**: Navega al área de [Métricas](../metrics/index.md) para gestionar datos de referencia como proyectos, ubicaciones y organizaciones.
+*   **Form**: Accede al área de [Form](../forms/index.md) para crear form schema, recopilar datos y revisar los datos enviados.
+*   **Report**: Accede al área de [Report](../reports/index.md) para crear, ver y gestionar report basados en los datos que has recopilado.
+*   **Métricas**: Accede al área de [Métricas](../metrics/index.md) para gestionar datos de referencia como proyectos, ubicaciones y organizaciones.
     !!! warning "Visibilidad"
-        La tarjeta de Métricas está oculta si tu cuenta de usuario solo tiene permisos de invitado.
-*   **Usuarios**: Navega al área de [Gestionar usuarios](../administration/users-list.md) para gestionar cuentas de usuario y grupos.
+        La tarjeta Métricas se oculta si tu cuenta de usuario solo tiene permisos de invitado.
+*   **Usuarios**: Accede al área de [Gestionar usuarios](../administration/users-list.md) para gestionar cuentas de usuario y grupos.
     !!! tip "Acceso de administrador"
-        La tarjeta de Usuarios solo es visible para usuarios con privilegios de administrador.
+        La tarjeta Usuarios solo es visible para los usuarios con privilegios de administrador.
 
 Para navegar, simplemente haz clic en la tarjeta del área a la que deseas acceder.
 
 ---
 
-## Panel de informes
+## Panel de report
 
-En este formato, tu panel de control se personaliza para mostrar un único informe que hayas marcado como favorito. Esto te permite ver visualizaciones de datos clave inmediatamente después de iniciar sesión.
+En este diseño, tu Panel está personalizado para mostrar un único report que hayas marcado como favorito. Esto te permite ver visualizaciones de datos clave inmediatamente después de iniciar sesión.
 
-Si aún no has seleccionado un informe favorito, verás un mensaje de bienvenida que te pedirá que añadas uno.
+Si aún no has seleccionado un report favorito, verás un mensaje de bienvenida que te invita a añadir uno.
 
-### Configurar un informe favorito
+### Configurar un report favorito
 
-1.  Ve al área de [Informes](../reports/index.md).
-2.  Abre el informe que quieras ver en tu panel de control.
-3.  En la lista de informes o en la vista de informe, busca y haz clic en la acción **Añadir a favoritos** (normalmente representada por un icono de corazón).
-4.  Actualiza o vuelve a tu panel de control. El informe seleccionado se mostrará ahora.
+1.  Ve al área de [Report](../reports/index.md).
+2.  Abre el report que quieres ver en tu Panel.
+3.  En la lista de report o en la vista del report, busca y haz clic en la acción **Añadir a favoritos** (normalmente representada por un icono de corazón).
+4.  Actualiza o vuelve a tu Panel. El report seleccionado se mostrará ahora.
 
 ### Cambiar o eliminar un favorito
 
-Para cambiar tu informe favorito, simplemente añade otro informe a tus favoritos. El nuevo informe reemplazará al anterior en tu panel de control. Para vaciar el panel de control, puedes eliminar la configuración del informe favorito del almacenamiento local de tu navegador, o ponerte en contacto con el administrador del sistema.
+Para cambiar tu report favorito, simplemente añade otro report a tus favoritos. El nuevo report reemplazará al anterior en tu Panel. Para vaciar el Panel, puedes eliminar la configuración del report favorito del almacenamiento local de tu navegador o ponerte en contacto con el administrador de tu sistema.
 
 <!-- ---
 
-## Guided Tour
+## Visita guiada
 
-The first time you access Dino, a guided tour may automatically start from the Dashboard to introduce you to the application's main features.
+La primera vez que accedas a Dino, es posible que se inicie automáticamente una visita guiada desde el Panel para presentarte las principales funciones de la aplicación.
 
-*   You can follow the on-screen prompts to learn about navigation and key actions.
-*   If you skip or finish the tour, you can restart it at any time from the help menu in the [User Area](../interface/index.md#user-area). -->
+*   Puedes seguir las indicaciones en pantalla para conocer la navegación y las acciones clave.
+*   Si omites o finalizas la visita, puedes reiniciarla en cualquier momento desde el menú de ayuda en el [Área de usuario](../interface/index.md#user-area). -->

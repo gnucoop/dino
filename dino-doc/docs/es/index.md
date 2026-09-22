@@ -1,46 +1,47 @@
 ---
 title: Bienvenido a Dino
-description: "Una introducción a Dino: qué es, para quién es y cómo navegar por esta documentación."
+description: "Una introducción a Dino: qué es, para quién está pensado y cómo navegar por esta documentación."
 ---
 
 # Bienvenido a Dino
 
-Dino es una plataforma web para la recopilación, el seguimiento y el análisis de datos estructurados. Ofrece a los equipos un único lugar para diseñar formularios de recopilación de datos, recopilar información sobre el terreno, realizar un seguimiento del progreso y explorar los resultados, tanto si está en línea como si trabaja en entornos con baja conectividad.
+Dino es una plataforma web para la recopilación, el monitoreo y el análisis de datos estructurados. Ofrece a los equipos un único espacio para diseñar formularios de recopilación de datos, recolectar información sobre el terreno, hacer seguimiento del progreso y explorar los resultados, ya sea que trabajes en línea o en entornos con conectividad limitada.
 
 ---
 
-## Qué puede hacer con Dino
+## Qué puedes hacer con Dino
 
 ### Recopilar y gestionar datos
-Diseñe la estructura de los formularios, denominados esquemas de formulario, y úselos para registrar información. Vea y gestione todos sus datos desde el [Panel de control](dashboard/index.md) principal. Puede crear, editar y organizar sus herramientas de recopilación de datos.
+Diseña la estructura de los formularios, llamados form schemas, y úsalos para recoger información. Consulta y gestiona todos tus datos desde el [Panel](dashboard/index.md) principal. Puedes crear, editar y organizar tus herramientas de recopilación de datos.
 
 *   [Ver y gestionar formularios](forms/index.md)
-*   [Diseñar un esquema de formulario](forms/edit-form-schema.md)
+*   [Diseñar un form schema](forms/edit-form-schema.md)
 *   [Rellenar un formulario](forms/edit-form.md)
-*   [Importar datos de fuentes externas](forms/import.md)
+*   [Importar datos desde fuentes externas](forms/import.md)
 *   [Explorar datos en un mapa](forms/forms-map.md)
 
-### Analizar y generar informes
-Convierta los datos recopilados en información útil. Cree informes personalizados y use la IA para hacer preguntas sobre sus datos en lenguaje natural.
+### Analizar y reportar
+Convierte tus datos recopilados en información útil. Crea report personalizados y usa la IA para hacer preguntas sobre tus datos en lenguaje natural.
 
-*   [Ver y gestionar informes](reports/index.md)
-*   [Diseñar un esquema de informe](reports/edit-report-schema.md)
-*   [Rellenar un informe](reports/edit-report.md)
-*   [Chatear con sus datos](forms/datachat.md)
+*   [Ver y gestionar report](reports/index.md)
+*   [Diseñar un report schema](reports/edit-report-schema.md)
+*   [Rellenar un report](reports/edit-report.md)
+*   [Chatear con tus datos](forms/datachat.md)
 *   [Agregar datos](aggregation/index.md)
 
-### Etiquetar sus datos
-Asigne etiquetas de tipos predefinidos, denominados métricas, a sus datos para permitir la segregación de datos (mediante permisos de acceso), la agregación de datos y la creación de relaciones entre formularios. Los tipos de métricas predefinidos son: áreas, casos, ubicaciones, organizaciones y proyectos.
+### Etiquetar tus datos
+Asigna etiquetas de tipos predefinidos —llamados métricas— a tus datos, con el fin de permitir la segregación de datos (mediante permisos de acceso), la agregación de datos y la creación de relaciones entre formularios.
+Los tipos de métricas predefinidos son: áreas, casos, ubicaciones, organizaciones y proyectos.
 
-*   [Descripción general de métricas](metrics/index.md)
+*   [Descripción general de las métricas](metrics/index.md)
 *   [Gestionar áreas temáticas](metrics/areas.md)
 *   [Gestionar casos](metrics/cases.md)
 *   [Gestionar ubicaciones](metrics/locations.md)
 *   [Gestionar organizaciones](metrics/organizations.md)
 *   [Gestionar proyectos](metrics/projects.md)
 
-### Mantenerse informado y colaborar
-Reciba notificaciones dentro de la aplicación y gestione el acceso a la plataforma para su equipo.
+### Mantenerte informado y colaborar
+Recibe notificaciones dentro de la aplicación y gestiona el acceso a la plataforma para tu equipo.
 
 *   [Ver notificaciones](notifications/index.md)
 *   [Gestionar usuarios y grupos](administration/users.md)
@@ -50,7 +51,7 @@ Reciba notificaciones dentro de la aplicación y gestione el acceso a la platafo
 *   [Explorar la interfaz](interface/index.md)
 
 ### Compartir y ampliar
-Comparta formularios públicamente.
+Comparte formularios públicamente.
 
 *   [Rellenar un formulario público](public-forms/index.md)
 
@@ -58,13 +59,13 @@ Comparta formularios públicamente.
 
 ## Primeros pasos
 
-Si es la primera vez que usa Dino, empiece aquí:
+Si es tu primera vez usando Dino, comienza aquí:
 
-1.  [Iniciar sesión](getting-started/login.md): acceda a su cuenta.
-2.  [Restablecer su contraseña](getting-started/reset-password.md): establezca una nueva contraseña si es necesario.
+1.  [Iniciar sesión](getting-started/login.md): accede a tu cuenta.
+2.  [Restablecer tu contraseña](getting-started/reset-password.md): define una nueva contraseña si es necesario.
 
 ---
 
 ## Acceso y permisos
 
-Lo que puede ver y hacer en Dino depende de los grupos de permisos asignados a su cuenta. Algunas áreas, como la administración y la gestión de esquemas de formulario, solo son visibles para los usuarios con el rol adecuado. Si no encuentra una función descrita en esta documentación, póngase en contacto con el administrador del sistema.
+Lo que puedes ver y hacer en Dino depende de los grupos de permisos asignados a tu cuenta. Algunas áreas —como la administración y la gestión de form schemas— solo son visibles para los usuarios con el rol adecuado. Si no encuentras una función descrita en esta documentación, ponte en contacto con tu administrador del sistema.

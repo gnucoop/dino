@@ -24,6 +24,8 @@ nav:
     - Descripción General: reports/index.md
     - Editar Esquema de Informe: reports/edit-report-schema.md
     - Editar Informe: reports/edit-report.md
+    - Informe automático: reports/autoreports.md
+    - XLSReport: reports/xlsreport.md
   - Métricas:
     - Descripción General: metrics/index.md
     - Áreas temáticas: metrics/areas.md

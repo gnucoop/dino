@@ -1,64 +1,64 @@
 ---
-title: Lista de Usuários
-description: Visualize, edite e gerencie contas de usuário na sua organização Dino.
+title: Lista de Utilizadores
+description: Visualize, edite e faça a gestão das contas de utilizador na sua organização Dino.
 ---
 
-# Lista de Usuários
+# Lista de Utilizadores
 
-A página Lista de Usuários fornece uma lista completa de todas as contas de usuário na sua organização Dino. A partir dela, você pode visualizar detalhes do usuário, editar contas e criar novos usuários.
+A página Lista de Utilizadores apresenta uma lista completa de todas as contas de utilizador na sua organização Dino. A partir daqui, pode consultar os detalhes dos utilizadores, editar contas e criar novos utilizadores.
 
-![Visão principal da página Lista de Usuários](../imgs/administration/users-list.png)
+![Vista principal da página Lista de Utilizadores](../imgs/administration/users-list.png)
 
-## Entendendo a Lista de Usuários
+## Compreender a Lista de Utilizadores
 
-A lista principal exibe informações essenciais para cada usuário:
+A lista principal apresenta informações essenciais de cada utilizador:
 
-*   **E-mail:** O endereço de e-mail de login do usuário.
+*   **Email:** O endereço de email de início de sessão do utilizador.
 *   **Nome Completo:** O nome associado à conta.
-*   **Desativado:** Um botão de alternância que indica se a conta está ativa ou desativada. Você pode clicar nesse botão diretamente na lista para alterar o status.
+*   **Desativado:** Um interruptor que indica se a conta está ativa ou desativada. Pode clicar neste interruptor diretamente na lista para alterar o estado.
 
-Você pode ordenar a lista pela coluna **Data de Criação**. A coluna **ID** fica oculta por padrão.
+Pode ordenar a lista pela coluna **Data de Criação**. A coluna **ID** está oculta por predefinição.
 
-## Trabalhando com a Lista
+## Trabalhar com a Lista
 
-### Pesquisando e Filtrando
+### Pesquisa e Filtragem
 
-Use a barra de pesquisa no topo da página para encontrar usuários pelo e-mail ou nome completo.
+Utilize a barra de pesquisa no topo da página para encontrar utilizadores pelo seu email ou nome completo.
 
 Para aplicar filtros mais específicos:
 
 1.  Clique no ícone de filtro na barra de pesquisa.
-2.  Na seção **Grupos de Permissão do Usuário**, você pode selecionar um ou mais grupos de usuários para filtrar a lista e exibir apenas os membros desses grupos.
+2.  Na secção **Grupos de Permissões de Utilizador**, pode selecionar um ou mais grupos de utilizadores para filtrar a lista de modo a mostrar apenas os membros desses grupos.
 
-### Ações do Usuário
+### Ações do Utilizador
 
-Cada linha de usuário possui um menu de ações (três pontos verticais) no lado direito. Clique nele para acessar as seguintes opções:
+Cada linha de utilizador tem um menu de ações (três pontos verticais) do lado direito. Clique nele para aceder às seguintes opções:
 
-*   **Editar:** Abre o editor de usuário para modificar os detalhes da conta.
-*   **Excluir:** Remove permanentemente a conta de usuário. Será solicitado que você confirme esta ação.
-*   **Visualizar:** Abre uma visualização somente leitura dos detalhes do usuário.
+*   **Editar:** Abre o editor de utilizador para modificar os detalhes da conta.
+*   **Eliminar:** Remove permanentemente a conta de utilizador. Ser-lhe-á pedido que confirme esta ação.
+*   **Ver:** Abre uma vista só de leitura dos detalhes do utilizador.
 
-Você também pode clicar em qualquer lugar da linha do usuário para selecioná-la ou clicar no ícone de expandir para visualizar um resumo das informações do usuário diretamente na lista.
+Também pode clicar em qualquer parte da linha de um utilizador para a selecionar, ou clicar no ícone de expansão para ver um resumo das informações do utilizador diretamente na lista.
 
-## Criando um Novo Usuário
+## Criar um Novo Utilizador
 
-Para adicionar um novo usuário à sua organização:
+Para adicionar um novo utilizador à sua organização:
 
-1.  Clique no botão flutuante azul **+** no canto inferior direito da tela.
-2.  Um formulário será aberto. Insira os detalhes do novo usuário, incluindo e-mail, nome e atribua-o aos grupos de usuários apropriados. Para mais informações sobre grupos, consulte [Lista de Grupos](groups-list.md).
-3.  Clique em **Salvar** para criar a conta. O novo usuário receberá um e-mail com instruções para definir a senha.
+1.  Clique no botão flutuante azul **+** no canto inferior direito do ecrã.
+2.  Será aberto um formulário. Introduza os dados do novo utilizador, incluindo email, nome, e atribua-o aos grupos de utilizadores adequados. Para mais informações sobre grupos, consulte [Lista de Grupos](groups-list.md).
+3.  Clique em **Guardar** para criar a conta. O novo utilizador receberá um email com instruções para definir a sua palavra-passe.
 
 !!! warning "Restrição Offline"
-    O botão **+** ficará desabilitado (mostrando um ícone de Wi-Fi desativado) se você não estiver conectado à internet. Novas contas de usuário não podem ser criadas offline. Você ainda pode visualizar e editar usuários existentes offline.
+    O botão **+** será desativado (mostrando um ícone de Wi-Fi desligado) se não estiver ligado à internet. Não é possível criar novas contas de utilizador em modo offline. Ainda pode visualizar e editar utilizadores existentes offline.
 
-## Editando um Usuário
+## Editar um Utilizador
 
-Para modificar as informações de um usuário existente:
+Para modificar as informações de um utilizador existente:
 
-1.  Clique no menu de ações (três pontos) na linha do usuário.
+1.  Clique no menu de ações (três pontos) na linha do utilizador.
 2.  Selecione **Editar**.
-3.  No editor, atualize qualquer um dos detalhes do usuário ou atribuições de grupos.
-4.  Clique em **Salvar** para aplicar as alterações.
+3.  No editor, atualize quaisquer detalhes do utilizador ou atribuições de grupos.
+4.  Clique em **Guardar** para aplicar as alterações.
 
 !!! tip "Desativação Rápida"
-    Você pode ativar ou desativar rapidamente a capacidade de login de um usuário clicando no botão de alternância **Desativado** diretamente na lista, sem abrir o editor completo.
+    Pode ativar ou desativar rapidamente a capacidade de início de sessão de um utilizador clicando no interruptor **Desativado** diretamente na lista, sem abrir o editor completo.
