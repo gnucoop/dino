@@ -34,6 +34,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatSidenav} from '@angular/material/sidenav';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {NavigationEnd, NavigationStart, Router} from '@angular/router';
@@ -621,6 +622,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
     readonly userDataManager: UserDataManager,
     readonly notificationManager: NotificationManager,
     readonly snackbar: MatSnackBar,
+    readonly dialog: MatDialog,
     readonly pcs: PermissionContextService,
     private _router: Router,
     private _cdr: ChangeDetectorRef,
