@@ -642,7 +642,6 @@ export const ENG: Translation = {
   'At least {{count}} characters': 'At least {{count}} characters',
   'Backup and Restore': 'Backup and Restore',
   'COPIED': 'COPIED',
-  'Cancel': 'Cancel',
   'Choose a new password for your account.': 'Choose a new password for your account.',
   'Colors applied to this instance. Can be saved as a preset.': 'Colors applied to this instance. Can be saved as a preset.',
   'Copied to clipboard': 'Copied to clipboard',

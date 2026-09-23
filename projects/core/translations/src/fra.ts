@@ -589,7 +589,6 @@ export const FRA: Translation = {
   'Accent': 'Accent',
   'At least {{count}} characters': 'Au moins {{count}} caractères',
   'Backup and Restore': 'Sauvegarde et restauration',
-  'Cancel': 'Annuler',
   'Choose a backup file': 'Choisir un fichier de sauvegarde',
   'Choose a new password for your account.': 'Choisissez un nouveau mot de passe pour votre compte.',
   'Colors applied to this instance. Can be saved as a preset.': 'Couleurs appliquées à cette instance. Elles peuvent être enregistrées comme préréglage.',

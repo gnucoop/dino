@@ -678,7 +678,6 @@ export const UKR: Translation = {
   'Accent': 'Акцент',
   'At least {{count}} characters': 'Щонайменше {{count}} символів',
   'Backup and Restore': 'Резервне копіювання та відновлення',
-  'Cancel': 'Скасувати',
   'Choose a backup file': 'Виберіть файл резервної копії',
   'Choose a new password for your account.': 'Виберіть новий пароль для свого облікового запису.',
   'Colors applied to this instance. Can be saved as a preset.': 'Кольори, застосовані до цього екземпляра. Можна зберегти як набір.',
