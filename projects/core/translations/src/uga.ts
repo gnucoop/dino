@@ -384,6 +384,7 @@ export const UGA: Translation = {
   'All fields': 'All fields',
   'Selected fields': 'Selected fields',
   'Value format': 'Value format',
+  'Value must not be empty': 'Value must not be empty',
   'Default': 'Default',
   'Search field...': 'Search field...',
   'Select all': 'Select all',
@@ -393,4 +394,8 @@ export const UGA: Translation = {
   'Label values': 'Label values',
   'Data Analysis format': 'Data Analysis format',
   'Separate columns': 'Separate columns',
+  'There are not any Forms currently available. Please add a Form to start collecting data.':
+    'There are not any Forms currently available. Please add a Form to start collecting data.',
+  'There are not any Reports currently available. Please add a Report to start reviewing data.':
+    'There are not any Reports currently available. Please add a Report to start reviewing data.',
 };

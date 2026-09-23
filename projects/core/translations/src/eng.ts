@@ -599,6 +599,10 @@ export const ENG: Translation = {
   'Thematic Areas': 'Thematic areas',
   'Theme loaded and set as default': 'Theme loaded and set as default',
   'Theme saved and set as default': 'Theme saved and set as default',
+  'There are not any Forms currently available. Please add a Form to start collecting data.':
+    'There are not any Forms currently available. Please add a Form to start collecting data.',
+  'There are not any Reports currently available. Please add a Report to start reviewing data.':
+    'There are not any Reports currently available. Please add a Report to start reviewing data.',
   'There are not any logs available for this form':
     'There are not any logs available for this form',
   'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
@@ -746,6 +750,7 @@ export const ENG: Translation = {
   'All fields': 'All fields',
   'Selected fields': 'Selected fields',
   'Value format': 'Value format',
+  'Value must not be empty': 'Value must not be empty',
   'Search field...': 'Search field...',
   'Select all': 'Select all',
   'Deselect': 'Deselect',

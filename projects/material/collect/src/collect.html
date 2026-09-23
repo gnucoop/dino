@@ -15,7 +15,7 @@
 >
   <ng-container *ngIf="items|async as collectItems">
     <div class="dino-no-items-message" *ngIf="collectItems.length <= 0">
-      <h1>{{noItemsMessage|async}}</h1>
+      <h1 *ngIf="noItemsMessage|async as message">{{message|transloco}}</h1>
     </div>
     <ng-container *ngFor="let item of collectItems">
       <mat-grid-tile

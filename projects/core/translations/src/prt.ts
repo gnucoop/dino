@@ -597,6 +597,10 @@ export const PRT: Translation = {
   'Thematic Areas': 'Áreas temáticas',
   'Theme loaded and set as default': 'Tema carregado e definido como padrão',
   'Theme saved and set as default': 'Tema guardado e definido como padrão',
+  'There are not any Forms currently available. Please add a Form to start collecting data.':
+    'Não existem formulários disponíveis de momento. Adicione um formulário para começar a recolher dados.',
+  'There are not any Reports currently available. Please add a Report to start reviewing data.':
+    'Não existem relatórios disponíveis de momento. Adicione um relatório para começar a rever os dados.',
   'There are not any logs available for this form':
     'Não há nenhum registo disponível para este formulário',
   'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
@@ -747,6 +751,7 @@ export const PRT: Translation = {
   'All fields': 'Todos os campos',
   'Selected fields': 'Campos selecionados',
   'Value format': 'Formato dos valores',
+  'Value must not be empty': 'O valor não pode estar vazio',
   'Search field...': 'Procurar campo...',
   'Select all': 'Selecionar tudo',
   'Deselect': 'Desselecionar',

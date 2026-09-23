@@ -600,6 +600,10 @@ export const ESP: Translation = {
   'Thematic Areas': 'Áreas temáticas',
   'Theme loaded and set as default': 'Tema cargado y establecido como predeterminado',
   'Theme saved and set as default': 'Tema guardado y establecido como predeterminado',
+  'There are not any Forms currently available. Please add a Form to start collecting data.':
+    'No hay formularios disponibles actualmente. Añada un formulario para empezar a recoger datos.',
+  'There are not any Reports currently available. Please add a Report to start reviewing data.':
+    'No hay informes disponibles actualmente. Añada un informe para empezar a revisar los datos.',
   'There are not any logs available for this form':
     'No hay registros disponibles para este formulario',
   'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
@@ -747,6 +751,7 @@ export const ESP: Translation = {
   'All fields': 'Todos los campos',
   'Selected fields': 'Campos seleccionados',
   'Value format': 'Formato de valores',
+  'Value must not be empty': 'El valor no debe estar vacío',
   'Search field...': 'Buscar campo...',
   'Select all': 'Seleccionar todo',
   'Deselect': 'Deseleccionar',

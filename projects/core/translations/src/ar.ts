@@ -566,6 +566,10 @@ export const AR: Translation = {
   'Thematic Areas': 'المجالات المواضيعية',
   'Theme loaded and set as default': 'تم تحميل السمة وتعيينها كافتراضية',
   'Theme saved and set as default': 'تم حفظ السمة وتعيينها كافتراضية',
+  'There are not any Forms currently available. Please add a Form to start collecting data.':
+    'لا توجد نماذج متاحة حاليًا. أضف نموذجًا لبدء جمع البيانات.',
+  'There are not any Reports currently available. Please add a Report to start reviewing data.':
+    'لا توجد تقارير متاحة حاليًا. أضف تقريرًا لبدء مراجعة البيانات.',
   'There are not any logs available for this form': 'لا توجد أي سجلات متاحة لهذا النموذج',
   'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
     'توجد بيانات مرتبطة بهذا المخطط. يرجى حذف كافة البيانات المرتبطة قبل حذف هذا المخطط.',
