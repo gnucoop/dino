@@ -26,6 +26,7 @@ import {NgModule} from '@angular/core';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
+import {MatDialogModule} from '@angular/material/dialog';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
@@ -52,6 +53,7 @@ import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
     DinoLoadingSpinnerModule,
     MatBadgeModule,
     MatButtonModule,
+    MatDialogModule,
     MatDividerModule,
     MatIconModule,
     MatListModule,
