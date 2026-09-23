@@ -134,6 +134,24 @@
 }
 
 @mixin _mat-date-picker-color-overwrites($palette, $hue) {
+  // Material means these two to be the palette at 30% alpha, but it fades them
+  // with `safe-color-change`, which hands a CSS variable back untouched -- and
+  // these palettes are CSS variables. Focus therefore lands on the solid colour
+  // the selection uses, so the cell the calendar focuses when it opens (today,
+  // on an empty field) reads as a date already chosen: the user presses OK and
+  // nothing is saved, because nothing was ever selected. Restated here through
+  // the helper, which can build the faded form.
+  --mat-datepicker-calendar-date-focus-state-background-color: #{get-color-from-palette(
+      $palette,
+      $hue,
+      0.3
+    )};
+  --mat-datepicker-calendar-date-hover-state-background-color: #{get-color-from-palette(
+      $palette,
+      $hue,
+      0.3
+    )};
+
   .mat-calendar-body-in-range::before {
     background: get-color-from-palette($palette, $hue, 0.2);
     @include pu.mat-css-dark-theme-global() {

@@ -251,3 +251,49 @@ body {
   /* Support for IE. */
   font-feature-settings: 'liga';
 }
+
+// The calendar's focus state has to stay clear of its selected state. Material
+// means the focus and hover backgrounds to be the palette at 30% alpha, but it
+// fades them with `safe-color-change`, which hands a CSS variable back untouched
+// -- and with angular-material-css-vars the palette *is* a CSS variable. Both
+// tokens therefore come out as the solid colour the selection uses, and since
+// the calendar focuses its active cell the moment it opens, today's cell on an
+// empty field reads as a date already chosen: the user presses OK and nothing is
+// saved, because nothing was ever selected, only focused.
+//
+// Restated here rather than in the library: same values, stated where they
+// survive an install. The dark selector is repeated because the library states
+// these per theme, and its dark rules would otherwise outweigh ours.
+.mat-datepicker-content,
+.isDarkTheme .mat-datepicker-content {
+  --mat-datepicker-calendar-date-focus-state-background-color: #{mat-css-vars.mat-css-color-primary(
+      500,
+      0.3
+    )};
+  --mat-datepicker-calendar-date-hover-state-background-color: #{mat-css-vars.mat-css-color-primary(
+      500,
+      0.3
+    )};
+
+  &.mat-accent {
+    --mat-datepicker-calendar-date-focus-state-background-color: #{mat-css-vars.mat-css-color-accent(
+        500,
+        0.3
+      )};
+    --mat-datepicker-calendar-date-hover-state-background-color: #{mat-css-vars.mat-css-color-accent(
+        500,
+        0.3
+      )};
+  }
+
+  &.mat-warn {
+    --mat-datepicker-calendar-date-focus-state-background-color: #{mat-css-vars.mat-css-color-warn(
+        500,
+        0.3
+      )};
+    --mat-datepicker-calendar-date-hover-state-background-color: #{mat-css-vars.mat-css-color-warn(
+        500,
+        0.3
+      )};
+  }
+}
