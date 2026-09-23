@@ -635,7 +635,6 @@ export const PRT: Translation = {
   'Accent': 'Destaque',
   'At least {{count}} characters': 'Pelo menos {{count}} caracteres',
   'Backup and Restore': 'Backup e restauro',
-  'Cancel': 'Cancelar',
   'Choose a backup file': 'Escolher um ficheiro de backup',
   'Choose a new password for your account.': 'Escolha uma nova senha para a sua conta.',
   'Colors applied to this instance. Can be saved as a preset.': 'Cores aplicadas a esta instância. Podem ser guardadas como predefinição.',

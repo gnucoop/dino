@@ -600,7 +600,6 @@ export const ITA: Translation = {
   'At least {{count}} characters': 'Almeno {{count}} caratteri',
   'Backup and Restore': 'Backup e ripristino',
   'COPIED': 'COPIATA',
-  'Cancel': 'Annulla',
   'Choose a new password for your account.': 'Scegli una nuova password per il tuo account.',
   'Colors applied to this instance. Can be saved as a preset.': 'Colori applicati all\'interfaccia dell\'istanza. Salvabili come preimpostazione.',
   'Copied to clipboard': 'Copiato negli appunti',
