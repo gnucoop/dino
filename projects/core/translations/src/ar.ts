@@ -768,7 +768,6 @@ export const AR: Translation = {
   'Accent': 'اللون المميز',
   'At least {{count}} characters': '{{count}} أحرف على الأقل',
   'Backup and Restore': 'النسخ الاحتياطي والاستعادة',
-  'Cancel': 'إلغاء',
   'Choose a backup file': 'اختر ملف نسخة احتياطية',
   'Choose a new password for your account.': 'اختر كلمة مرور جديدة لحسابك.',
   'Colors applied to this instance. Can be saved as a preset.': 'الألوان المطبَّقة على هذه النسخة. يمكن حفظها كإعداد مسبق.',

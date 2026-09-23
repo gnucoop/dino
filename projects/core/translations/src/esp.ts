@@ -642,7 +642,6 @@ export const ESP: Translation = {
   'Accent': 'Acento',
   'At least {{count}} characters': 'Al menos {{count}} caracteres',
   'Backup and Restore': 'Copia de seguridad y restauración',
-  'Cancel': 'Cancelar',
   'Choose a backup file': 'Elegir un archivo de copia de seguridad',
   'Choose a new password for your account.': 'Elige una nueva contraseña para tu cuenta.',
   'Colors applied to this instance. Can be saved as a preset.': 'Colores aplicados a esta instancia. Se pueden guardar como preajuste.',

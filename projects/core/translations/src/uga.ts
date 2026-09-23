@@ -293,7 +293,6 @@ export const UGA: Translation = {
   'At least {{count}} characters': 'At least {{count}} characters',
   'Backup Data': 'Backup Data',
   'Backup and Restore': 'Backup and Restore',
-  'Cancel': 'Cancel',
   'Change Password': 'Change Password',
   'Choose a backup file': 'Choose a backup file',
   'Choose a new password for your account.': 'Choose a new password for your account.',
