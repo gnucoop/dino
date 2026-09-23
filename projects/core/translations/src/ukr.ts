@@ -570,6 +570,10 @@ export const UKR: Translation = {
   'Thematic Areas': 'Тематичні області',
   'Theme loaded and set as default': 'Тему завантажено та встановлено за замовчуванням',
   'Theme saved and set as default': 'Тему збережено та встановлено за замовчуванням',
+  'There are not any Forms currently available. Please add a Form to start collecting data.':
+    'Наразі немає доступних форм. Додайте форму, щоб почати збирати дані.',
+  'There are not any Reports currently available. Please add a Report to start reviewing data.':
+    'Наразі немає доступних звітів. Додайте звіт, щоб почати переглядати дані.',
   'There are not any logs available for this form': 'Для цієї форми немає доступних логів',
   'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
     "З цією схемою пов'язані дані. Будь ласка, видаліть усі пов'язані дані перед видаленням цієї схеми.",
