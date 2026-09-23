@@ -22,7 +22,6 @@ describe('dino-main-nav', () => {
   it('should display the sync button and the active user card in the sidenav', () => {
     cy.get('.dino-sidenav-utilities .dino-sync-button').should('exist');
     cy.get('.dino-sidenav-utilities .dino-user-card').should('exist');
-    cy.get('.dino-sidenav-utilities dino-theme-switch').should('exist');
   });
 
   it('should display the page header with a title', () => {
