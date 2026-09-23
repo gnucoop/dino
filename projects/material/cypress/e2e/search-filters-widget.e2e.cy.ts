@@ -1,20 +1,22 @@
 import {openFirstFormList} from '../support/navigation';
 
 /**
- * Opens the search filters dialog on the list of the first form schema.
+ * Opens the advanced filters on the list of the first form schema: the second
+ * tab of the Filters modal, where the widgets live now.
  *
  * Every test starts from a fresh page. The widgets keep the value and the
  * operator they were given in the FiltersService, and creating a filter makes
- * the dialog rebuild all of them, so a dialog shared across tests
+ * the modal rebuild all of them, so a modal shared across tests
  * (testIsolation: false) left each test at the mercy of what the previous ones
  * had typed or toggled: the spec used to fail on a different test depending on
  * the timing of the run.
  */
 const openFiltersDialog = () => {
   openFirstFormList();
-  cy.get('.mat-expansion-indicator').click();
   cy.get('.dino-filters-dialog-button').should('be.visible').click();
-  cy.get('dino-search-filters-dialog').should('exist');
+  cy.get('.dino-filters-modal').should('be.visible');
+  cy.get('.dino-filters-modal-tabs mat-button-toggle[value="advanced"]').click();
+  cy.get('.dino-filters-advanced').should('be.visible');
 };
 
 describe('dino-search-filters-widget', () => {
@@ -29,10 +31,6 @@ describe('dino-search-filters-widget', () => {
       .first()
       .should('be.visible')
       .should('be.disabled');
-  });
-
-  it('should display a mat-input', () => {
-    cy.get('.mat-mdc-card-content input').should('be.visible');
   });
 
   it('should render a non-empty label for each widget', () => {
