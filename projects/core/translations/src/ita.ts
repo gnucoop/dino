@@ -765,6 +765,7 @@ export const ITA: Translation = {
   'All fields': 'Tutti i campi',
   'Selected fields': 'Campi selezionati',
   'Value format': 'Formato valori',
+  'Value must not be empty': 'Il valore non può essere vuoto',
   'Search field...': 'Cerca campo...',
   'Select all': 'Seleziona tutti',
   'Deselect': 'Deseleziona',

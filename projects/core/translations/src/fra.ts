@@ -608,6 +608,10 @@ export const FRA: Translation = {
   'Thematic Areas': 'Domaines thématiques',
   'Theme loaded and set as default': 'Thème chargé et défini par défaut',
   'Theme saved and set as default': 'Thème enregistré et défini par défaut',
+  'There are not any Forms currently available. Please add a Form to start collecting data.':
+    "Il n'y a actuellement aucun formulaire disponible. Ajoutez un formulaire pour commencer à collecter des données.",
+  'There are not any Reports currently available. Please add a Report to start reviewing data.':
+    "Il n'y a actuellement aucun rapport disponible. Ajoutez un rapport pour commencer à consulter les données.",
   'There are not any logs available for this form':
     "Aucun journal n'est disponible pour ce formulaire.",
   'There is Data associated with this Schema. Please delete all associated Data before deleting this Schema.':
@@ -757,6 +761,7 @@ export const FRA: Translation = {
   'All fields': 'Tous les champs',
   'Selected fields': 'Champs sélectionnés',
   'Value format': 'Format des valeurs',
+  'Value must not be empty': 'La valeur ne doit pas être vide',
   'Search field...': 'Rechercher un champ...',
   'Select all': 'Tout sélectionner',
   'Deselect': 'Désélectionner',
