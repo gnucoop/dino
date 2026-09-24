@@ -167,7 +167,7 @@
           *ngIf="context === 'form' && (isCreate|async) === true && isRecordAudioEnabled"
           mat-stroked-button
           [disabled]="(formMetrics.status === 'INVALID') || (nss.isOnline$|async) === false"
-          class="dino-go-to-data-button dino-transcribe-form-button"
+          class="dino-metric-footer-button dino-transcribe-form-button"
           (click)="openRecordAudioDialog()"
         >
           <mat-icon>mic</mat-icon>
@@ -178,7 +178,7 @@
           mat-flat-button
           color="primary"
           [disabled]="formMetrics.status === 'INVALID'"
-          class="dino-go-to-data-button dino-tour-interactive-anchor"
+          class="dino-metric-footer-button dino-go-to-data-button dino-tour-interactive-anchor"
           (click)="goToData()"
           tourAnchor="go-to-data-button"
         >
