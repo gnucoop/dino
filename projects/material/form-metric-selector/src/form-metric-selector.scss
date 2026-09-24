@@ -315,7 +315,12 @@ dino-form-metric-selector {
     justify-content: flex-end;
     gap: 12px;
 
-    .dino-go-to-data-button {
+    // The shape the two footer actions share. Named for where they sit rather
+    // than for what one of them does: `dino-go-to-data-button` is the one that
+    // goes to the data step, and stays on that button alone -- the transcribe
+    // button borrowing it made `.dino-go-to-data-button` match two elements,
+    // and whoever asked for the first of them got the recording dialog.
+    .dino-metric-footer-button {
       height: 44px;
       padding: 0 20px;
       border-radius: 6px;
