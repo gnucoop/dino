@@ -54,8 +54,15 @@ export const authMockConfig: AuthServiceConfig = {
 };
 
 export class MockBreakpointObserver {
+  // Every breakpoint the real service publishes, or a component that reads one
+  // of the missing ones dies in its constructor -- which is how the app shell
+  // came to render nothing here: it subscribes to `wide` to choose between the
+  // full-height sidebar and the compact layout.
+  extrasmall = obsOf(additionalConfig.isSmallScreen);
   small = obsOf(additionalConfig.isSmallScreen);
+  medium = obsOf(false);
   large = obsOf(!additionalConfig.isSmallScreen);
+  wide = obsOf(!additionalConfig.isSmallScreen);
 }
 
 const dummyUser: User = {
