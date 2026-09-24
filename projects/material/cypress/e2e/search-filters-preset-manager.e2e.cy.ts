@@ -28,7 +28,9 @@ const applyOneAdvancedFilter = () => {
   cy.get('.dino-filters-modal-tabs mat-button-toggle[value="advanced"]').click();
   cy.get('.dino-filters-advanced').should('be.visible');
   // Scoped to the advanced tab: the simple one stays in the DOM, only hidden.
-  cy.get('.dino-filters-advanced .mat-mdc-card-content .mat-mdc-radio-button .mdc-form-field')
+  // A single choice filter is a segmented group since the ajf restyle: the
+  // options are buttons with role="radio", not Material radio buttons.
+  cy.get('.dino-filters-advanced .mat-mdc-card-content .ajf-segment')
     .eq(1)
     .click();
   cy.get('.dino-filters-advanced .mat-mdc-card-actions .dino-create-filter-button').first().click();
