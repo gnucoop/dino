@@ -61,7 +61,9 @@ describe('dino-search-filters-widget', () => {
 
   it('should enable the create filter button after typing a value', () => {
     cy.get('dino-search-filters-widget')
-      .filter(':has(.mat-mdc-text-field-wrapper)')
+      // A text filter is a bare `input.ajf-control` since the ajf restyle: the
+      // renderer stopped wrapping its controls in a mat-form-field.
+      .filter(':has(input.ajf-control)')
       .first()
       .within(() => {
         cy.get('input').type('test', {force: true}).should('have.value', 'test');
@@ -91,7 +93,9 @@ describe('dino-search-filters-widget', () => {
 
   it('should reset the input value after creating a filter', () => {
     cy.get('dino-search-filters-widget')
-      .filter(':has(.mat-mdc-text-field-wrapper)')
+      // A text filter is a bare `input.ajf-control` since the ajf restyle: the
+      // renderer stopped wrapping its controls in a mat-form-field.
+      .filter(':has(input.ajf-control)')
       .first()
       .within(() => {
         cy.get('input').type('reset test', {force: true}).should('have.value', 'reset test');

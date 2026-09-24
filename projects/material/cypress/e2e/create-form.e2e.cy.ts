@@ -47,7 +47,9 @@ describe('dino-create-form', {testIsolation: false}, () => {
 
   it('should render an ajf-form in the form data step', () => {
     cy.get('ajf-form').should('exist');
-    cy.get('mat-radio-button').should('exist');
+    // Every field the renderer lays out is a row; the single choices that used
+    // to be radio buttons are segmented buttons since the restyle.
+    cy.get('ajf-field-row').should('exist');
   });
 
   it('should render a save button in the form header', () => {

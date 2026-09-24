@@ -24,8 +24,10 @@ describe('dino-search-filters advanced tab', () => {
 
   it('should close the modal and change the url with filter params when clicking Search button', () => {
     cy.url().then(initialUrl => {
-      cy.get('.mat-mdc-card-content .mat-mdc-radio-button .mdc-form-field').eq(1).should('exist');
-      cy.get('.mat-mdc-card-content .mat-mdc-radio-button .mdc-form-field').eq(1).click();
+      // A single choice filter is a segmented group since the ajf restyle: the
+      // options are buttons with role="radio", not Material radio buttons.
+      cy.get('.mat-mdc-card-content .ajf-segment').eq(1).should('exist');
+      cy.get('.mat-mdc-card-content .ajf-segment').eq(1).click();
       cy.get('.mat-mdc-card-actions .dino-create-filter-button').first().should('exist');
       cy.get('.mat-mdc-card-actions .dino-create-filter-button').first().should('not.be.disabled');
       cy.get('.mat-mdc-card-actions .dino-create-filter-button').first().click();
