@@ -1,6 +1,30 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
+// A list fills the height the shell leaves to the page and only its table scrolls, not
+// the page. The routed page holding the list, and the metric section in between, become
+// flex columns so that height reaches the table container: a fixed max-height on the
+// table knew nothing of the header and filters above it, and the page scrolled too.
+.dino-sidenav-content > :has(dino-list) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+dino-metric-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 dino-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  > * {
+    flex: 0 0 auto;
+  }
+
   .dino-selection-actions {
     display: flex;
     flex-flow: row wrap;
@@ -93,6 +117,21 @@ dino-list {
   .dino-table-container {
     padding-bottom: 9vh;
     overflow-x: scroll;
+    // Inside the shell the container takes the height left under the header and the
+    // filters, and the table shrinks into it and scrolls. On a very short screen it
+    // keeps a usable height and the page scrolls instead.
+    .dino-sidenav-content & {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 240px;
+      padding-bottom: 0;
+      > .mat-mdc-table {
+        flex: 0 1 auto;
+        min-height: 0;
+        max-height: none;
+      }
+    }
     &.dino-table-container-touch {
       .mat-mdc-table {
         -ms-overflow-style: none;
@@ -103,26 +142,44 @@ dino-list {
       }
     }
   }
-  // Two rows: the page header spans the full width, then the result count and the
-  // paginator sit together on a second, right-aligned row.
+  // The result count sits on the line of the page overline and the paginator on the
+  // line of the page title. The breadcrumb wrappers are flattened with
+  // `display: contents` so the overline and the title are grid items themselves and
+  // line up exactly with the right column. On phones the paginator does not fit beside
+  // the title: it takes a compact line of its own right under it.
   .dino-list-toolbar {
     background: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 16px;
+    // The bottom padding the flattened page header no longer applies.
+    padding: 4px 4px 12px;
 
-    dino-breadcrumbs {
-      flex: 0 0 auto;
+    dino-breadcrumbs,
+    dino-breadcrumbs .dino-page-header,
+    dino-breadcrumbs .dino-page-heading {
+      display: contents;
+    }
+
+    dino-breadcrumbs .dino-page-overline {
+      grid-area: 1 / 1;
+    }
+    dino-breadcrumbs .dino-page-title {
+      grid-area: 2 / 1;
+    }
+    dino-breadcrumbs .dino-page-actions {
+      grid-column: 1 / -1;
     }
 
     .dino-list-count {
+      grid-area: 1 / 2;
       display: flex;
       flex-flow: row wrap;
       justify-content: flex-end;
       align-items: center;
       gap: 4px;
-      order: 1;
-      margin-left: auto;
+      justify-self: end;
       color: rgba(var(--mat-sidenav-content-text-color));
       .mat-icon {
         opacity: 30%;
@@ -133,8 +190,21 @@ dino-list {
     }
 
     .mat-mdc-paginator {
-      order: 2;
+      grid-area: 2 / 2;
       background: transparent;
+      // Keep the title line no taller than the paginator select.
+      --mat-paginator-container-size: 40px;
+    }
+
+    @media only screen and (max-width: 599px) {
+      .mat-mdc-paginator {
+        grid-area: 3 / 1 / auto / -1;
+        // On a line of its own the lift applied by the general paginator rule
+        // below would push the page size select onto the title.
+        .mat-mdc-paginator-container {
+          bottom: 0;
+        }
+      }
     }
   }
 
