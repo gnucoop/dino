@@ -7,7 +7,7 @@ describe('dino-edit-report', () => {
 
   it('should enter a view report page', () => {
     cy.get('dino-collect').should('exist');
-    cy.get('mat-grid-tile').should('exist').first().click();
+    cy.get('.dino-collect-card').should('exist').first().click();
     cy.get('dino-list').should('exist');
     cy.get('.mat-mdc-row:not(.dino-row-details)')
       .should('have.length', REPORT_ROWS)

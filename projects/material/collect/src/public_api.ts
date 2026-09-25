@@ -24,3 +24,7 @@ export * from './collect';
 export * from './collect.module';
 export * from './collect-item-interface';
 export * from './collect-dashboard-type';
+export * from './collect-actions-sheet';
+export * from './collect-age.pipe';
+export * from './collect-groups';
+export * from './collect-share-dialog';

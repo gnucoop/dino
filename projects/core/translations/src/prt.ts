@@ -22,6 +22,44 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const PRT: Translation = {
+  'Grid': 'Grelha',
+  'List': 'Lista',
+  'New form': 'Novo formulário',
+  'New report': 'Novo relatório',
+  'Groups': 'Grupos',
+  'Group': 'Grupo',
+  'Description': 'Descrição',
+  '{{shown}} of {{total}} forms': '{{shown}} de {{total}} formulários',
+  '{{count}} forms': '{{count}} formulários',
+  'Default · automatic': 'Predefinido · automático',
+  'Link': 'Link',
+  'Public link': 'Link público',
+  'Actions': 'Ações',
+  'No form matches the active filters.': 'Nenhum formulário corresponde aos filtros ativos.',
+  'today': 'hoje',
+  'yesterday': 'ontem',
+  '{{n}} days ago': 'há {{n}} dias',
+  'Public forms': 'Formulários públicos',
+  'Anyone can fill them in through the public link, without logging in.':
+    'Qualquer pessoa pode preenchê-los através do link público, sem iniciar sessão.',
+  'Ungrouped': 'Sem grupo',
+  'Not assigned to any group yet.': 'Ainda não atribuídos a nenhum grupo.',
+  'Anyone with this link can fill in the form, without logging in.':
+    'Qualquer pessoa com este link pode preencher o formulário, sem iniciar sessão.',
+  'Copy link': 'Copiar link',
+  'To disable it, make the form private in the settings.':
+    'Para o desativar, torne o formulário privado nas definições.',
+  'Open form': 'Abrir formulário',
+  'Groups this questionnaire belongs to.': 'Grupos a que pertence este questionário.',
+  'Add group': 'Adicionar grupo',
+  'Type a name to find or create a group': 'Escreva um nome para encontrar ou criar um grupo',
+  'Create group "{{name}}"': 'Criar o grupo "{{name}}"',
+  'Remove group': 'Remover grupo',
+  'This questionnaire belongs to no group yet.':
+    'Este questionário ainda não pertence a nenhum grupo.',
+  'A group with this name is already assigned': 'Já existe um grupo atribuído com este nome',
+  '"Public forms" and "Ungrouped" are automatic: public questionnaires and questionnaires with no group appear there on their own.':
+    '"Formulários públicos" e "Sem grupo" são automáticos: os questionários públicos e os sem grupo aparecem lá sozinhos.',
   'This item cannot be removed': 'Este item não pode ser removido',
   'New translation': 'Nova tradução',
   'Define the key and, if you want, translate it right away. You can complete the other languages later.':

@@ -22,6 +22,44 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const ITA: Translation = {
+  'Grid': 'Griglia',
+  'List': 'Lista',
+  'New form': 'Nuovo form',
+  'New report': 'Nuovo report',
+  'Groups': 'Gruppi',
+  'Group': 'Gruppo',
+  'Description': 'Descrizione',
+  '{{shown}} of {{total}} forms': '{{shown}} di {{total}} form',
+  '{{count}} forms': '{{count}} form',
+  'Default · automatic': 'Predefinito · automatico',
+  'Link': 'Link',
+  'Public link': 'Link pubblico',
+  'Actions': 'Azioni',
+  'No form matches the active filters.': 'Nessun form corrisponde ai filtri attivi.',
+  'today': 'oggi',
+  'yesterday': 'ieri',
+  '{{n}} days ago': '{{n}} giorni fa',
+  'Public forms': 'Form pubblici',
+  'Anyone can fill them in through the public link, without logging in.':
+    'Compilabili da chiunque tramite link pubblico, senza login.',
+  'Ungrouped': 'Senza gruppo',
+  'Not assigned to any group yet.': 'Non ancora assegnati.',
+  'Anyone with this link can fill in the form, without logging in.':
+    'Chiunque abbia questo link può compilare il form, senza login.',
+  'Copy link': 'Copia link',
+  'To disable it, make the form private in the settings.':
+    'Per disattivarlo, rendi il form privato dalle impostazioni.',
+  'Open form': 'Apri form',
+  'Groups this questionnaire belongs to.': 'Gruppi a cui appartiene questo questionario.',
+  'Add group': 'Aggiungi gruppo',
+  'Type a name to find or create a group': 'Scrivi un nome per trovare o creare un gruppo',
+  'Create group "{{name}}"': 'Crea il gruppo "{{name}}"',
+  'Remove group': 'Rimuovi gruppo',
+  'This questionnaire belongs to no group yet.':
+    'Questo questionario non appartiene ancora a nessun gruppo.',
+  'A group with this name is already assigned': 'Un gruppo con questo nome è già assegnato',
+  '"Public forms" and "Ungrouped" are automatic: public questionnaires and questionnaires with no group appear there on their own.':
+    '"Form pubblici" e "Senza gruppo" sono automatici: i questionari pubblici e quelli senza gruppo compaiono lì da soli.',
   'This item cannot be removed': 'Questo elemento non può essere rimosso',
   'New translation': 'Nuova traduzione',
   'Define the key and, if you want, translate it right away. You can complete the other languages later.':

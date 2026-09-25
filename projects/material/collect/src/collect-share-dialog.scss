@@ -1,0 +1,174 @@
+@use 'collect-tokens' as tokens;
+
+.dino-collect-share-panel {
+  @include tokens.light;
+
+  .mat-mdc-dialog-surface.mdc-dialog__surface {
+    border: 1px solid var(--dino-collect-border-strong);
+    border-radius: 12px;
+    background: var(--dino-collect-dialog);
+    box-shadow: var(--dino-collect-shadow);
+    color: var(--dino-collect-fg);
+  }
+}
+
+.isDarkTheme .dino-collect-share-panel {
+  @include tokens.dark;
+}
+
+dino-collect-share-dialog {
+  display: flex;
+  flex-direction: column;
+
+  .dino-collect-share-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 20px 22px 14px;
+  }
+
+  .dino-collect-share-badge {
+    --g: var(--dino-collect-public);
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 1px solid tokens.group-tint(33%);
+    background: tokens.group-tint(13%);
+    color: var(--dino-collect-public);
+
+    mat-icon {
+      @include tokens.icon-size(20px);
+    }
+  }
+
+  .dino-collect-share-title {
+    flex: 1;
+    min-width: 0;
+
+    h2 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.4;
+      color: var(--dino-collect-fg);
+    }
+  }
+
+  .dino-collect-share-name {
+    margin-top: 2px;
+    font-size: 13px;
+    color: var(--dino-collect-faint);
+  }
+
+  .dino-collect-share-close.mat-mdc-icon-button {
+    --mdc-icon-button-state-layer-size: 32px;
+    --mdc-icon-button-icon-color: var(--dino-collect-muted);
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--dino-collect-input);
+
+    mat-icon {
+      @include tokens.icon-size(17px);
+    }
+  }
+
+  .dino-collect-share-body {
+    min-width: 0;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 4px 22px 18px;
+
+    p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--dino-collect-muted);
+    }
+  }
+
+  // The metric selector brings its own dialog layout; here it only lists its fields.
+  .dino-collect-share-metrics {
+    display: block;
+    min-width: 0;
+
+    // In a dialog the selector asks for a minimum width of its own: here the dialog
+    // already sizes it, and on a phone that minimum would overflow.
+    .dino-form-metric-selector-container.dino-form-metric-selector-dialog-container {
+      min-width: 0;
+    }
+
+    .dino-additional-selector-message {
+      margin-bottom: 8px;
+      text-align: left;
+      font-size: 13px;
+      color: var(--dino-collect-muted);
+    }
+
+    .mat-mdc-form-field {
+      width: 100%;
+    }
+  }
+
+  .dino-collect-share-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dino-collect-share-url {
+    flex: 1;
+    min-width: 0;
+
+    input {
+      font-family: var(--dino-collect-mono);
+      font-size: 13px;
+    }
+  }
+
+  .dino-collect-share-copy.mat-mdc-unelevated-button {
+    height: 46px;
+    padding: 0 16px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .dino-collect-share-foot {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 22px;
+    border-top: 1px solid var(--dino-collect-border);
+
+    span {
+      flex: 1;
+      font-size: 12.5px;
+      color: var(--dino-collect-faint);
+    }
+
+    a {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--dino-collect-accent);
+      white-space: nowrap;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

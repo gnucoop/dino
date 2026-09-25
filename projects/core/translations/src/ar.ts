@@ -22,6 +22,42 @@
 import {Translation} from '@ajf/core/transloco';
 // tslint:disable:max-line-length
 export const AR: Translation = {
+  'Grid': 'شبكة',
+  'List': 'قائمة',
+  'New form': 'نموذج جديد',
+  'New report': 'تقرير جديد',
+  'Groups': 'المجموعات',
+  'Group': 'مجموعة',
+  '{{shown}} of {{total}} forms': '{{shown}} من {{total}} نموذج',
+  '{{count}} forms': '{{count}} نموذج',
+  'Default · automatic': 'افتراضي · تلقائي',
+  'Link': 'رابط',
+  'Public link': 'رابط عام',
+  'Actions': 'الإجراءات',
+  'No form matches the active filters.': 'لا يوجد نموذج يطابق عوامل التصفية النشطة.',
+  'today': 'اليوم',
+  'yesterday': 'أمس',
+  '{{n}} days ago': 'منذ {{n}} أيام',
+  'Public forms': 'النماذج العامة',
+  'Anyone can fill them in through the public link, without logging in.':
+    'يمكن لأي شخص تعبئتها عبر الرابط العام دون تسجيل الدخول.',
+  'Ungrouped': 'بدون مجموعة',
+  'Not assigned to any group yet.': 'لم يتم تعيينها لأي مجموعة بعد.',
+  'Anyone with this link can fill in the form, without logging in.':
+    'يمكن لأي شخص لديه هذا الرابط تعبئة النموذج دون تسجيل الدخول.',
+  'Copy link': 'نسخ الرابط',
+  'To disable it, make the form private in the settings.':
+    'لتعطيله، اجعل النموذج خاصًا من الإعدادات.',
+  'Open form': 'فتح النموذج',
+  'Groups this questionnaire belongs to.': 'المجموعات التي ينتمي إليها هذا الاستبيان.',
+  'Add group': 'إضافة مجموعة',
+  'Type a name to find or create a group': 'اكتب اسمًا للبحث عن مجموعة أو إنشائها',
+  'Create group "{{name}}"': 'إنشاء المجموعة "{{name}}"',
+  'Remove group': 'إزالة المجموعة',
+  'This questionnaire belongs to no group yet.': 'لا ينتمي هذا الاستبيان إلى أي مجموعة بعد.',
+  'A group with this name is already assigned': 'تم تعيين مجموعة بهذا الاسم بالفعل',
+  '"Public forms" and "Ungrouped" are automatic: public questionnaires and questionnaires with no group appear there on their own.':
+    '"النماذج العامة" و"بدون مجموعة" تلقائية: تظهر فيها الاستبيانات العامة والاستبيانات التي لا تنتمي إلى أي مجموعة من تلقاء نفسها.',
   'This item cannot be removed': 'لا يمكن إزالة هذا العنصر',
   'New translation': 'ترجمة جديدة',
   'Define the key and, if you want, translate it right away. You can complete the other languages later.':

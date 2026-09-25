@@ -1,115 +1,315 @@
 <div class="centered-tour-element" tourAnchor="collect"></div>
 <ng-content select="[breadcrumbs]"></ng-content>
-<ng-container *ngIf="filterBar === true">
-  <mat-form-field>
-    <mat-label>{{ 'Filter' | transloco }}</mat-label>
-    <input matInput [formControl]="filterCtrl" />
-    <mat-icon matSuffix>filter_alt</mat-icon>
-  </mat-form-field>
-</ng-container>
-<mat-grid-list
-  class="dino-grid-list"
-  [cols]="(breakpointObserver.small|async) ? columnsSmall : columnsLarge"
-  gutterSize="2.5em"
-  rowHeight="1:1"
->
-  <ng-container *ngIf="items|async as collectItems">
-    <div class="dino-no-items-message" *ngIf="collectItems.length <= 0">
-      <h1 *ngIf="noItemsMessage|async as message">{{message|transloco}}</h1>
-    </div>
-    <ng-container *ngFor="let item of collectItems">
-      <mat-grid-tile
-        class="dino-grid-tile"
-        [routerLink]="item.url? item.url : ['/' + getCollectType, item.schemaId ? item.schemaId : item.name]"
-        [tourAnchor]="uiServiceConfig ? item.name : ''"
+<ng-container *ngIf="vm | async as vm">
+  <div class="dino-collect-toolbar" *ngIf="filterBar || (displayAddButton | async)">
+    <mat-form-field class="dino-collect-filter" subscriptSizing="dynamic" *ngIf="filterBar">
+      <mat-label>{{ 'Filter' | transloco }}</mat-label>
+      <input matInput [formControl]="filterCtrl" />
+      <mat-icon matSuffix>filter_alt</mat-icon>
+    </mat-form-field>
+    <span class="dino-collect-spacer"></span>
+    <mat-button-toggle-group
+      *ngIf="filterBar"
+      class="dino-collect-view-toggle"
+      hideSingleSelectionIndicator
+      [value]="vm.view"
+      (change)="setView($event.value)"
+    >
+      <mat-button-toggle
+        value="grid"
+        [matTooltip]="'Grid' | transloco"
+        [attr.aria-label]="'Grid' | transloco"
       >
-        <div>
-          <div class="dino-grid-feat-icons">
-            <mat-icon
-              color="primary"
-              *ngIf="item.unique"
-              [matTooltip]="'Unique: only one item with a given exact set of metrics can exist'|transloco"
-              >fingerprint</mat-icon
+        <mat-icon>grid_view</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle
+        value="list"
+        [matTooltip]="'List' | transloco"
+        [attr.aria-label]="'List' | transloco"
+      >
+        <mat-icon>view_list</mat-icon>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+    <button
+      *ngIf="displayAddButton | async"
+      mat-flat-button
+      color="primary"
+      class="dino-collect-add"
+      (click)="addSchema()"
+    >
+      <mat-icon>add</mat-icon>
+      {{ (getCollectType === 'reports' ? 'New report' : 'New form') | transloco }}
+    </button>
+  </div>
+
+  <div class="dino-collect-tagbar" *ngIf="vm.grouped && vm.total > 0">
+    <mat-chip-listbox
+      class="dino-collect-chips"
+      multiple
+      [attr.aria-label]="'Groups' | transloco"
+      [value]="vm.selected.length ? vm.selected : [allGroupsChip]"
+      (change)="selectGroups($event.value)"
+    >
+      <mat-chip-option class="dino-collect-chip dino-collect-chip-all" [value]="allGroupsChip">
+        {{ 'All' | transloco }}
+        <span class="dino-collect-chip-count">{{ vm.total }}</span>
+      </mat-chip-option>
+      <span class="dino-collect-chips-divider"></span>
+      <mat-chip-option
+        *ngFor="let chip of vm.chips"
+        class="dino-collect-chip"
+        [value]="chip.id"
+        [style.--g]="chip.color"
+        [matTooltip]="(chip.kind === 'group' ? chip.description : (chip.description | transloco)) ?? ''"
+      >
+        <mat-icon *ngIf="chip.kind === 'public'; else dot" class="dino-collect-chip-icon"
+          >public</mat-icon
+        >
+        <ng-template #dot><span class="dino-collect-chip-dot"></span></ng-template>
+        {{ chip.kind === 'group' ? chip.name : (chip.name | transloco) }}
+        <span class="dino-collect-chip-count">{{ chip.count }}</span>
+        <mat-icon *ngIf="vm.selected.includes(chip.id)" class="dino-collect-chip-remove"
+          >close</mat-icon
+        >
+      </mat-chip-option>
+    </mat-chip-listbox>
+    <span class="dino-collect-spacer"></span>
+    <span class="dino-collect-counter"
+      >{{ '{{shown}} of {{total}} forms' | transloco: {shown: vm.shown, total: vm.total} }}</span
+    >
+  </div>
+
+  <div class="dino-collect-content" [class.dino-collect-narrow]="vm.narrow">
+    <section
+      *ngFor="let section of vm.sections"
+      class="dino-collect-section"
+      [style.--g]="section.group?.color"
+    >
+      <header *ngIf="section.group as group" class="dino-collect-section-head">
+        <span class="dino-collect-section-badge">
+          <mat-icon *ngIf="group.kind === 'public'">public</mat-icon>
+          <ng-container *ngIf="group.kind === 'ungrouped'">—</ng-container>
+          <ng-container *ngIf="group.kind === 'group'"
+            >{{ group.name.charAt(0).toUpperCase() }}</ng-container
+          >
+        </span>
+        <div class="dino-collect-section-text">
+          <div class="dino-collect-section-title">
+            <h2>{{ group.kind === 'group' ? group.name : (group.name | transloco) }}</h2>
+            <span class="dino-collect-pill"
+              >{{ '{{count}} forms' | transloco: {count: section.entries.length} }}</span
             >
+            <span
+              *ngIf="group.kind === 'public'"
+              class="dino-collect-pill dino-collect-pill-outline"
+            >
+              {{ 'Default · automatic' | transloco }}
+            </span>
           </div>
-          <div class="dino-grid-action-icons">
-            <button
-              *ngIf="(getCollectType === 'forms' ||  getCollectType === 'reports') && item.editable"
-              mat-mini-fab
-              color="primary"
-              aria-label="Edit Schema"
-              [matTooltip]="(getCollectType === 'reports' ? 'Edit Report Schema' : 'Edit Form Schema')|transloco"
-              (click)="editSchema(item.schemaId); $event.stopPropagation();"
-            >
-              <mat-icon>create</mat-icon>
-            </button>
-            <button
-              *ngIf="(getCollectType === 'forms' ||  getCollectType === 'reports') && item.editable"
-              mat-mini-fab
-              color="primary"
-              aria-label="Delete Form Schema"
-              [matTooltip]="(getCollectType === 'reports' ? 'Delete Report Schema' : 'Delete Form Schema')|transloco"
-              (click)="openDeleteSchemaDialog(item.schemaId); $event.stopPropagation();"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-            <button
-              *ngIf="getCollectType === 'forms' && item.shareUrl"
-              mat-mini-fab
-              color="primary"
-              aria-label="Share Url"
-              [matTooltip]="'Share Public Url'|transloco"
-              (click)="openShareUrlDialog(item.schemaId); $event.stopPropagation();"
-            >
-              <mat-icon>share</mat-icon>
-            </button>
-            <button
-              *ngIf="getCollectType === 'forms' && item.hasLocation"
-              mat-mini-fab
-              color="primary"
-              aria-label="View Map"
-              [matTooltip]="'View Map'|transloco"
-              (click)="viewMap(item.schemaId); $event.stopPropagation();"
-            >
-              <mat-icon>place</mat-icon>
-            </button>
-            <!-- Chat with your data -->
-            <button
-              *ngIf="getCollectType === 'forms'"
-              mat-mini-fab
-              color="primary"
-              aria-label="Chat with your data"
-              [matTooltip]="'Chat with your data'|transloco"
-              (click)="viewDataChat(item.schemaId); $event.stopPropagation();"
-            >
-              <mat-icon>smart_toy</mat-icon>
-            </button>
-            <!-- // -->
-          </div>
-          <div class="title"></div>
-          <div class="dino-grid-icon">
-            <mat-icon class="dino-mat-icon" *ngIf="!item.svgIcon; else svgIconTemplate"
-              >{{item.icon}}</mat-icon
-            >
-            <ng-template #svgIconTemplate>
-              <mat-icon class="dino-mat-icon" svgIcon="{{item.svgIcon ?? ''}}"></mat-icon>
-            </ng-template>
-          </div>
-          <div class="dino-grid-label">
-            <ng-container *ngIf="item.label ; else itemName"
-              >{{ item.label|transloco }}</ng-container
-            >
-            <ng-template #itemName>{{ item.name|transloco }}</ng-template>
+          <div class="dino-collect-section-desc" *ngIf="group.description">
+            {{ group.kind === 'group' ? group.description : (group.description | transloco) }}
           </div>
         </div>
-      </mat-grid-tile>
-    </ng-container>
-  </ng-container>
-</mat-grid-list>
+      </header>
 
-<dino-floating-button
-  *ngIf="displayAddButton|async"
-  buttonIcon="add"
-  [tooltipMessage]="'Add New {{schema}} Schema'|transloco:{schema: getCollectType.charAt(0).toUpperCase() + getCollectType.slice(1)}"
-  (click)="addSchema()"
-></dino-floating-button>
+      <!-- ========== Grid of cards ========== -->
+      <div class="dino-collect-grid" *ngIf="vm.view === 'grid'">
+        <div
+          *ngFor="let entry of section.entries"
+          class="dino-collect-card"
+          [class.dino-collect-card-actions]="entry.item.editable || entry.item.shareUrl"
+          [routerLink]="entry.item.url ? entry.item.url : ['/' + getCollectType, entry.item.schemaId ? entry.item.schemaId : entry.item.name]"
+          [tourAnchor]="uiServiceConfig ? entry.item.name : ''"
+        >
+          <div class="dino-collect-card-status">
+            <span
+              *ngIf="entry.item.isPublic"
+              class="dino-collect-status dino-collect-status-public"
+              [matTooltip]="'Public' | transloco"
+            >
+              <mat-icon>public</mat-icon>
+            </span>
+            <span
+              *ngIf="entry.item.unique"
+              class="dino-collect-status dino-collect-status-unique"
+              [matTooltip]="'Unique: only one item with a given exact set of metrics can exist' | transloco"
+            >
+              <mat-icon>fingerprint</mat-icon>
+            </span>
+          </div>
+          <div class="dino-collect-card-body">
+            <ng-container
+              *ngTemplateOutlet="itemIcon; context: {$implicit: entry.item}"
+            ></ng-container>
+            <div class="dino-grid-label dino-collect-card-name">
+              <ng-container
+                *ngTemplateOutlet="itemLabel; context: {$implicit: entry.item}"
+              ></ng-container>
+            </div>
+            <div class="dino-collect-tags" *ngIf="entry.tags.length">
+              <ng-container
+                *ngTemplateOutlet="tags; context: {$implicit: entry.tags}"
+              ></ng-container>
+            </div>
+          </div>
+          <div class="dino-collect-card-bar" *ngIf="entry.item.editable || entry.item.shareUrl">
+            <button
+              mat-button
+              *ngIf="entry.item.shareUrl"
+              (click)="openShareUrlDialog(entry.item); $event.stopPropagation()"
+            >
+              <mat-icon>share</mat-icon>{{ 'Link' | transloco }}
+            </button>
+            <ng-container *ngIf="entry.item.editable">
+              <button
+                mat-button
+                (click)="editSchema(entry.item.schemaId); $event.stopPropagation()"
+              >
+                <mat-icon>edit</mat-icon>{{ 'Edit' | transloco }}
+              </button>
+              <button
+                mat-button
+                class="dino-collect-danger"
+                (click)="openDeleteSchemaDialog(entry.item.schemaId); $event.stopPropagation()"
+              >
+                <mat-icon>delete</mat-icon>{{ 'Delete' | transloco }}
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== List of rows ========== -->
+      <div class="dino-collect-list" *ngIf="vm.view === 'list'">
+        <div
+          *ngFor="let entry of section.entries"
+          class="dino-collect-row"
+          [routerLink]="entry.item.url ? entry.item.url : ['/' + getCollectType, entry.item.schemaId ? entry.item.schemaId : entry.item.name]"
+          [tourAnchor]="uiServiceConfig ? entry.item.name : ''"
+        >
+          <span class="dino-collect-row-icon">
+            <ng-container
+              *ngTemplateOutlet="itemIcon; context: {$implicit: entry.item}"
+            ></ng-container>
+          </span>
+          <div class="dino-collect-row-main">
+            <div class="dino-grid-label dino-collect-row-name">
+              <ng-container
+                *ngTemplateOutlet="itemLabel; context: {$implicit: entry.item}"
+              ></ng-container>
+            </div>
+            <div
+              class="dino-collect-tags"
+              *ngIf="entry.tags.length || (vm.narrow && (entry.item.isPublic || entry.item.unique))"
+            >
+              <ng-container *ngIf="vm.narrow">
+                <ng-container
+                  *ngTemplateOutlet="statusIcons; context: {$implicit: entry.item}"
+                ></ng-container>
+              </ng-container>
+              <ng-container
+                *ngTemplateOutlet="tags; context: {$implicit: entry.tags}"
+              ></ng-container>
+            </div>
+          </div>
+          <ng-container *ngIf="!vm.narrow">
+            <div class="dino-collect-row-status">
+              <ng-container
+                *ngTemplateOutlet="statusIcons; context: {$implicit: entry.item}"
+              ></ng-container>
+            </div>
+            <span
+              class="dino-collect-row-updated"
+              *ngIf="entry.item.updatedAt | dinoCollectAge as age"
+            >
+              {{ age.date ? (age.date | date: 'dd/MM/yyyy') : (age.key! | transloco: age.params) }}
+            </span>
+            <div
+              class="dino-collect-row-actions"
+              *ngIf="entry.item.editable || entry.item.shareUrl"
+            >
+              <button
+                mat-icon-button
+                [class.dino-collect-hidden]="!entry.item.shareUrl"
+                [disabled]="!entry.item.shareUrl"
+                [matTooltip]="'Public link' | transloco"
+                (click)="openShareUrlDialog(entry.item); $event.stopPropagation()"
+              >
+                <mat-icon>share</mat-icon>
+              </button>
+              <ng-container *ngIf="entry.item.editable">
+                <button
+                  mat-icon-button
+                  [matTooltip]="'Edit' | transloco"
+                  (click)="editSchema(entry.item.schemaId); $event.stopPropagation()"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  [matTooltip]="'Delete' | transloco"
+                  (click)="openDeleteSchemaDialog(entry.item.schemaId); $event.stopPropagation()"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </ng-container>
+            </div>
+          </ng-container>
+          <button
+            *ngIf="vm.narrow && (entry.item.editable || entry.item.shareUrl)"
+            mat-icon-button
+            class="dino-collect-row-more"
+            [attr.aria-label]="'Actions' | transloco"
+            (click)="openActions(entry.item); $event.stopPropagation()"
+          >
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="dino-no-items-message" *ngIf="vm.sections.length === 0">
+      <p *ngIf="vm.total > 0 && vm.hasFilter; else noItems">
+        {{ 'No form matches the active filters.' | transloco }}
+      </p>
+      <ng-template #noItems>
+        <h1 *ngIf="noItemsMessage | async as message">{{ message | transloco }}</h1>
+      </ng-template>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #itemIcon let-item>
+  <mat-icon class="dino-mat-icon" *ngIf="!item.svgIcon; else svgIconTemplate"
+    >{{ item.icon || 'list_alt' }}</mat-icon
+  >
+  <ng-template #svgIconTemplate>
+    <mat-icon class="dino-mat-icon" [svgIcon]="item.svgIcon ?? ''"></mat-icon>
+  </ng-template>
+</ng-template>
+
+<ng-template #itemLabel let-item>
+  <ng-container *ngIf="item.label; else itemName">{{ item.label | transloco }}</ng-container>
+  <ng-template #itemName>{{ item.name | transloco }}</ng-template>
+</ng-template>
+
+<ng-template #tags let-tags>
+  <span *ngFor="let tag of tags" class="dino-collect-tag" [style.--g]="tag.color">
+    {{ tag.kind === 'group' ? tag.name : (tag.name | transloco) }}
+  </span>
+</ng-template>
+
+<ng-template #statusIcons let-item>
+  <mat-icon
+    *ngIf="item.isPublic"
+    class="dino-collect-status-icon dino-collect-status-public"
+    [matTooltip]="'Public' | transloco"
+    >public</mat-icon
+  >
+  <mat-icon
+    *ngIf="item.unique"
+    class="dino-collect-status-icon dino-collect-status-unique"
+    [matTooltip]="'Unique: only one item with a given exact set of metrics can exist' | transloco"
+    >fingerprint</mat-icon
+  >
+</ng-template>
