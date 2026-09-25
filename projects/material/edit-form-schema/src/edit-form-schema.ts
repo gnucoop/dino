@@ -33,13 +33,25 @@ import {
   ViewEncapsulation,
   isDevMode,
 } from '@angular/core';
-import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
+import {
+  AbstractControl,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ActiveMetric, InsertModel, MetricsService} from '@dino/core/data';
 import {
+  FORM_SCHEMA_GROUP_COLORS,
   FormSchema,
+  FormSchemaGroup,
+  formSchemaGroupKey,
+  formSchemaGroupsCatalogue,
   FormSchemaManager,
   FormSchemaVisibility,
   FormStatus,
@@ -87,8 +99,25 @@ enum EditorTab {
   Settings = 0,
   Metrics = 1,
   Status = 2,
-  Build = 3,
-  Relationships = 4,
+  Group = 3,
+  Build = 4,
+  Relationships = 5,
+}
+
+/**
+ * An option of the group picker: a group already used by some form schema, or a new one
+ * to create with the typed name.
+ */
+export type GroupOption = {kind: 'existing'; group: FormSchemaGroup} | {kind: 'create'; name: string};
+
+/**
+ * Rejects two groups with the same name, compared trimmed and case-insensitively.
+ */
+export function uniqueGroupNames(control: AbstractControl): ValidationErrors | null {
+  const keys = ((control.value ?? []) as FormSchemaGroup[])
+    .map(group => formSchemaGroupKey(group?.name))
+    .filter(key => key.length > 0);
+  return new Set(keys).size === keys.length ? null : {duplicateGroup: true};
 }
 
 /**
@@ -133,6 +162,28 @@ export class EditFormSchema implements OnInit, OnDestroy {
    * Form group for editing the Form Schema attributes
    */
   readonly formGroup: Observable<UntypedFormGroup>;
+
+  /**
+   * The colors a group can take.
+   */
+  readonly groupColors = FORM_SCHEMA_GROUP_COLORS;
+
+  /**
+   * The text typed in the group picker. It is not part of the form group: it only
+   * searches the groups to add.
+   */
+  readonly groupSearchCtrl = new UntypedFormControl('');
+
+  /**
+   * The options of the group picker: the known groups not assigned yet that match the
+   * search, and the new group to create when the search names none of them.
+   */
+  readonly groupOptions: Observable<GroupOption[]>;
+
+  /**
+   * The groups used by all the form schemas, merged by name.
+   */
+  private _groupCatalogue: Observable<FormSchemaGroup[]>;
 
   /**
    * The Ajf Form built from the Form Schema
@@ -358,6 +409,10 @@ export class EditFormSchema implements OnInit, OnDestroy {
             Validators.required,
           ],
           generateAutoReport: [false, Validators.required],
+          groups: this._formBuilder.array(
+            (fs?.form_schema_groups ?? []).map(group => this._groupControl(group)),
+            {validators: uniqueGroupNames},
+          ),
         });
         fg.updateValueAndValidity({onlySelf: false, emitEvent: true});
         return fg;
@@ -390,6 +445,36 @@ export class EditFormSchema implements OnInit, OnDestroy {
         }
         this._cdr.markForCheck();
       },
+    );
+
+    this._groupCatalogue = this._formSchemaManager.list().pipe(
+      map(docs => formSchemaGroupsCatalogue(docs.filter(doc => doc != null))),
+      shareReplay(1),
+    );
+
+    const assignedGroups = this.formGroup.pipe(
+      switchMap(fg => {
+        const groups = this.groupsArray(fg);
+        return groups.valueChanges.pipe(startWith(groups.value)) as Observable<FormSchemaGroup[]>;
+      }),
+    );
+    const groupSearch = this.groupSearchCtrl.valueChanges.pipe(
+      startWith(''),
+      map(value => (typeof value === 'string' ? value : '')),
+    );
+    this.groupOptions = combineLatest([this._groupCatalogue, assignedGroups, groupSearch]).pipe(
+      map(([catalogue, assigned, search]) => {
+        const assignedKeys = assigned.map(group => formSchemaGroupKey(group?.name));
+        const key = formSchemaGroupKey(search);
+        const existing: GroupOption[] = catalogue
+          .filter(group => !assignedKeys.includes(formSchemaGroupKey(group.name)))
+          .filter(group => formSchemaGroupKey(group.name).includes(key))
+          .map(group => ({kind: 'existing', group}));
+        const known = [...assignedKeys, ...catalogue.map(g => formSchemaGroupKey(g.name))];
+        const create: GroupOption[] =
+          key.length > 0 && !known.includes(key) ? [{kind: 'create', name: search.trim()}] : [];
+        return [...create, ...existing];
+      }),
     );
 
     this.form = combineLatest([
@@ -671,6 +756,71 @@ export class EditFormSchema implements OnInit, OnDestroy {
   }
 
   /**
+   * The groups assigned to the form schema, in the editor's form group.
+   */
+  groupsArray(formGroup: UntypedFormGroup): UntypedFormArray {
+    return formGroup.get('groups') as UntypedFormArray;
+  }
+
+  /**
+   * Assigns a group picked from the group picker. A known group comes with its color and
+   * description; a new one takes the first color the other groups of this form schema
+   * do not use.
+   */
+  addGroup(formGroup: UntypedFormGroup, option: GroupOption): void {
+    const groups = this.groupsArray(formGroup);
+    if (option.kind === 'existing') {
+      groups.push(this._groupControl(option.group));
+    } else {
+      const used = (groups.value as FormSchemaGroup[]).map(group => group.color);
+      const color =
+        this.groupColors.find(c => !used.includes(c)) ??
+        this.groupColors[groups.length % this.groupColors.length];
+      groups.push(this._groupControl({name: option.name, color}));
+    }
+    groups.markAsDirty();
+    this.groupSearchCtrl.setValue('');
+  }
+
+  /**
+   * Removes a group from the form schema.
+   */
+  removeGroup(formGroup: UntypedFormGroup, index: number): void {
+    const groups = this.groupsArray(formGroup);
+    groups.removeAt(index);
+    groups.markAsDirty();
+  }
+
+  /**
+   * The label of a group picker option, once picked: the input is cleared instead.
+   */
+  groupOptionLabel(): string {
+    return '';
+  }
+
+  private _groupControl(group: FormSchemaGroup): UntypedFormGroup {
+    return this._formBuilder.group({
+      name: [group.name ?? '', [Validators.required, Validators.maxLength(200)]],
+      description: [group.description ?? ''],
+      color: [group.color ?? this.groupColors[this.groupColors.length - 1]],
+    });
+  }
+
+  /**
+   * The groups to store: trimmed, without the empty fields and the unnamed groups.
+   */
+  private _groupsValue(formGroup: UntypedFormGroup): FormSchemaGroup[] {
+    const groups = (this.groupsArray(formGroup)?.value ?? []) as FormSchemaGroup[];
+    return groups
+      .map(group => ({
+        name: (group.name ?? '').trim(),
+        ...(group.description?.trim() ? {description: group.description.trim()} : {}),
+        ...(group.color ? {color: group.color} : {}),
+      }))
+      .filter(group => group.name.length > 0);
+  }
+
+  /**
    * Writes the Form Schema — creating it when there is none yet, patching it
    * otherwise — and reports `null` when the write failed.
    *
@@ -698,6 +848,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
       form_schema_metrics: formGroup.get('form_schema_metrics')?.value,
       visibility: formGroup.get('visibility')?.value,
       form_status_ref_id: formGroup.get('status')?.value ?? undefined,
+      form_schema_groups: this._groupsValue(formGroup),
     };
     if (depsRefId != null) {
       formPatch.form_schema_deps_ref_id = depsRefId;

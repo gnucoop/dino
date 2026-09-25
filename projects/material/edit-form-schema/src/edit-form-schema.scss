@@ -169,7 +169,8 @@ dino-edit-form-schema {
   // root has to declare its own scroll box.
   .dino-efs-settings,
   .dino-efs-metrics,
-  .dino-efs-status {
+  .dino-efs-status,
+  .dino-efs-groups {
     flex: 1 1 auto;
     min-height: 0;
     overflow: auto;
@@ -215,6 +216,64 @@ dino-edit-form-schema {
       margin: 0 0 22px;
       color: var(--efs-muted-2);
       font-size: 13px;
+    }
+  }
+
+  // ===== Group tab =====
+  .dino-efs-groups-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .dino-efs-groups-picker {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .dino-efs-group-row {
+    display: grid;
+    grid-template-columns: 112px minmax(160px, 1fr) minmax(200px, 2fr) 40px;
+    gap: 0 12px;
+    align-items: start;
+
+    @media only screen and (max-width: 599px) {
+      grid-template-columns: 112px 1fr 40px;
+
+      .dino-efs-group-desc {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+    }
+
+    .mat-mdc-form-field {
+      width: 100%;
+    }
+
+    .dino-efs-group-remove {
+      margin-top: 8px;
+    }
+  }
+
+  .dino-efs-groups-empty {
+    margin: 0 0 8px;
+    color: var(--efs-muted-2);
+    font-size: 13px;
+  }
+
+  .dino-efs-groups-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 16px 0 0;
+    color: var(--efs-muted-2);
+    font-size: 12.5px;
+
+    .mat-icon {
+      flex: 0 0 18px;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
     }
   }
 
@@ -350,6 +409,31 @@ dino-edit-form-schema {
     // Properties panel
     .ajf-formtree-properties ajf-fb-node-properties .mat-icon {
       color: efs-primary();
+    }
+  }
+}
+
+// The color of a group. Top level, since it is also drawn in the options of the color
+// select and of the group picker, which the cdk overlay renders outside the editor.
+.dino-efs-group-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.mat-mdc-select-panel.dino-efs-group-colors {
+  min-width: 112px;
+
+  .mat-mdc-option {
+    min-height: 40px;
+    justify-content: center;
+
+    .mdc-list-item__primary-text {
+      display: flex;
+      justify-content: center;
+      margin: 0;
     }
   }
 }
