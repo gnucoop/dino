@@ -5,6 +5,10 @@ import fs from 'fs';
 export default defineConfig({
   pageLoadTimeout: 180000,
   screenshotsFolder: 'docs/imgs',
+  // The screenshots folder is also where the docs keep their images, including
+  // hand-added ones no spec produces. Cypress empties it before each run by
+  // default, which would delete those from every build.
+  trashAssetsBeforeRuns: false,
   viewportWidth: 1440,
   viewportHeight: 900,
   scrollBehavior: false,

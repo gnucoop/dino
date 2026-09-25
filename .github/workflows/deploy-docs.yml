@@ -1,18 +1,13 @@
 name: Deploy Docs
 
-# TODO(temporary): one-off trigger on push to the `with-mkdocs` branch to deploy
-# the docs from that branch. Runs in parallel with CI and does NOT wait for CI to pass.
-# To restore: switch back to the `workflow_run` trigger on ['CI'] (which only runs
-# after a successful CI) and move this file back to `main`, since `workflow_run`
-# only uses the workflow version present on the default branch.
-
-# on:
-#   push:
-#     branches:
-#       - feat-mkdocs
-# jobs:
-#   docs:
-#     runs-on: ubuntu-latest
+# Publishes the Markdown committed under dino-doc/docs, with fresh screenshots of
+# the app built from the same commit. The text is never generated here:
+# docs-generate.mjs is run locally, on purpose, and its output is reviewed and
+# edited by hand before being committed. Regenerating in CI would publish model
+# output over those edits, and since the result is not committed back, the
+# published page would change from one deploy to the next.
+#
+# `workflow_run` only uses the version of this file present on the default branch.
 
 on:
   workflow_run:
@@ -98,14 +93,6 @@ jobs:
             --spec dino-doc/cypress/e2e/docs-screenshots.cy.js \
             --browser chrome \
             --headless
-
-      # ------------------------
-      # Generate Markdown docs (Claude)
-      # ------------------------
-      - name: Generate docs
-        run: node dino-doc/scripts/docs-generate.mjs
-        env:
-          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
 
       # ------------------------
       # Python + MkDocs

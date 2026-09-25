@@ -88,6 +88,10 @@ Screenshots are saved under `dino-doc/docs/imgs/<section>/<name>.png` — the
 `name` from the route map carries the subfolder (e.g. `forms/index-export` →
 `docs/imgs/forms/index-export.png`).
 
+Existing images are never deleted (`trashAssetsBeforeRuns: false` in
+`cypress.config.ts`): the same folder holds hand-added images that no spec
+produces, and a run only overwrites the screenshots it takes.
+
 For each route the spec captures:
 
 - a **main view** screenshot of the page, and
@@ -139,7 +143,7 @@ written, to clean up two recurring model quirks:
   (MkDocs) then parses the whole block as one paragraph and renders the markers
   as literal `*`/`-` text inline. A blank line is inserted before such lists.
 
-This runs inline during generation (and in CI), so no manual step is needed. To
+This runs inline during generation, so no manual step is needed. To
 repair existing files on demand, run the sanitizer as a CLI:
 
 ```bash
@@ -182,8 +186,15 @@ the Git history and the files on disk:
      regenerates **every page that embeds it**, not just pages under
      `projects/dinoapp/src/app/`;
    - if nothing relevant changed → it regenerates no content pages.
-3. The landing page `docs/en/index.md` is **always** rebuilt from the route map
+3. The landing page `docs/en/index.md` is rebuilt only when it is missing or when
+   asked for (`--full`, `--pages=index`); otherwise the committed page is kept
    (its translations only if missing).
+
+> **Hand-edited pages are not protected.** A page whose sources changed in the
+> last commit is rewritten by the model, which gets the current text as context
+> but gives no guarantee to keep manual edits; a routing change rewrites them
+> all. Run the generator deliberately, scoped with `--pages`/`--modules`, review
+> the output with `git diff`, and edit by hand only after committing it.
 
 > **Regenerate specific pages on demand:** delete their `.md` files — the
 > English page **and** every language version — then run the script with no
@@ -282,6 +293,14 @@ To run only a subset (e.g. while iterating on one page):
 3. Run the Cypress screenshots (step 5)
 4. Generate documentation (step 7)
 5. Restore the full route map (re-run the scanner)
+
+## Publishing (CI)
+
+`.github/workflows/deploy-docs.yml` publishes the docs to GitHub Pages after a
+successful CI run on `main`. It captures fresh screenshots from the app built
+from that commit and builds the MkDocs site from the Markdown **as committed**:
+it never runs `docs-generate.mjs`. Text changes reach the published site only
+through a commit.
 
 ## Build static HTML site
 
