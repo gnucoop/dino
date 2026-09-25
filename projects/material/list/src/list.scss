@@ -53,6 +53,9 @@ dino-list {
         width: 18px;
         height: 18px;
       }
+      @media only screen and (max-width: 768px) {
+        display: none;
+      }
     }
 
     .dino-selection-actions-right {
