@@ -132,8 +132,57 @@ describe('Edit FormSchema', () => {
 
     editFormSchema.goToBuild();
 
-    // Tab order: Settings, Metrics, Status, Build, Relationships.
-    expect(editFormSchema.selectedTabIndex).toBe(3); // EditorTab.Build
+    // Tab order: Settings, Metrics, Status, Group, Build, Relationships.
+    expect(editFormSchema.selectedTabIndex).toBe(4); // EditorTab.Build
+  });
+
+  describe('groups', () => {
+    let fgroup: UntypedFormGroup;
+
+    beforeEach(async () => {
+      await fixtureEditFormSchema.whenStable();
+      fixtureEditFormSchema.detectChanges();
+      editFormSchema.formGroup.subscribe(fg => (fgroup = fg));
+    });
+
+    it('should save the assigned groups, trimmed and without the empty ones', () => {
+      const createFormSchemaSpy = spyOn(fsm, 'create').and.callThrough();
+      editFormSchema.addGroup(fgroup, {
+        kind: 'existing',
+        group: {name: ' Health ', description: ' Follow-ups ', color: '#4fd1d9'},
+      });
+      editFormSchema.addGroup(fgroup, {kind: 'existing', group: {name: 'M&E', description: ''}});
+      editFormSchema.addGroup(fgroup, {kind: 'existing', group: {name: '  '}});
+      fgroup.get('name')!.setValue('schema');
+      fgroup.get('label')!.setValue('Schema');
+
+      editFormSchema.save();
+
+      const patch = createFormSchemaSpy.calls.mostRecent().args[0];
+      expect(patch.form_schema_groups).toEqual([
+        {name: 'Health', description: 'Follow-ups', color: '#4fd1d9'},
+        {name: 'M&E', color: '#a3abb5'},
+      ]);
+    });
+
+    it('should give a new group a color', () => {
+      editFormSchema.addGroup(fgroup, {kind: 'create', name: 'Training'});
+      const group = editFormSchema.groupsArray(fgroup).at(0).value;
+      expect(group.name).toBe('Training');
+      expect(editFormSchema.groupColors).toContain(group.color);
+    });
+
+    it('should reject two groups with the same name', () => {
+      editFormSchema.addGroup(fgroup, {kind: 'existing', group: {name: 'Health'}});
+      expect(editFormSchema.groupsArray(fgroup).valid).toBeTrue();
+
+      editFormSchema.addGroup(fgroup, {kind: 'create', name: 'health '});
+      expect(editFormSchema.groupsArray(fgroup).hasError('duplicateGroup')).toBeTrue();
+      expect(fgroup.valid).toBeFalse();
+
+      editFormSchema.removeGroup(fgroup, 1);
+      expect(editFormSchema.groupsArray(fgroup).valid).toBeTrue();
+    });
   });
 
   // "Generate Report" is pinned to Yes and disabled once an automatic report exists.
