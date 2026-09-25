@@ -317,7 +317,7 @@
 
     <mat-row
       *matRowDef="let row; columns: (ctx.displayedColumns|async);"
-      [class.dino-highlighted-row]="(breakpointObserver.extrasmall|async) ? isRowExpanded(row) : selection.isSelected(row)"
+      [class.dino-highlighted-row]="selection.isSelected(row) || ((breakpointObserver.extrasmall|async) && isRowExpanded(row))"
       [class.dino-highlighted-light]="isHighlightedRow(row)"
       [class.dino-expanded-row]="isRowExpanded(row)"
       [class.dino-details-row]="ctx.isDetails"
