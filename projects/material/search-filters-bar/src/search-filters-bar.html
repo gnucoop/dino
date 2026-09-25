@@ -51,7 +51,7 @@
       (click)="openFiltersDialog()"
       [attr.aria-label]="'Filters'|transloco"
     >
-      <mat-icon color="primary">tune</mat-icon>
+      <mat-icon>tune</mat-icon>
       <span>{{'Filters'|transloco}}</span>
       <span class="dino-filters-count" *ngIf="(appliedFiltersCount$|async) as count">{{count}}</span>
     </button>
@@ -63,7 +63,7 @@
         (click)="openExportDialog()"
         [attr.aria-label]="'Export items'|transloco"
       >
-        <mat-icon color="primary">cloud_download</mat-icon>
+        <mat-icon>cloud_download</mat-icon>
         <span>{{'Export'|transloco}}</span>
       </button>
     </ng-container>
@@ -74,7 +74,7 @@
   <div class="dino-filters-modal">
     <div class="dino-filters-modal-header">
       <div class="dino-filters-modal-title">
-        <mat-icon color="primary">tune</mat-icon>
+        <mat-icon>tune</mat-icon>
         <span class="dino-filters-modal-heading">{{'Filters'|transloco}}</span>
         <mat-button-toggle-group
           class="dino-filters-modal-tabs"
