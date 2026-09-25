@@ -32,7 +32,7 @@ description: تعلّم كيفية استيراد البيانات المهيك�
 راجع الوصف في القسم [أدناه](#تنسيق-الملف)
 
 !!! tip "صيغ الملفات السهلة"
-    يقبل Dino الملف نفسه الذي يتم الحصول عليه أثناء [التصدير](index.md#export). لذا، فإن أسهل طريقة للحصول على ملف منسّق بشكل صحيح للاستيراد هي أولًا تصدير بعض بيانات form من الـ schema نفسه ثم حذف الصفوف التي تحتوي على البيانات المصدَّرة، مع الإبقاء على رؤوس الأعمدة فقط. في جميع الأحوال، تأكد من أن رؤوس أعمدتك واضحة – إذ ستُستخدم كاقتراحات أثناء الربط.
+    يقبل Dino الملف نفسه الذي يتم الحصول عليه أثناء [التصدير](index.md#التصدير). لذا، فإن أسهل طريقة للحصول على ملف منسّق بشكل صحيح للاستيراد هي أولًا تصدير بعض بيانات form من الـ schema نفسه ثم حذف الصفوف التي تحتوي على البيانات المصدَّرة، مع الإبقاء على رؤوس الأعمدة فقط. في جميع الأحوال، تأكد من أن رؤوس أعمدتك واضحة – إذ ستُستخدم كاقتراحات أثناء الربط.
 
 !!! note "الـ Metrics محدَّدة بالمعرّف"
     إذا كان عمود metric في ملفك يوفّر **ID** الخاص بالـ metric (UUID)، فإن ذلك الصف يُربط بالـ metric الموجود بذلك المعرّف ولا يُنشأ metric جديد. للمعرّف الأولوية على اسم الـ metric، لذا يحدث ذلك بغض النظر عن خيار **Reuse existing metrics with the same name** (الذي ينطبق فقط على المطابقة بالاسم).
@@ -180,18 +180,18 @@ description: تعلّم كيفية استيراد البيانات المهيك�
 
 القواعد التي يجب اتباعها لإدارة الـ metrics بشكل صحيح هي التالية:
 
-| METRICA | CREAZIONE DA UI | CREAZIONE DA IMPORT | CREAZIONE \+ ASSEGNAZIONE DA IMPORT | UTILIZZO DA IMPORT | CREAZIONE \+ ASSEGNAZIONE DA IMPORT (parent) | UTILIZZO PARENT |
+| المقياس | الإنشاء من الواجهة | الإنشاء عبر الاستيراد | الإنشاء \+ التعيين عبر الاستيراد | الاستخدام عبر الاستيراد | الإنشاء \+ التعيين عبر الاستيراد (parent) | الاستخدام كـ parent |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| **Case** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Organization** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Location** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Area** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
+| **Case** | name | name | name | id، أو name (مع خيار reuse)، أو كلاهما | name | id، أو name (مع خيار reuse)، أو كلاهما |
+| **Organization** | name | name | name | id، أو name (مع خيار reuse)، أو كلاهما | name | id، أو name (مع خيار reuse)، أو كلاهما |
+| **Location** | name | name | name | id، أو name (مع خيار reuse)، أو كلاهما | name | id، أو name (مع خيار reuse)، أو كلاهما |
+| **Area** | name | name | name | id، أو name (مع خيار reuse)، أو كلاهما | name | id، أو name (مع خيار reuse)، أو كلاهما |
 | **Project** | name, code | name, code | name, code | id | name, code | id |
 
-# الشرائح المتكررة
+## الشرائح المتكررة
 
 إذا كان لديك حقل في شرائح متكررة، فيجب تسميته بشكل مختلف. يجب أن يُسمى كل حقل في الشريحة المتكررة \<field\_name\>\_\_X حيث X هو رقم التكرار، من 0 (الموافق لتكرار واحد) إلى N-1 حيث N هو العدد الإجمالي لتكرارات الشريحة في ذلك الـ form.
-على سبيل المثال، لنفترض أن لديك تكرارًا واحدًا فقط من الشريحة المتكررة وتريد إضافة كلا الحقلين "Indicator description" و"Value reached". ستحتاج إلى إضافة ثلاثة أعمدة إلى ملف الاستيراد:
+على سبيل المثال، لنفترض أن لديك تكرارًا واحدًا فقط من الشريحة المتكررة وتريد إضافة كلا الحقلين "Indicator description" و"Value reached". ستحتاج إلى إضافة هذين العمودين إلى ملف الاستيراد:
 
 | indic\_\_0 | value\_indic\_\_0 |
 |  :---- | ----- |
@@ -205,6 +205,6 @@ description: تعلّم كيفية استيراد البيانات المهيك�
 | ASM | 20000 |  |  |  |  |  |
 | AFG | 15000 | Parents | 45 | Schools | 34 | true |
 
-# الأخطاء
+## الأخطاء
 
-إذا حدث خطأ أثناء المزامنة، سيفرض النظام تسجيل الخروج ولن تتم مزامنة أي بيانات. يمكن أن يحدث هذا عند تقديم معرّف خاطئ لبعض الكيانات المشار إليها بمعرّفاتها (مثل الـ metrics والمستخدمين).
+تحقق من المعرّفات في ملفك قبل الاستيراد. إذا كان عمود يشير إلى كيان من خلال معرّفه (مقياس أو مستخدم) ولم يكن هناك كيان بهذا المعرّف في Dino، فلن يمكن مزامنة النماذج المستوردة مع الخادم.

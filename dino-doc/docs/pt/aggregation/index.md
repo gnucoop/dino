@@ -11,7 +11,7 @@ A página Agregação oferece uma visualização centralizada de todos os dados 
 
 ## Visualizando a lista de agregação
 
-A tabela principal exibe uma linha por dado enviado. Por padrão, você vê as colunas **Form Schema** e **Status**, mas pode personalizar quais colunas aparecem usando o ícone **View Columns** no cabeçalho da tabela.
+A tabela principal exibe uma linha por dado enviado. Por padrão, você vê as colunas **Form Schema** e **Status**, mas pode personalizar quais colunas aparecem usando o ícone **Personalize as colunas** no cabeçalho da tabela.
 
 - Cada linha mostra um ícone de status e, se o formulário tiver problemas de validação, um ícone de aviso.
 - Passe o mouse sobre uma linha para ver um destaque; clique em qualquer lugar de uma linha para selecioná-la e revelar as ações disponíveis.

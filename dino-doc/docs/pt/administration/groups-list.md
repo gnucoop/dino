@@ -17,7 +17,7 @@ A tabela exibe as seguintes colunas:
 - **ID** – identificador interno (oculto por padrão).
 - **Data de criação** – quando o grupo foi criado (oculto por padrão).
 
-Você pode personalizar quais colunas aparecem clicando no ícone **Ver colunas** (também chamado de ícone **hotdog** pelos programadores de software!) no lado direito do cabeçalho da tabela.
+Você pode personalizar quais colunas aparecem clicando no ícone **Personalize as colunas** no lado direito do cabeçalho da tabela.
 
 ## Busca e filtro
 

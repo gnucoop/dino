@@ -28,7 +28,7 @@ Clique em um card de form schema para acessar sua **lista de form**. Esta tabela
 
 ![Lista de form (tabela de dados) de um form schema](../imgs/forms/index-list.png)
 
-A lista inclui uma **barra de filtro** que permite pesquisar por palavra-chave, intervalo de datas, métricas, status, uso
+A lista inclui uma **barra de filtro** que permite pesquisar por palavra-chave, intervalo de datas, métricas, status, usuário e muito mais. Você também pode salvar predefinições de filtros para reutilizá-las rapidamente.
 
 ### Exportar
 

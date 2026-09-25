@@ -16,7 +16,7 @@ Por padrão, a tabela mostra as seguintes colunas:
 - **Nome da Organização** – o nome da organização. Esta coluna é ordenável.
 - **Organização Superior** – o nome da organização superior, se houver.
 
-Colunas adicionais (ID, Data de Criação, Caminho do Logo, URL do Site, Atributos Adicionais) ficam ocultas, mas estão disponíveis quando você personaliza a exibição das colunas usando o ícone **Visualizar colunas** (canto inferior direito do cabeçalho da tabela).
+Colunas adicionais (ID, Data de Criação, Caminho do Logo, URL do Site, Atributos Adicionais) ficam ocultas, mas estão disponíveis quando você personaliza a exibição das colunas usando o ícone **Personalize as colunas** (canto inferior direito do cabeçalho da tabela).
 
 ## Ações da Linha
 

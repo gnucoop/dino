@@ -18,7 +18,7 @@ La tabla principal muestra las siguientes columnas de forma predeterminada:
 - **Imagen del caso** – Un archivo de imagen cargado que representa el caso.
 - **Caso principal** – El nombre del caso principal al que pertenece este caso.
 
-Las columnas adicionales (como **ID**, **Notas**, **Fecha de creación** y **Atributos adicionales**) están ocultas de forma predeterminada. Puede personalizar qué columnas aparecen haciendo clic en el botón **Personalizar columnas** (icono de ojo) en el encabezado de la tabla.
+Las columnas adicionales (como **ID**, **Notas**, **Fecha de creación** y **Atributos adicionales**) están ocultas de forma predeterminada. Puede personalizar qué columnas aparecen haciendo clic en el botón **Personaliza las columnas** en el encabezado de la tabla.
 
 ## Acciones sobre un caso individual
 

@@ -26,7 +26,7 @@ La tabella principale mostra un elenco di tutti i progetti. Ogni riga corrispond
 - **Data di inizio** – La data in cui inizia il progetto.
 - **Data di fine** – La data in cui termina il progetto.
 
-Le colonne nascoste (ID, Data di creazione e Attributi aggiuntivi) possono essere mostrate facendo clic sul pulsante **Personalizza colonne** (l'icona ha l'aspetto di una vista settimanale) nell'angolo in alto a destra della tabella.
+Le colonne nascoste (ID, Data di creazione e Attributi aggiuntivi) possono essere mostrate facendo clic sul pulsante **Personalizza le colonne** nell'angolo in alto a destra della tabella.
 
 !!! tip "Campi di sola lettura"
     Il campo **Codice automatico** viene generato automaticamente e non può essere modificato. Apparirà in grigio nella finestra di dialogo di modifica.

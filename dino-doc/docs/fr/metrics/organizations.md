@@ -16,7 +16,7 @@ Par défaut, le tableau affiche les colonnes suivantes :
 - **Nom de l'organisation** – le nom de l'organisation. Cette colonne est triable.
 - **Organisation parente** – le nom de l'organisation parente, le cas échéant.
 
-Des colonnes supplémentaires (ID, Date de création, Chemin du logo, URL du site web, Attributs supplémentaires) sont masquées, mais disponibles lorsque vous personnalisez l'affichage des colonnes à l'aide de l'icône **Afficher les colonnes** (en bas à droite de l'en-tête du tableau).
+Des colonnes supplémentaires (ID, Date de création, Chemin du logo, URL du site web, Attributs supplémentaires) sont masquées, mais disponibles lorsque vous personnalisez l'affichage des colonnes à l'aide de l'icône **Personnalisez les colonnes** (en bas à droite de l'en-tête du tableau).
 
 ## Actions sur les lignes
 

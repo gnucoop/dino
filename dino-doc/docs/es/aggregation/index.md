@@ -11,7 +11,7 @@ La página Agregación te ofrece una vista centralizada de todos los datos de fo
 
 ## Consultar la lista de agregación
 
-La tabla principal muestra una fila por cada dato. De forma predeterminada verás las columnas **Form Schema** y **Status**, pero puedes personalizar qué columnas aparecen usando el icono **View Columns** en el encabezado de la tabla.
+La tabla principal muestra una fila por cada dato. De forma predeterminada verás las columnas **Form Schema** y **Status**, pero puedes personalizar qué columnas aparecen usando el icono **Personaliza las columnas** en el encabezado de la tabla.
 
 - Cada fila muestra un icono de estado y, si el formulario tiene problemas de validación, un icono de advertencia.
 - Pasa el cursor sobre una fila para ver un resaltado; haz clic en cualquier parte de una fila para seleccionarla y mostrar las acciones disponibles.

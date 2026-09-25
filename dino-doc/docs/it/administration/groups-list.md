@@ -17,7 +17,7 @@ La tabella mostra le seguenti colonne:
 - **ID** – identificatore interno (nascosto per impostazione predefinita).
 - **Data di creazione** – data in cui il gruppo è stato creato (nascosta per impostazione predefinita).
 
-Puoi personalizzare le colonne visualizzate facendo clic sull'icona **Visualizza colonne** (chiamata anche icona **hotdog** dai programmatori!) sul lato destro dell'intestazione della tabella.
+Puoi personalizzare le colonne visualizzate facendo clic sull'icona **Personalizza le colonne** sul lato destro dell'intestazione della tabella.
 
 ## Ricerca e filtro
 

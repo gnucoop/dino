@@ -28,7 +28,7 @@ Fai clic sul riquadro di un form schema per accedere alla sua **lista di form**.
 
 ![Lista di form (tabella dati) per un form schema](../imgs/forms/index-list.png)
 
-La lista include una **barra dei filtri** che ti consente di cercare per parola chiave, intervallo di date, metriche, stato, use
+La lista include una **barra dei filtri** che ti consente di cercare per parola chiave, intervallo di date, metriche, stato, utente e altro ancora. Puoi anche salvare dei filtri preimpostati per riutilizzarli rapidamente.
 
 ### Esportazione
 

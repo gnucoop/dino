@@ -16,7 +16,7 @@ De forma predeterminada, la tabla muestra las siguientes columnas:
 - **Nombre de la organización**: el nombre de la organización. Esta columna se puede ordenar.
 - **Organización superior**: el nombre de la organización superior, si existe.
 
-Las columnas adicionales (ID, Fecha de creación, Ruta del logotipo, URL del sitio web, Atributos adicionales) están ocultas pero disponibles cuando personaliza la visualización de columnas mediante el icono **Ver columnas** (en la esquina inferior derecha del encabezado de la tabla).
+Las columnas adicionales (ID, Fecha de creación, Ruta del logotipo, URL del sitio web, Atributos adicionales) están ocultas pero disponibles cuando personaliza la visualización de columnas mediante el icono **Personaliza las columnas** (en la esquina inferior derecha del encabezado de la tabla).
 
 ## Acciones de fila
 

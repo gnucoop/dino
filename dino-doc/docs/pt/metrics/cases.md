@@ -18,7 +18,7 @@ A tabela principal exibe as seguintes colunas por padrão:
 - **Imagem do caso** – Um arquivo de imagem enviado que representa o caso.
 - **Caso pai** – O nome do caso pai ao qual este caso pertence.
 
-Colunas adicionais (como **ID**, **Notas**, **Data de criação** e **Atributos adicionais**) ficam ocultas por padrão. Você pode personalizar quais colunas aparecem clicando no botão **Personalizar colunas** (ícone de olho) no cabeçalho da tabela.
+Colunas adicionais (como **ID**, **Notas**, **Data de criação** e **Atributos adicionais**) ficam ocultas por padrão. Você pode personalizar quais colunas aparecem clicando no botão **Personalize as colunas** no cabeçalho da tabela.
 
 ## Ações em um único caso
 

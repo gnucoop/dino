@@ -28,7 +28,7 @@ Haz clic en una tarjeta de esquema de formulario para entrar en su **lista de en
 
 ![Lista de envíos (tabla de datos) de un esquema de formulario](../imgs/forms/index-list.png)
 
-La lista incluye una **barra de filtros** que te permite buscar por palabra clave, rango de fechas, métricas, estado, uso
+La lista incluye una **barra de filtros** que te permite buscar por palabra clave, rango de fechas, métricas, estado, usuario y más. También puedes guardar filtros preestablecidos para reutilizarlos rápidamente.
 
 ### Exportar
 

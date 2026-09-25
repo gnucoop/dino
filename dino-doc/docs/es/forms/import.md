@@ -29,10 +29,10 @@ Para subir un archivo:
 4. Haz clic en **Siguiente** (o en la etiqueta del paso "2 · Asignar campos") para continuar.
 
 ### Formatear el archivo de importación
-Consulta la descripción en la sección [más abajo](#file-format)
+Consulta la descripción en la sección [más abajo](#formato-del-archivo)
 
 !!! tip "Formatos de archivo sencillos"
-    Dino acepta el mismo archivo obtenido durante la [exportación](index.md#export). Por lo tanto, la forma más sencilla de obtener un archivo correctamente formateado para la importación es exportar primero algunos datos de un form del mismo schema y luego eliminar las filas que contienen los datos exportados, conservando solo los encabezados de columna. En cualquier caso, asegúrate de que los encabezados de columna sean claros: se usarán como sugerencias durante la asignación.
+    Dino acepta el mismo archivo obtenido durante la [exportación](index.md#exportar). Por lo tanto, la forma más sencilla de obtener un archivo correctamente formateado para la importación es exportar primero algunos datos de un form del mismo schema y luego eliminar las filas que contienen los datos exportados, conservando solo los encabezados de columna. En cualquier caso, asegúrate de que los encabezados de columna sean claros: se usarán como sugerencias durante la asignación.
 
 !!! note "Métricas identificadas por ID"
     Si una columna de métrica en tu archivo proporciona el **ID** (UUID) de la métrica, esa fila se vincula a la métrica existente con ese ID y no se crea ninguna métrica nueva. El ID tiene prioridad sobre el nombre de la métrica, por lo que esto ocurre independientemente de la opción **Reutilizar métricas existentes con el mismo nombre** (que solo se aplica a la coincidencia por nombre).
@@ -158,7 +158,7 @@ Sigue estos pasos:
 
 3. cada fila corresponderá a un nuevo form diferente. Así, si creamos un archivo con un encabezado \+ digamos, 5 filas de datos, si la carga es exitosa, crearemos 5 nuevos forms en DINO.   
 4. No es necesario tener una columna para cada campo del form; no es necesario rellenar todas las filas de una columna dada, pero si un campo está vacío en todas las filas, se puede omitir.   
-5. Los campos de datos deben estar formateados YYYY-MM-DD como texto (ten cuidado).   
+5. Los campos de fecha deben estar formateados YYYY-MM-DD como texto (ten cuidado).   
 6. Los campos de selección única deben contener una de las opciones aceptadas tal como se especifica en "choices" (consulta el constructor de forms o el archivo XLSForm).   
 7. Los campos de selección múltiple deben formatearse según el siguiente patrón: \[opt1, opt2\] (es decir, una lista de opciones entre corchetes).
 
@@ -180,18 +180,18 @@ Durante la importación de algunos datos, en lo que respecta a las métricas, es
 
 Las reglas a seguir para gestionar correctamente las métricas son las siguientes:
 
-| METRICA | CREAZIONE DA UI | CREAZIONE DA IMPORT | CREAZIONE \+ ASSEGNAZIONE DA IMPORT | UTILIZZO DA IMPORT | CREAZIONE \+ ASSEGNAZIONE DA IMPORT (parent) | UTILIZZO PARENT |
+| MÉTRICA | CREACIÓN DESDE LA UI | CREACIÓN DESDE IMPORTACIÓN | CREACIÓN \+ ASIGNACIÓN DESDE IMPORTACIÓN | USO DESDE IMPORTACIÓN | CREACIÓN \+ ASIGNACIÓN DESDE IMPORTACIÓN (parent) | USO COMO PARENT |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| **Case** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Organization** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Location** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Area** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
+| **Case** | name | name | name | id, o name (con la opción reuse), o ambos | name | id, o name (con la opción reuse), o ambos |
+| **Organization** | name | name | name | id, o name (con la opción reuse), o ambos | name | id, o name (con la opción reuse), o ambos |
+| **Location** | name | name | name | id, o name (con la opción reuse), o ambos | name | id, o name (con la opción reuse), o ambos |
+| **Area** | name | name | name | id, o name (con la opción reuse), o ambos | name | id, o name (con la opción reuse), o ambos |
 | **Project** | name, code | name, code | name, code | id | name, code | id |
 
-# Diapositivas repetibles
+## Diapositivas repetibles
 
 Si tienes campos en diapositivas repetibles, deben nombrarse de forma diferente. Cada campo en la diapositiva repetible debe llamarse \<field\_name\>\_\_X donde X es el número de repetición, desde 0 (correspondiente a una repetición) hasta N-1, donde N es el número total de repeticiones de la diapositiva en ese form.   
-Por ejemplo, supongamos que tienes solo 1 repetición de la diapositiva repetible y quieres añadir ambos campos "Indicator description" y "Value reached". Tendrías que añadir tres columnas a tu archivo de importación:
+Por ejemplo, supongamos que tienes solo 1 repetición de la diapositiva repetible y quieres añadir ambos campos "Indicator description" y "Value reached". Tendrías que añadir estas dos columnas a tu archivo de importación:
 
 | indic\_\_0 | value\_indic\_\_0 |
 |  :---- | ----- |
@@ -205,6 +205,6 @@ Así, por ejemplo, podríamos tener:
 | ASM | 20000 |  |  |  |  |  |
 | AFG | 15000 | Parents | 45 | Schools | 34 | true |
 
-# Errores
+## Errores
 
-Si ocurre un error durante la sincronización, el sistema forzará el cierre de sesión y no se sincronizará ningún dato. Esto puede ocurrir al proporcionar un ID incorrecto para algunas de las entidades a las que se hace referencia mediante sus ID (como métricas y usuarios).
+Comprueba los ID de tu archivo antes de importar. Si una columna hace referencia a una entidad mediante su ID (una métrica o un usuario) y en Dino no existe ninguna entidad con ese ID, los formularios importados no podrán sincronizarse con el servidor.

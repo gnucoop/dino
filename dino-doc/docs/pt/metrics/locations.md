@@ -13,7 +13,7 @@ A página **Localizações** permite gerenciar as localizações geográficas re
 
 - **Caminho de navegação** – mostra sua posição atual na navegação.
 - **Busca e Filtros** – busca por palavra-chave, seletor de intervalo de datas e filtros avançados configuráveis (por exemplo, por métrica, status, usuário). Você também pode salvar e carregar predefinições de filtros.
-- **Tabela** – exibe Nome da Localização e Localização Pai por padrão. As colunas ocultas (ID, Data de Criação, Coordenadas, Atributos Adicionais) podem ser exibidas pelo botão **Ver colunas** (canto inferior direito do cabeçalho da tabela).
+- **Tabela** – exibe Nome da Localização e Localização Pai por padrão. As colunas ocultas (ID, Data de Criação, Coordenadas, Atributos Adicionais) podem ser exibidas pelo botão **Personalize as colunas** (canto inferior direito do cabeçalho da tabela).
 - **Paginação** – controles para navegar entre as páginas.
 - **Ações em massa** – selecione linhas usando as caixas de seleção para excluir ou editar várias localizações de uma vez.
 - **Botões de ação flutuantes** – **Adicionar Novo** (ícone de mais) e **Importar** (ícone de upload na nuvem) permanecem disponíveis enquanto você rola a página.

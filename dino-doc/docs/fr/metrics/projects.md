@@ -26,7 +26,7 @@ Le tableau principal affiche une liste de tous les projets. Chaque ligne corresp
 - **Date de début** – La date à laquelle le projet commence.
 - **Date de fin** – La date à laquelle le projet se termine.
 
-Les colonnes masquées (ID, Date de création et Attributs supplémentaires) peuvent être affichées en cliquant sur le bouton **Personnaliser les colonnes** (l'icône ressemble à une vue hebdomadaire) en haut à droite du tableau.
+Les colonnes masquées (ID, Date de création et Attributs supplémentaires) peuvent être affichées en cliquant sur le bouton **Personnalisez les colonnes** en haut à droite du tableau.
 
 !!! tip "Champs en lecture seule"
     Le champ **Code auto** est généré automatiquement et ne peut pas être modifié. Il apparaîtra grisé dans la boîte de dialogue de modification.

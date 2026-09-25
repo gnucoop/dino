@@ -12,7 +12,7 @@ La page **Zones thématiques** (accessible depuis la section Métriques) vous pe
 ## Ce que vous voyez
 
 - Le **fil d'Ariane** en haut de la page indique votre position actuelle dans l'application (par ex. **Métriques > Zones thématiques**).
-- Le tableau principal répertorie toutes les zones thématiques et affiche des colonnes telles que **Nom de la zone**, **Zone parente** et, si configuré, d'autres attributs. Vous pouvez personnaliser les colonnes visibles en cliquant sur l'icône **Afficher les colonnes** dans l'en-tête.
+- Le tableau principal répertorie toutes les zones thématiques et affiche des colonnes telles que **Nom de la zone**, **Zone parente** et, si configuré, d'autres attributs. Vous pouvez personnaliser les colonnes visibles en cliquant sur l'icône **Personnalisez les colonnes** dans l'en-tête.
 - Une **barre de recherche** et un **panneau de filtres** vous permettent de retrouver des zones par mot-clé, plage de dates ou autres métadonnées.
 - Le bouton **Export** (cloud_download) vous permet de télécharger la liste actuelle sous forme de fichier.
 - Deux boutons d'action flottants sont disponibles :

@@ -13,7 +13,7 @@ La pagina **Posizioni** ti permette di gestire le posizioni geografiche a cui fa
 
 - **Percorso di navigazione** – mostra la tua posizione attuale all'interno della navigazione.
 - **Ricerca e filtri** – ricerca per parola chiave, selettore di intervallo di date e filtri avanzati configurabili (ad esempio per metrica, stato, utente). Puoi anche salvare e caricare preset di filtri.
-- **Tabella** – mostra per impostazione predefinita Nome posizione e Posizione padre. Le colonne nascoste (ID, Data di creazione, Coordinate, Attributi aggiuntivi) possono essere visualizzate tramite il pulsante **Visualizza colonne** (in basso a destra nell'intestazione della tabella).
+- **Tabella** – mostra per impostazione predefinita Nome posizione e Posizione padre. Le colonne nascoste (ID, Data di creazione, Coordinate, Attributi aggiuntivi) possono essere visualizzate tramite il pulsante **Personalizza le colonne** (in basso a destra nell'intestazione della tabella).
 - **Impaginazione** – controlli per navigare tra le pagine.
 - **Azioni multiple** – seleziona le righe con le caselle di controllo per eliminare o modificare più posizioni in una sola volta.
 - **Pulsanti di azione flottanti** – **Aggiungi nuovo** (icona con il più) e **Importa** (icona di caricamento su cloud) restano disponibili mentre scorri la pagina.

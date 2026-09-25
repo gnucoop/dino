@@ -18,7 +18,7 @@ La tabella principale mostra per impostazione predefinita le seguenti colonne:
 - **Immagine del caso** – Un file immagine caricato che rappresenta il caso.
 - **Caso padre** – Il nome dell'eventuale caso padre a cui appartiene questo caso.
 
-Altre colonne (come **ID**, **Note**, **Data di creazione** e **Attributi aggiuntivi**) sono nascoste per impostazione predefinita. Puoi personalizzare le colonne visualizzate facendo clic sul pulsante **Personalizza colonne** (icona a forma di occhio) nell'intestazione della tabella.
+Altre colonne (come **ID**, **Note**, **Data di creazione** e **Attributi aggiuntivi**) sono nascoste per impostazione predefinita. Puoi personalizzare le colonne visualizzate facendo clic sul pulsante **Personalizza le colonne** nell'intestazione della tabella.
 
 ## Azioni su un singolo caso
 

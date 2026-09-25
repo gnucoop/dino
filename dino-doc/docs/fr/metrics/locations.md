@@ -13,7 +13,7 @@ La page **Lieux** vous permet de gérer les lieux géographiques référencés p
 
 - **Fil d'Ariane** – indique votre position actuelle dans la navigation.
 - **Recherche et filtres** – recherche par mot-clé, sélecteur de plage de dates et filtres avancés configurables (par exemple par métrique, statut ou utilisateur). Vous pouvez également enregistrer et charger des préréglages de filtres.
-- **Tableau** – affiche par défaut le nom du lieu et le lieu parent. Les colonnes masquées (ID, date de création, coordonnées, attributs supplémentaires) peuvent être affichées via le bouton **Afficher les colonnes** (en bas à droite de l'en-tête du tableau).
+- **Tableau** – affiche par défaut le nom du lieu et le lieu parent. Les colonnes masquées (ID, date de création, coordonnées, attributs supplémentaires) peuvent être affichées via le bouton **Personnalisez les colonnes** (en bas à droite de l'en-tête du tableau).
 - **Pagination** – contrôles permettant de naviguer entre les pages.
 - **Actions groupées** – sélectionnez des lignes à l'aide des cases à cocher pour supprimer ou modifier plusieurs lieux à la fois.
 - **Boutons d'action flottants** – **Ajouter** (icône plus) et **Importer** (icône de chargement dans le cloud) restent disponibles lorsque vous faites défiler la page.

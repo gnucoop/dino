@@ -180,18 +180,18 @@ Lors de l'import de données de form, en ce qui concerne les métriques, vous po
 
 Les règles à suivre pour gérer correctement les métriques sont les suivantes :
 
-| METRICA | CREAZIONE DA UI | CREAZIONE DA IMPORT | CREAZIONE \+ ASSEGNAZIONE DA IMPORT | UTILIZZO DA IMPORT | CREAZIONE \+ ASSEGNAZIONE DA IMPORT (parent) | UTILIZZO PARENT |
+| MÉTRIQUE | CRÉATION DEPUIS L'UI | CRÉATION PAR IMPORT | CRÉATION \+ ATTRIBUTION PAR IMPORT | UTILISATION PAR IMPORT | CRÉATION \+ ATTRIBUTION PAR IMPORT (parent) | UTILISATION COMME PARENT |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| **Case** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Organization** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Location** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Area** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
+| **Case** | name | name | name | id, ou name (avec l'option reuse), ou les deux | name | id, ou name (avec l'option reuse), ou les deux |
+| **Organization** | name | name | name | id, ou name (avec l'option reuse), ou les deux | name | id, ou name (avec l'option reuse), ou les deux |
+| **Location** | name | name | name | id, ou name (avec l'option reuse), ou les deux | name | id, ou name (avec l'option reuse), ou les deux |
+| **Area** | name | name | name | id, ou name (avec l'option reuse), ou les deux | name | id, ou name (avec l'option reuse), ou les deux |
 | **Project** | name, code | name, code | name, code | id | name, code | id |
 
-# Diapositives répétitives
+## Diapositives répétitives
 
 Si vous avez des champs dans des diapositives répétitives, ils doivent être nommés différemment. Chaque champ de la diapositive répétitive doit être nommé \<field\_name\>\_\_X où X est le numéro de répétition, de 0 (correspondant à une répétition) à N-1, où N est le nombre total de répétitions de la diapositive dans ce form.
-Par exemple, supposons que vous n'ayez qu'une seule répétition de la diapositive répétitive et que vous souhaitiez ajouter les deux champs « Indicator description » et « Value reached ». Vous devrez alors ajouter trois colonnes à votre fichier d'import :
+Par exemple, supposons que vous n'ayez qu'une seule répétition de la diapositive répétitive et que vous souhaitiez ajouter les deux champs « Indicator description » et « Value reached ». Vous devrez alors ajouter ces deux colonnes à votre fichier d'import :
 
 | indic\_\_0 | value\_indic\_\_0 |
 |  :---- | ----- |
@@ -205,6 +205,6 @@ Ainsi, par exemple, nous pourrions avoir :
 | ASM | 20000 |  |  |  |  |  |
 | AFG | 15000 | Parents | 45 | Schools | 34 | true |
 
-# Erreurs
+## Erreurs
 
-Si une erreur se produit pendant la synchronisation, le système force la déconnexion et aucune donnée n'est synchronisée. Cela peut se produire lorsque vous fournissez un ID erroné pour certaines des entités désignées par leur ID (comme les métriques et les utilisateurs).
+Vérifiez les ID de votre fichier avant l'import. Si une colonne fait référence à une entité par son ID (une métrique ou un utilisateur) et qu'aucune entité ne possède cet ID dans Dino, les formulaires importés ne pourront pas être synchronisés avec le serveur.

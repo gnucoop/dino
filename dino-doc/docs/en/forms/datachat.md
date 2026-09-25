@@ -34,7 +34,7 @@ The AI assistant will process your question and provide an answer based on the a
 
 ## During a Chat
 
-- You can ask follow-up questions in the same session; DinoAI will maintain the context of your conversation.
+- You can ask follow-up questions in the same session; Dino AI will maintain the context of your conversation.
 - The chat history is visible, allowing you to review previous questions and answers.
 
 ## Ending a Chat Session

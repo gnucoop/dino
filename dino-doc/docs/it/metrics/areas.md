@@ -12,7 +12,7 @@ La pagina **Aree tematiche** (accessibile dalla sezione Metrics) ti permette di 
 ## Cosa vedi
 
 - Il **percorso di navigazione** in alto mostra la tua posizione attuale nell'applicazione (ad esempio, **Metrics > Aree tematiche**).
-- La tabella principale elenca tutte le aree tematiche, mostrando colonne come **Nome area**, **Area padre** e (se configurati) altri attributi. Puoi personalizzare le colonne visibili facendo clic sull'icona **Visualizza colonna** nell'intestazione.
+- La tabella principale elenca tutte le aree tematiche, mostrando colonne come **Nome area**, **Area padre** e (se configurati) altri attributi. Puoi personalizzare le colonne visibili facendo clic sull'icona **Personalizza le colonne** nell'intestazione.
 - Una **barra di ricerca** e un **pannello dei filtri** ti consentono di trovare le aree per parola chiave, intervallo di date o altri metadati.
 - Il pulsante **Esporta** (cloud_download) ti permette di scaricare la lista corrente come file.
 - Sono disponibili due pulsanti di azione flottanti:

@@ -11,7 +11,7 @@ La page Agrégation vous offre une vue centralisée de toutes les soumissions de
 
 ## Consulter la liste d'agrégation
 
-Le tableau principal affiche une ligne par soumission. Par défaut, vous voyez les colonnes **Form Schema** et **Statut**, mais vous pouvez personnaliser les colonnes affichées à l'aide de l'icône **Afficher les colonnes** dans l'en-tête du tableau.
+Le tableau principal affiche une ligne par soumission. Par défaut, vous voyez les colonnes **Form Schema** et **Statut**, mais vous pouvez personnaliser les colonnes affichées à l'aide de l'icône **Personnalisez les colonnes** dans l'en-tête du tableau.
 
 - Chaque ligne affiche une icône de statut et, si le form présente des problèmes de validation, une icône d'avertissement.
 - Survolez une ligne pour la mettre en surbrillance ; cliquez n'importe où sur une ligne pour la sélectionner et faire apparaître les actions disponibles.

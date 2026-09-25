@@ -16,7 +16,7 @@ Per impostazione predefinita, la tabella mostra le seguenti colonne:
 - **Nome organizzazione** – il nome dell'organizzazione. Questa colonna è ordinabile.
 - **Organizzazione padre** – il nome dell'organizzazione padre, se presente.
 
-Le colonne aggiuntive (ID, Data di creazione, Percorso del logo, URL del sito web, Attributi aggiuntivi) sono nascoste, ma disponibili quando personalizzi la visualizzazione delle colonne tramite l'icona **Visualizza colonne** (in basso a destra nell'intestazione della tabella).
+Le colonne aggiuntive (ID, Data di creazione, Percorso del logo, URL del sito web, Attributi aggiuntivi) sono nascoste, ma disponibili quando personalizzi la visualizzazione delle colonne tramite l'icona **Personalizza le colonne** (in basso a destra nell'intestazione della tabella).
 
 ## Azioni sulle righe
 

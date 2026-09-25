@@ -13,7 +13,7 @@ The **Locations** page lets you manage the geographic locations referenced by yo
 
 - **Breadcrumbs** – shows your current position in the navigation.
 - **Search & Filters** – keyword search, date range picker, and configurable advanced filters (e.g., by metric, status, user). You can also save and load filter presets.
-- **Table** – displays Location Name and Parent Location by default. Hidden columns (ID, Creation Date, Coordinates, Additional Attributes) can be shown via the **View columns** button (bottom right of the table header).
+- **Table** – displays Location Name and Parent Location by default. Hidden columns (ID, Creation Date, Coordinates, Additional Attributes) can be shown via the **Customize the columns** button (bottom right of the table header).
 - **Pagination** – controls for navigating through pages.
 - **Bulk actions** – select rows using checkboxes to delete or edit multiple locations at once.
 - **Floating action buttons** – **Add New** (plus icon) and **Import** (cloud upload icon) remain available as you scroll.

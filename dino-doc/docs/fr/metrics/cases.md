@@ -18,7 +18,7 @@ Le tableau principal affiche les colonnes suivantes par défaut :
 - **Image du cas** – Un fichier image téléversé représentant le cas.
 - **Cas parent** – Le nom du cas parent auquel ce cas appartient, le cas échéant.
 
-Des colonnes supplémentaires (telles que **ID**, **Notes**, **Date de création** et **Attributs supplémentaires**) sont masquées par défaut. Vous pouvez personnaliser les colonnes affichées en cliquant sur le bouton **Personnaliser les colonnes** (icône en forme d'œil) dans l'en-tête du tableau.
+Des colonnes supplémentaires (telles que **ID**, **Notes**, **Date de création** et **Attributs supplémentaires**) sont masquées par défaut. Vous pouvez personnaliser les colonnes affichées en cliquant sur le bouton **Personnalisez les colonnes** dans l'en-tête du tableau.
 
 ## Actions sur un cas individuel
 

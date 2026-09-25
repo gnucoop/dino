@@ -18,7 +18,7 @@ The main table displays the following columns by default:
 - **Case Image** – An uploaded image file representing the case.
 - **Parent case** – The name of any parent case this case belongs to.
 
-Additional columns (such as **ID**, **Notes**, **Creation Date**, and **Additional Attributes**) are hidden by default. You can customize which columns appear by clicking the **Customize columns** button (eye icon) in the table header.
+Additional columns (such as **ID**, **Notes**, **Creation Date**, and **Additional Attributes**) are hidden by default. You can customize which columns appear by clicking the **Customize the columns** button in the table header.
 
 ## Actions on a single case
 

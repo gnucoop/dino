@@ -13,7 +13,7 @@ La página **Ubicaciones** te permite gestionar las ubicaciones geográficas a l
 
 - **Ruta de navegación** – muestra tu posición actual en la navegación.
 - **Búsqueda y filtros** – búsqueda por palabra clave, selector de rango de fechas y filtros avanzados configurables (por ejemplo, por métrica, estado, usuario). También puedes guardar y cargar ajustes de filtros predefinidos.
-- **Tabla** – muestra el Nombre de la ubicación y la Ubicación principal de forma predeterminada. Las columnas ocultas (ID, Fecha de creación, Coordenadas, Atributos adicionales) se pueden mostrar mediante el botón **Ver columnas** (en la esquina inferior derecha del encabezado de la tabla).
+- **Tabla** – muestra el Nombre de la ubicación y la Ubicación principal de forma predeterminada. Las columnas ocultas (ID, Fecha de creación, Coordenadas, Atributos adicionales) se pueden mostrar mediante el botón **Personaliza las columnas** (en la esquina inferior derecha del encabezado de la tabla).
 - **Paginación** – controles para navegar entre páginas.
 - **Acciones masivas** – selecciona filas con las casillas para eliminar o editar varias ubicaciones a la vez.
 - **Botones de acción flotantes** – **Añadir nuevo** (icono de más) e **Importar** (icono de subir a la nube) permanecen disponibles mientras te desplazas.

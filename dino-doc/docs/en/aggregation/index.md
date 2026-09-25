@@ -11,14 +11,14 @@ The Aggregation page gives you a centralized view of all form submissions across
 
 ## Viewing the Aggregation List
 
-The main table displays one row per submission. By default you see the **Form Schema** and **Status** columns, but you can customize which columns appear using the **View Columns** icon in the table header.
+The main table displays one row per submission. By default you see the **Form Schema** and **Status** columns, but you can customize which columns appear using the **Customize the columns** button in the table header.
 
 - Each row shows a status icon and, if the form has validation issues, a warning icon.
 - Hover over a row to see a highlight; click anywhere on a row to select it and reveal available actions.
 
 At the top of the list, the **Items found** counter and paginator let you know how many submissions exist and navigate through pages.
 
-If you do not apply any filter to the list in the Aggregation page, you will see the total number of forms submitted to your Dino that you are allowd to see, according to your user's permissions. 
+If you do not apply any filter to the list in the Aggregation page, you will see the total number of forms submitted to your Dino that you are allowed to see, according to your user's permissions. 
 
 ## Filtering and Searching
 

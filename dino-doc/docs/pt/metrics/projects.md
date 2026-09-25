@@ -26,7 +26,7 @@ A tabela principal mostra uma lista de todos os projetos. Cada linha corresponde
 - **Data de Início** – A data em que o projeto começa.
 - **Data de Término** – A data em que o projeto termina.
 
-Colunas ocultas (ID, Data de Criação e Atributos Adicionais) podem ser exibidas clicando no botão **Personalizar colunas** (o ícone parece uma visualização semanal) no canto superior direito da tabela.
+Colunas ocultas (ID, Data de Criação e Atributos Adicionais) podem ser exibidas clicando no botão **Personalize as colunas** no canto superior direito da tabela.
 
 !!! tip "Campos somente leitura"
     O campo **Código Automático** é gerado automaticamente e não pode ser alterado. Ele aparecerá esmaecido na caixa de diálogo de edição.

@@ -158,7 +158,7 @@ Follow these steps:
 
 3. every row will correspond to a different new form. So, if we create a file with one header \+, let’s say, 5 rows of data, if the upload is successful, we will create 5 new forms in DINO.   
 4. It is not necessary to have a column for every field of the form; it is not necessary to fill all rows of a given column, but If one field is empty for all rows, it can be left out,   
-5. Data field must be formatted YYYY-MM-DD as text (be careful).   
+5. Date fields must be formatted YYYY-MM-DD as text (be careful).   
 6. Single choice fields must contain one of the accepted options as specified in the “choices” (see the form builder or the XLSForm file).   
 7. Multiple choice fields must be formatted according to the following pattern: \[opt1, opt2\] (i.e. a list of options in square brackets). 
 
@@ -173,25 +173,25 @@ In this case we are importing 2 forms, for both of them we are selecting only th
 
 ### Dealing with metrics during import
 
-During the import of some from data, as far as metrics are concerned, you might want to:
+During the import of some form data, as far as metrics are concerned, you might want to:
 
 - create new metrics during the import  
 - reuse metrics already  created
 
 The rules to follow to correctly manage metrics are the following:
 
-| METRICA | CREAZIONE DA UI | CREAZIONE DA IMPORT | CREAZIONE \+ ASSEGNAZIONE DA IMPORT | UTILIZZO DA IMPORT | CREAZIONE \+ ASSEGNAZIONE DA IMPORT (parent) | UTILIZZO PARENT |
+| METRIC | CREATE FROM UI | CREATE FROM IMPORT | CREATE \+ ASSIGN FROM IMPORT | USE FROM IMPORT | CREATE \+ ASSIGN FROM IMPORT (parent) | USE AS PARENT |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| **Case** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Organization** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Location** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Area** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
+| **Case** | name | name | name | id, or name (with the reuse option), or both | name | id, or name (with the reuse option), or both |
+| **Organization** | name | name | name | id, or name (with the reuse option), or both | name | id, or name (with the reuse option), or both |
+| **Location** | name | name | name | id, or name (with the reuse option), or both | name | id, or name (with the reuse option), or both |
+| **Area** | name | name | name | id, or name (with the reuse option), or both | name | id, or name (with the reuse option), or both |
 | **Project** | name, code | name, code | name, code | id | name, code | id |
 
-# Repeating slides
+## Repeating slides
 
 If you have field in repeating slides, they need to be named differently. Every field in the repeating slide need to be called \<field\_name\>\_\_X where X is the repetition number, from 0 (corresponding to one repetition) to N-1 where N is the total number of slide repetitions in that form.   
-For example, suppose you have only 1 repetition of the repeating slide and you want to add both fields “Indicator description” and “Value reached”. You would need to add there three columns to your import file:
+For example, suppose you have only 1 repetition of the repeating slide and you want to add both fields “Indicator description” and “Value reached”. You would need to add these two columns to your import file:
 
 | indic\_\_0 | value\_indic\_\_0 |
 |  :---- | ----- |
@@ -205,6 +205,6 @@ So for example we could have:
 | ASM | 20000 |  |  |  |  |  |
 | AFG | 15000 | Parents | 45 | Schools | 34 | true |
 
-# Errors
+## Errors
 
-If an error occurs during synchronization, the system will force a logout and no data is synchronized. This can happen when providing a wrong ID for some of the entities that are referred to by their IDs (like metrics and users). 
+Check the IDs in your file before importing. If a column refers to an entity by its ID (a metric or a user) and no entity with that ID exists in Dino, the imported forms cannot be synchronized with the server.

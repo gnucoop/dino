@@ -17,7 +17,7 @@ Le tableau affiche les colonnes suivantes :
 - **ID** – identifiant interne (masqué par défaut).
 - **Date de création** – date à laquelle le groupe a été créé (masquée par défaut).
 
-Vous pouvez personnaliser les colonnes affichées en cliquant sur l'icône **Afficher les colonnes** (également appelée icône **hotdog** par les développeurs de logiciels !) à droite de l'en-tête du tableau.
+Vous pouvez personnaliser les colonnes affichées en cliquant sur l'icône **Personnalisez les colonnes** à droite de l'en-tête du tableau.
 
 ## Recherche et filtrage
 

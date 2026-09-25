@@ -11,7 +11,7 @@ La pagina Aggregazione offre una visualizzazione centralizzata di tutti i dati d
 
 ## Visualizzazione della lista di aggregazione
 
-La tabella principale mostra una riga per ogni dato. Per impostazione predefinita vedi le colonne **Form Schema** e **Stato**, ma puoi personalizzare quali colonne visualizzare usando l'icona **Visualizza colonne** nell'intestazione della tabella.
+La tabella principale mostra una riga per ogni dato. Per impostazione predefinita vedi le colonne **Form Schema** e **Stato**, ma puoi personalizzare quali colonne visualizzare usando l'icona **Personalizza le colonne** nell'intestazione della tabella.
 
 - Ogni riga mostra un'icona di stato e, se il form presenta problemi di validazione, un'icona di avviso.
 - Passa il mouse su una riga per evidenziarla; fai clic in un punto qualsiasi della riga per selezionarla e mostrare le azioni disponibili.

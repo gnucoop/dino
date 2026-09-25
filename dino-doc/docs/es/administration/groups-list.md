@@ -17,7 +17,7 @@ La tabla muestra las siguientes columnas:
 - **ID**: identificador interno (oculto de forma predeterminada).
 - **Fecha de creación**: cuándo se creó el grupo (oculta de forma predeterminada).
 
-Puede personalizar qué columnas aparecen haciendo clic en el icono **Ver columnas** (también llamado icono **hotdog** por los programadores de software) en el lado derecho del encabezado de la tabla.
+Puede personalizar qué columnas aparecen haciendo clic en el icono **Personaliza las columnas** en el lado derecho del encabezado de la tabla.
 
 ## Búsqueda y filtrado
 

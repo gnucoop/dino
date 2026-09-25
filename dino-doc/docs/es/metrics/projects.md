@@ -26,7 +26,7 @@ La tabla principal muestra una lista de todos los proyectos. Cada fila correspon
 - **Fecha de inicio** – La fecha en que comienza el proyecto.
 - **Fecha de finalización** – La fecha en que finaliza el proyecto.
 
-Las columnas ocultas (ID, Fecha de creación y Atributos adicionales) pueden mostrarse haciendo clic en el botón **Personalizar columnas** (el icono que parece una vista semanal) en la esquina superior derecha de la tabla.
+Las columnas ocultas (ID, Fecha de creación y Atributos adicionales) pueden mostrarse haciendo clic en el botón **Personaliza las columnas** en la esquina superior derecha de la tabla.
 
 !!! tip "Campos de solo lectura"
     El campo **Código automático** se genera automáticamente y no puede modificarse. Aparecerá atenuado en el cuadro de diálogo de edición.

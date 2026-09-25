@@ -32,7 +32,7 @@ Per caricare:
 Vedi la descrizione nella sezione [sottostante](#formato-del-file)
 
 !!! tip "Formati di file semplici"
-    Dino accetta lo stesso file ottenuto durante l'[esportazione](index.md#export). Quindi, il modo più semplice per ottenere un file formattato correttamente per l'importazione è esportare prima alcuni dati del form dallo stesso schema e poi eliminare le righe contenenti i dati esportati, mantenendo solo le intestazioni delle colonne. In ogni caso, assicurati che le intestazioni delle colonne siano chiare – verranno usate come suggerimenti durante la mappatura.
+    Dino accetta lo stesso file ottenuto durante l'[esportazione](index.md#esportazione). Quindi, il modo più semplice per ottenere un file formattato correttamente per l'importazione è esportare prima alcuni dati del form dallo stesso schema e poi eliminare le righe contenenti i dati esportati, mantenendo solo le intestazioni delle colonne. In ogni caso, assicurati che le intestazioni delle colonne siano chiare – verranno usate come suggerimenti durante la mappatura.
 
 !!! note "Metriche identificate tramite ID"
     Se una colonna metrica nel tuo file fornisce l'**ID** (UUID) della metrica, quella riga viene collegata alla metrica esistente con quell'ID e non viene creata alcuna nuova metrica. L'ID ha la precedenza sul nome della metrica, quindi questo avviene indipendentemente dall'opzione **Riutilizza le metriche esistenti con lo stesso nome** (che si applica solo alla corrispondenza per nome).
@@ -182,16 +182,16 @@ Le regole da seguire per gestire correttamente le metriche sono le seguenti:
 
 | METRICA | CREAZIONE DA UI | CREAZIONE DA IMPORT | CREAZIONE \+ ASSEGNAZIONE DA IMPORT | UTILIZZO DA IMPORT | CREAZIONE \+ ASSEGNAZIONE DA IMPORT (parent) | UTILIZZO PARENT |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| **Case** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Organization** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Location** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Area** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
+| **Case** | name | name | name | id oppure name (con opzione reuse), oppure entrambi | name | id oppure name (con opzione reuse), oppure entrambi |
+| **Organization** | name | name | name | id oppure name (con opzione reuse), oppure entrambi | name | id oppure name (con opzione reuse), oppure entrambi |
+| **Location** | name | name | name | id oppure name (con opzione reuse), oppure entrambi | name | id oppure name (con opzione reuse), oppure entrambi |
+| **Area** | name | name | name | id oppure name (con opzione reuse), oppure entrambi | name | id oppure name (con opzione reuse), oppure entrambi |
 | **Project** | name, code | name, code | name, code | id | name, code | id |
 
-# Slide ripetute
+## Slide ripetute
 
 Se hai campi nelle slide ripetute, devono essere denominati diversamente. Ogni campo nella slide ripetuta deve essere chiamato \<field\_name\>\_\_X dove X è il numero di ripetizione, da 0 (corrispondente a una ripetizione) a N-1 dove N è il numero totale di ripetizioni della slide in quel form.   
-Ad esempio, supponi di avere solo 1 ripetizione della slide ripetuta e di voler aggiungere entrambi i campi "Indicator description" e "Value reached". Dovresti aggiungere tre colonne al tuo file di importazione:
+Ad esempio, supponi di avere solo 1 ripetizione della slide ripetuta e di voler aggiungere entrambi i campi "Indicator description" e "Value reached". Dovresti aggiungere queste due colonne al tuo file di importazione:
 
 | indic\_\_0 | value\_indic\_\_0 |
 |  :---- | ----- |
@@ -205,6 +205,6 @@ Quindi, ad esempio, potremmo avere:
 | ASM | 20000 |  |  |  |  |  |
 | AFG | 15000 | Parents | 45 | Schools | 34 | true |
 
-# Errori
+## Errori
 
-Se si verifica un errore durante la sincronizzazione, il sistema forzerà la disconnessione e nessun dato sarà sincronizzato. Questo può accadere quando viene fornito un ID errato per alcune delle entità a cui si fa riferimento tramite i loro ID (come metriche e utenti).
+Controlla gli ID nel tuo file prima dell'importazione. Se una colonna fa riferimento a un'entità tramite il suo ID (una metrica o un utente) e in Dino non esiste nessuna entità con quell'ID, i form importati non potranno essere sincronizzati con il server.

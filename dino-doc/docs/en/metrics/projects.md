@@ -26,7 +26,7 @@ The main table shows a list of all projects. Each row corresponds to one project
 - **Start Date** – The date the project begins.
 - **End Date** – The date the project ends.
 
-Hidden columns (ID, Creation Date, and Additional Attributes) can be shown by clicking the **Customize columns** button (the icon looks like a week view) at the top-right corner of the table.
+Hidden columns (ID, Creation Date, and Additional Attributes) can be shown by clicking the **Customize the columns** button at the top-right corner of the table.
 
 !!! tip "Read-only fields"
     The **Auto Code** field is automatically generated and cannot be changed. It will appear grayed out in the edit dialog.

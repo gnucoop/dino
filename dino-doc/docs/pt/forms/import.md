@@ -32,7 +32,7 @@ Para enviar:
 Veja a descrição na seção [abaixo](#formato-do-arquivo)
 
 !!! tip "Formatos de arquivo fáceis"
-    O Dino aceita o mesmo arquivo obtido durante a [exportação](index.md#export). Assim, a maneira mais fácil de obter um arquivo formatado corretamente para importação é primeiro exportar alguns dados de um form do mesmo schema e depois excluir as linhas que contêm os dados exportados, mantendo apenas os cabeçalhos das colunas. De qualquer forma, certifique-se de que os cabeçalhos das colunas estejam claros – eles serão usados como sugestões durante o mapeamento.
+    O Dino aceita o mesmo arquivo obtido durante a [exportação](index.md#exportar). Assim, a maneira mais fácil de obter um arquivo formatado corretamente para importação é primeiro exportar alguns dados de um form do mesmo schema e depois excluir as linhas que contêm os dados exportados, mantendo apenas os cabeçalhos das colunas. De qualquer forma, certifique-se de que os cabeçalhos das colunas estejam claros – eles serão usados como sugestões durante o mapeamento.
 
 !!! note "Métricas identificadas por ID"
     Se uma coluna de métrica no seu arquivo fornecer o **ID** (UUID) da métrica, essa linha será vinculada à métrica existente com esse ID e nenhuma nova métrica será criada. O ID tem precedência sobre o nome da métrica, então isso acontece independentemente da opção **Reutilizar métricas existentes com o mesmo nome** (que se aplica apenas à correspondência por nome).
@@ -180,18 +180,18 @@ Durante a importação de alguns dados de form, no que diz respeito às métrica
 
 As regras a seguir para gerenciar corretamente as métricas são as seguintes:
 
-| METRICA | CREAZIONE DA UI | CREAZIONE DA IMPORT | CREAZIONE \+ ASSEGNAZIONE DA IMPORT | UTILIZZO DA IMPORT | CREAZIONE \+ ASSEGNAZIONE DA IMPORT (parent) | UTILIZZO PARENT |
+| MÉTRICA | CRIAÇÃO PELA UI | CRIAÇÃO POR IMPORTAÇÃO | CRIAÇÃO \+ ATRIBUIÇÃO POR IMPORTAÇÃO | USO POR IMPORTAÇÃO | CRIAÇÃO \+ ATRIBUIÇÃO POR IMPORTAÇÃO (parent) | USO COMO PARENT |
 | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| **Case** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Organization** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Location** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
-| **Area** | name | name | name | id oppure name (con opzione reuse), oppure entrambe | name | id oppure name (con opzione reuse), oppure entrambe |
+| **Case** | name | name | name | id, ou name (com a opção reuse), ou ambos | name | id, ou name (com a opção reuse), ou ambos |
+| **Organization** | name | name | name | id, ou name (com a opção reuse), ou ambos | name | id, ou name (com a opção reuse), ou ambos |
+| **Location** | name | name | name | id, ou name (com a opção reuse), ou ambos | name | id, ou name (com a opção reuse), ou ambos |
+| **Area** | name | name | name | id, ou name (com a opção reuse), ou ambos | name | id, ou name (com a opção reuse), ou ambos |
 | **Project** | name, code | name, code | name, code | id | name, code | id |
 
-# Slides de repetição
+## Slides de repetição
 
 Se você tem campos em slides de repetição, eles precisam ser nomeados de forma diferente. Cada campo no slide de repetição precisa ser chamado \<field\_name\>\_\_X, onde X é o número da repetição, de 0 (correspondendo a uma repetição) até N-1, onde N é o número total de repetições de slide naquele form.   
-Por exemplo, suponha que você tenha apenas 1 repetição do slide de repetição e queira adicionar os dois campos "Indicator description" e "Value reached". Você precisaria adicionar três colunas ao seu arquivo de importação:
+Por exemplo, suponha que você tenha apenas 1 repetição do slide de repetição e queira adicionar os dois campos "Indicator description" e "Value reached". Você precisaria adicionar estas duas colunas ao seu arquivo de importação:
 
 | indic\_\_0 | value\_indic\_\_0 |
 |  :---- | ----- |
@@ -205,6 +205,6 @@ Assim, por exemplo, poderíamos ter:
 | ASM | 20000 |  |  |  |  |  |
 | AFG | 15000 | Parents | 45 | Schools | 34 | true |
 
-# Erros
+## Erros
 
-Se ocorrer um erro durante a sincronização, o sistema forçará um logout e nenhum dado será sincronizado. Isso pode acontecer ao fornecer um ID errado para algumas das entidades referenciadas por seus IDs (como métricas e usuários).
+Verifique os IDs no seu arquivo antes de importar. Se uma coluna fizer referência a uma entidade pelo seu ID (uma métrica ou um usuário) e não existir nenhuma entidade com esse ID no Dino, os forms importados não poderão ser sincronizados com o servidor.

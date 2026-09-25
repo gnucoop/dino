@@ -9,7 +9,7 @@ The Reports area is your hub for accessing all available report schemas. A repor
 
 ![Main view of the Reports page](../imgs/reports/index.png)
 
-Reports can be created only using an Excel-based formt call [XLSReport](xlsreport.md). To create a new report you need to create an XLSreport file first, then import it into Dino following the procedure described below.  
+Reports can be created only using an Excel-based format called [XLSReport](xlsreport.md). To create a new report you need to create an XLSreport file first, then import it into Dino following the procedure described below.  
 
 ---
 

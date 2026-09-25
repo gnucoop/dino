@@ -28,7 +28,7 @@ Cliquez sur une vignette de schéma de formulaire pour accéder à sa **liste de
 
 ![Liste des soumissions (tableau de données) d'un schéma de formulaire](../imgs/forms/index-list.png)
 
-La liste comporte une **barre de filtres** qui vous permet de rechercher par mot-clé, plage de dates, mesures, statut, utilisation
+La liste comporte une **barre de filtres** qui vous permet de rechercher par mot-clé, plage de dates, mesures, statut, utilisateur, et plus encore. Vous pouvez également enregistrer des préréglages de filtres pour les réutiliser rapidement.
 
 ### Export
 

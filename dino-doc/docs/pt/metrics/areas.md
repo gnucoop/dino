@@ -12,7 +12,7 @@ A página **Áreas Temáticas** (acessível a partir da seção Métricas) permi
 ## O Que Você Vê
 
 - Os **percursos de navegação** na parte superior mostram sua localização atual no aplicativo (por exemplo, **Métricas > Áreas Temáticas**).
-- A tabela principal lista todas as áreas temáticas, exibindo colunas como **Nome da Área**, **Área Superior** e (se configurado) outros atributos. Você pode personalizar as colunas visíveis clicando no ícone **Visualizar Coluna** no cabeçalho.
+- A tabela principal lista todas as áreas temáticas, exibindo colunas como **Nome da Área**, **Área Superior** e (se configurado) outros atributos. Você pode personalizar as colunas visíveis clicando no ícone **Personalize as colunas** no cabeçalho.
 - Uma **barra de pesquisa** e um **painel de filtro** permitem encontrar áreas por palavra-chave, intervalo de datas ou outros metadados.
 - O botão **Exportar** (cloud_download) permite baixar a lista atual como um arquivo.
 - Dois botões de ação flutuantes estão disponíveis:

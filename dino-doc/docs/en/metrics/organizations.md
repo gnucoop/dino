@@ -16,7 +16,7 @@ By default, the table shows the following columns:
 - **Organization Name** – the name of the organization. This column is sortable.
 - **Parent Organization** – the name of the parent organization, if any.
 
-Additional columns (ID, Creation Date, Logo path, Website URL, Additional Attributes) are hidden but available when you customize the column display using the **View columns** icon (bottom right of the table header).
+Additional columns (ID, Creation Date, Logo path, Website URL, Additional Attributes) are hidden but available when you customize the column display using the **Customize the columns** button (bottom right of the table header).
 
 ## Row Actions
 
