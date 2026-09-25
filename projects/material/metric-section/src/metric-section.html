@@ -14,11 +14,11 @@
     [exportable]="true"
     (exportEvt)="dinoList.export($event, 'metrics')"
   >
-    <button toolbarActions mat-stroked-button color="primary" (click)="openDialog(undefined, 'Create')">
+    <button toolbarActions mat-stroked-button (click)="openDialog(undefined, 'Create')">
       <mat-icon>add</mat-icon>
       <span>{{('Add New'|transloco) + ' ' + metricLabel}}</span>
     </button>
-    <button toolbarActions mat-stroked-button color="primary" (click)="openImportMetrics()">
+    <button toolbarActions mat-stroked-button (click)="openImportMetrics()">
       <mat-icon>cloud_upload</mat-icon>
       <span>{{('Import'|transloco) + ' ' + metricLabel}}</span>
     </button>
