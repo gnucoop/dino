@@ -8,7 +8,7 @@
         </div>
       </div>
 
-      <!-- ===== Settings / Metrics / Status / Build / Relationships tabs, with Save
+      <!-- ===== Settings / Metrics / Status / Group / Build / Relationships tabs, with Save
                 on the tab row ===== -->
       <div class="dino-efs-tabs-wrap">
         <!-- Overlaid on the tab-header row, right-aligned: available from any tab. -->
@@ -255,6 +255,108 @@
                   </mat-select>
                 </mat-form-field>
               </form>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- ========== Group tab ========== -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>sell</mat-icon>{{'Group'|transloco}}
+          </ng-template>
+
+          <div class="dino-efs-groups">
+            <div class="dino-efs-settings-card">
+              <div class="dino-efs-settings-head">
+                <mat-icon>sell</mat-icon>
+                <h2>{{'Groups'|transloco}}</h2>
+              </div>
+              <p class="dino-efs-settings-sub">
+                {{'Groups this questionnaire belongs to.'|transloco}}
+              </p>
+
+              <form [formGroup]="fgroup" class="dino-efs-groups-form">
+                <mat-form-field appearance="outline" floatLabel="always" class="dino-efs-groups-picker">
+                  <mat-label>{{'Add group'|transloco}}</mat-label>
+                  <input
+                    matInput
+                    [formControl]="groupSearchCtrl"
+                    [matAutocomplete]="groupPicker"
+                    [placeholder]="'Type a name to find or create a group'|transloco"
+                  />
+                  <mat-icon matSuffix>add</mat-icon>
+                  <mat-autocomplete
+                    #groupPicker="matAutocomplete"
+                    autoActiveFirstOption
+                    [displayWith]="groupOptionLabel"
+                    (optionSelected)="addGroup(fgroup, $event.option.value)"
+                  >
+                    <mat-option *ngFor="let option of groupOptions|async" [value]="option">
+                      <ng-container *ngIf="option.kind === 'existing'; else createOption">
+                        <span class="dino-efs-group-dot" [style.background]="option.group.color"></span>
+                        {{option.group.name}}
+                      </ng-container>
+                      <ng-template #createOption>
+                        <mat-icon>add</mat-icon>
+                        {{'Create group "{{name}}"'|transloco:{name: $any(option).name} }}
+                      </ng-template>
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+
+                <div class="dino-efs-groups-list" formArrayName="groups">
+                  <div
+                    class="dino-efs-group-row"
+                    *ngFor="let group of groupsArray(fgroup).controls; let i = index"
+                    [formGroupName]="i"
+                  >
+                    <mat-form-field appearance="outline" class="dino-efs-group-color">
+                      <mat-label>{{'Color'|transloco}}</mat-label>
+                      <mat-select
+                        formControlName="color"
+                        panelClass="dino-efs-group-colors"
+                        hideSingleSelectionIndicator
+                        [attr.aria-label]="'Color'|transloco"
+                      >
+                        <mat-select-trigger>
+                          <span class="dino-efs-group-dot" [style.background]="group.value.color"></span>
+                        </mat-select-trigger>
+                        <mat-option *ngFor="let color of groupColors" [value]="color">
+                          <span class="dino-efs-group-dot" [style.background]="color"></span>
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="dino-efs-group-name">
+                      <mat-label>{{'Group name'|transloco}}</mat-label>
+                      <input matInput formControlName="name" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="dino-efs-group-desc">
+                      <mat-label>{{'Description'|transloco}}</mat-label>
+                      <input matInput formControlName="description" />
+                    </mat-form-field>
+                    <button
+                      mat-icon-button
+                      type="button"
+                      class="dino-efs-group-remove"
+                      [matTooltip]="'Remove group'|transloco"
+                      (click)="removeGroup(fgroup, i)"
+                    >
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                  <p class="dino-efs-groups-empty" *ngIf="groupsArray(fgroup).length === 0">
+                    {{'This questionnaire belongs to no group yet.'|transloco}}
+                  </p>
+                  <mat-error *ngIf="groupsArray(fgroup).hasError('duplicateGroup')">
+                    {{'A group with this name is already assigned'|transloco}}
+                  </mat-error>
+                </div>
+              </form>
+
+              <p class="dino-efs-groups-note">
+                <mat-icon>info</mat-icon>
+                {{'"Public forms" and "Ungrouped" are automatic: public questionnaires and questionnaires with no group appear there on their own.'|transloco}}
+              </p>
             </div>
           </div>
         </mat-tab>
