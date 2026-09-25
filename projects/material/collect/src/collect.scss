@@ -1,109 +1,686 @@
-@use 'angular-material-css-vars' as mat-css-vars;
+@use 'collect-tokens' as tokens;
 
 dino-collect {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
+  @include tokens.light;
+  display: block;
+  color: var(--dino-collect-fg);
+
+  .dino-collect-spacer {
+    flex: 1;
   }
-  .dino-grid-list {
-    margin: auto;
-    margin-bottom: 12vh;
-    .dino-no-items-message {
+
+  // ========== Toolbar ==========
+  .dino-collect-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-top: 14px;
+  }
+
+  .dino-collect-filter {
+    flex: 1 1 200px;
+    max-width: 300px;
+  }
+
+  .dino-collect-view-toggle.mat-button-toggle-group {
+    --mat-standard-button-toggle-height: 34px;
+    --mat-standard-button-toggle-shape: 8px;
+    --mat-standard-button-toggle-background-color: transparent;
+    --mat-standard-button-toggle-text-color: var(--dino-collect-faint);
+    --mat-standard-button-toggle-selected-state-background-color: var(
+      --dino-collect-accent-strong
+    );
+    --mat-standard-button-toggle-selected-state-text-color: var(--dino-collect-accent);
+    --mat-standard-button-toggle-divider-color: transparent;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--dino-collect-border-strong);
+    background: var(--dino-collect-chip);
+
+    .mat-button-toggle {
+      border-radius: 6px;
+      border: none;
+    }
+
+    // The icon is centered on the button itself: Material sets the label line-height
+    // to the toggle height, which leaves an icon sitting on the text baseline.
+    .mat-button-toggle-button {
+      width: 36px;
+      height: 34px;
       display: flex;
-      flex-flow: row wrap;
+      align-items: center;
       justify-content: center;
-      align-content: center;
-      height: 85vh;
-      opacity: 0.4;
     }
-    .mat-grid-tile.dino-grid-tile {
-      border-radius: 10px;
-      border: 2px solid mat-css-vars.mat-css-color-primary(500);
-      .dino-grid-action-icons {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-between;
-        position: absolute;
-        top: 3px;
-        right: 3px;
-        .mat-mdc-mini-fab.mat-mdc-button-base {
-          margin-left: 5px;
-          flex: 1 0 auto;
-          opacity: 0.5;
-          transition: all ease-in-out 0.3;
-          -webkit-transition: all ease-in-out 0.3s;
-          @media only screen and (max-width: 992px) {
-            max-width: 24px;
-            max-height: 24px;
-            .mat-icon {
-              font-size: 16px;
-              position: relative;
-              top: 4px;
-            }
-          }
-          cursor: pointer;
-          &:hover {
-            opacity: 1;
-            background-color: mat-css-vars.mat-css-color-accent(500);
-          }
-        }
-      }
-      .dino-grid-feat-icons {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-between;
-        position: absolute;
-        top: 10px;
-        left: 10px;
-      }
-      outline: none;
-      .mat-grid-tile-content div:not(.dino-grid-action-icons) {
-        outline: none;
-        display: flex;
-        flex-flow: column wrap;
-        justify-content: center;
-      }
-      transition: all ease-in-out 0.5;
-      -webkit-transition: all ease-in-out 0.3s;
-      cursor: pointer;
-      .dino-grid-icon {
-        color: mat-css-vars.mat-css-color-primary(500);
-        fill: mat-css-vars.mat-css-color-primary(500);
-        max-width: 100%;
-        max-height: 100%;
-        margin: auto;
-        img {
-          flex: 1 0 auto;
-          width: 10vw;
-          margin: auto;
-        }
-        .dino-mat-icon {
-          font-size: 3em;
-          height: auto;
-          width: auto;
-          &[data-mat-icon-type='svg'] {
-            height: 36px;
-            width: 36px;
-          }
-        }
-      }
-      .dino-grid-label {
-        color: mat-css-vars.mat-css-color-primary(500);
-        text-align: center;
-        margin: auto;
-        margin-top: 5vh;
-      }
-      &:hover {
-        border-color: mat-css-vars.mat-css-color-accent(500);
-        background: mat-css-vars.mat-css-color-primary(100);
-        div.dino-grid-icon .mat-icon.dino-mat-icon {
-          color: mat-css-vars.mat-css-color-accent(500);
-        }
-        div.dino-grid-label {
-          color: mat-css-vars.mat-css-color-accent(500);
-        }
+
+    .mat-button-toggle-label-content {
+      display: flex;
+      padding: 0;
+      line-height: 0;
+    }
+
+    mat-icon {
+      @include tokens.icon-size(19px);
+      display: block;
+    }
+  }
+
+  .dino-collect-add.mat-mdc-unelevated-button {
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  // ========== Tag bar ==========
+  .dino-collect-tagbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--dino-collect-divider);
+  }
+
+  .dino-collect-chips .mdc-evolution-chip-set__chips {
+    align-items: center;
+    gap: 9px;
+    margin: 0;
+  }
+
+  .dino-collect-chips-divider {
+    width: 1px;
+    height: 22px;
+    margin: 0 3px;
+    background: var(--dino-collect-border-strong);
+  }
+
+  .dino-collect-chips .mat-mdc-chip.mat-mdc-standard-chip.dino-collect-chip {
+    --g: var(--dino-collect-fg-2);
+    --mdc-chip-container-height: 36px;
+    --mdc-chip-container-shape-radius: 22px;
+    --mdc-chip-label-text-size: 13.5px;
+    --mdc-chip-label-text-weight: 500;
+    --mdc-chip-label-text-color: var(--dino-collect-fg-2);
+    --mdc-chip-elevated-container-color: var(--dino-collect-chip);
+    --mdc-chip-flat-selected-outline-width: 1px;
+    // Material greys the chip it leaves focused after a click, which hid the group tint of
+    // the selected chip. Hover brightens the chip instead, and the keyboard gets an outline.
+    --mdc-chip-focus-state-layer-opacity: 0;
+    --mdc-chip-hover-state-layer-opacity: 0;
+    --mdc-chip-selected-focus-state-layer-opacity: 0;
+    --mdc-chip-selected-hover-state-layer-opacity: 0;
+    margin: 0;
+    border: 1px solid var(--dino-collect-border-strong);
+    background-color: var(--dino-collect-chip);
+    color: var(--dino-collect-fg-2);
+    transition:
+      background-color 0.14s,
+      border-color 0.14s,
+      color 0.14s;
+
+    // The selection is shown by the colors and the trailing close icon, as in the design.
+    .mdc-evolution-chip__graphic {
+      display: none;
+    }
+
+    .mdc-evolution-chip__action--primary {
+      padding: 0 14px;
+    }
+
+    .mdc-evolution-chip__text-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+      color: inherit;
+    }
+
+    &:hover {
+      filter: brightness(1.06);
+    }
+
+    &.cdk-keyboard-focused {
+      outline: 2px solid var(--dino-collect-accent);
+      outline-offset: 2px;
+    }
+
+    &.mat-mdc-chip-selected {
+      --mdc-chip-elevated-selected-container-color: #{tokens.group-tint(13%)};
+      --mdc-chip-selected-label-text-color: #{tokens.group-fg()};
+      // The group color itself on the dark theme; on the light one it is darkened like
+      // the text, since a pale color does not show on a pale background.
+      border-color: tokens.group-fg();
+      background-color: tokens.group-tint(13%);
+      color: tokens.group-fg();
+
+      .dino-collect-chip-count {
+        background: rgba(0, 0, 0, 0.18);
+        color: inherit;
       }
     }
   }
+
+  .dino-collect-chips .mat-mdc-chip.mat-mdc-standard-chip.dino-collect-chip-all {
+    font-weight: 600;
+
+    &.mat-mdc-chip-selected {
+      --mdc-chip-elevated-selected-container-color: var(--dino-collect-accent);
+      --mdc-chip-selected-label-text-color: var(--dino-collect-accent-fg);
+      border-color: var(--dino-collect-accent);
+      background-color: var(--dino-collect-accent);
+      color: var(--dino-collect-accent-fg);
+
+      .dino-collect-chip-count {
+        background: rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+
+  .dino-collect-chip-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--g);
+  }
+
+  .dino-collect-chip-icon {
+    @include tokens.icon-size(15px);
+    color: var(--g);
+  }
+
+  .dino-collect-chip-count {
+    padding: 1px 7px;
+    border-radius: 12px;
+    background: var(--dino-collect-badge);
+    color: var(--dino-collect-muted);
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+
+  .dino-collect-chip-remove {
+    @include tokens.icon-size(14px);
+    margin-left: -2px;
+    opacity: 0.7;
+  }
+
+  .dino-collect-counter {
+    font-size: 13px;
+    color: var(--dino-collect-faint);
+    white-space: nowrap;
+  }
+
+  // ========== Sections ==========
+  .dino-collect-content {
+    padding: 22px 0 40px;
+  }
+
+  .dino-collect-section {
+    margin-bottom: 34px;
+  }
+
+  .dino-collect-section-head {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 0 2px 16px;
+  }
+
+  .dino-collect-section-badge {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: 1px solid tokens.group-tint(33%);
+    background: tokens.group-tint(13%);
+    color: tokens.group-fg();
+    font-size: 17px;
+    font-weight: 700;
+
+    mat-icon {
+      @include tokens.icon-size(19px);
+    }
+  }
+
+  .dino-collect-section-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .dino-collect-section-title {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--dino-collect-fg);
+      white-space: nowrap;
+    }
+  }
+
+  .dino-collect-pill {
+    padding: 2px 10px;
+    border-radius: 20px;
+    background: tokens.group-tint(13%);
+    color: tokens.group-fg();
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .dino-collect-pill-outline {
+    padding: 1px 8px;
+    border: 1px solid var(--dino-collect-border-strong);
+    background: transparent;
+    color: var(--dino-collect-muted);
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .dino-collect-section-desc {
+    margin-top: 3px;
+    font-size: 13.5px;
+    color: var(--dino-collect-faint);
+  }
+
+  // ========== Tags and status ==========
+  .dino-collect-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .dino-collect-tag {
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: tokens.group-tint(13%);
+    color: tokens.group-fg();
+    font-size: 11.5px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .dino-collect-status-public {
+    --g: var(--dino-collect-public);
+    color: var(--dino-collect-public);
+  }
+
+  .dino-collect-status-unique {
+    --g: var(--dino-collect-unique);
+    color: var(--dino-collect-unique);
+  }
+
+  .dino-collect-danger {
+    --mdc-text-button-label-text-color: var(--dino-collect-danger);
+    color: var(--dino-collect-danger);
+  }
+
+  .dino-mat-icon {
+    color: var(--dino-collect-accent);
+    fill: var(--dino-collect-accent);
+  }
+
+  // ========== Grid of cards ==========
+  .dino-collect-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
+  }
+
+  .dino-collect-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 236px;
+    overflow: hidden;
+    border: 1px solid var(--dino-collect-border);
+    border-radius: 10px;
+    background: var(--dino-collect-card);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--dino-collect-accent);
+    }
+  }
+
+  .dino-collect-card-status {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    gap: 6px;
+  }
+
+  .dino-collect-status {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    background: tokens.group-tint(12%);
+
+    mat-icon {
+      @include tokens.icon-size(16px);
+    }
+  }
+
+  .dino-collect-card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 44px 16px 14px;
+
+    .dino-mat-icon {
+      @include tokens.icon-size(34px);
+
+      &[data-mat-icon-type='svg'] {
+        width: 36px;
+        height: 36px;
+      }
+    }
+
+    .dino-collect-tags {
+      justify-content: center;
+    }
+  }
+
+  .dino-collect-card-name {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--dino-collect-accent);
+    text-wrap: pretty;
+  }
+
+  .dino-collect-card-bar {
+    display: flex;
+    border-top: 1px solid var(--dino-collect-border);
+    background: var(--dino-collect-card-bar);
+
+    .mat-mdc-button {
+      --mdc-text-button-container-shape: 0;
+      --mdc-text-button-label-text-color: var(--dino-collect-fg-2);
+      flex: 1;
+      min-width: 0;
+      height: 42px;
+      padding: 0 4px;
+      font-size: 12.5px;
+      font-weight: 600;
+
+      & + .mat-mdc-button {
+        border-left: 1px solid var(--dino-collect-border);
+      }
+
+      &:hover {
+        background: var(--dino-collect-btn-hover);
+      }
+
+      mat-icon {
+        @include tokens.icon-size(15px);
+        margin-right: 6px;
+      }
+    }
+
+    .dino-collect-danger {
+      --mdc-text-button-label-text-color: var(--dino-collect-danger);
+    }
+  }
+
+  // With a mouse, the actions appear on hover. Touch screens and narrow ones always show them.
+  @media (hover: hover) and (min-width: 760px) {
+    .dino-collect-card-bar {
+      opacity: 0;
+      transform: translateY(6px);
+      transition:
+        opacity 0.16s,
+        transform 0.16s;
+    }
+
+    .dino-collect-card:hover .dino-collect-card-bar,
+    .dino-collect-card:focus-within .dino-collect-card-bar {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  // ========== List of rows ==========
+  .dino-collect-list {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--dino-collect-border);
+    border-radius: 10px;
+    background: var(--dino-collect-card);
+  }
+
+  .dino-collect-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--dino-collect-row-sep);
+    cursor: pointer;
+    outline: none;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: var(--dino-collect-hover);
+    }
+  }
+
+  .dino-collect-row-icon {
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: var(--dino-collect-accent-soft);
+
+    .dino-mat-icon {
+      @include tokens.icon-size(18px);
+
+      &[data-mat-icon-type='svg'] {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+
+  .dino-collect-row-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+
+    .dino-collect-tag {
+      padding: 2px 8px;
+      font-size: 11px;
+    }
+  }
+
+  .dino-collect-row-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--dino-collect-fg);
+  }
+
+  .dino-collect-row-status {
+    width: 48px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .dino-collect-status-icon {
+    @include tokens.icon-size(18px);
+  }
+
+  .dino-collect-row-updated {
+    width: 110px;
+    font-size: 12px;
+    color: var(--dino-collect-faint);
+    white-space: nowrap;
+  }
+
+  .dino-collect-row-actions {
+    display: flex;
+    gap: 2px;
+
+    .mat-mdc-icon-button {
+      --mdc-icon-button-state-layer-size: 32px;
+      --mdc-icon-button-icon-color: var(--dino-collect-muted);
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border-radius: 7px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        background: var(--dino-collect-btn-hover);
+        --mdc-icon-button-icon-color: var(--dino-collect-fg);
+      }
+
+      .mat-mdc-button-persistent-ripple,
+      .mat-mdc-button-ripple {
+        border-radius: 7px;
+      }
+
+      mat-icon {
+        @include tokens.icon-size(17px);
+      }
+    }
+
+    // Keeps the column aligned when the form has no public link.
+    .dino-collect-hidden {
+      visibility: hidden;
+    }
+  }
+
+  .dino-collect-row-more.mat-mdc-icon-button {
+    --mdc-icon-button-icon-color: var(--dino-collect-fg-2);
+    flex: 0 0 44px;
+  }
+
+  .dino-collect-narrow {
+    .dino-collect-row-name {
+      width: 100%;
+      overflow: visible;
+      white-space: normal;
+      line-height: 1.3;
+      text-wrap: pretty;
+    }
+
+    .dino-collect-status-icon {
+      @include tokens.icon-size(16px);
+    }
+  }
+
+  // ========== Empty state ==========
+  .dino-no-items-message {
+    display: flex;
+    justify-content: center;
+    padding: 60px 0;
+    color: var(--dino-collect-faint);
+    font-size: 15px;
+    text-align: center;
+
+    h1 {
+      opacity: 0.6;
+    }
+  }
+}
+
+.isDarkTheme dino-collect {
+  @include tokens.dark;
+}
+
+@media (max-width: 759.98px) {
+  dino-collect .dino-collect-filter {
+    flex-basis: 100%;
+    max-width: none;
+  }
+}
+
+// ========== Actions sheet (cdk overlay) ==========
+.dino-collect-sheet-panel {
+  @include tokens.light;
+
+  .mat-bottom-sheet-container {
+    padding: 10px 12px 22px;
+    border-top: 1px solid var(--dino-collect-border-strong);
+    border-radius: 16px 16px 0 0;
+    background: var(--dino-collect-dialog);
+    color: var(--dino-collect-fg);
+  }
+
+  .dino-collect-sheet-grabber {
+    width: 40px;
+    height: 4px;
+    margin: 0 auto 12px;
+    border-radius: 2px;
+    background: var(--dino-collect-grabber);
+  }
+
+  .dino-collect-sheet-title {
+    padding: 0 8px 10px;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .mat-mdc-nav-list {
+    padding: 0;
+  }
+
+  .mat-mdc-list-item {
+    --mdc-list-list-item-one-line-container-height: 52px;
+    --mdc-list-list-item-label-text-size: 15px;
+    --mdc-list-list-item-label-text-color: var(--dino-collect-fg);
+    --mdc-list-list-item-leading-icon-color: var(--dino-collect-fg-2);
+    border-radius: 8px;
+  }
+
+  .dino-collect-danger {
+    --mdc-list-list-item-label-text-color: var(--dino-collect-danger);
+    --mdc-list-list-item-leading-icon-color: var(--dino-collect-danger);
+    --mdc-list-list-item-hover-label-text-color: var(--dino-collect-danger);
+  }
+}
+
+.isDarkTheme .dino-collect-sheet-panel {
+  @include tokens.dark;
 }

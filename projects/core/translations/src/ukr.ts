@@ -23,6 +23,42 @@
 import {Translation} from '@ngneat/transloco';
 
 export const UKR: Translation = {
+  'Grid': 'Сітка',
+  'List': 'Список',
+  'New form': 'Нова форма',
+  'New report': 'Новий звіт',
+  'Groups': 'Групи',
+  'Group': 'Група',
+  '{{shown}} of {{total}} forms': '{{shown}} з {{total}} форм',
+  '{{count}} forms': '{{count}} форм',
+  'Default · automatic': 'Типова · автоматична',
+  'Link': 'Посилання',
+  'Public link': 'Публічне посилання',
+  'Actions': 'Дії',
+  'No form matches the active filters.': 'Жодна форма не відповідає активним фільтрам.',
+  'today': 'сьогодні',
+  'yesterday': 'вчора',
+  '{{n}} days ago': '{{n}} дні тому',
+  'Public forms': 'Публічні форми',
+  'Anyone can fill them in through the public link, without logging in.':
+    'Будь-хто може заповнити їх за публічним посиланням, без входу.',
+  'Ungrouped': 'Без групи',
+  'Not assigned to any group yet.': 'Ще не призначені до жодної групи.',
+  'Anyone with this link can fill in the form, without logging in.':
+    'Будь-хто з цим посиланням може заповнити форму, без входу.',
+  'Copy link': 'Копіювати посилання',
+  'To disable it, make the form private in the settings.':
+    'Щоб вимкнути його, зробіть форму приватною в налаштуваннях.',
+  'Open form': 'Відкрити форму',
+  'Groups this questionnaire belongs to.': 'Групи, до яких належить ця анкета.',
+  'Add group': 'Додати групу',
+  'Type a name to find or create a group': 'Введіть назву, щоб знайти або створити групу',
+  'Create group "{{name}}"': 'Створити групу «{{name}}»',
+  'Remove group': 'Вилучити групу',
+  'This questionnaire belongs to no group yet.': 'Ця анкета ще не належить до жодної групи.',
+  'A group with this name is already assigned': 'Групу з такою назвою вже призначено',
+  '"Public forms" and "Ungrouped" are automatic: public questionnaires and questionnaires with no group appear there on their own.':
+    '«Публічні форми» та «Без групи» автоматичні: публічні анкети й анкети без групи з\'являються там самі.',
   'This item cannot be removed': 'Цей елемент не можна видалити',
   'New translation': 'Новий переклад',
   'Define the key and, if you want, translate it right away. You can complete the other languages later.':

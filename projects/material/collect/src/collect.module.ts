@@ -21,20 +21,27 @@
  */
 
 import {AjfTranslocoModule} from '@ajf/core/transloco';
+import {ClipboardModule} from '@angular/cdk/clipboard';
+import {LayoutModule} from '@angular/cdk/layout';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatButtonModule} from '@angular/material/button';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatChipsModule} from '@angular/material/chips';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatGridListModule} from '@angular/material/grid-list';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
+import {MatListModule} from '@angular/material/list';
 import {RouterModule} from '@angular/router';
 import {FormsModule} from '@dino/core/forms';
-import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
-import {FloatingButtonModule} from '@dino/material/floating-button';
+import {FormMetricSelectorModule} from '@dino/material/form-metric-selector';
 
 import {Collect} from './collect';
+import {CollectActionsSheet} from './collect-actions-sheet';
+import {CollectAgePipe} from './collect-age.pipe';
+import {CollectShareDialog} from './collect-share-dialog';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDialogModule} from '@angular/material/dialog';
 import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
@@ -42,22 +49,26 @@ import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 @NgModule({
   imports: [
     AjfTranslocoModule,
-    BreakpointObserverModule,
+    ClipboardModule,
     CommonModule,
-    FloatingButtonModule,
+    FormMetricSelectorModule,
     FormsModule,
+    LayoutModule,
     RouterModule,
+    MatBottomSheetModule,
     MatButtonModule,
+    MatButtonToggleModule,
+    MatChipsModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatGridListModule,
     MatIconModule,
     MatInputModule,
+    MatListModule,
     MatTooltipModule,
     ReactiveFormsModule,
     TourMatMenuModule,
   ],
-  declarations: [Collect],
+  declarations: [Collect, CollectActionsSheet, CollectAgePipe, CollectShareDialog],
   exports: [Collect],
 })
 export class CollectModule {}
