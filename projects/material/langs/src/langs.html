@@ -1,6 +1,6 @@
 <div class="dino-langs-page-header">
   <div class="dino-langs-page-title">
-    <h1>{{'Translations'|transloco}}</h1>
+    <ng-content select="[breadcrumbs]"></ng-content>
     <p>{{keysCount$|async}} {{'keys'|transloco}} · {{donePct$|async}}% {{'complete'|transloco}}</p>
   </div>
   <div class="dino-langs-page-actions">
