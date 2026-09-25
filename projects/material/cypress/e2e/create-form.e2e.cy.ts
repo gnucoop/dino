@@ -2,7 +2,7 @@ describe('dino-create-form', {testIsolation: false}, () => {
   before(() => {
     cy.visit('/forms');
     cy.get('dino-collect').should('exist');
-    cy.get('mat-grid-tile').should('exist').first().click();
+    cy.get('.dino-collect-card').should('exist').first().click();
     // The floating button of the list became the first toolbar action of the filters bar.
     cy.get('.dino-filters-toolbar button[toolbarActions]').first().should('exist').click();
     cy.get('dino-create-form').should('exist');

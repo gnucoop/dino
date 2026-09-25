@@ -1,0 +1,18 @@
+<div class="dino-collect-sheet-grabber"></div>
+<div class="dino-collect-sheet-title">{{ (item.label || item.name) | transloco }}</div>
+<mat-nav-list>
+  <a mat-list-item *ngIf="item.shareUrl" (click)="pick('share')">
+    <mat-icon matListItemIcon>share</mat-icon>
+    <span matListItemTitle>{{ 'Public link' | transloco }}</span>
+  </a>
+  <ng-container *ngIf="item.editable">
+    <a mat-list-item (click)="pick('edit')">
+      <mat-icon matListItemIcon>edit</mat-icon>
+      <span matListItemTitle>{{ 'Edit' | transloco }}</span>
+    </a>
+    <a mat-list-item class="dino-collect-danger" (click)="pick('delete')">
+      <mat-icon matListItemIcon>delete</mat-icon>
+      <span matListItemTitle>{{ 'Delete' | transloco }}</span>
+    </a>
+  </ng-container>
+</mat-nav-list>

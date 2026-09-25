@@ -1,0 +1,97 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
+/**
+ * Design tokens of the collect: the grid and list of forms, reports and menu items, the
+ * public link dialog and the actions sheet.
+ *
+ * The accent follows the app theme. Surfaces, borders and text are neutral greys, and the
+ * status colors (public, unique, danger) are semantic and have no Material equivalent.
+ * Group colors are not tokens: each element carries its group's color in `--g`.
+ *
+ * The mixins are included once per root element, because the dialog and the sheet are
+ * rendered in the cdk overlay and so are not children of dino-collect.
+ */
+
+@mixin light {
+  --dino-collect-accent: #{mat-css-vars.mat-css-color-primary(500)};
+  --dino-collect-accent-soft: #{mat-css-vars.mat-css-color-primary(500, 0.1)};
+  --dino-collect-accent-strong: #{mat-css-vars.mat-css-color-primary(500, 0.18)};
+  --dino-collect-accent-fg: #{mat-css-vars.mat-css-contrast-color-primary(500)};
+  --dino-collect-card: #ffffff;
+  --dino-collect-card-bar: #f6f7f9;
+  --dino-collect-chip: #ffffff;
+  --dino-collect-dialog: #ffffff;
+  --dino-collect-input: #f1f3f6;
+  --dino-collect-badge: #eef0f3;
+  --dino-collect-border: #e3e6ea;
+  --dino-collect-border-strong: #d8dce2;
+  --dino-collect-divider: #e7e9ed;
+  --dino-collect-row-sep: #eef0f3;
+  --dino-collect-hover: #f4f6f8;
+  --dino-collect-btn-hover: #e9ecf0;
+  --dino-collect-fg: #1b2431;
+  --dino-collect-fg-2: #3c485a;
+  --dino-collect-muted: #5f6b7c;
+  --dino-collect-faint: #78859a;
+  --dino-collect-danger: #c24848;
+  --dino-collect-public: #2f9e57;
+  --dino-collect-unique: #1a8f98;
+  --dino-collect-grabber: #c9ced6;
+  --dino-collect-shadow: 0 24px 60px rgba(20, 30, 45, 0.18);
+  --dino-collect-tag-mix: 62%;
+  --dino-collect-mono: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@mixin dark {
+  --dino-collect-accent: #{mat-css-vars.mat-css-color-primary(300)};
+  --dino-collect-accent-soft: #{mat-css-vars.mat-css-color-primary(300, 0.1)};
+  --dino-collect-accent-strong: #{mat-css-vars.mat-css-color-primary(300, 0.3)};
+  --dino-collect-accent-fg: #{mat-css-vars.mat-css-contrast-color-primary(300)};
+  --dino-collect-card: #16191e;
+  --dino-collect-card-bar: #1b1f25;
+  --dino-collect-chip: #20242a;
+  --dino-collect-dialog: #1f2329;
+  --dino-collect-input: #2c3037;
+  --dino-collect-badge: #2e343c;
+  --dino-collect-border: #2e343c;
+  --dino-collect-border-strong: #3a4049;
+  --dino-collect-divider: #2a2f37;
+  --dino-collect-row-sep: #262b32;
+  --dino-collect-hover: #1d2127;
+  --dino-collect-btn-hover: #2c3037;
+  --dino-collect-fg: #f2f3f5;
+  --dino-collect-fg-2: #dfe2e6;
+  --dino-collect-muted: #aab1ba;
+  --dino-collect-faint: #8a929c;
+  --dino-collect-danger: #e58a8a;
+  --dino-collect-public: #6fdc8c;
+  --dino-collect-unique: #4fd1d9;
+  --dino-collect-grabber: #4a515b;
+  --dino-collect-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  --dino-collect-tag-mix: 100%;
+}
+
+/**
+ * The text color of an element tinted with its group color: the color itself on the dark
+ * theme, darkened on the light one so that it stays readable on its own tint.
+ */
+@function group-fg() {
+  @return color-mix(in srgb, var(--g) var(--dino-collect-tag-mix), #000);
+}
+
+/**
+ * The tint of a group color, as a background or a border.
+ */
+@function group-tint($percent) {
+  @return color-mix(in srgb, var(--g) $percent, transparent);
+}
+
+/**
+ * Sizes a mat-icon, which Material fixes at 24px.
+ */
+@mixin icon-size($size) {
+  font-size: $size;
+  width: $size;
+  height: $size;
+  line-height: $size;
+}

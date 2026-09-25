@@ -2,7 +2,7 @@ describe('dino-edit-form', () => {
   beforeEach(() => {
     cy.visit('/forms');
     cy.get('dino-collect').should('exist');
-    cy.get('mat-grid-tile').should('exist').first().click();
+    cy.get('.dino-collect-card').should('exist').first().click();
   });
 
   it('should enter an edit form page', () => {
