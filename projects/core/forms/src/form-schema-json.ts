@@ -81,6 +81,27 @@ export const schema = {
       'description': 'The UUIDs of the optional associated Form Statuses.',
       'ref': 'form_status',
     },
+    'form_schema_groups': {
+      'type': 'array',
+      'items': {
+        'type': 'object',
+        'properties': {
+          'name': {
+            'type': 'string',
+            'maxLength': 200,
+          },
+          'description': {
+            'type': 'string',
+          },
+          'color': {
+            'type': 'string',
+            'maxLength': 20,
+          },
+        },
+        'required': ['name'],
+      },
+      'description': 'The thematic groups the form schema belongs to.',
+    },
     'visibility': {
       'description': 'The form schema visibility',
       'type': 'number',
@@ -102,5 +123,5 @@ export const schema = {
   'title': 'FormSchema',
   'indexes': ['created_at', 'updated_at'],
   'primaryKey': 'id',
-  'version': 4,
+  'version': 5,
 } as RxJsonSchema<FormSchema>;

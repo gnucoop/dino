@@ -23,6 +23,7 @@
 export {FormData} from './form-data';
 export {schema as formDataJson} from './form-data-json';
 export {FormSchema} from './form-schema';
+export * from './form-schema-group';
 export {schema as formSchemaJson} from './form-schema-json';
 export {FormStatus} from './form-status';
 export {schema as formStatusJson} from './form-status-json';
