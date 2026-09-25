@@ -37,15 +37,15 @@
 @mixin dark {
   --dino-langs-accent: #{mat-css-vars.mat-css-color-primary(300)};
   --dino-langs-accent-soft: #{mat-css-vars.mat-css-color-primary(500, 0.22)};
-  --dino-langs-panel: #161c29;
-  --dino-langs-panel-2: #1b2333;
-  --dino-langs-border: #28303f;
-  --dino-langs-border-strong: #333d4f;
-  --dino-langs-fg: #e7ecf4;
-  --dino-langs-fg-2: #c3ccda;
-  --dino-langs-muted: #8492a6;
-  --dino-langs-hover: #1e2736;
-  --dino-langs-ring-track: #28303f;
+  --dino-langs-panel: #14171b;
+  --dino-langs-panel-2: #1b1f24;
+  --dino-langs-border: #2f353c;
+  --dino-langs-border-strong: #363c44;
+  --dino-langs-fg: #e6e9ec;
+  --dino-langs-fg-2: #d4d9dd;
+  --dino-langs-muted: #99a0a7;
+  --dino-langs-hover: #23272d;
+  --dino-langs-ring-track: #2f353c;
   --dino-langs-ok: oklch(0.72 0.12 150);
   --dino-langs-ok-soft: oklch(0.34 0.06 150);
   --dino-langs-warn: oklch(0.78 0.13 75);

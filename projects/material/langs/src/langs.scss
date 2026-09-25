@@ -30,11 +30,9 @@ dino-langs {
     flex: 1 1 auto;
     min-width: 0;
 
-    h1 {
-      margin: 0;
-      font-size: 19px;
-      font-weight: 800;
-      color: var(--dino-langs-fg);
+    // The page header lays the breadcrumbs out itself: drop their own padding.
+    dino-breadcrumbs .dino-page-header {
+      padding: 0;
     }
 
     p {
