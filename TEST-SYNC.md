@@ -259,8 +259,8 @@ bisogna rientrare per non perdere i dati.
 supervisor) e nessuno schema selezionato, e assegnarci un utente B. Entrare come B e aprire la sezione
 Forms, poi la sezione Reports.
 
-**Cosa deve succedere** — Il pulsante tondo **+** per creare un nuovo schema **non compare** in nessuna
-delle due. Compare solo se il gruppo di B contiene la voce "All form schemas" (o "All report schemas"):
+**Cosa deve succedere** — Il pulsante **Nuovo form** (nei Reports **Nuovo report**), in alto a destra
+accanto al filtro, **non compare** in nessuna delle due. Compare solo se il gruppo di B contiene la voce "All form schemas" (o "All report schemas"):
 il permesso di creare uno schema non dipende dal ruolo soltanto, serve il permesso su **tutti** gli
 schemi, perché uno schema che ancora non esiste non può essere elencato nel gruppo di nessuno.
 
@@ -270,7 +270,7 @@ ancora un guard sulla rotta) e lo schema viene scritto in locale, ma il server l
 accende subito** sull'icona di sync, arriva una notifica che nomina la collection e l'errore, e **non**
 compaiono gli snackbar "Resyncing". La sincronizzazione di quella collection si ferma al primo rifiuto.
 
-**È un bug se** — il pulsante + compare a un gruppo senza "All form schemas"; oppure se, dopo il
+**È un bug se** — il pulsante Nuovo form compare a un gruppo senza "All form schemas"; oppure se, dopo il
 salvataggio da URL diretto, non succede niente di visibile e la rotellina continua a girare.
 
 ---
@@ -287,6 +287,28 @@ ruolo diverso da admin non viene aggiunto niente: la scelta degli schemi resta l
 
 **È un bug se** — un gruppo admin si salva senza i due "All", o se il lucchetto resta anche dopo aver
 cambiato ruolo.
+
+---
+
+## 14. I gruppi dei form, offline ⚠️
+
+**Prima di iniziare** — Il server deve già avere il nuovo campo dei gruppi. Se non ce l'ha, la
+sincronizzazione dei form si ferma del tutto: è la prima cosa da escludere se questa prova fallisce.
+
+**Cosa fare** — Aprire un form esistente in modifica, scheda **Gruppo**. Aggiungere un gruppo nuovo
+(per esempio "Salute", scrivendo il nome e scegliendo "Crea il gruppo") e uno già usato da un altro
+form, cambiare il colore di uno dei due e salvare. Poi **staccare la rete** e ripetere su un secondo
+form: togliere un gruppo, aggiungerne un altro, salvare. Tornare nella pagina Form.
+
+**Cosa deve succedere** — Offline, la pagina Form mostra subito i form nelle sezioni dei loro gruppi:
+un form in due gruppi compare in tutte e due le sezioni, un form pubblico compare anche in "Form
+pubblici", un form senza gruppi in "Senza gruppo". Riattaccare la rete e aspettare la
+sincronizzazione: su un **secondo dispositivo** (o dopo essere rientrati con lo stesso utente) i gruppi
+dei due form sono quelli salvati, compreso quello tolto offline.
+
+**È un bug se** — dopo il ritorno online un form perde i suoi gruppi o ne ritrova uno tolto; se un form
+modificato con una versione precedente dell'app perde i gruppi che aveva; oppure se il badge di sync si
+accende sulla collection dei form.
 
 ---
 

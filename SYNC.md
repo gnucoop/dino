@@ -441,6 +441,14 @@ never happens; above it, the same page would be requested again. It takes a sing
 twenty thousand pre-existing documents in one collection, and the fix changes the design rather than
 adding a guard, so it is recorded here instead.
 
+**A new field of a synced model needs the server first.** The pull and push queries list the fields
+of the collection's json schema, so a client whose model has a field the server does not know asks
+Hasura for it, and the whole pull of that collection is refused — nothing of it syncs, in either
+direction, until the column and its permissions exist. The reverse is harmless: an older client does
+not name the field, so it neither reads nor overwrites it. `form_schema.form_schema_groups` (form
+schema v5) is the latest case: the column, and its select permission for every role including
+`anonymous` and `public`, have to be deployed before the client.
+
 **The token lives in two places.** A running replication carries the token it was created with, while
 the auth checks read `localStorage`. They cannot diverge in normal use, but a second tab can do it: a
 logout there clears the storage while this tab keeps replicating with the token it holds in memory, and

@@ -26,6 +26,7 @@ import {MigrationStrategies, RxDocument} from 'rxdb';
 
 import {FormSchemaVisibility} from './form-schema-visibility';
 import {AjfFormSchemaAdditionalProperties} from './form-schema-additional-properties';
+import {FormSchemaGroup} from './form-schema-group';
 
 /**
  * This model is used to store the Ajf form schemas.
@@ -58,6 +59,11 @@ export interface FormSchema extends Model {
   form_schema_metrics?: string[];
 
   /**
+   * The thematic groups the form schema belongs to.
+   */
+  form_schema_groups?: FormSchemaGroup[];
+
+  /**
    * The form schema visibility
    * @asType number
    */
@@ -77,11 +83,12 @@ export interface FormSchema extends Model {
   form_schema_deps_ref_id?: string | null;
 }
 
-export const VERSION = 4;
+export const VERSION = 5;
 
 export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument) => doc,
   2: (doc: RxDocument<FormSchema>) => ({...doc, visibility: FormSchemaVisibility.Private}),
   3: (doc: RxDocument<FormSchema>) => ({...doc, form_status_ref_id: undefined}),
   4: (doc: RxDocument<FormSchema>) => ({...doc, form_schema_metrics: undefined}),
+  5: (doc: RxDocument<FormSchema>) => doc,
 };
