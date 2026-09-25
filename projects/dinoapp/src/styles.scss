@@ -52,6 +52,36 @@ body {
   --ajf-scrollbar: #{mat-css-vars.mat-css-color-primary(500, 1)};
   --ajf-scrollbar-hover: #{mat-css-vars.mat-css-color-primary(700, 1)};
 
+  // The form renderer paints its accents -- filled buttons, the slide number,
+  // the selected choice, focus rings, link-like actions -- from this family of
+  // tokens. Their defaults are ajf's own teal, reached only because dino is on
+  // an M2 theme and publishes none of the Material system variables the tokens
+  // look for first. Restated from the configured palette, so an embedded form
+  // follows the app's primary instead of announcing itself.
+  //
+  // Declared on `body`, not on `:root`: ajf puts its own defaults there and on
+  // the .ajf-dark/.ajf-light classes the theme service writes on <html>, and
+  // the nearer declaration is the one a form inherits -- no specificity contest.
+  --ajf-accent: #{mat-css-vars.mat-css-color-primary(500, 1)};
+  // Without the opacity argument on purpose: asked for one, the helper builds
+  // `rgba(var(--palette-primary-contrast-500-no-rgb), 1)`, and that variable
+  // already carries its own alpha (`0, 0, 0, 0.87`) -- five components, invalid,
+  // so the colour was dropped and the label fell back to the app's dark text.
+  // The plain form resolves to the palette's contrast colour, white on a dark
+  // primary, and is what the rest of dino uses.
+  --ajf-accent-fg: #{mat-css-vars.mat-css-contrast-color-primary(500)};
+  // Translucent, so the same tint sits on a light or a dark surface.
+  --ajf-accent-soft: #{mat-css-vars.mat-css-color-primary(500, 0.12)};
+  --ajf-accent-ink: #{mat-css-vars.mat-css-color-primary(700, 1)};
+  --ajf-accent-hover: #{mat-css-vars.mat-css-color-primary(700, 1)};
+
+  &.isDarkTheme {
+    // On a dark surface a darker shade reads as a dimmer accent rather than a
+    // stronger one, so the ink and the hover state go up the palette instead.
+    --ajf-accent-ink: #{mat-css-vars.mat-css-color-primary(200, 1)};
+    --ajf-accent-hover: #{mat-css-vars.mat-css-color-primary(300, 1)};
+  }
+
   ::-webkit-scrollbar {
     max-width: 5px !important;
     max-height: 5px !important;
