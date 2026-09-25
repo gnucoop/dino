@@ -29,7 +29,6 @@
     <button
       toolbarActions
       mat-stroked-button
-      color="primary"
       *ngIf="displayAddButton|async"
       [tourAnchor]="'add-form-floating-button'"
       (click)="addForm()"
@@ -40,7 +39,6 @@
     <button
       toolbarActions
       mat-stroked-button
-      color="primary"
       *ngIf="(displayAddButton|async) && displayImportButton"
       (click)="openImportForms()"
     >
