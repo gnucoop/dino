@@ -1,0 +1,2743 @@
+
+<!doctype html>
+<html lang="ar" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="نظرة عامة على التنسيق المبني على Excel المستخدم لإنشاء التقارير في Dino.">
+      
+      
+      
+        <link rel="canonical" href="https://gnucoop.github.io/dino/ar/reports/xlsreport/">
+      
+      
+        <link rel="prev" href="../autoreports/">
+      
+      
+        <link rel="next" href="../../metrics/">
+      
+      
+        
+          <link rel="alternate" href="/dino/en/" hreflang="en">
+        
+          <link rel="alternate" href="/dino/it/" hreflang="it">
+        
+          <link rel="alternate" href="/dino/es/" hreflang="es">
+        
+          <link rel="alternate" href="/dino/fr/" hreflang="fr">
+        
+          <link rel="alternate" href="/dino/pt/" hreflang="pt">
+        
+          <link rel="alternate" href="/dino/uk/" hreflang="uk">
+        
+          <link rel="alternate" href="/dino/ar/" hreflang="ar">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>تنسيق XLSReport - توثيق Dinoapp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="rtl">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#تنسيق-xlsreport" class="md-skip">
+          انتقل إلى المحتوى
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="عنوان العارضة">
+    <a href="../.." title="توثيق Dinoapp" class="md-header__button md-logo" aria-label="توثيق Dinoapp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            توثيق Dinoapp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              تنسيق XLSReport
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="إختر اللغة">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/dino/en/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/it/" hreflang="it" class="md-select__link">
+              Italiano
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/es/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/fr/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/pt/" hreflang="pt" class="md-select__link">
+              Português
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/uk/" hreflang="uk" class="md-select__link">
+              Українська
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/ar/" hreflang="ar" class="md-select__link">
+              العربية
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="بحث" placeholder="بحث" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="إبحث">
+        
+        <button type="reset" class="md-search__icon md-icon" title="مسح كلي" aria-label="مسح كلي" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            بدء البحث
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="تصفح" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="توثيق Dinoapp" class="md-nav__button md-logo" aria-label="توثيق Dinoapp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    توثيق Dinoapp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    الرئيسية
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    البدء
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    البدء
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/login/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    تسجيل الدخول
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/reset-password/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    إعادة تعيين كلمة المرور
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    الواجهة والتنقل
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    لوحة المعلومات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    النماذج
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    النماذج
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    نظرة عامة
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/edit-form-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    تحرير مخطط النموذج
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/edit-form/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    تحرير إرسال نموذج
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    استيراد البيانات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/forms-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    خريطة النماذج
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/datachat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datachat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    التقارير
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    التقارير
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    نظرة عامة
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-report-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    تحرير مخطط التقرير
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    تعديل التقرير
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../autoreports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    التقرير التلقائي
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XLSReport
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XLSReport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="جدول المحتويات">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      جدول المحتويات
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ما-هو-xlsreport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ما هو XLSReport
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#بنية-الملف" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        بنية الملف
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="بنية الملف">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#فئات-الأوراق" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        فئات الأوراق
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#اصطلاحات-الصفوف-داخل-الورقة" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        اصطلاحات الصفوف داخل الورقة
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#التخطيط-العام" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        التخطيط العام
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#المخرج-الشامل-للطوارئ-js" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        المخرج الشامل للطوارئ: js:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#إعلان-المتغيرات" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        إعلان المتغيرات
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="إعلان المتغيرات">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#الأعمدة" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        الأعمدة
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#تحميل-بيانات-الـ-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        تحميل بيانات الـ form
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#تحديد-نطاق-مجموعة-بياناتفلترتها-مرة-واحدة-لكل-استخدام-لاحق" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        تحديد نطاق مجموعة بيانات/فلترتها مرة واحدة، لكل استخدام لاحق
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#متغيرات-طلبات-الذكاء-الاصطناعي" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        متغيرات طلبات الذكاء الاصطناعي
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#نظرة-عامة-على-لغة-الصيغ" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        نظرة عامة على لغة الصيغ
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="نظرة عامة على لغة الصيغ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#البنية-الأساسية" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        البنية الأساسية
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#أنواع-الوسائط" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        أنواع الوسائط
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#مرجع-الدوال" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        مرجع الدوال
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#العناصر-الرسومية-المدعومة-وخصائصها" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        العناصر الرسومية المدعومة وخصائصها
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="العناصر الرسومية المدعومة وخصائصها">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table--جدول-ديناميكي" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        table — جدول ديناميكي
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        html
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single--بطاقة-مؤشر-الأداء-الرئيسي--الرقم-الكبير" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        single — بطاقة مؤشر الأداء الرئيسي / الرقم الكبير
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#heatmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        heatmap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paginatedlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        paginatedlist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paginateddialoglist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        paginatedDialogList
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filter--global-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        filter / global filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#قائمة-تحقق-سريعة-لبناء-xlsreport-جديد" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        قائمة تحقق سريعة لبناء XLSReport جديد
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    المقاييس
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    المقاييس
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    نظرة عامة
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/areas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    المجالات الموضوعية
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    الحالات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/locations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    المواقع
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/organizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    المنظمات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/projects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    المشاريع
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aggregation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    التجميع
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    الإشعارات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../public-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    النماذج العامة
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    الإدارة
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    الإدارة
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/users/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    إدارة المستخدمين والمجموعات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/languages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    إدارة اللغات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/users-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    قائمة المستخدمين
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/groups-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    قائمة المجموعات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="جدول المحتويات">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      جدول المحتويات
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ما-هو-xlsreport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ما هو XLSReport
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#بنية-الملف" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        بنية الملف
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="بنية الملف">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#فئات-الأوراق" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        فئات الأوراق
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#اصطلاحات-الصفوف-داخل-الورقة" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        اصطلاحات الصفوف داخل الورقة
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#التخطيط-العام" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        التخطيط العام
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#المخرج-الشامل-للطوارئ-js" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        المخرج الشامل للطوارئ: js:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#إعلان-المتغيرات" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        إعلان المتغيرات
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="إعلان المتغيرات">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#الأعمدة" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        الأعمدة
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#تحميل-بيانات-الـ-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        تحميل بيانات الـ form
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#تحديد-نطاق-مجموعة-بياناتفلترتها-مرة-واحدة-لكل-استخدام-لاحق" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        تحديد نطاق مجموعة بيانات/فلترتها مرة واحدة، لكل استخدام لاحق
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#متغيرات-طلبات-الذكاء-الاصطناعي" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        متغيرات طلبات الذكاء الاصطناعي
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#نظرة-عامة-على-لغة-الصيغ" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        نظرة عامة على لغة الصيغ
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="نظرة عامة على لغة الصيغ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#البنية-الأساسية" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        البنية الأساسية
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#أنواع-الوسائط" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        أنواع الوسائط
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#مرجع-الدوال" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        مرجع الدوال
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#العناصر-الرسومية-المدعومة-وخصائصها" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        العناصر الرسومية المدعومة وخصائصها
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="العناصر الرسومية المدعومة وخصائصها">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table--جدول-ديناميكي" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        table — جدول ديناميكي
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        html
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single--بطاقة-مؤشر-الأداء-الرئيسي--الرقم-الكبير" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        single — بطاقة مؤشر الأداء الرئيسي / الرقم الكبير
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#heatmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        heatmap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paginatedlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        paginatedlist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paginateddialoglist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        paginatedDialogList
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filter--global-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        filter / global filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#قائمة-تحقق-سريعة-لبناء-xlsreport-جديد" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        قائمة تحقق سريعة لبناء XLSReport جديد
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="تنسيق-xlsreport">تنسيق XLSReport</h1>
+<h2 id="ما-هو-xlsreport">ما هو XLSReport</h2>
+<p>XLSReport هو تنسيق تأليف مبني على جداول البيانات لبناء <strong>تقارير DINO / AJF (Advanced JSON Forms)</strong> دون كتابة JSON أو شيفرة برمجية يدويًا. يقوم مؤلف التقرير بتعبئة مصنف Excel عادي (<code>.xlsx</code>) وفق مجموعة من الاصطلاحات، فيقوم المحوّل (<code>xls-report.ts</code>، وهو جزء من مكتبة <code>reports</code> في AJF) بتحليل ذلك المصنف إلى مخطط JSON من نوع <code>AjfReport</code> يمكن لمنصة DINO عرضه كلوحة معلومات حيّة: جداول، ورسوم بيانية، وأرقام مؤشرات الأداء الرئيسية، وصور، ومخططات، وخرائط حرارية، وغير ذلك.</p>
+<p>هناك أمران يجعلان ذلك ممكنًا:</p>
+<ul>
+<li><strong>الربط بين الأوراق والعناصر الرسومية</strong> — تتحوّل كل ورقة في المصنف (مع بعض الاستثناءات الخاصة القليلة) إلى عنصر رسومي واحد في التقرير. وترتيب الأوراق في المصنف هو ترتيب تكديس العناصر الرسومية في التقرير المعروض.</li>
+<li><strong>لغة صيغ مصغّرة (DSL)</strong> ("لغة المؤشرات") — لا تحتوي الخلايا على قيم حرفية فحسب؛ بل يحتوي معظمها على تعبيرات قصيرة (مثل <code>SUM(D04, $persone, $tipo='corso')</code>) مكتوبة بلغة مصغّرة مضغوطة ومقيّدة بقائمة بيضاء. تُحلَّل هذه اللغة بواسطة <code>hindikit-parser.ts</code> وتُترجَم إلى JavaScript، ثم تُنفَّذ مقابل بيانات الـ form الأساسية في وقت العرض/التحديث باستخدام مكتبة من الدوال المدمجة (<code>expression-utils.ts</code>).</li>
+</ul>
+<p>وهذا يعني أن XLSReport هو في حقيقته شيئان متراكبان معًا: <strong>وصف للتخطيط</strong> (أي الأوراق تنتج أي العناصر الرسومية، وبأي ترتيب) و<strong>وصف للحساب</strong> (أي الصيغ تحسب الأرقام والمصفوفات ومجموعات البيانات التي تعرضها تلك العناصر الرسومية). ولأن البيانات الأساسية تأتي من forms في DINO (بيانات)، فإن أي صيغة في XLSReport تقرأ في نهاية المطاف من مجموعة بيانات form واحدة أو أكثر وتشكّلها بحسب ما يحتاجه العنصر الرسومي (رقم واحد، أو مصفوفة لرسم بياني، أو جدول من الصفوف).</p>
+<p>XLSReport مستقل عن المنصة والمشروع: إذ تنطبق اصطلاحات المصنف نفسها على أي نسخة من DINO وأي مجموعة من الـ forms — ولا شيء في التنسيق خاص بمؤسسة أو تنصيب بعينه.</p>
+<h2 id="بنية-الملف">بنية الملف</h2>
+<p>XLSReport هو مصنف <code>.xlsx</code> واحد. يمرّ المحوّل على أوراق المصنف <strong>بالترتيب</strong> ويقرّر ما يفعله بكل ورقة من خلال البحث عن <strong>كلمة مفتاحية كسلسلة فرعية في اسم الورقة</strong> (وليس مطابقة تامة) — فعلى سبيل المثال، تُعرَف ورقة باسم <code>table_activities</code> أو <code>2_table</code> على أنها ورقة "table" لأن الاسم <em>يحتوي</em> على <code>table</code>.</p>
+<h3 id="فئات-الأوراق">فئات الأوراق</h3>
+<table>
+<thead>
+<tr>
+<th>يحتوي اسم الورقة على</th>
+<th>الدور</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>variables</code> (الاسم بالضبط)</td>
+<td>يُعلن عن متغيرات/مجموعات بيانات مُسمّاة تستخدمها الأوراق اللاحقة. لا ينتج عنصرًا رسوميًا بحد ذاته.</td>
+</tr>
+<tr>
+<td><code>filter</code></td>
+<td>يُعلن عن form فلترة (بنمط ODK/XLSForm: <code>survey</code> + <code>choices</code>) يُرفق بالورقة <em>التالية</em> في المصنف. لا ينتج عنصرًا رسوميًا خاصًا به.</td>
+</tr>
+<tr>
+<td><code>filter</code> <strong>و</strong> <code>global</code></td>
+<td>كما سبق، لكن الفلتر الناتج ينطبق على التقرير بأكمله بدلًا من عنصر رسومي واحد.</td>
+</tr>
+<tr>
+<td><code>choices</code></td>
+<td>ورقة مرافقة تحتوي على قوائم الخيارات (<code>list_name</code>، <code>name</code>، <code>label</code>)، تُستخدم مع أوراق <code>filter</code>.</td>
+</tr>
+<tr>
+<td><code>table</code></td>
+<td>عنصر رسومي من نوع <code>DynamicTable</code> أو <code>PaginatedTable</code>.</td>
+</tr>
+<tr>
+<td><code>chart</code></td>
+<td>عنصر رسومي من نوع <code>Chart</code> (أعمدة، خطي، دائري، إلخ).</td>
+</tr>
+<tr>
+<td><code>image</code></td>
+<td>عنصر رسومي من نوع <code>Image</code>.</td>
+</tr>
+<tr>
+<td><code>html</code></td>
+<td>عنصر رسومي من نوع <code>Text</code> يعرض HTML خامًا.</td>
+</tr>
+<tr>
+<td><code>graph</code></td>
+<td>عنصر رسومي من نوع <code>Graph</code> (عُقد/شبكة).</td>
+</tr>
+<tr>
+<td><code>heatmap</code></td>
+<td>عنصر رسومي من نوع <code>HeatMap</code>.</td>
+</tr>
+<tr>
+<td><code>single</code></td>
+<td>عنصر رسومي واحد أو أكثر من نوع <code>Text</code> يشكّل بطاقة مؤشر أداء رئيسي/"رقم كبير".</td>
+</tr>
+<tr>
+<td><code>paginatedlist</code></td>
+<td>عنصر رسومي من نوع <code>PaginatedList</code> (صف واحد = عنصر جدول مصغّر).</td>
+</tr>
+<tr>
+<td><code>paginatedDialogList</code></td>
+<td>عنصر رسومي من نوع <code>PaginatedList</code> تفتح صفوفه نافذة تفاصيل.</td>
+</tr>
+</tbody>
+</table>
+<p>أسماء الأوراق حرّة فيما عدا ذلك — استخدمها لتبقى المصنفات موثّقة ذاتيًا (مثل <code>table_beneficiaries_by_month</code>، <code>chart_gender_split</code>). ولأن المطابقة تتم بالتحقق من احتواء السلسلة، تجنّب اختيار أسماء تحتوي بالخطأ على كلمة مفتاحية أخرى (فلا تسمِّ ورقة رسم بياني <code>charttable</code> مثلًا).</p>
+<h3 id="اصطلاحات-الصفوف-داخل-الورقة">اصطلاحات الصفوف داخل الورقة</h3>
+<p>تُقرأ كل ورقة عنصر رسومي كتحويل عادي من جدول بيانات إلى JSON: <strong>الصف 1 يحمل عناوين الأعمدة</strong>، و<strong>يبدأ الصف 2 وما بعده بالبيانات</strong>، بكائن JSON واحد لكل صف مفتاحه نص العنوان. وإلى جانب هذه القاعدة العامة، يحدّد كل نوع ورقة معنى خاصًا به لصف العناوين وللصف أو الصفين الأولين من البيانات (وهو موثّق لكل عنصر رسومي في القسم 5).</p>
+<h3 id="التخطيط-العام">التخطيط العام</h3>
+<p>يُغلَّف المصنف بأكمله في <strong>تخطيط واحد عالي المستوى يحتوي على عمود واحد</strong>، وتسهم فيه كل ورقة غير خاصة بعنصر رسومي واحد بالضبط (أو بعدة عناصر في حالة <code>single</code>) يُضاف إلى ذلك العمود بترتيب الأوراق. وبعبارة أخرى:</p>
+<ul>
+<li>التقرير دائمًا <strong>تكديس رأسي واحد للعناصر الرسومية</strong> — ولا توجد طريقة على مستوى جدول البيانات لإنشاء أعمدة جنبًا إلى جنب أو حاويات متداخلة؛ فالتداخل الوحيد الموجود يُولَّد داخليًا بواسطة <code>paginatedlist</code> / <code>paginatedDialogList</code> (حيث يكون كل صف بحد ذاته عنصرًا مصغّرًا لجدول أو نافذة).</li>
+<li>تُرفق ورقة باسم <code>filter</code> فلترها بالورقة العنصر الرسومي <strong>التي تليها مباشرة</strong>؛ أما ورقة <code>global filter</code> فترفق بالحاوية الخارجية للتقرير بدلًا من عنصر رسومي واحد.</li>
+</ul>
+<h3 id="المخرج-الشامل-للطوارئ-js">المخرج الشامل للطوارئ: <code>js:</code></h3>
+<p>أي خلية تُحلَّل عادةً عبر لغة الصيغ يمكن، بدلًا من ذلك، أن تبدأ بـ <code>js:</code> — وكل ما يأتي بعد تلك البادئة يُعامل كـ <strong>JavaScript خام</strong> ويُمرَّر دون تحليل. وهذا يتيح الوصول إلى كل دالة تصدّرها مكتبة الأدوات المساعدة وقت التشغيل، لا مجرد الدوال المدرجة في القائمة البيضاء لقواعد اللغة (انظر القسم 4)، وكذلك إلى تعبيرات JS اعتباطية (دوال تُنفَّذ فورًا IIFE، واستخدام <code>Set</code>/<code>Map</code>، ودوال مساعدة مضمّنة مخصّصة، إلخ). استخدمه حين لا يناسب حسابٌ ما قائمة الدوال المسموح بها في اللغة أو أشكال وسائطها.</p>
+<h2 id="إعلان-المتغيرات">إعلان المتغيرات</h2>
+<p>ورقة <code>variables</code> هي المكان الذي تحمّل فيه بيانات الـ form وتحسب مسبقًا أي شيء يُعاد استخدامه في عناصر رسومية متعددة لاحقًا في المصنف (مجموعات البيانات، والفلاتر، وقيم المؤشرات، والتسميات).</p>
+<h3 id="الأعمدة">الأعمدة</h3>
+<table>
+<thead>
+<tr>
+<th>العمود</th>
+<th>المعنى</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>معرّف المتغير. يجب أن يكون معرّفًا صالحًا (حروف، وأرقام، وشرطة سفلية، ولا يبدأ برقم) — وتُرفض الأسماء غير الصالحة.</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>تعبير، يُحلَّل عبر لغة الصيغ نفسها المستخدمة في كل خلية أخرى (أو JavaScript خام مسبوقة بـ <code>js:</code>).</td>
+</tr>
+<tr>
+<td><code>isAIPrompt</code> (اختياري)</td>
+<td>قيمة منطقية؛ توسم المتغير على أنه ناتج عن طلب ذكاء اصطناعي بدلًا من صيغة عادية، بحيث يمكن قراءته لاحقًا بـ <code>PROMPT_RESULT</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>يُتخطّى الصفوف ذات الـ <code>name</code> الفارغ. وتُقيَّم المتغيرات من الأعلى إلى الأسفل، و<strong>يمكن لكل متغير أن يشير إلى أي متغير مُعلَن فوقه</strong> باسمه المجرّد (بدون بادئة <code>$</code> — فتلك البادئة محفوظة لحقول الـ form، انظر القسم 4).</p>
+<h3 id="تحميل-بيانات-الـ-form">تحميل بيانات الـ form</h3>
+<p>هناك دالتان للبحث وقت التشغيل متاحتان دائمًا:</p>
+<ul>
+<li><code>forms['&lt;form name&gt;']</code> — المصفوفة الخام من البيانات لـ form معيّن في DINO.</li>
+<li><code>schemas['&lt;form name&gt;']</code> — مخطط الـ form (يُستخدم لحل بنية المجموعات المُكرّرة وتسميات الخيارات).</li>
+</ul>
+<p>سلسلة اسم الـ form الواجب استخدامها هي المعرّف الذي يمنحه DINO لذلك الـ form — واحصل عليها من إعدادات المسؤول/الـ forms في نسختك من DINO (ستطابق عادةً، لكن لا يُضمن أن تطابق تمامًا، اسم ملف xlsform الخاص بالـ form؛ تحقّق من فروق المسافات وحالة الأحرف والمسافات اللاحقة).</p>
+<p>الكتلة الافتتاحية القياسية لورقة <code>variables</code> تحمّل كل form تحتاجه وتحوّله إلى مجموعة بيانات منظّمة:</p>
+<div class="highlight"><pre><span></span><code>name  | value
+F01   | forms['my_form_name']
+S01   | schemas['my_form_name']
+D01   | BUILD_DATASET(F01,S01)
+</code></pre></div>
+<p>تُقسّم <code>BUILD_DATASET(forms, schema)</code> كل بيانات مسطّحة إلى حقول عليا غير مكرّرة بالإضافة إلى كائن <code>reps</code> يجمع نسخ المجموعات المُكرّرة ("repeat"/شريحة) بحسب اسم مجموعتها الحقيقي (المستخلص من المخطط). وبدون مخطط، ترجع إلى استدلال عام. ومن هذه النقطة فصاعدًا، تكون <code>D01</code> هي مجموعة البيانات التي تفلترها وتجمّعها وتعرضها.</p>
+<h3 id="تحديد-نطاق-مجموعة-بياناتفلترتها-مرة-واحدة-لكل-استخدام-لاحق">تحديد نطاق مجموعة بيانات/فلترتها مرة واحدة، لكل استخدام لاحق</h3>
+<p>من الأنماط الشائعة جدًا والموصى بها <strong>فلترة مجموعة بيانات وإعادة إسنادها إلى اسم المتغير نفسه</strong>، بحيث ترث كل صيغة تشير إلى ذلك المتغير من تلك النقطة فصاعدًا الفلتر تلقائيًا — بدلًا من تكرار شرط الفلترة في كل صيغة على حدة:</p>
+<div class="highlight"><pre><span></span><code>name | value
+D01  | FILTER_BY(D01, $status='active')
+</code></pre></div>
+<p>وهذا مهم بشكل خاص لأن <strong>مجموعات بيانات الـ forms كثيرًا ما تكون مشتركة بين أكثر من مشروع أو حملة أو نطاق على نسخة DINO نفسها</strong> — فلا تفترض أبدًا أن مصفوفة <code>forms['...']</code> محصورة بالفعل فقط في البيانات التي تهمّك. وإذا كانت الـ forms لديك تحمل حقل مشروع/نطاق (يعتمد اسمه الدقيق على تصميم الـ form في نسختك، مثل شيء كـ <code>$project_name</code>)، ففلتر كل مجموعة بيانات صراحةً:</p>
+<div class="highlight"><pre><span></span><code>scope_name = 'MY PROJECT'
+D0X = FILTER_BY(D0X, $project_field = scope_name OR $secondary_project_field = scope_name)
+</code></pre></div>
+<p>وإذا كانت مجموعة بيانات تحتوي على مجموعة مُكرّرة تحتاج نسخها الفردية إلى تحديد نطاق خاص بها (مثل تكرار "participants" حيث يمكن أن يتضمّن سجل جماعي واحد مشاركين ينتمون إلى نطاقات مختلفة)، ففلتر على مستوى كل نسخة أيضًا، عادةً عبر <code>FLATTEN_REPS</code> مع <code>FILTER_BY</code> على المصفوفة المسطّحة، قبل استخراج القيم التي تحتاجها بـ <code>ALL_VALUES_OF</code> (انظر القسم 4 لهذه الدوال). وتحقق دائمًا من الحقل الذي يحمل فعليًا قيمة تعريف/مرجع نسخة التكرار — فقد لا يحمل ما يوحي به اسمه (فمثلًا، قد يخزّن حقل مرجع "participant" داخل تكرار <em>اسم العرض</em> للسجل المرتبط بدلًا من <em>الرمز/المعرّف</em> الخاص به؛ فتحقّق مقابل بيانات مُصدَّرة حقيقية قبل الربط/إزالة التكرار بناءً عليه، واستخدم المفتاح نفسه على طرفي أي مقارنة).</p>
+<h3 id="متغيرات-طلبات-الذكاء-الاصطناعي">متغيرات طلبات الذكاء الاصطناعي</h3>
+<p>إذا كانت <code>isAIPrompt</code> مضبوطة على صف متغير، فإن قيمته تمثّل ناتج طلب مُولَّد بالذكاء الاصطناعي بدلًا من صيغة محسوبة عادية. وفي أي مكان آخر في المصنف يمكنك استرجاع ذلك النص بـ <code>PROMPT_RESULT(report_data, '&lt;variable name&gt;')</code> وإدراجه في عنصر رسومي من نوع HTML أو مؤشر فردي.</p>
+<h2 id="نظرة-عامة-على-لغة-الصيغ">نظرة عامة على لغة الصيغ</h2>
+<p>يُحلَّل كل خلية غير مسبوقة بـ <code>js:</code> بواسطة محلّل نزولي تعاودي صغير إلى تعبير JavaScript، ثم يُقيَّم مقابل سياق بيانات وقت التشغيل.</p>
+<h3 id="البنية-الأساسية">البنية الأساسية</h3>
+<table>
+<thead>
+<tr>
+<th>البنية</th>
+<th>المعنى</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$fieldname</code></td>
+<td>مرجع لحقل في الـ form. يُترجَم إلى <code>form.fieldname</code> (حيث <code>form</code> هو أي سجل داخل النطاق في ذلك الجزء من التعبير).</td>
+</tr>
+<tr>
+<td><code>bareIdentifier</code></td>
+<td>مرجع إلى اسم في ورقة <code>variables</code>، أو اسم دالة، أو كلمة مفتاحية حرفية.</td>
+</tr>
+<tr>
+<td><code>'text'</code> / <code>"text"</code></td>
+<td>سلسلة نصية حرفية.</td>
+</tr>
+<tr>
+<td><code>123</code>، <code>1.5</code>، <code>1e3</code></td>
+<td>عدد حرفي.</td>
+</tr>
+<tr>
+<td><code>[a, b, c]</code></td>
+<td>مصفوفة حرفية.</td>
+</tr>
+<tr>
+<td><code>func(arg1, arg2, ...)</code></td>
+<td>استدعاء دالة — لا تُقبل إلا أسماء الدوال المدرجة في القائمة البيضاء (انظر أدناه)؛ وأي شيء آخر يجب أن يمرّ عبر <code>js:</code>.</td>
+</tr>
+<tr>
+<td><code>=</code></td>
+<td>المساواة (تُصرَّف إلى <code>==</code> في JS).</td>
+</tr>
+<tr>
+<td><code>!=</code></td>
+<td>عدم المساواة.</td>
+</tr>
+<tr>
+<td><code>+ - * /</code>، <code>&lt; &lt;= &gt; &gt;=</code></td>
+<td>حساب/مقارنة، بالمعنى نفسه كما في JavaScript.</td>
+</tr>
+<tr>
+<td><code>AND</code> / <code>OR</code></td>
+<td>العطف/الفصل المنطقيان (يُصرَّفان إلى <code>&amp;&amp;</code> / <code>\|\|</code>).</td>
+</tr>
+<tr>
+<td><code>!expr</code></td>
+<td>النفي المنطقي.</td>
+</tr>
+<tr>
+<td><code>(expr)</code></td>
+<td>التجميع.</td>
+</tr>
+<tr>
+<td><code>IF(cond, thenExpr, elseExpr)</code></td>
+<td>الشرط الثلاثي — وهو شكل خاص مدمج، وليس دالة عادية.</td>
+</tr>
+</tbody>
+</table>
+<p>مثال:</p>
+<div class="highlight"><pre><span></span><code>IF($age &gt;= 18 AND $status = 'active', 'adult-active', 'other')
+→ (form.age &gt;= 18 &amp;&amp; form.status == 'active' ? 'adult-active' : 'other')
+</code></pre></div>
+<h3 id="أنواع-الوسائط">أنواع الوسائط</h3>
+<p>لأن اللغة تُصرَّف إلى JavaScript لكن يجب أن تعرف <em>كيف</em> تفسّر كل وسيطة دالة، فإن لكل دالة مدرجة في القائمة البيضاء توقيعًا ثابتًا للوسائط مؤلّفًا من هذه الأنواع:</p>
+<ul>
+<li><strong><code>arg</code></strong> — تُحلَّل كتعبير عادي وتُمرَّر كما هي (فيصبح <code>$field</code> هو <code>form.field</code>، أي <em>قيمة</em> الحقل).</li>
+<li><strong><code>field</code></strong> — تُحلَّل كتعبير؛ وإذا تبيّن أنها مرجع <code>$field</code> مجرّد، تُحوَّل إلى <strong>سلسلة اسم الحقل المُقتبسة</strong> بدلًا من قيمة الحقل (مثل <code>$age</code> → <code>'age'</code>)، لأن الدالة تتوقّع معرفة <em>أي حقل</em> تعمل عليه، لا قيمةً.</li>
+<li><strong><code>func(form)</code></strong>، <strong><code>func(elem)</code></strong>، <strong><code>func(elemA, elemB)</code></strong> — تُحلَّل كتعبير (عادةً شرط منطقي/علائقي مكتوب بـ <code>$field</code>)، ثم تُغلَّف في دالة سهمية في JS باسم/أسماء المعاملات المذكورة، مثل تحوّل <code>$gender = 'male'</code> كوسيطة <code>func(form)</code> إلى <code>(form) =&gt; form.gender == 'male'</code>.</li>
+<li>علامة <code>?</code> اللاحقة على وسيطة تعني أنها <strong>اختيارية</strong> — وحين تحذفها، احذف كل ما يليها.</li>
+</ul>
+<p>ومعرفة نوع الوسيطة تخبرك متى تكتب <code>$field</code> (للإشارة إلى القيمة الحالية لحقل) ومتى تتحوّل بنية <code>$field</code> نفسها بصمت إلى سلسلة اسم حقل.</p>
+<h3 id="مرجع-الدوال">مرجع الدوال</h3>
+<p><strong>تحميل مجموعات البيانات وتشكيلها</strong></p>
+<table>
+<thead>
+<tr>
+<th>الدالة</th>
+<th>التوقيع (الأنواع)</th>
+<th>الوصف</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BUILD_DATASET</code></td>
+<td><code>(arg, arg?)</code></td>
+<td>تقسّم البيانات المسطّحة إلى حقول عليا + <code>reps</code> (نسخ المجموعات المُكرّرة)، باستخدام المخطط إن أُعطي.</td>
+</tr>
+<tr>
+<td><code>FLATTEN_REPS</code></td>
+<td><code>(arg, arg)</code></td>
+<td>تنتج صف إخراج واحدًا لكل نسخة من مجموعة مُكرّرة مُسمّاة، مع دمج الحقول العليا للأصل بحقول تلك النسخة.</td>
+</tr>
+<tr>
+<td><code>FROM_REPS</code></td>
+<td><code>(arg, func(form))</code></td>
+<td>تقيّم تعبيرًا مرة واحدة لكل نسخة مجموعة مُكرّرة (عبر كل السجلات المُعطاة)، وتجمع النتائج غير الفارغة في مصفوفة مسطّحة.</td>
+</tr>
+<tr>
+<td><code>APPLY</code></td>
+<td><code>(arg, field, func(form))</code></td>
+<td>تُعيد نسخة من مجموعة البيانات مع حقل جديد/مشتق مضبوط على كل سجل (ونسخه).</td>
+</tr>
+<tr>
+<td><code>APPLY_LABELS</code></td>
+<td><code>(arg, arg, arg)</code></td>
+<td>تستبدل قيم الخيارات الخام بتسمياتها المفهومة للبشر (من المخطط) لقائمة أسماء الحقول المُعطاة، على كل سجل ونسخه.</td>
+</tr>
+<tr>
+<td><code>GET_LABELS</code></td>
+<td><code>(arg, arg)</code></td>
+<td>بحث مستقل: تربط مصفوفة من قيم الخيارات الخام بتسمياتها باستخدام مخطط.</td>
+</tr>
+<tr>
+<td><code>MAP</code></td>
+<td><code>(arg, func(elem))</code></td>
+<td>ربط مصفوفة عادي.</td>
+</tr>
+<tr>
+<td><code>OP</code></td>
+<td><code>(arg, arg, func(elemA, elemB))</code></td>
+<td>تزاوج مصفوفتين فهرسًا بفهرس، بدمج كل زوج عبر تعبير ثنائي.</td>
+</tr>
+<tr>
+<td><code>JOIN_FORMS</code></td>
+<td><code>(arg, arg, field, field?)</code></td>
+<td>ربط يساري لمجموعتي بيانات بمطابقة حقل مفتاح على كل طرف.</td>
+</tr>
+<tr>
+<td><code>JOIN_REPEATING_SLIDES</code></td>
+<td><code>(arg, arg, field, field, field, field?)</code></td>
+<td>مثل <code>JOIN_FORMS</code>، لكنها تربط أيضًا نسخ المجموعات المُكرّرة لكل زوج مُطابَق عبر مفتاح فرعي.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>الفلترة</strong></p>
+<table>
+<thead>
+<tr>
+<th>الدالة</th>
+<th>التوقيع</th>
+<th>الوصف</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FILTER_BY</code></td>
+<td><code>(arg, func(form))</code></td>
+<td>تُعيد نسخة مفلترة من مجموعة بيانات؛ فتبقي سجلًا إن طابق على المستوى الأعلى، أو تبقي فقط نسخ المجموعات المُكرّرة المطابقة إن كانت المطابقة على ذلك المستوى.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>العدّ والتجميع</strong></p>
+<table>
+<thead>
+<tr>
+<th>الدالة</th>
+<th>التوقيع</th>
+<th>الوصف</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>COUNT_FORMS</code></td>
+<td><code>(arg, func(form)?)</code></td>
+<td>تعدّ السجلات المطابقة لشرط، محتسبةً كل سجل مرة واحدة حتى لو طابق الشرط أكثر من نسخة مُكرّرة واحدة له.</td>
+</tr>
+<tr>
+<td><code>COUNT_REPS</code></td>
+<td><code>(arg, func(form)?)</code></td>
+<td>تعدّ كل سجل أعلى مطابق <em>و</em>كل نسخة مُكرّرة مطابقة كلًّا على حدة — استخدمها لـ "عدد الوقائع" بدلًا من "عدد السجلات".</td>
+</tr>
+<tr>
+<td><code>SUM</code></td>
+<td><code>(arg, field, func(form)?)</code></td>
+<td>مجموع حقل رقمي عبر السجلات والنسخ المُكرّرة، مع فلتر اختياري.</td>
+</tr>
+<tr>
+<td><code>MEAN</code> / <code>MEDIAN</code> / <code>MODE</code> / <code>MIN</code> / <code>MAX</code></td>
+<td><code>(arg, field, func(form)?)</code></td>
+<td>إحصاءات تجميعية قياسية مع فلتر اختياري.</td>
+</tr>
+<tr>
+<td><code>ALL_VALUES_OF</code></td>
+<td><code>(arg, field, func(form)?)</code></td>
+<td>تجمع كل قيمة يأخذها حقل عبر السجلات والنسخ المُكرّرة المطابقة لفلتر اختياري، <strong>مع إزالة التكرار</strong>. وهي الأداة القياسية لـ "عدّ X المتميّزة": غلّفها بـ <code>LEN(...)</code>.</td>
+</tr>
+<tr>
+<td><code>LEN</code></td>
+<td><code>(arg)</code></td>
+<td>طول المصفوفة.</td>
+</tr>
+<tr>
+<td><code>REMOVE_DUPLICATES</code></td>
+<td><code>(arg)</code></td>
+<td>تزيل تكرار مصفوفة (بمعيار الهوية بالتساوي العميق)، مع الحفاظ على الترتيب.</td>
+</tr>
+<tr>
+<td><code>INCLUDES</code></td>
+<td><code>(arg, arg)</code></td>
+<td>ما إذا كانت مصفوفة (أو سلسلة) تحتوي على قيمة.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>التواريخ</strong></p>
+<table>
+<thead>
+<tr>
+<th>الدالة</th>
+<th>التوقيع</th>
+<th>الوصف</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TODAY</code></td>
+<td><code>()</code></td>
+<td>تاريخ اليوم، <code>YYYY-MM-DD</code>.</td>
+</tr>
+<tr>
+<td><code>ADD_DAYS</code></td>
+<td><code>(arg, arg)</code></td>
+<td>تاريخ زائد N يومًا.</td>
+</tr>
+<tr>
+<td><code>DAYS_DIFF</code></td>
+<td><code>(arg, arg)</code></td>
+<td>فرق الأيام الكاملة بين تاريخين.</td>
+</tr>
+<tr>
+<td><code>GET_AGE</code></td>
+<td><code>(arg, arg?)</code></td>
+<td>العمر بالسنوات الكاملة بالنظر إلى تاريخ ميلاد (وتاريخ اختياري مرجعي، الافتراضي اليوم).</td>
+</tr>
+<tr>
+<td><code>IS_BEFORE</code> / <code>IS_AFTER</code></td>
+<td><code>(arg, arg)</code></td>
+<td>مقارنتان زمنيتان.</td>
+</tr>
+<tr>
+<td><code>IS_WITHIN_INTERVAL</code></td>
+<td><code>(arg, arg, arg)</code></td>
+<td>تحقّق من نطاق زمني شامل للطرفين.</td>
+</tr>
+<tr>
+<td><code>COMPARE_DATE</code></td>
+<td><code>(arg, arg, arg, arg?)</code></td>
+<td>تصنّف تاريخًا كسابق/داخل/لاحق لنطاق، مع تسميات مخصّصة اختيارية.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>الأرقام والتنسيق</strong></p>
+<table>
+<thead>
+<tr>
+<th>الدالة</th>
+<th>التوقيع</th>
+<th>الوصف</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ROUND</code></td>
+<td><code>(arg, arg?)</code></td>
+<td>تقرّب عددًا إلى N منزلة عشرية (الافتراضي 0).</td>
+</tr>
+<tr>
+<td><code>PERCENT</code></td>
+<td><code>(arg, arg)</code></td>
+<td><code>a/b</code> كنسبة مئوية نصية.</td>
+</tr>
+<tr>
+<td><code>PERCENTAGE_CHANGE</code></td>
+<td><code>(arg, arg)</code></td>
+<td>النسبة المئوية للتغير بين قيمة وقيمة مرجعية.</td>
+</tr>
+<tr>
+<td><code>CHART_TO_DATA</code></td>
+<td><code>(arg, arg)</code></td>
+<td>تزاوج مصفوفتي تسميات/قيم متوازيتين في كائن واحد.</td>
+</tr>
+<tr>
+<td><code>FORMAT_TABLE_ROWS</code> / <code>FORMAT_TABLE_COLS</code> / <code>FORMAT_TABLE_FIELDS</code></td>
+<td>متنوّع</td>
+<td>تعرض مصفوفة من الصفوف/الأعمدة/السجلات كسلسلة <code>&lt;table&gt;</code> في HTML، مفيدة داخل عناصر <code>html</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>الاختيار</strong></p>
+<table>
+<thead>
+<tr>
+<th>الدالة</th>
+<th>التوقيع</th>
+<th>الوصف</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FIRST</code> / <code>LAST</code></td>
+<td><code>(arg, func(form), field?)</code></td>
+<td>تجد السجل الأبكر/الأحدث بحسب حقل تاريخ (الافتراضي حقل "تاريخ الإنشاء" القياسي) وتقيّم تعبيرًا مقابله.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>الذكاء الاصطناعي/التنقيح</strong></p>
+<table>
+<thead>
+<tr>
+<th>الدالة</th>
+<th>التوقيع</th>
+<th>الوصف</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PROMPT_RESULT</code></td>
+<td><code>(arg, arg)</code></td>
+<td>تسترجع النص الناتج عن متغير <code>isAIPrompt</code>.</td>
+</tr>
+<tr>
+<td><code>CONSOLE_LOG</code></td>
+<td><code>(arg)</code></td>
+<td>تسجّل قيمة في الطرفية وتعيدها دون تغيير — مفيدة لتنقيح صيغة ضمن السياق.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>مهجورة (مبقاة للتوافق الخلفي؛ يُفضَّل البديل المذكور)</strong></p>
+<table>
+<thead>
+<tr>
+<th>الدالة</th>
+<th>يُفضَّل بدلًا منها</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FILTER_BY_VARS</code></td>
+<td><code>FILTER_BY</code></td>
+</tr>
+<tr>
+<td><code>COUNT_FORMS_UNIQUE</code></td>
+<td><code>LEN(ALL_VALUES_OF(...))</code></td>
+</tr>
+<tr>
+<td><code>ISIN</code></td>
+<td><code>INCLUDES</code></td>
+</tr>
+<tr>
+<td><code>REPEAT</code></td>
+<td><code>MAP</code></td>
+</tr>
+<tr>
+<td><code>EVALUATE</code></td>
+<td><code>IF</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>خارج القائمة البيضاء</strong></p>
+<p>لا تقبل اللغة إلا الدوال المذكورة أعلاه (إضافة إلى <code>IF</code>). وتكشف مكتبة الأدوات وقت التشغيل الأساسية دوال مساعدة إضافية (مساعدات إحصائية مثل الانحراف المعياري، وبانيات جداول/مجموعات بيانات داخلية للعناصر الرسومية يستخدمها المحوّل نفسه، إلخ) <strong>لا</strong> يمكن الوصول إليها عبر بنية الصيغة العادية — بل فقط عبر مخرج JavaScript الخام <code>js:</code> الموصوف في القسم 2.4.</p>
+<h2 id="العناصر-الرسومية-المدعومة-وخصائصها">العناصر الرسومية المدعومة وخصائصها</h2>
+<h3 id="table--جدول-ديناميكي"><code>table</code> — جدول ديناميكي</h3>
+<p>الصف 1: تسميات رؤوس الأعمدة. الصف 2: رمز نمط قصير لكل عمود، <code>[colspan][alignment][sortable]</code>:</p>
+<ul>
+<li>الحرف الأول: مدى الدمج (رقم، عادةً <code>1</code>).</li>
+<li>الحرف الثاني: <code>l</code> = يسار، <code>r</code> = يمين، وأي شيء آخر = وسط.</li>
+<li>الحرف الثالث: <code>s</code> = عمود قابل للترتيب، وإذا حُذف/كان أي شيء آخر = غير قابل للترتيب.</li>
+</ul>
+<p>من الصف 3 فصاعدًا، تعمل الورقة بإحدى طريقتين:</p>
+<p><strong>A. جدول قائمة forms</strong> (مرتبط بمجموعة بيانات) — يُستخدم عندما يوجد عمود <code>dataset</code>:</p>
+<table>
+<thead>
+<tr>
+<th>عمود الإعداد</th>
+<th>المعنى</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>(العمود الخاص بكل رأس)</em></td>
+<td>اسم الحقل الواجب عرضه في ذلك العمود، مأخوذًا من كل سجل في مجموعة البيانات.</td>
+</tr>
+<tr>
+<td><code>dataset</code></td>
+<td>اسم المتغير (ذي القيمة المصفوفية) الواجب المرور عليه — عادةً مجموعة بيانات مبنية في <code>variables</code>.</td>
+</tr>
+<tr>
+<td><code>pagination</code></td>
+<td>قيمة صحيحة → ينتج جدولًا مُرقَّمًا بالصفحات بدلًا من جدول عادي.</td>
+</tr>
+<tr>
+<td><code>dialog_fields</code> / <code>dialog_fields_labels</code></td>
+<td>أسماء/تسميات حقول إضافية مفصولة بفواصل تُعرض في نافذة تفاصيل "اقرأ المزيد" لكل صف.</td>
+</tr>
+<tr>
+<td><code>link_field</code> / <code>link_position</code></td>
+<td>الحقل الواجب استخدامه كرابط URL، ومؤشر العمود الذي يجب أن يعرضه كرابط.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>B. جدول ساكن/محسوب</strong> (بلا عمود <code>dataset</code>) — كل صف متبقٍّ هو صف إخراج حرفي، وكل خلية هي بحد ذاتها صيغة (أو قيمة حرفية، أو تعبير <code>js:</code>)؛ غلّف السلسلة الحرفية بعلامات اقتباس كي لا تُفهم كمرجع متغير مجرّد (مثل <code>"140"</code> للنص <code>140</code>، مقابل <code>my_indicator</code> لعرض قيمة متغير محسوب).</p>
+<p>تُنسَّق خلايا الرؤوس موسّطة، بخط عريض، بنص أبيض على خلفية صلبة؛ وتتبدّل خلفيات خلايا المتن في الصفوف تلقائيًا.</p>
+<h3 id="chart"><code>chart</code></h3>
+<p>الصف 1 فقط (فيما عدا Scatter/Bubble، انظر أدناه). أعمدة الخيارات المُعترف بها (تُزال من الصف قبل معاملة البقية كسلاسل بيانات):</p>
+<p><code>chartType</code>، <code>title</code>، <code>stacked</code>، <code>beginAtZeroX</code>، <code>beginAtZeroY</code>، <code>axisLabelX</code>، <code>axisLabelY</code>، <code>axisMinX</code>، <code>axisMinY</code>، <code>axisMaxX</code>، <code>axisMaxY</code>، <code>removeZeroValues</code>، <code>mainDataNumberThreshold</code>.</p>
+<ul>
+<li>يجب أن تكون <code>chartType</code> واحدة من: <code>Line</code>، <code>Bar</code>، <code>HorizontalBar</code>، <code>Radar</code>، <code>Scatter</code>، <code>Doughnut</code>، <code>Pie</code>، <code>PolarArea</code>، <code>Bubble</code>.</li>
+<li><code>labels</code> (اختياري) — صيغة تنتج مصفوفة تسميات الفئات/المحاور.</li>
+<li>كل رأس عمود آخر يسمّي سلسلة بيانات واحدة؛ وقيمة خليته صيغة تنتج مصفوفة أرقام تلك السلسلة.</li>
+<li>تحتاج مخططات <code>Scatter</code> إلى صفَّي بيانات بالضبط (قيم X، قيم Y)؛ وتحتاج مخططات <code>Bubble</code> إلى ثلاثة بالضبط (X، Y، نصف القطر)؛ وتحتاج كل أنواع المخططات الأخرى إلى صف بيانات واحد بالضبط.</li>
+<li>تُسنَد الألوان تلقائيًا من لوحة مدمجة (لون لكل سلسلة، أو لون لكل نقطة بيانات في الدائري/المجوف/القطبي).</li>
+</ul>
+<h3 id="image"><code>image</code></h3>
+<p>الصف 1 فقط. المطلوب: <code>url</code> (صيغة تنتج رابط الصورة، أو سلسلة حرفية؛ سبقها بـ <code>js:</code> لتعبير JS خام). الاختياري: <code>align</code> (<code>left</code>/<code>center</code>/<code>right</code>)، <code>width</code>، <code>height</code> (سلاسل أطوال CSS).</p>
+<h3 id="html"><code>html</code></h3>
+<p>الصف 1 فقط، بعمود واحد <code>html</code>، يحمل سلسلة HTML خامًا (لا تُحلَّل بلغة الصيغ). يدعم علامات الإدراج المزدوجة <code>[[expression]]</code>، التي تُقيَّم وتُستبدل في وقت العرض — استخدم ذلك لتضمين قيمة متغير محسوب داخل ترميز ساكن في غير ذلك.</p>
+<h3 id="single--بطاقة-مؤشر-الأداء-الرئيسي--الرقم-الكبير"><code>single</code> — بطاقة مؤشر الأداء الرئيسي / الرقم الكبير</h3>
+<p>الصف 1 فقط:</p>
+<table>
+<thead>
+<tr>
+<th>العمود</th>
+<th>المعنى</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>html</code> (اختياري)</td>
+<td>عنوان يُعرض فوق الرقم.</td>
+</tr>
+<tr>
+<td><code>current_value</code></td>
+<td>مطلوب. المتغير/التعبير الذي تُعرض قيمته كرقم كبير (يُعرض عبر <code>[[current_value]]</code>).</td>
+</tr>
+<tr>
+<td><code>percentage_change</code> (اختياري)</td>
+<td>إن وُجد، يضيف مؤشر اتجاه (سهم صاعد/هابط/ثابت مع لون) بناءً على إشارته، يُعرض بصيغة <code>[[percentage_change]]%</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>ولأن نص الخلية نفسه يُعاد استخدامه كقيمة مُدرَجة وكتعبير مقارنة خام، فمن الأفضل عمومًا أن تكون <code>current_value</code> / <code>percentage_change</code> أسماء متغيرات عادية معرّفة في ورقة <code>variables</code>، لا صيغًا مضمّنة كاملة.</p>
+<h3 id="graph"><code>graph</code></h3>
+<p>يحتاج كل صف إلى عمود <code>id</code> غير فارغ. ويُحلَّل <strong>كل</strong> عمود في كل صف (باستثناء <code>id</code>) كصيغة، منتجًا مجموعة بيانات عقدة رسم بياني واحدة لكل صف.</p>
+<h3 id="heatmap"><code>heatmap</code></h3>
+<p>الصف 1 فقط، وكل الأعمدة اختيارية بقيم افتراضية معقولة: <code>values</code> (سلسلة JS خام/صيغة تنتج بيانات الشدة — لا تُحلَّل عبر لغة الأقواس، ويجب أن تكون صالحة أصلًا)، <code>idProp</code> (الافتراضي <code>'id'</code>)، <code>features</code> (سلسلة GeoJSON)، <code>startColor</code>، <code>endColor</code>، <code>highlightColor</code>، <code>showVisualMap</code>.</p>
+<h3 id="paginatedlist"><code>paginatedlist</code></h3>
+<p>الصف 1: نسبة مئوية رقمية لعرض كل عمود. الصف 2 (صف الإعداد): اسم الحقل لكل عمود، بالإضافة إلى <code>dataset</code>، <code>title</code>، <code>pageSize</code> (الافتراضي 10)، <code>link_field</code>/<code>link_position</code>، <code>cellStyles</code>، <code>rowStyle</code> (كائن نمط خام حرفي)، <code>backgroundColorA</code>/<code>backgroundColorB</code> (لونا التخطيط المخطّط). ويُعرض كل صف ناتج كعنصر جدول مصغّر خاص به بدلًا من جدول كبير واحد.</p>
+<h3 id="paginateddialoglist"><code>paginatedDialogList</code></h3>
+<p>الإعداد نفسه كما في <code>paginatedlist</code>، بالإضافة إلى صفّين إضافيين (عند وجودهما): <strong>تسميات</strong> حقول النافذة، ثم <strong>أسماء</strong> حقول النافذة — فيؤدي النقر على صف إلى فتح نافذة منبثقة تسرد تلك الحقول كأزواج تسمية/قيمة.</p>
+<h3 id="filter--global-filter"><code>filter</code> / <code>global filter</code></h3>
+<p>مبنية على غرار ورقة <code>survey</code> في ODK/XLSForm (مع ورقة <code>choices</code> مرافقة في المصنف نفسه)، وتُحوَّل إلى form schema وتُرفق كعنصر تحكّم تفاعلي للفلترة:</p>
+<ul>
+<li>ورقة باسم يحتوي على <code>filter</code> (وليس <code>global</code>) تُرفق بالعنصر الرسومي للورقة التالية مباشرة.</li>
+<li>ورقة باسم يحتوي على كل من <code>filter</code> و<code>global</code> تُرفق بالتقرير بأكمله بدلًا من عنصر رسومي واحد.</li>
+</ul>
+<h2 id="قائمة-تحقق-سريعة-لبناء-xlsreport-جديد">قائمة تحقق سريعة لبناء XLSReport جديد</h2>
+<ol>
+<li>حدّد الـ form(s) التي تحتاجها في DINO وأسماءها/مخططاتها الدقيقة في نسختك.</li>
+<li>ابدأ ورقة <code>variables</code>: حمّل كل form بـ <code>forms[...]</code>/<code>schemas[...]</code>، وابنِ مجموعات البيانات بـ <code>BUILD_DATASET</code>، وطبّق أي فلاتر مشروع/نطاق فورًا (مع إعادة إسناد اسم المتغير نفسه).</li>
+<li>احسب مسبقًا أي شيء يُعاد استخدامه في أكثر من عنصر رسومي كمتغير مُسمّى خاص به.</li>
+<li>أضف ورقة واحدة لكل عنصر رسومي، باسمها بالكلمة المفتاحية الصحيحة، وبالترتيب الذي تريد ظهورها به.</li>
+<li>فضّل القائمة البيضاء للغة في القسم 4.3؛ ولا تلجأ إلى <code>js:</code> إلا حين لا يناسبها حسابٌ ما.</li>
+<li>دقّق أسماء الحقول وقيم الخيارات مقابل المخطط/البيانات المُصدَّرة الفعلية في نسختك بدلًا من افتراض مطابقتها التامة لأسماء حقول ملف xlsform المصدر.</li>
+</ol>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u062a\u0645 \u0627\u0644\u0646\u0633\u062e \u0627\u0644\u0649 \u0627\u0644\u062d\u0627\u0641\u0638\u0629", "clipboard.copy": "\u0646\u0633\u062e \u0625\u0644\u0649 \u0627\u0644\u062d\u0627\u0641\u0638\u0629", "search.result.more.one": "\u0623\u0643\u062b\u0631 \u0645\u0646 1 \u0641\u064a \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062d\u0629", "search.result.more.other": "\u0623\u0643\u062b\u0631 \u0645\u0646 # \u0641\u064a \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062d\u0629", "search.result.none": "\u0644\u0627 \u062a\u0648\u062c\u062f \u0646\u062a\u0627\u0626\u062c", "search.result.one": "\u0646\u062a\u0627\u0626\u062c \u0627\u0644\u0628\u062d\u062b \u0645\u0633\u062a\u0646\u062f \u0648\u0627\u062d\u062f", "search.result.other": "\u0646\u062a\u0627\u0626\u062c \u0627\u0644\u0628\u062d\u062b # \u0645\u0633\u062a\u0646\u062f\u0627\u062a", "search.result.placeholder": "\u0627\u0643\u062a\u0628 \u0644\u0628\u062f\u0621 \u0627\u0644\u0628\u062d\u062b", "search.result.term.missing": "\u0645\u0641\u0642\u0648\u062f", "select.version": "\u0625\u062e\u062a\u0631 \u0627\u0644\u0625\u0635\u062f\u0627\u0631"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

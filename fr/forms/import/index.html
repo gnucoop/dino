@@ -1,0 +1,2238 @@
+
+<!doctype html>
+<html lang="fr" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Apprenez à importer en masse des données structurées dans n'importe quel form schema à l'aide d'un fichier CSV ou Excel. L'assistant en deux étapes vous permet de téléverser un fichier, puis de mapper ses colonnes aux champs du form.">
+      
+      
+      
+        <link rel="canonical" href="https://gnucoop.github.io/dino/fr/forms/import/">
+      
+      
+        <link rel="prev" href="../edit-form/">
+      
+      
+        <link rel="next" href="../forms-map/">
+      
+      
+        
+          <link rel="alternate" href="/dino/en/" hreflang="en">
+        
+          <link rel="alternate" href="/dino/it/" hreflang="it">
+        
+          <link rel="alternate" href="/dino/es/" hreflang="es">
+        
+          <link rel="alternate" href="/dino/fr/" hreflang="fr">
+        
+          <link rel="alternate" href="/dino/pt/" hreflang="pt">
+        
+          <link rel="alternate" href="/dino/uk/" hreflang="uk">
+        
+          <link rel="alternate" href="/dino/ar/" hreflang="ar">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Importer des données - Documentation Dinoapp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#importer-des-données" class="md-skip">
+          Aller au contenu
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="En-tête">
+    <a href="../.." title="Documentation Dinoapp" class="md-header__button md-logo" aria-label="Documentation Dinoapp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation Dinoapp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Importer des données
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Sélectionner la langue">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/dino/en/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/it/" hreflang="it" class="md-select__link">
+              Italiano
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/es/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/fr/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/pt/" hreflang="pt" class="md-select__link">
+              Português
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/uk/" hreflang="uk" class="md-select__link">
+              Українська
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/ar/" hreflang="ar" class="md-select__link">
+              العربية
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Rechercher" placeholder="Rechercher" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Recherche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Effacer" aria-label="Effacer" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initialisation de la recherche
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Documentation Dinoapp" class="md-nav__button md-logo" aria-label="Documentation Dinoapp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation Dinoapp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Démarrage
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Démarrage
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/login/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connexion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/reset-password/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Réinitialiser le Mot de Passe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interface et Navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tableau de Bord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formulaires
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Formulaires
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aperçu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-form-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modifier le schéma du formulaire
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-form/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modifier une formulaire
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Importer des données
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Importer des données
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#accéder-à-la-page-dimport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accéder à la page d'import
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#étape-1--téléverser-le-fichier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 1 — Téléverser le fichier
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Étape 1 — Téléverser le fichier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#formatage-du-fichier-dimport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Formatage du fichier d'import
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#étape-2--mapper-les-champs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 2 — Mapper les champs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Étape 2 — Mapper les champs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#actions-de-mappage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actions de mappage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#correspondance-automatique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Correspondance automatique
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#répétition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Répétition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#récapitulatif-de-la-barre-doutils" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Récapitulatif de la barre d'outils
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appliquer-limport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appliquer l'import
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#format-de-fichier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Format de fichier
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Format de fichier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gestion-des-métriques-lors-de-limport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gestion des métriques lors de l'import
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diapositives-répétitives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diapositives répétitives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#erreurs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Erreurs
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../forms-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Carte des formulaires
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datachat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datachat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rapports
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rapports
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aperçu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/edit-report-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modifier le schéma de rapport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/edit-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modifier un rapport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/autoreports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rapport automatique
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/xlsreport/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XLSReport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Métriques
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Métriques
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aperçu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/areas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domaines thématiques
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/locations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Emplacements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/organizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organisations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/projects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aggregation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agrégation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../public-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formulaires Publics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Administration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Administration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/users/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gérer les Utilisateurs et Groupes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/languages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gérer les Langues
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/users-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Liste des Utilisateurs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/groups-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Liste des groupes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#accéder-à-la-page-dimport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accéder à la page d'import
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#étape-1--téléverser-le-fichier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 1 — Téléverser le fichier
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Étape 1 — Téléverser le fichier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#formatage-du-fichier-dimport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Formatage du fichier d'import
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#étape-2--mapper-les-champs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 2 — Mapper les champs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Étape 2 — Mapper les champs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#actions-de-mappage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actions de mappage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#correspondance-automatique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Correspondance automatique
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#répétition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Répétition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#récapitulatif-de-la-barre-doutils" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Récapitulatif de la barre d'outils
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appliquer-limport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appliquer l'import
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#format-de-fichier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Format de fichier
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Format de fichier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gestion-des-métriques-lors-de-limport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gestion des métriques lors de l'import
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diapositives-répétitives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diapositives répétitives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#erreurs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Erreurs
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="importer-des-données">Importer des données</h1>
+<p>La page <strong>Importer des données</strong> vous permet de téléverser en masse des données dans un form schema à partir d'un fichier <code>.xls</code>, <code>.xlsx</code> ou <code>.csv</code>. Un assistant en deux étapes vous guide dans le téléversement du fichier et le mappage des colonnes du fichier aux champs du form.</p>
+<p><img alt="Vue principale de la page Importer des données" src="../../imgs/forms/import.png" /></p>
+<h2 id="accéder-à-la-page-dimport">Accéder à la page d'import</h2>
+<ol>
+<li>Rendez-vous dans la liste <strong>Forms</strong> et sélectionnez un form schema.</li>
+<li>Depuis la vue des données du form, cliquez sur <strong>Importer</strong> (le bouton de la barre d'outils).</li>
+</ol>
+<h2 id="étape-1--téléverser-le-fichier">Étape 1 — Téléverser le fichier</h2>
+<p>La première étape affiche une zone de glisser-déposer ou un sélecteur de fichier.</p>
+<ul>
+<li><strong>Formats acceptés :</strong> <code>.xls</code>, <code>.xlsx</code>, <code>.csv</code></li>
+<li><strong>Taille maximale du fichier :</strong> 20 Mo</li>
+</ul>
+<p>Pour téléverser :</p>
+<ol>
+<li>Glissez un fichier sur la zone en pointillés <strong>ou</strong> cliquez sur <strong>Choisir un fichier</strong> pour parcourir vos dossiers.</li>
+<li>Après la sélection, le nom du fichier apparaît dans une puce accompagnée du nombre de colonnes détectées.</li>
+<li>(Facultatif) Laissez <strong>Réutiliser les métriques existantes portant le même nom</strong> cochée (valeur par défaut) afin que toute métrique du fichier dont le nom correspond à une métrique déjà présente dans le système soit liée à cette métrique existante plutôt que de créer un doublon. Décochez-la pour toujours créer de nouvelles métriques.</li>
+<li>Cliquez sur <strong>Suivant</strong> (ou sur le libellé de l'étape « 2 · Mapper les champs ») pour continuer.</li>
+</ol>
+<h3 id="formatage-du-fichier-dimport">Formatage du fichier d'import</h3>
+<p>Voir la description dans la section <a href="#format-de-fichier">ci-dessous</a></p>
+<div class="admonition tip">
+<p class="admonition-title">Formats de fichier simples</p>
+<p>Dino accepte le même fichier que celui obtenu lors de l'<a href="../#export">export</a>. Ainsi, la façon la plus simple d'obtenir un fichier correctement formaté pour l'import est d'exporter d'abord des données de form du même schema, puis de supprimer les lignes contenant les données exportées, en ne conservant que les en-têtes de colonnes. Dans tous les cas, assurez-vous que vos en-têtes de colonnes sont explicites – ils seront utilisés comme suggestions lors du mappage.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Métriques identifiées par ID</p>
+<p>Si une colonne de métrique de votre fichier fournit l'<strong>ID</strong> (UUID) de la métrique, cette ligne est liée à la métrique existante possédant cet ID et aucune nouvelle métrique n'est créée. L'ID a la priorité sur le nom de la métrique, ce qui se produit donc indépendamment de l'option <strong>Réutiliser les métriques existantes portant le même nom</strong> (qui ne s'applique qu'à la correspondance par nom).</p>
+</div>
+<h2 id="étape-2--mapper-les-champs">Étape 2 — Mapper les champs</h2>
+<p>Après le téléversement, un tableau répertoriant toutes les colonnes de votre fichier s'affiche. Chaque ligne comporte trois colonnes :</p>
+<ul>
+<li><strong>Colonne du fichier</strong> – l'en-tête d'origine de votre fichier.</li>
+<li><strong>Champ du form</strong> – une liste déroulante dans laquelle vous sélectionnez le champ du form correspondant.</li>
+<li><strong>Statut</strong> – indique si la colonne est mappée, ignorée ou en erreur.</li>
+</ul>
+<h3 id="actions-de-mappage">Actions de mappage</h3>
+<ul>
+<li><strong>Sélectionner un champ du form</strong> – ouvrez la liste déroulante d'une colonne et choisissez le champ correct. Vous pouvez effectuer une recherche dans la liste déroulante.</li>
+<li><strong>Ignorer une colonne</strong> – sélectionnez l'option <strong>— Ignorer cette colonne —</strong> dans la liste déroulante, ou cliquez sur le bouton <strong>Ignorer</strong> dans la colonne de statut. Les colonnes ignorées sont grisées.</li>
+<li><strong>Restaurer une colonne ignorée</strong> – cliquez sur le bouton <strong>Restaurer</strong> dans la colonne de statut.</li>
+</ul>
+<h3 id="correspondance-automatique">Correspondance automatique</h3>
+<p>Cliquez sur <strong>Correspondance automatique</strong> pour laisser Dino associer automatiquement les colonnes aux champs du form en fonction de la similarité des noms. C'est un bon point de départ – vérifiez et ajustez les mappages au besoin.</p>
+<div class="admonition tip">
+<p class="admonition-title">La correspondance automatique fonctionne mieux avec des en-têtes qui correspondent exactement aux libellés des champs ou qui contiennent des mots-clés similaires.</p>
+</div>
+<h3 id="répétition">Répétition</h3>
+<p>Si le champ du form sélectionné est un champ répétitif (par exemple, plusieurs numéros de téléphone), une saisie <strong>Répétition</strong> apparaît sous la liste déroulante. Saisissez l'index de répétition (0, 1, 2, …) pour affecter cette colonne du fichier à une occurrence du groupe répétitif.</p>
+<h3 id="récapitulatif-de-la-barre-doutils">Récapitulatif de la barre d'outils</h3>
+<p>En haut de la zone de mappage, vous pouvez voir trois puces :</p>
+<ul>
+<li><strong>Total des colonnes</strong> – nombre de colonnes du fichier.</li>
+<li><strong>Mappées</strong> – colonnes qui ont été affectées à un champ du form.</li>
+<li><strong>Ignorées</strong> – colonnes que vous avez choisi d'ignorer.</li>
+</ul>
+<p>Utilisez la saisie <strong>Rechercher des colonnes</strong> pour filtrer le tableau par nom de colonne du fichier.</p>
+<h2 id="appliquer-limport">Appliquer l'import</h2>
+<p>Lorsque toutes les colonnes souhaitées sont mappées et qu'aucune erreur ne subsiste, le bouton <strong>Appliquer l'import</strong> devient actif. Cliquez dessus pour lancer l'import. Pendant le traitement, un indicateur de chargement s'affiche. Vous pouvez cliquer sur <strong>Retour</strong> pour revenir à l'étape 1 ou annuler l'import.</p>
+<p>Après un import réussi, vous êtes redirigé vers la liste de form du form, où les nouvelles données apparaissent.</p>
+<div class="admonition warning">
+<p class="admonition-title">Mappage en double</p>
+<p>Si vous mappez le même champ du form à plus d'une colonne du fichier, une erreur de validation s'affiche et le bouton <strong>Appliquer l'import</strong> reste inactif jusqu'à correction.</p>
+</div>
+<h2 id="format-de-fichier">Format de fichier</h2>
+<p>Nous décrivons la procédure pour importer des données en masse à l'aide d'un fichier Excel généré depuis Google Sheets. La même procédure s'applique aux fichiers CSV ou en travaillant directement avec Excel.</p>
+<p>Nous supposons que vous souhaitez importer des données dans un form appelé Projects qui comporte 2 diapositives, dont l'une est une diapositive répétitive :</p>
+<p><img alt="Le form Projects, avec deux diapositives dont l'une est une diapositive répétitive" src="../../imgs/forms/import-repeating-slide.png" /></p>
+<p>Le form Projects a été créé à l'aide du XLSForm suivant. La feuille « survey » est</p>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>name</th>
+<th>label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>begin group</strong></td>
+<td><strong>start</strong></td>
+<td><strong>Start</strong></td>
+</tr>
+<tr>
+<td>select_one countries</td>
+<td>country</td>
+<td>Country</td>
+</tr>
+<tr>
+<td>select_multiple countries</td>
+<td>country_other</td>
+<td>Other Countries</td>
+</tr>
+<tr>
+<td>text</td>
+<td>title</td>
+<td>Project Title</td>
+</tr>
+<tr>
+<td>date</td>
+<td>project_date_start</td>
+<td>Start date</td>
+</tr>
+<tr>
+<td>select_one donors</td>
+<td>selected_donor</td>
+<td>Donor</td>
+</tr>
+<tr>
+<td>integer</td>
+<td>budget</td>
+<td>Budget</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>isleader</td>
+<td>Leading applicant</td>
+</tr>
+<tr>
+<td><strong>end group</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>begin repeat</strong></td>
+<td><strong>indicators</strong></td>
+<td><strong>Indicators</strong></td>
+</tr>
+<tr>
+<td>text</td>
+<td>indic</td>
+<td>Indicator description</td>
+</tr>
+<tr>
+<td>integer</td>
+<td>value_indic</td>
+<td>Value reached</td>
+</tr>
+<tr>
+<td><strong>end repeat</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>et la feuille « choices » est</p>
+<table>
+<thead>
+<tr>
+<th>list_name</th>
+<th>name</th>
+<th>label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>donors</td>
+<td>ue</td>
+<td>UE</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>govita</td>
+<td>ITALIAN GOVERNMENT</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>un</td>
+<td>UN</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>pub</td>
+<td>ALTRI DONATORI PUBBLICI</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>la</td>
+<td>ENTI LOCALI</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>priv</td>
+<td>DONATORI PRIVATI</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>other</td>
+<td>Others</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>countries</td>
+<td>AFG</td>
+<td>Afghanistan</td>
+</tr>
+<tr>
+<td>countries</td>
+<td>ALB</td>
+<td>Albania</td>
+</tr>
+<tr>
+<td>countries</td>
+<td>DZA</td>
+<td>Algeria</td>
+</tr>
+<tr>
+<td>countries</td>
+<td>ASM</td>
+<td>American Samoa</td>
+</tr>
+</tbody>
+</table>
+<p>Suivez ces étapes :</p>
+<ol>
+<li>Créez un fichier vide ne contenant qu'une seule feuille (les noms du fichier et de la feuille n'ont pas d'importance).   </li>
+<li>Dans la première ligne, vous devez indiquer les noms des champs du form et des champs du form spécifiques à DINO. Dans cet exemple, les champs du form peuvent être :  </li>
+<li><strong>country</strong>  </li>
+<li><strong>country_other</strong>  </li>
+<li><strong>title</strong>  </li>
+<li><strong>project_date_start</strong>  </li>
+<li><strong>selected_donor</strong>  </li>
+<li><strong>budget</strong>  </li>
+<li><strong>isleader</strong>  </li>
+<li><strong><em>indic</em></strong> (*)  </li>
+<li><strong><em>value_indic</em></strong> (*)</li>
+</ol>
+<p>attention : les champs situés dans des diapositives répétitives doivent être traités différemment (c'est pourquoi nous avons mis un astérisque). Veuillez vous référer à la section spécifique ci-dessous.</p>
+<p>Les champs spécifiques à DINO peuvent être :</p>
+<ol>
+<li><strong>created_at</strong>. La date de création du form. À préciser uniquement si vous souhaitez que vos forms aient une date de création différente de la date d'import ;  </li>
+<li><strong>user_data_ref_id</strong>. L'ID de l'utilisateur qui sera associé au form (par défaut, l'ID de l'utilisateur qui importe les forms) ;  </li>
+<li><strong>area_id</strong>. L'ID de la métrique AREA à associer au form ;  </li>
+<li>[area_name]  </li>
+<li><strong>case_id</strong>. L'ID de la métrique CASE à associer au form ;  </li>
+<li>[case_name]     </li>
+<li><strong>project_id</strong>. L'ID de la métrique PROJECT à associer au form ;  </li>
+<li>[project_name]  </li>
+<li>[project_code]  </li>
+<li><strong>location_id</strong>. L'ID de la métrique LOCATION à associer au form ;  </li>
+<li>[location_name]  </li>
+<li><strong>organization_id</strong>. L'ID de la métrique ORGANISATION à associer au form ;  </li>
+<li>
+<p>[organization_name]</p>
+</li>
+<li>
+<p>chaque ligne correspondra à un nouveau form différent. Ainsi, si nous créons un fichier avec un en-tête + , disons, 5 lignes de données, si le téléversement réussit, nous créerons 5 nouveaux forms dans DINO.   </p>
+</li>
+<li>Il n'est pas nécessaire d'avoir une colonne pour chaque champ du form ; il n'est pas nécessaire de remplir toutes les lignes d'une colonne donnée, mais si un champ est vide pour toutes les lignes, il peut être omis,   </li>
+<li>Les champs de date doivent être formatés AAAA-MM-JJ sous forme de texte (attention).   </li>
+<li>Les champs à choix unique doivent contenir l'une des options acceptées, comme spécifié dans les « choices » (voir le form builder ou le fichier XLSForm).   </li>
+<li>Les champs à choix multiple doivent être formatés selon le modèle suivant : [opt1, opt2] (c'est-à-dire une liste d'options entre crochets).</li>
+</ol>
+<p>Par exemple, un fichier valide pourrait être le suivant :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">country</th>
+<th style="text-align: left;">country_other</th>
+<th style="text-align: left;">title</th>
+<th style="text-align: left;">project_date_start</th>
+<th>budget</th>
+<th style="text-align: left;">isleader</th>
+<th style="text-align: left;">area_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ALB</td>
+<td style="text-align: left;">[AFG,DZA]</td>
+<td style="text-align: left;">Human rights in education</td>
+<td style="text-align: left;">2022-01-28</td>
+<td>120000</td>
+<td style="text-align: left;">true</td>
+<td style="text-align: left;">81387ff7-5c7d-44e7-9dc6-76b8d09265ac</td>
+</tr>
+<tr>
+<td style="text-align: left;">ASM</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">A new approach to social justice</td>
+<td style="text-align: left;">2022-02-14</td>
+<td>20000</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">81387ff7-5c7d-44e7-9dc6-76b8d09265ac</td>
+</tr>
+</tbody>
+</table>
+<p>Dans ce cas, nous importons 2 forms et, pour les deux, nous ne sélectionnons que la métrique AREA. De plus, remarquez que nous ne fournissons pas tous les champs du form pour tous les forms, mais que pour les champs pour lesquels nous fournissons une valeur, nous suivons strictement les indications décrites ci-dessus.</p>
+<h3 id="gestion-des-métriques-lors-de-limport">Gestion des métriques lors de l'import</h3>
+<p>Lors de l'import de données de form, en ce qui concerne les métriques, vous pouvez souhaiter :</p>
+<ul>
+<li>créer de nouvelles métriques pendant l'import  </li>
+<li>réutiliser des métriques déjà créées</li>
+</ul>
+<p>Les règles à suivre pour gérer correctement les métriques sont les suivantes :</p>
+<table>
+<thead>
+<tr>
+<th>MÉTRIQUE</th>
+<th>CRÉATION DEPUIS L'UI</th>
+<th>CRÉATION PAR IMPORT</th>
+<th>CRÉATION + ATTRIBUTION PAR IMPORT</th>
+<th>UTILISATION PAR IMPORT</th>
+<th>CRÉATION + ATTRIBUTION PAR IMPORT (parent)</th>
+<th>UTILISATION COMME PARENT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Case</strong></td>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>id, ou name (avec l'option reuse), ou les deux</td>
+<td>name</td>
+<td>id, ou name (avec l'option reuse), ou les deux</td>
+</tr>
+<tr>
+<td><strong>Organization</strong></td>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>id, ou name (avec l'option reuse), ou les deux</td>
+<td>name</td>
+<td>id, ou name (avec l'option reuse), ou les deux</td>
+</tr>
+<tr>
+<td><strong>Location</strong></td>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>id, ou name (avec l'option reuse), ou les deux</td>
+<td>name</td>
+<td>id, ou name (avec l'option reuse), ou les deux</td>
+</tr>
+<tr>
+<td><strong>Area</strong></td>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>id, ou name (avec l'option reuse), ou les deux</td>
+<td>name</td>
+<td>id, ou name (avec l'option reuse), ou les deux</td>
+</tr>
+<tr>
+<td><strong>Project</strong></td>
+<td>name, code</td>
+<td>name, code</td>
+<td>name, code</td>
+<td>id</td>
+<td>name, code</td>
+<td>id</td>
+</tr>
+</tbody>
+</table>
+<h2 id="diapositives-répétitives">Diapositives répétitives</h2>
+<p>Si vous avez des champs dans des diapositives répétitives, ils doivent être nommés différemment. Chaque champ de la diapositive répétitive doit être nommé \&lt;field_name&gt;__X où X est le numéro de répétition, de 0 (correspondant à une répétition) à N-1, où N est le nombre total de répétitions de la diapositive dans ce form.
+Par exemple, supposons que vous n'ayez qu'une seule répétition de la diapositive répétitive et que vous souhaitiez ajouter les deux champs « Indicator description » et « Value reached ». Vous devrez alors ajouter ces deux colonnes à votre fichier d'import :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">indic__0</th>
+<th>value_indic__0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Number of children</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<p>Ainsi, par exemple, nous pourrions avoir :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">country</th>
+<th>budget</th>
+<th style="text-align: left;">indic__0</th>
+<th>value_indic__0</th>
+<th style="text-align: left;">indic__1</th>
+<th>value_indic__1</th>
+<th style="text-align: left;">isleader</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ALB</td>
+<td>120000</td>
+<td style="text-align: left;">Children</td>
+<td>100</td>
+<td style="text-align: left;"></td>
+<td></td>
+<td style="text-align: left;">true</td>
+</tr>
+<tr>
+<td style="text-align: left;">ASM</td>
+<td>20000</td>
+<td style="text-align: left;"></td>
+<td></td>
+<td style="text-align: left;"></td>
+<td></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">AFG</td>
+<td>15000</td>
+<td style="text-align: left;">Parents</td>
+<td>45</td>
+<td style="text-align: left;">Schools</td>
+<td>34</td>
+<td style="text-align: left;">true</td>
+</tr>
+</tbody>
+</table>
+<h2 id="erreurs">Erreurs</h2>
+<p>Vérifiez les ID de votre fichier avant l'import. Si une colonne fait référence à une entité par son ID (une métrique ou un utilisateur) et qu'aucune entité ne possède cet ID dans Dino, les formulaires importés ne pourront pas être synchronisés avec le serveur.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copi\u00e9 dans le presse-papier", "clipboard.copy": "Copier dans le presse-papier", "search.result.more.one": "1 de plus sur cette page", "search.result.more.other": "# de plus sur cette page", "search.result.none": "Aucun document trouv\u00e9", "search.result.one": "1 document trouv\u00e9", "search.result.other": "# documents trouv\u00e9s", "search.result.placeholder": "Taper pour d\u00e9marrer la recherche", "search.result.term.missing": "Non trouv\u00e9", "select.version": "S\u00e9lectionner la version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

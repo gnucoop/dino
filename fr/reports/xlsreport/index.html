@@ -1,0 +1,2743 @@
+
+<!doctype html>
+<html lang="fr" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Un aperçu du format basé sur Excel utilisé pour créer des rapports dans Dino.">
+      
+      
+      
+        <link rel="canonical" href="https://gnucoop.github.io/dino/fr/reports/xlsreport/">
+      
+      
+        <link rel="prev" href="../autoreports/">
+      
+      
+        <link rel="next" href="../../metrics/">
+      
+      
+        
+          <link rel="alternate" href="/dino/en/" hreflang="en">
+        
+          <link rel="alternate" href="/dino/it/" hreflang="it">
+        
+          <link rel="alternate" href="/dino/es/" hreflang="es">
+        
+          <link rel="alternate" href="/dino/fr/" hreflang="fr">
+        
+          <link rel="alternate" href="/dino/pt/" hreflang="pt">
+        
+          <link rel="alternate" href="/dino/uk/" hreflang="uk">
+        
+          <link rel="alternate" href="/dino/ar/" hreflang="ar">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>XLSReport - Documentation Dinoapp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#le-format-xlsreport" class="md-skip">
+          Aller au contenu
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="En-tête">
+    <a href="../.." title="Documentation Dinoapp" class="md-header__button md-logo" aria-label="Documentation Dinoapp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation Dinoapp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              XLSReport
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Sélectionner la langue">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/dino/en/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/it/" hreflang="it" class="md-select__link">
+              Italiano
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/es/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/fr/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/pt/" hreflang="pt" class="md-select__link">
+              Português
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/uk/" hreflang="uk" class="md-select__link">
+              Українська
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/ar/" hreflang="ar" class="md-select__link">
+              العربية
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Rechercher" placeholder="Rechercher" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Recherche">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Effacer" aria-label="Effacer" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initialisation de la recherche
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Documentation Dinoapp" class="md-nav__button md-logo" aria-label="Documentation Dinoapp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation Dinoapp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Accueil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Démarrage
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Démarrage
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/login/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connexion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/reset-password/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Réinitialiser le Mot de Passe
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interface et Navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tableau de Bord
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formulaires
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Formulaires
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aperçu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/edit-form-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modifier le schéma du formulaire
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/edit-form/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modifier une formulaire
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Importer des données
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/forms-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Carte des formulaires
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/datachat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datachat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rapports
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rapports
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aperçu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-report-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modifier le schéma de rapport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modifier un rapport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../autoreports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rapport automatique
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XLSReport
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XLSReport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quest-ce-que-xlsreport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qu'est-ce que XLSReport
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structure-du-fichier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure du fichier
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Structure du fichier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catégories-de-feuilles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Catégories de feuilles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conventions-de-lignes-à-lintérieur-dune-feuille" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conventions de lignes à l'intérieur d'une feuille
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mise-en-page-globale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mise en page globale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la-solution-de-secours-universelle--js" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La solution de secours universelle : js:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#déclaration-des-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Déclaration des variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Déclaration des variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#colonnes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Colonnes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chargement-des-données-de-formulaire" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chargement des données de formulaire
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#délimiter--filtrer-un-jeu-de-données-une-fois-pour-tous-les-usages-ultérieurs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Délimiter / filtrer un jeu de données une fois, pour tous les usages ultérieurs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-de-prompt-ia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables de prompt IA
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aperçu-du-dsl-de-formules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aperçu du DSL de formules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Aperçu du DSL de formules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntaxe-de-base" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Syntaxe de base
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#types-darguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Types d'arguments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#référence-des-fonctions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Référence des fonctions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#widgets-pris-en-charge-et-leurs-propriétés" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Widgets pris en charge et leurs propriétés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Widgets pris en charge et leurs propriétés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table--tableau-dynamique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        table — tableau dynamique
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        html
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single--carte-kpi--grand-nombre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        single — carte KPI / grand nombre
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#heatmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        heatmap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paginatedlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        paginatedlist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paginateddialoglist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        paginatedDialogList
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filter--global-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        filter / global filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#liste-de-vérification-rapide-pour-construire-un-nouveau-xlsreport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Liste de vérification rapide pour construire un nouveau XLSReport
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Métriques
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Métriques
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aperçu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/areas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domaines thématiques
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/locations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Emplacements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/organizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organisations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/projects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aggregation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agrégation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../public-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Formulaires Publics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Administration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Administration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/users/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gérer les Utilisateurs et Groupes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/languages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gérer les Langues
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/users-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Liste des Utilisateurs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/groups-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Liste des groupes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quest-ce-que-xlsreport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qu'est-ce que XLSReport
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structure-du-fichier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure du fichier
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Structure du fichier">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catégories-de-feuilles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Catégories de feuilles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conventions-de-lignes-à-lintérieur-dune-feuille" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conventions de lignes à l'intérieur d'une feuille
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mise-en-page-globale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mise en page globale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la-solution-de-secours-universelle--js" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La solution de secours universelle : js:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#déclaration-des-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Déclaration des variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Déclaration des variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#colonnes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Colonnes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chargement-des-données-de-formulaire" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chargement des données de formulaire
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#délimiter--filtrer-un-jeu-de-données-une-fois-pour-tous-les-usages-ultérieurs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Délimiter / filtrer un jeu de données une fois, pour tous les usages ultérieurs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-de-prompt-ia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Variables de prompt IA
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aperçu-du-dsl-de-formules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aperçu du DSL de formules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Aperçu du DSL de formules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntaxe-de-base" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Syntaxe de base
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#types-darguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Types d'arguments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#référence-des-fonctions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Référence des fonctions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#widgets-pris-en-charge-et-leurs-propriétés" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Widgets pris en charge et leurs propriétés
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Widgets pris en charge et leurs propriétés">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table--tableau-dynamique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        table — tableau dynamique
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        html
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single--carte-kpi--grand-nombre" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        single — carte KPI / grand nombre
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#heatmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        heatmap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paginatedlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        paginatedlist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paginateddialoglist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        paginatedDialogList
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filter--global-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        filter / global filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#liste-de-vérification-rapide-pour-construire-un-nouveau-xlsreport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Liste de vérification rapide pour construire un nouveau XLSReport
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="le-format-xlsreport">Le format XLSReport</h1>
+<h2 id="quest-ce-que-xlsreport">Qu'est-ce que XLSReport</h2>
+<p>XLSReport est un format de création basé sur un tableur qui permet de construire des <strong>rapports DINO / AJF (Advanced JSON Forms)</strong> sans écrire de JSON ni de code à la main. L'auteur d'un rapport remplit un classeur Excel ordinaire (<code>.xlsx</code>) en suivant un ensemble de conventions, et un convertisseur (<code>xls-report.ts</code>, qui fait partie de la bibliothèque <code>reports</code> d'AJF) analyse ce classeur pour produire un schéma JSON <code>AjfReport</code> que la plateforme DINO peut afficher sous forme de tableau de bord dynamique : tableaux, graphiques, chiffres clés (KPI), images, graphes, cartes de chaleur, etc.</p>
+<p>Deux éléments rendent cela possible :</p>
+<ul>
+<li><strong>La correspondance feuille → widget</strong> — chaque feuille du classeur (à quelques exceptions près) devient un widget du rapport. L'ordre des feuilles dans le classeur correspond à l'ordre dans lequel les widgets sont empilés dans le rapport affiché.</li>
+<li><strong>Un petit DSL de formules</strong> (le « langage d'indicateurs ») — les cellules ne contiennent pas uniquement des valeurs littérales ; la plupart contiennent de courtes expressions (par ex. <code>SUM(D04, $persone, $tipo='corso')</code>) écrites dans un mini-langage compact et restreint à une liste blanche. Ce DSL est analysé par <code>hindikit-parser.ts</code> et traduit en JavaScript, qui est ensuite exécuté sur les données de formulaire sous-jacentes au moment de l'affichage ou de l'actualisation, à l'aide d'une bibliothèque de fonctions intégrées (<code>expression-utils.ts</code>).</li>
+</ul>
+<p>Cela signifie qu'un XLSReport est en réalité composé de deux choses superposées : une <strong>description de mise en page</strong> (quelles feuilles produisent quels widgets, dans quel ordre) et une <strong>description de calcul</strong> (quelles formules calculent les nombres, les tableaux et les jeux de données que ces widgets affichent). Comme les données sous-jacentes proviennent de formulaires DINO (données soumises), toute formule XLSReport lit en fin de compte dans un ou plusieurs jeux de données de formulaire et les met en forme selon ce dont un widget a besoin (un nombre unique, un tableau pour un graphique, ou un ensemble de lignes).</p>
+<p>XLSReport est indépendant de la plateforme et du projet : les mêmes conventions de classeur s'appliquent à n'importe quelle instance DINO et à n'importe quel ensemble de formulaires — rien dans le format n'est spécifique à une organisation ou à un déploiement particulier.</p>
+<h2 id="structure-du-fichier">Structure du fichier</h2>
+<p>Un XLSReport est un unique classeur <code>.xlsx</code>. Le convertisseur parcourt les feuilles du classeur <strong>dans l'ordre</strong> et décide de ce qu'il faut faire de chacune en recherchant une <strong>sous-chaîne de mot-clé dans le nom de la feuille</strong> (et non une correspondance exacte) — par exemple, une feuille nommée <code>table_activities</code> ou <code>2_table</code> est reconnue comme une feuille « table » car le nom <em>contient</em> <code>table</code>.</p>
+<h3 id="catégories-de-feuilles">Catégories de feuilles</h3>
+<table>
+<thead>
+<tr>
+<th>Le nom de la feuille contient</th>
+<th>Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>variables</code> (nom exact)</td>
+<td>Déclare les variables/jeux de données nommés utilisés par les feuilles suivantes. Ne produit pas de widget en soi.</td>
+</tr>
+<tr>
+<td><code>filter</code></td>
+<td>Déclare un formulaire de filtre (de type ODK/XLSForm <code>survey</code> + <code>choices</code>) rattaché à la feuille <em>suivante</em> du classeur. Ne produit pas de widget propre.</td>
+</tr>
+<tr>
+<td><code>filter</code> <strong>et</strong> <code>global</code></td>
+<td>Identique à ci-dessus, mais le filtre obtenu s'applique à l'ensemble du rapport plutôt qu'à un seul widget.</td>
+</tr>
+<tr>
+<td><code>choices</code></td>
+<td>Une feuille complémentaire contenant des listes de choix (<code>list_name</code>, <code>name</code>, <code>label</code>), utilisée conjointement avec les feuilles <code>filter</code>.</td>
+</tr>
+<tr>
+<td><code>table</code></td>
+<td>Un widget <code>DynamicTable</code> ou <code>PaginatedTable</code>.</td>
+</tr>
+<tr>
+<td><code>chart</code></td>
+<td>Un widget <code>Chart</code> (barres, lignes, camembert, etc.).</td>
+</tr>
+<tr>
+<td><code>image</code></td>
+<td>Un widget <code>Image</code>.</td>
+</tr>
+<tr>
+<td><code>html</code></td>
+<td>Un widget <code>Text</code> qui affiche du HTML brut.</td>
+</tr>
+<tr>
+<td><code>graph</code></td>
+<td>Un widget <code>Graph</code> (nœuds/réseau).</td>
+</tr>
+<tr>
+<td><code>heatmap</code></td>
+<td>Un widget <code>HeatMap</code>.</td>
+</tr>
+<tr>
+<td><code>single</code></td>
+<td>Un ou plusieurs widgets <code>Text</code> formant une carte KPI/« grand nombre ».</td>
+</tr>
+<tr>
+<td><code>paginatedlist</code></td>
+<td>Un widget <code>PaginatedList</code> (une ligne = un mini widget tableau).</td>
+</tr>
+<tr>
+<td><code>paginatedDialogList</code></td>
+<td>Un widget <code>PaginatedList</code> dont les lignes ouvrent une boîte de dialogue de détail.</td>
+</tr>
+</tbody>
+</table>
+<p>Les noms de feuilles sont libres par ailleurs — utilisez-les pour rendre le classeur auto-documenté (par ex. <code>table_beneficiaries_by_month</code>, <code>chart_gender_split</code>). Comme la correspondance repose sur une recherche de sous-chaîne, évitez de choisir des noms qui contiennent accidentellement un autre mot-clé (par ex. ne nommez pas une feuille de graphique <code>charttable</code>).</p>
+<h3 id="conventions-de-lignes-à-lintérieur-dune-feuille">Conventions de lignes à l'intérieur d'une feuille</h3>
+<p>Chaque feuille de widget est lue comme une conversion classique de tableur vers JSON : <strong>la ligne 1 contient les en-têtes de colonnes</strong>, et <strong>à partir de la ligne 2 se trouvent les données</strong>, un objet JSON par ligne, indexé par le texte de l'en-tête. Au-delà de cette règle générique, chaque type de feuille définit sa propre signification pour la ligne d'en-tête et la première ou les deux premières lignes de données (documentées par widget dans la section 5).</p>
+<h3 id="mise-en-page-globale">Mise en page globale</h3>
+<p>L'ensemble du classeur est encapsulé dans <strong>une seule mise en page de premier niveau contenant une seule colonne</strong>, et chaque feuille non spéciale contribue à exactement un widget (ou, pour <code>single</code>, plusieurs) ajouté à cette colonne dans l'ordre des feuilles. Autrement dit :</p>
+<ul>
+<li>Le rapport est toujours un <strong>empilement vertical unique de widgets</strong> — il n'existe aucun moyen, au niveau du tableur, de créer des colonnes côte à côte ou des conteneurs imbriqués ; le seul « imbriquement » existant est généré en interne par <code>paginatedlist</code> / <code>paginatedDialogList</code> (chaque ligne est elle-même un petit widget tableau ou une boîte de dialogue).</li>
+<li>Une feuille nommée <code>filter</code> rattache son filtre au widget de la feuille qui la <strong>suit immédiatement</strong> ; une feuille <code>global filter</code> s'attache au conteneur externe du rapport plutôt qu'à un seul widget.</li>
+</ul>
+<h3 id="la-solution-de-secours-universelle--js">La solution de secours universelle : <code>js:</code></h3>
+<p>Toute cellule normalement analysée par le DSL de formules peut à la place commencer par <code>js:</code> — tout ce qui suit ce préfixe est traité comme du <strong>JavaScript brut</strong> et transmis sans analyse. Cela donne accès à toutes les fonctions exportées par la bibliothèque d'utilitaires d'exécution, et pas seulement à celles figurant dans la liste blanche de la grammaire DSL (voir section 4), ainsi qu'à des expressions JS arbitraires (IIFE, utilisation de <code>Set</code>/<code>Map</code>, fonctions d'aide personnalisées en ligne, etc.). Utilisez-le lorsqu'un calcul ne correspond pas à la liste blanche de fonctions du DSL ou aux formes d'arguments attendues.</p>
+<h2 id="déclaration-des-variables">Déclaration des variables</h2>
+<p>La feuille <code>variables</code> est l'endroit où vous chargez les données de formulaire et précalculez tout ce qui sera réutilisé par plusieurs widgets plus loin dans le classeur (jeux de données, filtres, valeurs d'indicateurs, libellés).</p>
+<h3 id="colonnes">Colonnes</h3>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Signification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>L'identifiant de la variable. Doit être un identifiant valide (lettres, chiffres, underscore, ne commençant pas par un chiffre) — les noms invalides sont rejetés.</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>Une expression, analysée via le même DSL de formules que toutes les autres cellules (ou du JavaScript brut préfixé par <code>js:</code>).</td>
+</tr>
+<tr>
+<td><code>isAIPrompt</code> (facultatif)</td>
+<td>Booléen ; marque la variable comme le résultat d'un prompt IA plutôt que d'une formule simple, afin de pouvoir la relire plus tard avec <code>PROMPT_RESULT</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Les lignes dont le <code>name</code> est vide sont ignorées. Les variables sont évaluées de haut en bas, et <strong>chaque variable peut référencer n'importe quelle variable déclarée au-dessus d'elle</strong> par son nom simple (sans préfixe <code>$</code> — ce préfixe est réservé aux <em>champs</em> de formulaire, voir section 4).</p>
+<h3 id="chargement-des-données-de-formulaire">Chargement des données de formulaire</h3>
+<p>Deux accès à l'exécution sont toujours disponibles :</p>
+<ul>
+<li><code>forms['&lt;nom du formulaire&gt;']</code> — le tableau brut des données soumises pour un formulaire DINO donné.</li>
+<li><code>schemas['&lt;nom du formulaire&gt;']</code> — le schéma du formulaire (utilisé pour résoudre la structure des groupes répétés et les libellés de choix).</li>
+</ul>
+<p>La chaîne exacte du nom de formulaire à utiliser est l'identifiant que DINO attribue à ce formulaire — obtenez-le depuis la configuration admin/formulaires de DINO pour votre instance (il correspondra généralement, sans garantie, au nom de fichier xlsform du formulaire ; vérifiez les différences d'espacement, de casse ou d'espace en fin de chaîne).</p>
+<p>Le bloc d'ouverture standard d'une feuille <code>variables</code> charge chaque formulaire dont vous avez besoin et le transforme en jeu de données structuré :</p>
+<div class="highlight"><pre><span></span><code>name  | value
+F01   | forms['my_form_name']
+S01   | schemas['my_form_name']
+D01   | BUILD_DATASET(F01,S01)
+</code></pre></div>
+<p><code>BUILD_DATASET(forms, schema)</code> sépare chaque donnée soumise à plat en champs de premier niveau non répétés, plus un objet <code>reps</code> regroupant les instances de groupes répétés (« repeat »/slide) par leur nom de groupe réel (dérivé du schéma). Sans schéma, il se rabat sur une heuristique générique. À partir de là, <code>D01</code> est le jeu de données que vous filtrez, agrégez et affichez.</p>
+<h3 id="délimiter--filtrer-un-jeu-de-données-une-fois-pour-tous-les-usages-ultérieurs">Délimiter / filtrer un jeu de données une fois, pour tous les usages ultérieurs</h3>
+<p>Un schéma très courant et recommandé consiste à <strong>filtrer un jeu de données et le réaffecter au même nom de variable</strong>, de sorte que chaque formule référençant cette variable à partir de ce point hérite automatiquement du filtre — au lieu de répéter la condition de filtre dans chaque formule :</p>
+<div class="highlight"><pre><span></span><code>name | value
+D01  | FILTER_BY(D01, $status='active')
+</code></pre></div>
+<p>C'est particulièrement important car <strong>les jeux de données de formulaire sont fréquemment partagés entre plusieurs projets, campagnes ou périmètres sur une même instance DINO</strong> — ne présumez jamais qu'un tableau <code>forms['...']</code> est déjà limité aux seules données qui vous intéressent. Si vos formulaires comportent un champ de projet/périmètre (son nom exact dépend de la conception des formulaires de votre instance, par ex. quelque chose comme <code>$project_name</code>), filtrez explicitement chaque jeu de données :</p>
+<div class="highlight"><pre><span></span><code>scope_name = 'MY PROJECT'
+D0X = FILTER_BY(D0X, $project_field = scope_name OR $secondary_project_field = scope_name)
+</code></pre></div>
+<p>Si un jeu de données comporte un groupe répété dont les instances individuelles nécessitent leur propre délimitation (par ex. une répétition « participants » où un même enregistrement collectif peut inclure des participants appartenant à des périmètres différents), filtrez aussi au niveau de chaque instance, généralement via <code>FLATTEN_REPS</code> combiné à <code>FILTER_BY</code> sur le tableau aplati, avant d'extraire les valeurs dont vous avez besoin avec <code>ALL_VALUES_OF</code> (voir section 4 pour ces fonctions). Vérifiez toujours le champ qui contient réellement la valeur d'identification/référence d'une instance répétée — il se peut qu'il ne contienne pas ce que son nom suggère (par exemple, un champ de référence « participant » à l'intérieur d'une répétition peut stocker le <em>nom d'affichage</em> de l'enregistrement lié plutôt que son <em>code/id</em> ; vérifiez avec des données réellement exportées avant de faire une jointure ou une déduplication dessus, et utilisez la même clé des deux côtés de toute comparaison).</p>
+<h3 id="variables-de-prompt-ia">Variables de prompt IA</h3>
+<p>Si <code>isAIPrompt</code> est défini sur une ligne de variable, sa valeur représente le résultat d'un prompt généré par IA plutôt qu'une formule calculée simple. Ailleurs dans le classeur, vous pouvez récupérer ce texte avec <code>PROMPT_RESULT(report_data, '&lt;nom de la variable&gt;')</code> et l'interpoler dans un widget HTML ou à indicateur unique.</p>
+<h2 id="aperçu-du-dsl-de-formules">Aperçu du DSL de formules</h2>
+<p>Chaque cellule non préfixée par <code>js:</code> est analysée par un petit analyseur descendant récursif en une expression JavaScript, puis évaluée par rapport à un contexte de données à l'exécution.</p>
+<h3 id="syntaxe-de-base">Syntaxe de base</h3>
+<table>
+<thead>
+<tr>
+<th>Syntaxe</th>
+<th>Signification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$fieldname</code></td>
+<td>Une référence à un champ de formulaire. Traduit en <code>form.fieldname</code> (<code>form</code> étant l'enregistrement en portée dans cette partie de l'expression).</td>
+</tr>
+<tr>
+<td><code>bareIdentifier</code></td>
+<td>Une référence à un nom de la feuille <code>variables</code>, à un nom de fonction, ou à un mot-clé littéral.</td>
+</tr>
+<tr>
+<td><code>'text'</code> / <code>"text"</code></td>
+<td>Littéral de chaîne de caractères.</td>
+</tr>
+<tr>
+<td><code>123</code>, <code>1.5</code>, <code>1e3</code></td>
+<td>Littéral numérique.</td>
+</tr>
+<tr>
+<td><code>[a, b, c]</code></td>
+<td>Littéral de tableau.</td>
+</tr>
+<tr>
+<td><code>func(arg1, arg2, ...)</code></td>
+<td>Appel de fonction — seuls les noms de fonctions figurant sur la liste blanche sont acceptés (voir ci-dessous) ; tout le reste doit passer par <code>js:</code>.</td>
+</tr>
+<tr>
+<td><code>=</code></td>
+<td>Égalité (compilé en <code>==</code> en JS).</td>
+</tr>
+<tr>
+<td><code>!=</code></td>
+<td>Inégalité.</td>
+</tr>
+<tr>
+<td><code>+ - * /</code> , <code>&lt; &lt;= &gt; &gt;=</code></td>
+<td>Arithmétique / comparaison, même signification qu'en JavaScript.</td>
+</tr>
+<tr>
+<td><code>AND</code> / <code>OR</code></td>
+<td>Et/ou logique (compilés en <code>&amp;&amp;</code> / <code>\|\|</code>).</td>
+</tr>
+<tr>
+<td><code>!expr</code></td>
+<td>Négation logique.</td>
+</tr>
+<tr>
+<td><code>(expr)</code></td>
+<td>Regroupement.</td>
+</tr>
+<tr>
+<td><code>IF(cond, thenExpr, elseExpr)</code></td>
+<td>Conditionnel ternaire — une forme spéciale intégrée, et non une fonction ordinaire.</td>
+</tr>
+</tbody>
+</table>
+<p>Exemple :</p>
+<div class="highlight"><pre><span></span><code>IF($age &gt;= 18 AND $status = 'active', 'adult-active', 'other')
+→ (form.age &gt;= 18 &amp;&amp; form.status == 'active' ? 'adult-active' : 'other')
+</code></pre></div>
+<h3 id="types-darguments">Types d'arguments</h3>
+<p>Parce que le DSL se compile en JavaScript mais doit savoir <em>comment</em> interpréter chaque argument de fonction, chaque fonction de la liste blanche possède une signature d'arguments fixe composée de ces types :</p>
+<ul>
+<li><strong><code>arg</code></strong> — analysé comme une expression normale et transmis tel quel (donc <code>$field</code> devient <code>form.field</code>, c'est-à-dire la <em>valeur</em> du champ).</li>
+<li><strong><code>field</code></strong> — analysé comme une expression ; s'il s'avère être une référence <code>$field</code> simple, il est converti en <strong>chaîne contenant le nom du champ entre guillemets</strong> plutôt qu'en la valeur du champ (par ex. <code>$age</code> → <code>'age'</code>), car la fonction s'attend à savoir <em>sur quel champ</em> opérer, et non à recevoir une valeur.</li>
+<li><strong><code>func(form)</code></strong>, <strong><code>func(elem)</code></strong>, <strong><code>func(elemA, elemB)</code></strong> — analysé comme une expression (généralement une condition booléenne/relationnelle écrite avec <code>$field</code>), puis encapsulé dans une fonction fléchée JS avec le(s) nom(s) de paramètre indiqué(s), par ex. <code>$gender = 'male'</code> en tant qu'argument <code>func(form)</code> devient <code>(form) =&gt; form.gender == 'male'</code>.</li>
+<li>Un <code>?</code> final sur un argument le marque comme <strong>facultatif</strong> — omettez-le, ainsi que tout ce qui suit.</li>
+</ul>
+<p>Connaître le type d'argument vous indique quand écrire <code>$field</code> (pour référencer la valeur actuelle d'un champ) et quand cette même syntaxe <code>$field</code> est silencieusement transformée en chaîne de nom de champ.</p>
+<h3 id="référence-des-fonctions">Référence des fonctions</h3>
+<p><strong>Chargement et mise en forme des jeux de données</strong></p>
+<table>
+<thead>
+<tr>
+<th>Fonction</th>
+<th>Signature (types)</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BUILD_DATASET</code></td>
+<td><code>(arg, arg?)</code></td>
+<td>Sépare les données soumises à plat en champs de premier niveau + <code>reps</code> (instances de groupes répétés), en utilisant le schéma s'il est fourni.</td>
+</tr>
+<tr>
+<td><code>FLATTEN_REPS</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Produit une ligne de sortie par instance d'un groupe répété nommé, en fusionnant les champs de premier niveau du parent avec ceux de cette instance.</td>
+</tr>
+<tr>
+<td><code>FROM_REPS</code></td>
+<td><code>(arg, func(form))</code></td>
+<td>Évalue une expression une fois par instance de groupe répété (sur tous les enregistrements donnés), en collectant les résultats non nuls dans un tableau plat.</td>
+</tr>
+<tr>
+<td><code>APPLY</code></td>
+<td><code>(arg, field, func(form))</code></td>
+<td>Renvoie une copie du jeu de données avec un champ nouveau/dérivé défini sur chaque enregistrement (et ses reps).</td>
+</tr>
+<tr>
+<td><code>APPLY_LABELS</code></td>
+<td><code>(arg, arg, arg)</code></td>
+<td>Remplace les valeurs de choix brutes par leurs libellés lisibles (issus du schéma) pour la liste de noms de champs donnée, sur chaque enregistrement et ses reps.</td>
+</tr>
+<tr>
+<td><code>GET_LABELS</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Recherche autonome : associe un tableau de valeurs de choix brutes à leurs libellés à l'aide d'un schéma.</td>
+</tr>
+<tr>
+<td><code>MAP</code></td>
+<td><code>(arg, func(elem))</code></td>
+<td>Map de tableau classique.</td>
+</tr>
+<tr>
+<td><code>OP</code></td>
+<td><code>(arg, arg, func(elemA, elemB))</code></td>
+<td>Combine deux tableaux index par index, en combinant chaque paire avec une expression binaire.</td>
+</tr>
+<tr>
+<td><code>JOIN_FORMS</code></td>
+<td><code>(arg, arg, field, field?)</code></td>
+<td>Jointure gauche de deux jeux de données en faisant correspondre un champ clé de chaque côté.</td>
+</tr>
+<tr>
+<td><code>JOIN_REPEATING_SLIDES</code></td>
+<td><code>(arg, arg, field, field, field, field?)</code></td>
+<td>Comme <code>JOIN_FORMS</code>, mais joint également les instances de groupes répétés de chaque paire correspondante via une sous-clé.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Filtrage</strong></p>
+<table>
+<thead>
+<tr>
+<th>Fonction</th>
+<th>Signature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FILTER_BY</code></td>
+<td><code>(arg, func(form))</code></td>
+<td>Renvoie une copie filtrée d'un jeu de données ; conserve un enregistrement s'il correspond au niveau supérieur, ou ne conserve que les instances de groupes répétés correspondantes si la correspondance se situe à ce niveau.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Comptage et agrégation</strong></p>
+<table>
+<thead>
+<tr>
+<th>Fonction</th>
+<th>Signature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>COUNT_FORMS</code></td>
+<td><code>(arg, func(form)?)</code></td>
+<td>Compte les enregistrements correspondant à une condition, en comptant chaque enregistrement une seule fois même si la condition correspond à plusieurs de ses instances répétées.</td>
+</tr>
+<tr>
+<td><code>COUNT_REPS</code></td>
+<td><code>(arg, func(form)?)</code></td>
+<td>Compte séparément chaque enregistrement de premier niveau correspondant <em>et</em> chaque instance répétée correspondante — à utiliser pour un « nombre d'occurrences » plutôt qu'un « nombre d'enregistrements ».</td>
+</tr>
+<tr>
+<td><code>SUM</code></td>
+<td><code>(arg, field, func(form)?)</code></td>
+<td>Somme d'un champ numérique sur les enregistrements et les instances répétées, avec un filtre facultatif.</td>
+</tr>
+<tr>
+<td><code>MEAN</code> / <code>MEDIAN</code> / <code>MODE</code> / <code>MIN</code> / <code>MAX</code></td>
+<td><code>(arg, field, func(form)?)</code></td>
+<td>Statistiques d'agrégation classiques avec un filtre facultatif.</td>
+</tr>
+<tr>
+<td><code>ALL_VALUES_OF</code></td>
+<td><code>(arg, field, func(form)?)</code></td>
+<td>Collecte toutes les valeurs prises par un champ sur les enregistrements et les instances répétées correspondant à un filtre facultatif, <strong>dédupliquées</strong>. L'outil standard pour « compter les X distincts » : à envelopper dans <code>LEN(...)</code>.</td>
+</tr>
+<tr>
+<td><code>LEN</code></td>
+<td><code>(arg)</code></td>
+<td>Longueur d'un tableau.</td>
+</tr>
+<tr>
+<td><code>REMOVE_DUPLICATES</code></td>
+<td><code>(arg)</code></td>
+<td>Déduplique un tableau (par identité d'égalité profonde), en préservant l'ordre.</td>
+</tr>
+<tr>
+<td><code>INCLUDES</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Indique si un tableau (ou une chaîne) contient une valeur.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dates</strong></p>
+<table>
+<thead>
+<tr>
+<th>Fonction</th>
+<th>Signature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TODAY</code></td>
+<td><code>()</code></td>
+<td>La date du jour, <code>YYYY-MM-DD</code>.</td>
+</tr>
+<tr>
+<td><code>ADD_DAYS</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Une date plus N jours.</td>
+</tr>
+<tr>
+<td><code>DAYS_DIFF</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Différence en jours entiers entre deux dates.</td>
+</tr>
+<tr>
+<td><code>GET_AGE</code></td>
+<td><code>(arg, arg?)</code></td>
+<td>Âge en années entières à partir d'une date de naissance (et d'une date de référence facultative, par défaut aujourd'hui).</td>
+</tr>
+<tr>
+<td><code>IS_BEFORE</code> / <code>IS_AFTER</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Comparaisons de dates.</td>
+</tr>
+<tr>
+<td><code>IS_WITHIN_INTERVAL</code></td>
+<td><code>(arg, arg, arg)</code></td>
+<td>Vérification d'intervalle de dates inclusif.</td>
+</tr>
+<tr>
+<td><code>COMPARE_DATE</code></td>
+<td><code>(arg, arg, arg, arg?)</code></td>
+<td>Classe une date comme antérieure/dans/Postérieure à un intervalle, avec des libellés personnalisés facultatifs.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Nombres et formatage</strong></p>
+<table>
+<thead>
+<tr>
+<th>Fonction</th>
+<th>Signature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ROUND</code></td>
+<td><code>(arg, arg?)</code></td>
+<td>Arrondit un nombre à N décimales (0 par défaut).</td>
+</tr>
+<tr>
+<td><code>PERCENT</code></td>
+<td><code>(arg, arg)</code></td>
+<td><code>a/b</code> sous forme de chaîne de pourcentage.</td>
+</tr>
+<tr>
+<td><code>PERCENTAGE_CHANGE</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Variation en pourcentage entre une valeur et une valeur de référence.</td>
+</tr>
+<tr>
+<td><code>CHART_TO_DATA</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Combine des tableaux parallèles de libellés/valeurs en un seul objet.</td>
+</tr>
+<tr>
+<td><code>FORMAT_TABLE_ROWS</code> / <code>FORMAT_TABLE_COLS</code> / <code>FORMAT_TABLE_FIELDS</code></td>
+<td>diverses</td>
+<td>Affichent un tableau de lignes/colonnes/enregistrements sous forme de chaîne HTML <code>&lt;table&gt;</code>, utile dans les widgets <code>html</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Sélection</strong></p>
+<table>
+<thead>
+<tr>
+<th>Fonction</th>
+<th>Signature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FIRST</code> / <code>LAST</code></td>
+<td><code>(arg, func(form), field?)</code></td>
+<td>Trouve l'enregistrement le plus ancien/le plus récent selon un champ de date (par défaut un champ standard « créé le ») et évalue une expression sur celui-ci.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>IA / débogage</strong></p>
+<table>
+<thead>
+<tr>
+<th>Fonction</th>
+<th>Signature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PROMPT_RESULT</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Relit le texte produit par une variable <code>isAIPrompt</code>.</td>
+</tr>
+<tr>
+<td><code>CONSOLE_LOG</code></td>
+<td><code>(arg)</code></td>
+<td>Enregistre une valeur dans la console et la renvoie inchangée — pratique pour déboguer une formule en ligne.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Obsolètes (conservées pour la rétrocompatibilité ; préférez l'alternative indiquée)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Fonction</th>
+<th>Préférez plutôt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FILTER_BY_VARS</code></td>
+<td><code>FILTER_BY</code></td>
+</tr>
+<tr>
+<td><code>COUNT_FORMS_UNIQUE</code></td>
+<td><code>LEN(ALL_VALUES_OF(...))</code></td>
+</tr>
+<tr>
+<td><code>ISIN</code></td>
+<td><code>INCLUDES</code></td>
+</tr>
+<tr>
+<td><code>REPEAT</code></td>
+<td><code>MAP</code></td>
+</tr>
+<tr>
+<td><code>EVALUATE</code></td>
+<td><code>IF</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Au-delà de la liste blanche</strong></p>
+<p>Le DSL n'accepte que les fonctions ci-dessus (plus <code>IF</code>). La bibliothèque d'exécution sous-jacente expose des fonctions d'aide supplémentaires (des aides statistiques comme l'écart type, des constructeurs internes de tableaux/jeux de données de widgets utilisés par le convertisseur lui-même, etc.) qui ne sont <strong>pas</strong> accessibles via la syntaxe de formule simple — uniquement via la solution de secours en JavaScript brut <code>js:</code> décrite à la section 2.4.</p>
+<h2 id="widgets-pris-en-charge-et-leurs-propriétés">Widgets pris en charge et leurs propriétés</h2>
+<h3 id="table--tableau-dynamique"><code>table</code> — tableau dynamique</h3>
+<p>Ligne 1 : libellés d'en-têtes de colonnes. Ligne 2 : un court code de style par colonne, <code>[colspan][alignment][sortable]</code> :</p>
+<ul>
+<li>Premier caractère : colspan (un chiffre, généralement <code>1</code>).</li>
+<li>Deuxième caractère : <code>l</code> = gauche, <code>r</code> = droite, tout le reste = centré.</li>
+<li>Troisième caractère : <code>s</code> = colonne triable, omis/tout autre = non triable.</li>
+</ul>
+<p>À partir de la ligne 3, la feuille fonctionne selon l'un de deux modes :</p>
+<p><strong>A. Tableau de liste de formulaires</strong> (lié à un jeu de données) — utilisé lorsqu'une colonne <code>dataset</code> est présente :</p>
+<table>
+<thead>
+<tr>
+<th>Colonne de configuration</th>
+<th>Signification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>(la colonne propre à chaque en-tête)</em></td>
+<td>Le nom du champ à afficher dans cette colonne, extrait de chaque enregistrement du jeu de données.</td>
+</tr>
+<tr>
+<td><code>dataset</code></td>
+<td>Nom de la variable (à valeur de tableau) à parcourir — généralement un jeu de données construit dans <code>variables</code>.</td>
+</tr>
+<tr>
+<td><code>pagination</code></td>
+<td>Vrai → produit un tableau paginé au lieu d'un tableau simple.</td>
+</tr>
+<tr>
+<td><code>dialog_fields</code> / <code>dialog_fields_labels</code></td>
+<td>Noms / libellés de champs supplémentaires, séparés par des virgules, affichés dans une boîte de dialogue de détail « en savoir plus » pour chaque ligne.</td>
+</tr>
+<tr>
+<td><code>link_field</code> / <code>link_position</code></td>
+<td>Champ à utiliser comme URL de lien, et indice de colonne qui doit l'afficher comme lien.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>B. Tableau statique / calculé</strong> (sans colonne <code>dataset</code>) — chaque ligne restante est une ligne de sortie littérale, et chaque cellule est elle-même une formule (ou un littéral, ou une expression <code>js:</code>) ; placez une chaîne littérale entre guillemets pour qu'elle ne soit pas prise pour une référence de variable simple (par ex. <code>"140"</code> pour le texte <code>140</code>, par opposition à <code>my_indicator</code> pour afficher la valeur d'une variable calculée).</p>
+<p>Les cellules d'en-tête sont stylisées en centré, gras, texte blanc sur fond uni ; les cellules du corps alternent automatiquement les couleurs de fond des lignes.</p>
+<h3 id="chart"><code>chart</code></h3>
+<p>Uniquement la ligne 1 (sauf pour Scatter/Bubble, voir ci-dessous). Colonnes d'options reconnues (retirées de la ligne avant que le reste ne soit traité comme séries de données) :</p>
+<p><code>chartType</code>, <code>title</code>, <code>stacked</code>, <code>beginAtZeroX</code>, <code>beginAtZeroY</code>, <code>axisLabelX</code>, <code>axisLabelY</code>, <code>axisMinX</code>, <code>axisMinY</code>, <code>axisMaxX</code>, <code>axisMaxY</code>, <code>removeZeroValues</code>, <code>mainDataNumberThreshold</code>.</p>
+<ul>
+<li><code>chartType</code> doit être l'un de : <code>Line</code>, <code>Bar</code>, <code>HorizontalBar</code>, <code>Radar</code>, <code>Scatter</code>, <code>Doughnut</code>, <code>Pie</code>, <code>PolarArea</code>, <code>Bubble</code>.</li>
+<li><code>labels</code> (facultatif) — une formule produisant le tableau des libellés de catégories/axes.</li>
+<li>Chaque autre en-tête de colonne nomme une série de données ; la valeur de sa cellule est une formule produisant le tableau de nombres de cette série.</li>
+<li>Les graphiques <code>Scatter</code> nécessitent exactement 2 lignes de données (valeurs X, valeurs Y) ; les graphiques <code>Bubble</code> en nécessitent exactement 3 (X, Y, rayon) ; tous les autres types de graphiques nécessitent exactement 1 ligne de données.</li>
+<li>Les couleurs sont attribuées automatiquement à partir d'une palette intégrée (une couleur par série, ou une par point de données pour les graphiques pie/doughnut/polar-area).</li>
+</ul>
+<h3 id="image"><code>image</code></h3>
+<p>Uniquement la ligne 1. Obligatoire : <code>url</code> (une formule produisant l'URL de l'image, ou une chaîne littérale ; préfixez par <code>js:</code> pour une expression JS brute). Facultatif : <code>align</code> (<code>left</code>/<code>center</code>/<code>right</code>), <code>width</code>, <code>height</code> (chaînes de longueur CSS).</p>
+<h3 id="html"><code>html</code></h3>
+<p>Uniquement la ligne 1, une seule colonne <code>html</code>, contenant une chaîne HTML brute (non analysée par le DSL de formules). Prend en charge les marqueurs d'interpolation à double crochets <code>[[expression]]</code>, qui sont évalués et substitués au moment de l'affichage — utilisez-les pour intégrer la valeur d'une variable calculée dans un balisage par ailleurs statique.</p>
+<h3 id="single--carte-kpi--grand-nombre"><code>single</code> — carte KPI / grand nombre</h3>
+<p>Uniquement la ligne 1 :</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Signification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>html</code> (facultatif)</td>
+<td>Un titre affiché au-dessus du nombre.</td>
+</tr>
+<tr>
+<td><code>current_value</code></td>
+<td>Obligatoire. La variable/expression dont la valeur est affichée comme un grand nombre (rendue via <code>[[current_value]]</code>).</td>
+</tr>
+<tr>
+<td><code>percentage_change</code> (facultatif)</td>
+<td>Si présent, ajoute un indicateur de tendance (flèche haut/bas/stable avec couleur) basé sur son signe, affiché sous la forme <code>[[percentage_change]]%</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Comme le même texte de cellule est réutilisé à la fois comme valeur interpolée et comme expression de comparaison brute, <code>current_value</code> / <code>percentage_change</code> devraient généralement être de simples noms de variables définis dans la feuille <code>variables</code>, et non des formules en ligne complètes.</p>
+<h3 id="graph"><code>graph</code></h3>
+<p>Chaque ligne nécessite une colonne <code>id</code> non vide. <strong>Chaque</strong> colonne de chaque ligne (à part <code>id</code>) est analysée comme une formule, produisant un jeu de données de nœuds de graphe par ligne.</p>
+<h3 id="heatmap"><code>heatmap</code></h3>
+<p>Uniquement la ligne 1, toutes les colonnes facultatives avec des valeurs par défaut sensées : <code>values</code> (une chaîne JS brute/formule produisant les données d'intensité — non analysée par le DSL à crochets, doit déjà être valide), <code>idProp</code> (par défaut <code>'id'</code>), <code>features</code> (une chaîne GeoJSON), <code>startColor</code>, <code>endColor</code>, <code>highlightColor</code>, <code>showVisualMap</code>.</p>
+<h3 id="paginatedlist"><code>paginatedlist</code></h3>
+<p>Ligne 1 : un pourcentage numérique de largeur de colonne par colonne. Ligne 2 (ligne de configuration) : nom de champ par colonne, plus <code>dataset</code>, <code>title</code>, <code>pageSize</code> (10 par défaut), <code>link_field</code>/<code>link_position</code>, <code>cellStyles</code>, <code>rowStyle</code> (un littéral d'objet de style brut), <code>backgroundColorA</code>/<code>backgroundColorB</code> (couleurs de lignes alternées). Chaque ligne résultante est rendue comme son propre widget tableau compact plutôt qu'un seul grand tableau.</p>
+<h3 id="paginateddialoglist"><code>paginatedDialogList</code></h3>
+<p>Même configuration que <code>paginatedlist</code>, plus deux lignes supplémentaires (si présentes) : les <strong>libellés</strong> des champs de la boîte de dialogue, puis les <strong>noms</strong> des champs de la boîte de dialogue — cliquer sur une ligne ouvre une fenêtre contextuelle listant ces champs sous forme de paires libellé/valeur.</p>
+<h3 id="filter--global-filter"><code>filter</code> / <code>global filter</code></h3>
+<p>Structurée comme une feuille <code>survey</code> ODK/XLSForm (avec une feuille <code>choices</code> complémentaire dans le même classeur), convertie en un schéma de formulaire et attachée comme contrôle de filtre interactif :</p>
+<ul>
+<li>Une feuille nommée avec <code>filter</code> (mais pas <code>global</code>) s'attache au widget de la feuille immédiatement suivante.</li>
+<li>Une feuille nommée à la fois <code>filter</code> et <code>global</code> s'attache à l'ensemble du rapport plutôt qu'à un seul widget.</li>
+</ul>
+<h2 id="liste-de-vérification-rapide-pour-construire-un-nouveau-xlsreport">Liste de vérification rapide pour construire un nouveau XLSReport</h2>
+<ol>
+<li>Identifiez le(s) formulaire(s) DINO dont vous avez besoin ainsi que leurs noms de formulaire/schémas exacts sur votre instance.</li>
+<li>Commencez une feuille <code>variables</code> : chargez chaque formulaire avec <code>forms[...]</code>/<code>schemas[...]</code>, construisez les jeux de données avec <code>BUILD_DATASET</code>, et appliquez immédiatement tout filtre de projet/périmètre (en réaffectant le même nom de variable).</li>
+<li>Précalculez tout ce qui est réutilisé par plus d'un widget comme sa propre variable nommée.</li>
+<li>Ajoutez une feuille par widget, nommée avec le bon mot-clé, dans l'ordre où vous souhaitez qu'ils apparaissent.</li>
+<li>Préférez la liste blanche du DSL de la section 4.3 ; recourez à <code>js:</code> uniquement lorsqu'un calcul ne s'y prête pas.</li>
+<li>Vérifiez deux fois les noms de champs et les valeurs de choix par rapport au schéma réel/aux données exportées de votre instance, plutôt que de supposer qu'ils correspondent exactement aux noms de champs du xlsform source.</li>
+</ol>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copi\u00e9 dans le presse-papier", "clipboard.copy": "Copier dans le presse-papier", "search.result.more.one": "1 de plus sur cette page", "search.result.more.other": "# de plus sur cette page", "search.result.none": "Aucun document trouv\u00e9", "search.result.one": "1 document trouv\u00e9", "search.result.other": "# documents trouv\u00e9s", "search.result.placeholder": "Taper pour d\u00e9marrer la recherche", "search.result.term.missing": "Non trouv\u00e9", "select.version": "S\u00e9lectionner la version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

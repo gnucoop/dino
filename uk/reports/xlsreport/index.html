@@ -1,0 +1,2743 @@
+
+<!doctype html>
+<html lang="uk" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Огляд формату на основі Excel, який використовується для створення report у Dino.">
+      
+      
+      
+        <link rel="canonical" href="https://gnucoop.github.io/dino/uk/reports/xlsreport/">
+      
+      
+        <link rel="prev" href="../autoreports/">
+      
+      
+        <link rel="next" href="../../metrics/">
+      
+      
+        
+          <link rel="alternate" href="/dino/en/" hreflang="en">
+        
+          <link rel="alternate" href="/dino/it/" hreflang="it">
+        
+          <link rel="alternate" href="/dino/es/" hreflang="es">
+        
+          <link rel="alternate" href="/dino/fr/" hreflang="fr">
+        
+          <link rel="alternate" href="/dino/pt/" hreflang="pt">
+        
+          <link rel="alternate" href="/dino/uk/" hreflang="uk">
+        
+          <link rel="alternate" href="/dino/ar/" hreflang="ar">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Формат XLSReport - Документація Dinoapp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#формат-xlsreport" class="md-skip">
+          Перейти до змісту
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Хедер">
+    <a href="../.." title="Документація Dinoapp" class="md-header__button md-logo" aria-label="Документація Dinoapp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Документація Dinoapp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Формат XLSReport
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Обрати мову">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/dino/en/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/it/" hreflang="it" class="md-select__link">
+              Italiano
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/es/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/fr/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/pt/" hreflang="pt" class="md-select__link">
+              Português
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/uk/" hreflang="uk" class="md-select__link">
+              Українська
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/ar/" hreflang="ar" class="md-select__link">
+              العربية
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Пошук" placeholder="Пошук" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Шукати">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Очистити" aria-label="Очистити" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Пошук розпочато
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Навігація" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Документація Dinoapp" class="md-nav__button md-logo" aria-label="Документація Dinoapp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Документація Dinoapp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Головна
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Початок Роботи
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Початок Роботи
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/login/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Вхід
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/reset-password/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Скидання Пароля
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Інтерфейс та Навігація
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Панель
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Форми
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Форми
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Огляд
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/edit-form-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Редагування схеми форми
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/edit-form/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Редагувати подання форми
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/import/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Імпорт даних
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/forms-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Карта форм
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../forms/datachat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Чат даних
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Звіти
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Звіти
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Огляд
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-report-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Редагувати схему звіту
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Редагувати звіт
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../autoreports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Автоматичний звіт
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XLSReport
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XLSReport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Зміст">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Зміст
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#що-таке-xlsreport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Що таке XLSReport
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#структура-файлу" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Структура файлу
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Структура файлу">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#категорії-аркушів" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Категорії аркушів
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#домовленості-щодо-рядків-усередині-аркуша" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Домовленості щодо рядків усередині аркуша
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#загальний-макет" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Загальний макет
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#універсальний-запасний-вихід-js" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Універсальний запасний вихід: js:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#оголошення-змінних" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Оголошення змінних
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Оголошення змінних">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#стовпці" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Стовпці
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#завантаження-даних-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Завантаження даних form
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#одноразове-обмеження-області--фільтрування-набору-даних-для-подальшого-використання" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Одноразове обмеження області / фільтрування набору даних для подальшого використання
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#змінні-ai-запитів" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Змінні AI-запитів
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#огляд-dsl-формул" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Огляд DSL формул
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Огляд DSL формул">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#основний-синтаксис" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Основний синтаксис
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#види-аргументів" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Види аргументів
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#довідник-функцій" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Довідник функцій
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#підтримувані-віджети-та-їхні-властивості" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Підтримувані віджети та їхні властивості
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Підтримувані віджети та їхні властивості">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table--динамічна-таблиця" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        table — динамічна таблиця
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        html
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single--картка-kpi--великого-числа" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        single — картка KPI / великого числа
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#heatmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        heatmap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paginatedlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        paginatedlist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paginateddialoglist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        paginatedDialogList
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filter--global-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        filter / global filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#швидкий-контрольний-список-для-створення-нового-xlsreport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Швидкий контрольний список для створення нового XLSReport
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Метрики
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Метрики
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Огляд
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/areas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    тематичні області
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Справи
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/locations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Місцезнаходження
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/organizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Організації
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/projects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Проекти
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aggregation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Агрегація
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Сповіщення
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../public-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Публічні Форми
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Адміністрування
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Адміністрування
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/users/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Керування Користувачами та Групами
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/languages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Керування Мовами
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/users-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Список Користувачів
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/groups-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Список груп
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Зміст">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Зміст
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#що-таке-xlsreport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Що таке XLSReport
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#структура-файлу" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Структура файлу
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Структура файлу">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#категорії-аркушів" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Категорії аркушів
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#домовленості-щодо-рядків-усередині-аркуша" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Домовленості щодо рядків усередині аркуша
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#загальний-макет" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Загальний макет
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#універсальний-запасний-вихід-js" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Універсальний запасний вихід: js:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#оголошення-змінних" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Оголошення змінних
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Оголошення змінних">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#стовпці" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Стовпці
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#завантаження-даних-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Завантаження даних form
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#одноразове-обмеження-області--фільтрування-набору-даних-для-подальшого-використання" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Одноразове обмеження області / фільтрування набору даних для подальшого використання
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#змінні-ai-запитів" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Змінні AI-запитів
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#огляд-dsl-формул" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Огляд DSL формул
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Огляд DSL формул">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#основний-синтаксис" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Основний синтаксис
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#види-аргументів" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Види аргументів
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#довідник-функцій" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Довідник функцій
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#підтримувані-віджети-та-їхні-властивості" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Підтримувані віджети та їхні властивості
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Підтримувані віджети та їхні властивості">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table--динамічна-таблиця" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        table — динамічна таблиця
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#html" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        html
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single--картка-kpi--великого-числа" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        single — картка KPI / великого числа
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#heatmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        heatmap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paginatedlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        paginatedlist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paginateddialoglist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        paginatedDialogList
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filter--global-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        filter / global filter
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#швидкий-контрольний-список-для-створення-нового-xlsreport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Швидкий контрольний список для створення нового XLSReport
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="формат-xlsreport">Формат XLSReport</h1>
+<h2 id="що-таке-xlsreport">Що таке XLSReport</h2>
+<p>XLSReport — це формат авторингу на основі електронних таблиць для побудови <strong>report DINO / AJF (Advanced JSON Forms)</strong> без написання JSON чи коду вручну. Автор report заповнює звичайну книгу Excel (<code>.xlsx</code>) згідно з набором домовленостей, а конвертер (<code>xls-report.ts</code>, частина бібліотеки <code>reports</code> AJF) розбирає цю книгу в JSON-схему <code>AjfReport</code>, яку платформа DINO може відобразити як живий дашборд: таблиці, діаграми, числа KPI, зображення, графіки, теплові карти тощо.</p>
+<p>Це стає можливим завдяки двом речам:</p>
+<ul>
+<li><strong>Відображення аркушів на віджети</strong> — кожен аркуш у книзі (за кількома особливими винятками) стає одним віджетом report. Порядок аркушів у книзі — це порядок, у якому віджети розташовуються в готовому report.</li>
+<li><strong>Невелика DSL формул</strong> ("мова індикаторів") — клітинки містять не лише буквальні значення; більшість із них містять короткі вирази (наприклад, <code>SUM(D04, $persone, $tipo='corso')</code>), написані компактною мінімовою з білим списком. Цю DSL розбирає <code>hindikit-parser.ts</code> і перекладає в JavaScript, який потім виконується над базовими даними form під час рендерингу/оновлення за допомогою бібліотеки вбудованих функцій (<code>expression-utils.ts</code>).</li>
+</ul>
+<p>Це означає, що XLSReport насправді складається з двох накладених одна на одну речей: <strong>опису макета</strong> (які аркуші створюють які віджети, у якому порядку) та <strong>опису обчислень</strong> (які формули обчислюють числа, масиви й набори даних, що відображаються цими віджетами). Оскільки базові дані походять з form DINO (даних), будь-яка формула XLSReport зрештою читає з одного або кількох наборів даних form і перетворює їх на те, що потрібно віджету (одне число, масив для діаграми або таблиця рядків).</p>
+<p>XLSReport не залежить від платформи чи проєкту: ті самі домовленості книги застосовуються до будь-якого примірника DINO та будь-якого набору form — ніщо у форматі не є специфічним для конкретної організації чи розгортання.</p>
+<h2 id="структура-файлу">Структура файлу</h2>
+<p>XLSReport — це одна книга <code>.xlsx</code>. Конвертер перебирає аркуші книги <strong>по порядку</strong> й вирішує, що робити з кожним, шукаючи <strong>підрядок-ключове слово в назві аркуша</strong> (а не точний збіг) — наприклад, аркуш із назвою <code>table_activities</code> або <code>2_table</code> обидва розпізнаються як аркуш "table", бо назва <em>містить</em> <code>table</code>.</p>
+<h3 id="категорії-аркушів">Категорії аркушів</h3>
+<table>
+<thead>
+<tr>
+<th>Назва аркуша містить</th>
+<th>Роль</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>variables</code> (точна назва)</td>
+<td>Оголошує іменовані змінні/набори даних, які використовуються наступними аркушами. Сам по собі віджет не створює.</td>
+</tr>
+<tr>
+<td><code>filter</code></td>
+<td>Оголошує form-фільтр (у стилі ODK/XLSForm <code>survey</code> + <code>choices</code>), прикріплений до <em>наступного</em> аркуша в книзі. Сам по собі віджет не створює.</td>
+</tr>
+<tr>
+<td><code>filter</code> <strong>і</strong> <code>global</code></td>
+<td>Те саме, що вище, але отриманий фільтр застосовується до всього report, а не до одного віджета.</td>
+</tr>
+<tr>
+<td><code>choices</code></td>
+<td>Допоміжний аркуш зі списками вибору (<code>list_name</code>, <code>name</code>, <code>label</code>), який використовується разом з аркушами <code>filter</code>.</td>
+</tr>
+<tr>
+<td><code>table</code></td>
+<td>Віджет <code>DynamicTable</code> або <code>PaginatedTable</code>.</td>
+</tr>
+<tr>
+<td><code>chart</code></td>
+<td>Віджет <code>Chart</code> (стовпчикова, лінійна, кругова тощо).</td>
+</tr>
+<tr>
+<td><code>image</code></td>
+<td>Віджет <code>Image</code>.</td>
+</tr>
+<tr>
+<td><code>html</code></td>
+<td>Віджет <code>Text</code>, який відображає необроблений HTML.</td>
+</tr>
+<tr>
+<td><code>graph</code></td>
+<td>Віджет <code>Graph</code> (вузли/мережа).</td>
+</tr>
+<tr>
+<td><code>heatmap</code></td>
+<td>Віджет <code>HeatMap</code>.</td>
+</tr>
+<tr>
+<td><code>single</code></td>
+<td>Один або кілька віджетів <code>Text</code>, що утворюють картку KPI/"великого числа".</td>
+</tr>
+<tr>
+<td><code>paginatedlist</code></td>
+<td>Віджет <code>PaginatedList</code> (один рядок = міні-віджет таблиці).</td>
+</tr>
+<tr>
+<td><code>paginatedDialogList</code></td>
+<td>Віджет <code>PaginatedList</code>, рядки якого відкривають діалог з деталями.</td>
+</tr>
+</tbody>
+</table>
+<p>Назви аркушів в іншому довільні — використовуйте їх, щоб книга сама себе документувала (наприклад, <code>table_beneficiaries_by_month</code>, <code>chart_gender_split</code>). Оскільки зіставлення є перевіркою на підрядок, уникайте назв, які випадково містять інше ключове слово (наприклад, не називайте аркуш діаграми <code>charttable</code>).</p>
+<h3 id="домовленості-щодо-рядків-усередині-аркуша">Домовленості щодо рядків усередині аркуша</h3>
+<p>Кожен аркуш віджета читається як звичайне перетворення електронної таблиці в JSON: <strong>рядок 1 містить заголовки стовпців</strong>, а <strong>рядок 2 і далі містять дані</strong>, по одному JSON-об'єкту на рядок із ключами за текстом заголовка. Крім цього загального правила, кожен тип аркуша визначає власне значення для рядка заголовків і першого чи двох рядків даних (описано для кожного віджета в розділі 5).</p>
+<h3 id="загальний-макет">Загальний макет</h3>
+<p>Уся книга загортається в <strong>один макет верхнього рівня, що містить один стовпець</strong>, і кожен неособливий аркуш додає рівно один віджет (або, для <code>single</code>, кілька), приєднаних до цього стовпця в порядку аркушів. Інакше кажучи:</p>
+<ul>
+<li>Report завжди є <strong>єдиним вертикальним стеком віджетів</strong> — немає жодного способу на рівні таблиці створити стовпці пліч-о-пліч чи вкладені контейнери; єдине "вкладення", яке існує, генерується внутрішньо за допомогою <code>paginatedlist</code> / <code>paginatedDialogList</code> (кожен рядок сам по собі є невеликою таблицею або віджетом-діалогом).</li>
+<li>Аркуш із назвою, що містить <code>filter</code>, прикріплює свій фільтр до того аркуша віджета, який <strong>безпосередньо за ним іде</strong>; аркуш <code>global filter</code> прикріплюється до зовнішнього контейнера report, а не до одного віджета.</li>
+</ul>
+<h3 id="універсальний-запасний-вихід-js">Універсальний запасний вихід: <code>js:</code></h3>
+<p>Будь-яка клітинка, яка зазвичай розбирається через DSL формул, може натомість починатися з <code>js:</code> — усе після цього префікса вважається <strong>необробленим JavaScript</strong> і передається без розбору. Це дає доступ до кожної функції, експортованої бібліотекою утиліт середовища виконання, а не лише до тих, що внесені до білого списку граматики DSL (див. розділ 4), та до довільних JS-виразів (IIFE, використання <code>Set</code>/<code>Map</code>, власні вбудовані допоміжні функції тощо). Використовуйте це, коли обчислення не відповідає білому списку функцій DSL або формам аргументів.</p>
+<h2 id="оголошення-змінних">Оголошення змінних</h2>
+<p>Аркуш <code>variables</code> — це місце, де ви завантажуєте дані form і попередньо обчислюєте все, що пізніше використовується кількома віджетами в книзі (набори даних, фільтри, значення індикаторів, мітки).</p>
+<h3 id="стовпці">Стовпці</h3>
+<table>
+<thead>
+<tr>
+<th>Стовпець</th>
+<th>Значення</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>Ідентифікатор змінної. Має бути дійсним ідентифікатором (літери, цифри, підкреслення, не починатися з цифри) — недійсні назви відхиляються.</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>Вираз, що розбирається тією ж DSL формул, що й будь-яка інша клітинка (або необроблений JavaScript з префіксом <code>js:</code>).</td>
+</tr>
+<tr>
+<td><code>isAIPrompt</code> (необов'язково)</td>
+<td>Булеве значення; позначає змінну як результат AI-запиту, а не як звичайну формулу, щоб пізніше її можна було прочитати за допомогою <code>PROMPT_RESULT</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Рядки з порожнім <code>name</code> пропускаються. Змінні обчислюються згори донизу, і <strong>кожна змінна може посилатися на будь-яку змінну, оголошену вище неї</strong>, за її голим іменем (без префікса <code>$</code> — цей префікс зарезервовано для <em>полів</em> form, див. розділ 4).</p>
+<h3 id="завантаження-даних-form">Завантаження даних form</h3>
+<p>Два пошуки в середовищі виконання завжди доступні:</p>
+<ul>
+<li><code>forms['&lt;назва form&gt;']</code> — необроблений масив даних для даної form DINO.</li>
+<li><code>schemas['&lt;назва form&gt;']</code> — схема form (використовується для визначення структури повторюваних груп і міток вибору).</li>
+</ul>
+<p>Точний рядок назви form, який слід використовувати, — це ідентифікатор, який DINO присвоює цій form; отримайте його з конфігурації адміністрування/form вашого примірника DINO (зазвичай він збігається, але не гарантовано точно збігається, з іменем файлу xlsform цієї form; перевірте на відмінності в пробілах/регістрі/кінцевих пробілах).</p>
+<p>Стандартний початковий блок аркуша <code>variables</code> завантажує кожну потрібну вам form і перетворює її на структурований набір даних:</p>
+<div class="highlight"><pre><span></span><code>name  | value
+F01   | forms['my_form_name']
+S01   | schemas['my_form_name']
+D01   | BUILD_DATASET(F01,S01)
+</code></pre></div>
+<p><code>BUILD_DATASET(forms, schema)</code> розбиває кожні плоскі дані на неповторювані поля верхнього рівня плюс об'єкт <code>reps</code>, який групує екземпляри повторюваної групи ("repeat"/slide) за їхньою справжньою назвою групи (виведеною зі схеми). Без схеми він вдається до загальної евристики. З цього моменту <code>D01</code> — це набір даних, який ви фільтруєте, агрегуєте й відображаєте.</p>
+<h3 id="одноразове-обмеження-області--фільтрування-набору-даних-для-подальшого-використання">Одноразове обмеження області / фільтрування набору даних для подальшого використання</h3>
+<p>Дуже поширений і рекомендований шаблон — це <strong>відфільтрувати набір даних і перепризначити його тій самій назві змінної</strong>, щоб кожна формула, яка посилається на цю змінну з цього моменту, автоматично успадковувала фільтр — замість повторення умови фільтра в кожній окремій формулі:</p>
+<div class="highlight"><pre><span></span><code>name | value
+D01  | FILTER_BY(D01, $status='active')
+</code></pre></div>
+<p>Це особливо важливо, тому що <strong>набори даних form часто спільні для більш ніж одного проєкту, кампанії чи області на тому самому примірнику DINO</strong> — ніколи не припускайте, що масив <code>forms['...']</code> вже обмежено лише тими даними, які вас цікавлять. Якщо ваші form мають поле проєкту/області (його точна назва залежить від дизайну form вашого примірника, наприклад щось на кшталт <code>$project_name</code>), фільтруйте кожен набір даних явно:</p>
+<div class="highlight"><pre><span></span><code>scope_name = 'MY PROJECT'
+D0X = FILTER_BY(D0X, $project_field = scope_name OR $secondary_project_field = scope_name)
+</code></pre></div>
+<p>Якщо набір даних має повторювану групу, окремі екземпляри якої потребують власного обмеження області (наприклад, repeat "учасники", де один колективний запис може містити учасників, що належать до різних областей), фільтруйте також на рівні окремого екземпляра, зазвичай за допомогою <code>FLATTEN_REPS</code> у поєднанні з <code>FILTER_BY</code> над розгорнутим масивом, перш ніж видобувати потрібні вам значення за допомогою <code>ALL_VALUES_OF</code> (див. розділ 4 щодо цих функцій). Завжди перевіряйте поле, яке насправді містить ідентифікаційне/референсне значення екземпляра повторюваної групи — воно може містити не те, що підказує його назва (наприклад, поле-посилання на "учасника" всередині repeat може зберігати <em>відображувану назву</em> пов'язаного запису, а не його <em>код/id</em>; перевірте на реальних експортованих даних, перш ніж з'єднувати/дедуплікувати за ним, і використовуйте той самий ключ з обох боків будь-якого порівняння).</p>
+<h3 id="змінні-ai-запитів">Змінні AI-запитів</h3>
+<p>Якщо на рядку змінної встановлено <code>isAIPrompt</code>, її значення представляє результат AI-згенерованого запиту, а не звичайну обчислену формулу. В іншому місці книги ви можете отримати цей текст за допомогою <code>PROMPT_RESULT(report_data, '&lt;назва змінної&gt;')</code> та інтерполювати його в HTML-віджет або віджет одного індикатора.</p>
+<h2 id="огляд-dsl-формул">Огляд DSL формул</h2>
+<p>Кожна клітинка без <code>js:</code> розбирається невеликим рекурсивним низхідним парсером у JavaScript-вираз, а потім обчислюється в контексті даних під час виконання.</p>
+<h3 id="основний-синтаксис">Основний синтаксис</h3>
+<table>
+<thead>
+<tr>
+<th>Синтаксис</th>
+<th>Значення</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$fieldname</code></td>
+<td>Посилання на поле form. Перекладається в <code>form.fieldname</code> (<code>form</code> — це той запис, який перебуває в області видимості в цій частині виразу).</td>
+</tr>
+<tr>
+<td><code>bareIdentifier</code></td>
+<td>Посилання на назву з аркуша <code>variables</code>, назву функції або буквальне ключове слово.</td>
+</tr>
+<tr>
+<td><code>'text'</code> / <code>"text"</code></td>
+<td>Рядковий літерал.</td>
+</tr>
+<tr>
+<td><code>123</code>, <code>1.5</code>, <code>1e3</code></td>
+<td>Числовий літерал.</td>
+</tr>
+<tr>
+<td><code>[a, b, c]</code></td>
+<td>Літерал масиву.</td>
+</tr>
+<tr>
+<td><code>func(arg1, arg2, ...)</code></td>
+<td>Виклик функції — приймаються лише назви функцій із білого списку (див. нижче); усе інше має проходити через <code>js:</code>.</td>
+</tr>
+<tr>
+<td><code>=</code></td>
+<td>Рівність (компілюється в JS <code>==</code>).</td>
+</tr>
+<tr>
+<td><code>!=</code></td>
+<td>Нерівність.</td>
+</tr>
+<tr>
+<td><code>+ - * /</code> , <code>&lt; &lt;= &gt; &gt;=</code></td>
+<td>Арифметика / порівняння, те саме значення, що й у JavaScript.</td>
+</tr>
+<tr>
+<td><code>AND</code> / <code>OR</code></td>
+<td>Логічне і/або (компілюється в <code>&amp;&amp;</code> / <code>\|\|</code>).</td>
+</tr>
+<tr>
+<td><code>!expr</code></td>
+<td>Логічне заперечення.</td>
+</tr>
+<tr>
+<td><code>(expr)</code></td>
+<td>Групування.</td>
+</tr>
+<tr>
+<td><code>IF(cond, thenExpr, elseExpr)</code></td>
+<td>Тернарна умова — вбудована особлива форма, а не звичайна функція.</td>
+</tr>
+</tbody>
+</table>
+<p>Приклад:</p>
+<div class="highlight"><pre><span></span><code>IF($age &gt;= 18 AND $status = 'active', 'adult-active', 'other')
+→ (form.age &gt;= 18 &amp;&amp; form.status == 'active' ? 'adult-active' : 'other')
+</code></pre></div>
+<h3 id="види-аргументів">Види аргументів</h3>
+<p>Оскільки DSL компілюється в JavaScript, але мусить знати, <em>як</em> інтерпретувати кожен аргумент функції, кожна функція з білого списку має фіксовану сигнатуру аргументів, складену з цих видів:</p>
+<ul>
+<li><strong><code>arg</code></strong> — розбирається як звичайний вираз і передається як є (тож <code>$field</code> стає <code>form.field</code>, тобто <em>значенням</em> поля).</li>
+<li><strong><code>field</code></strong> — розбирається як вираз; якщо виявляється голим посиланням <code>$field</code>, воно перетворюється на <strong>рядок із назвою поля в лапках</strong>, а не на значення поля (наприклад, <code>$age</code> → <code>'age'</code>), бо функція очікує знати, <em>над яким полем</em> працювати, а не значення.</li>
+<li><strong><code>func(form)</code></strong>, <strong><code>func(elem)</code></strong>, <strong><code>func(elemA, elemB)</code></strong> — розбирається як вираз (зазвичай булева/реляційна умова, написана з <code>$field</code>), а потім обгортається в JS-стрілкову функцію із зазначеними іменами параметрів, наприклад <code>$gender = 'male'</code> як аргумент <code>func(form)</code> стає <code>(form) =&gt; form.gender == 'male'</code>.</li>
+<li>Завершальний <code>?</code> на аргументі позначає його як <strong>необов'язковий</strong> — опустіть його й усе після нього.</li>
+</ul>
+<p>Знання виду аргументу підказує, коли писати <code>$field</code> (щоб посилатися на поточне значення поля), а коли той самий синтаксис <code>$field</code> непомітно перетворюється на рядок із назвою поля.</p>
+<h3 id="довідник-функцій">Довідник функцій</h3>
+<p><strong>Завантаження й формування наборів даних</strong></p>
+<table>
+<thead>
+<tr>
+<th>Функція</th>
+<th>Сигнатура (види)</th>
+<th>Опис</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BUILD_DATASET</code></td>
+<td><code>(arg, arg?)</code></td>
+<td>Розбиває плоскі дані на поля верхнього рівня + <code>reps</code> (екземпляри повторюваних груп), використовуючи схему, якщо вона надана.</td>
+</tr>
+<tr>
+<td><code>FLATTEN_REPS</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Створює один вихідний рядок на кожен екземпляр названої повторюваної групи, об'єднуючи поля верхнього рівня батьківського запису з полями цього екземпляра.</td>
+</tr>
+<tr>
+<td><code>FROM_REPS</code></td>
+<td><code>(arg, func(form))</code></td>
+<td>Обчислює вираз один раз на кожен екземпляр повторюваної групи (по всіх заданих записах), збираючи непорожні результати в плоский масив.</td>
+</tr>
+<tr>
+<td><code>APPLY</code></td>
+<td><code>(arg, field, func(form))</code></td>
+<td>Повертає копію набору даних із новим/похідним полем, встановленим для кожного запису (та його reps).</td>
+</tr>
+<tr>
+<td><code>APPLY_LABELS</code></td>
+<td><code>(arg, arg, arg)</code></td>
+<td>Замінює необроблені значення вибору на їхні зрозумілі для людини мітки (зі схеми) для заданого списку назв полів, на кожному записі та його reps.</td>
+</tr>
+<tr>
+<td><code>GET_LABELS</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Окремий пошук: зіставляє масив необроблених значень вибору з їхніми мітками за допомогою схеми.</td>
+</tr>
+<tr>
+<td><code>MAP</code></td>
+<td><code>(arg, func(elem))</code></td>
+<td>Звичайний map для масиву.</td>
+</tr>
+<tr>
+<td><code>OP</code></td>
+<td><code>(arg, arg, func(elemA, elemB))</code></td>
+<td>Зіставляє два масиви індекс за індексом, комбінуючи кожну пару бінарним виразом.</td>
+</tr>
+<tr>
+<td><code>JOIN_FORMS</code></td>
+<td><code>(arg, arg, field, field?)</code></td>
+<td>Ліве з'єднання двох наборів даних за зіставленням ключового поля з кожного боку.</td>
+</tr>
+<tr>
+<td><code>JOIN_REPEATING_SLIDES</code></td>
+<td><code>(arg, arg, field, field, field, field?)</code></td>
+<td>Як <code>JOIN_FORMS</code>, але також з'єднує екземпляри повторюваних груп кожної зіставленої пари за підключем.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Фільтрування</strong></p>
+<table>
+<thead>
+<tr>
+<th>Функція</th>
+<th>Сигнатура</th>
+<th>Опис</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FILTER_BY</code></td>
+<td><code>(arg, func(form))</code></td>
+<td>Повертає відфільтровану копію набору даних; зберігає запис, якщо він збігається на верхньому рівні, або зберігає лише відповідні екземпляри повторюваної групи, якщо збіг на цьому рівні.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Підрахунок і агрегація</strong></p>
+<table>
+<thead>
+<tr>
+<th>Функція</th>
+<th>Сигнатура</th>
+<th>Опис</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>COUNT_FORMS</code></td>
+<td><code>(arg, func(form)?)</code></td>
+<td>Підраховує записи, що відповідають умові, рахуючи кожен запис один раз, навіть якщо умова збігається з більш ніж одним із його екземплярів повторюваної групи.</td>
+</tr>
+<tr>
+<td><code>COUNT_REPS</code></td>
+<td><code>(arg, func(form)?)</code></td>
+<td>Підраховує кожен відповідний запис верхнього рівня <em>і</em> кожен відповідний екземпляр повторюваної групи окремо — використовуйте для "кількості входжень", а не "кількості записів".</td>
+</tr>
+<tr>
+<td><code>SUM</code></td>
+<td><code>(arg, field, func(form)?)</code></td>
+<td>Сума числового поля по записах і екземплярах повторюваної групи з необов'язковим фільтром.</td>
+</tr>
+<tr>
+<td><code>MEAN</code> / <code>MEDIAN</code> / <code>MODE</code> / <code>MIN</code> / <code>MAX</code></td>
+<td><code>(arg, field, func(form)?)</code></td>
+<td>Стандартні агрегатні статистики з необов'язковим фільтром.</td>
+</tr>
+<tr>
+<td><code>ALL_VALUES_OF</code></td>
+<td><code>(arg, field, func(form)?)</code></td>
+<td>Збирає кожне значення, яке набуває поле, по записах і екземплярах повторюваної групи, що відповідають необов'язковому фільтру, <strong>з дедуплікацією</strong>. Стандартний інструмент для "кількості унікальних X": обгорніть у <code>LEN(...)</code>.</td>
+</tr>
+<tr>
+<td><code>LEN</code></td>
+<td><code>(arg)</code></td>
+<td>Довжина масиву.</td>
+</tr>
+<tr>
+<td><code>REMOVE_DUPLICATES</code></td>
+<td><code>(arg)</code></td>
+<td>Дедуплікує масив (за ідентичністю глибокої рівності), зберігаючи порядок.</td>
+</tr>
+<tr>
+<td><code>INCLUDES</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Чи містить масив (або рядок) значення.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Дати</strong></p>
+<table>
+<thead>
+<tr>
+<th>Функція</th>
+<th>Сигнатура</th>
+<th>Опис</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TODAY</code></td>
+<td><code>()</code></td>
+<td>Сьогоднішня дата, <code>YYYY-MM-DD</code>.</td>
+</tr>
+<tr>
+<td><code>ADD_DAYS</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Дата плюс N днів.</td>
+</tr>
+<tr>
+<td><code>DAYS_DIFF</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Різниця в цілих днях між двома датами.</td>
+</tr>
+<tr>
+<td><code>GET_AGE</code></td>
+<td><code>(arg, arg?)</code></td>
+<td>Вік у повних роках за датою народження (і необов'язковою датою, станом на яку, за замовчуванням сьогодні).</td>
+</tr>
+<tr>
+<td><code>IS_BEFORE</code> / <code>IS_AFTER</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Порівняння дат.</td>
+</tr>
+<tr>
+<td><code>IS_WITHIN_INTERVAL</code></td>
+<td><code>(arg, arg, arg)</code></td>
+<td>Перевірка діапазону дат включно.</td>
+</tr>
+<tr>
+<td><code>COMPARE_DATE</code></td>
+<td><code>(arg, arg, arg, arg?)</code></td>
+<td>Групує дату як до/у межах/після діапазону, з необов'язковими власними мітками.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Числа й форматування</strong></p>
+<table>
+<thead>
+<tr>
+<th>Функція</th>
+<th>Сигнатура</th>
+<th>Опис</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ROUND</code></td>
+<td><code>(arg, arg?)</code></td>
+<td>Округлює число до N знаків після коми (за замовчуванням 0).</td>
+</tr>
+<tr>
+<td><code>PERCENT</code></td>
+<td><code>(arg, arg)</code></td>
+<td><code>a/b</code> як рядок із відсотком.</td>
+</tr>
+<tr>
+<td><code>PERCENTAGE_CHANGE</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Відсоткова зміна між значенням і базовим значенням.</td>
+</tr>
+<tr>
+<td><code>CHART_TO_DATA</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Зіставляє паралельні масиви міток/значень в один об'єкт.</td>
+</tr>
+<tr>
+<td><code>FORMAT_TABLE_ROWS</code> / <code>FORMAT_TABLE_COLS</code> / <code>FORMAT_TABLE_FIELDS</code></td>
+<td>різні</td>
+<td>Відображає масив рядків/стовпців/записів як рядок HTML <code>&lt;table&gt;</code>, корисно всередині віджетів <code>html</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Вибір</strong></p>
+<table>
+<thead>
+<tr>
+<th>Функція</th>
+<th>Сигнатура</th>
+<th>Опис</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FIRST</code> / <code>LAST</code></td>
+<td><code>(arg, func(form), field?)</code></td>
+<td>Знаходить найраніший/найпізніший запис за полем дати (за замовчуванням стандартне поле "created at") і обчислює вираз над ним.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>AI / налагодження</strong></p>
+<table>
+<thead>
+<tr>
+<th>Функція</th>
+<th>Сигнатура</th>
+<th>Опис</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PROMPT_RESULT</code></td>
+<td><code>(arg, arg)</code></td>
+<td>Зчитує текст, створений змінною <code>isAIPrompt</code>.</td>
+</tr>
+<tr>
+<td><code>CONSOLE_LOG</code></td>
+<td><code>(arg)</code></td>
+<td>Виводить значення в консоль і повертає його без змін — зручно для налагодження формули на місці.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Застарілі (збережені для зворотної сумісності; надавайте перевагу показаній альтернативі)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Функція</th>
+<th>Надавайте перевагу натомість</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FILTER_BY_VARS</code></td>
+<td><code>FILTER_BY</code></td>
+</tr>
+<tr>
+<td><code>COUNT_FORMS_UNIQUE</code></td>
+<td><code>LEN(ALL_VALUES_OF(...))</code></td>
+</tr>
+<tr>
+<td><code>ISIN</code></td>
+<td><code>INCLUDES</code></td>
+</tr>
+<tr>
+<td><code>REPEAT</code></td>
+<td><code>MAP</code></td>
+</tr>
+<tr>
+<td><code>EVALUATE</code></td>
+<td><code>IF</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Поза білим списком</strong></p>
+<p>DSL приймає лише функції, наведені вище (плюс <code>IF</code>). Базова бібліотека середовища виконання надає додаткові допоміжні функції (статистичні помічники, як-от стандартне відхилення, внутрішні конструктори наборів даних таблиць/віджетів, які використовує сам конвертер, тощо), які <strong>не</strong> доступні через звичайний синтаксис формул — лише через запасний вихід <code>js:</code> з необробленим JavaScript, описаний у розділі 2.4.</p>
+<h2 id="підтримувані-віджети-та-їхні-властивості">Підтримувані віджети та їхні властивості</h2>
+<h3 id="table--динамічна-таблиця"><code>table</code> — динамічна таблиця</h3>
+<p>Рядок 1: мітки заголовків стовпців. Рядок 2: короткий код стилю для кожного стовпця, <code>[colspan][alignment][sortable]</code>:</p>
+<ul>
+<li>Перший символ: colspan (цифра, зазвичай <code>1</code>).</li>
+<li>Другий символ: <code>l</code> = ліворуч, <code>r</code> = праворуч, будь-що інше = по центру.</li>
+<li>Третій символ: <code>s</code> = стовпець із сортуванням, пропущено/будь-що інше = без сортування.</li>
+</ul>
+<p>Починаючи з рядка 3, аркуш поводиться в одному з двох режимів:</p>
+<p><strong>A. Таблиця списку form</strong> (прив'язана до набору даних) — використовується, коли присутній стовпець <code>dataset</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Стовпець конфігурації</th>
+<th>Значення</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>(власний стовпець кожного заголовка)</em></td>
+<td>Назва поля для відображення в цьому стовпці, взята з кожного запису набору даних.</td>
+</tr>
+<tr>
+<td><code>dataset</code></td>
+<td>Назва (масивної) змінної для перебору — зазвичай набір даних, побудований у <code>variables</code>.</td>
+</tr>
+<tr>
+<td><code>pagination</code></td>
+<td>Істинне значення → створює посторінкову таблицю замість простої.</td>
+</tr>
+<tr>
+<td><code>dialog_fields</code> / <code>dialog_fields_labels</code></td>
+<td>Розділені комами додаткові назви полів / мітки, що показуються в діалозі деталей "читати далі" для кожного рядка.</td>
+</tr>
+<tr>
+<td><code>link_field</code> / <code>link_position</code></td>
+<td>Поле для використання як URL-посилання та індекс стовпця, який має відображати його як посилання.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>B. Статична / обчислювана таблиця</strong> (без стовпця <code>dataset</code>) — кожен решта рядків є буквальним вихідним рядком, і кожна клітинка сама по собі є формулою (або літералом, або виразом <code>js:</code>); беріть буквальний рядок у лапки, щоб його не сплутали з голим посиланням на змінну (наприклад, <code>"140"</code> для тексту <code>140</code> проти <code>my_indicator</code> для відображення значення обчисленої змінної).</p>
+<p>Клітинки заголовків оформлюються по центру, жирним, білим текстом на суцільному фоні; клітинки тіла автоматично чергують кольори фону рядків.</p>
+<h3 id="chart"><code>chart</code></h3>
+<p>Лише рядок 1 (крім Scatter/Bubble, див. нижче). Розпізнавані стовпці-опції (вилучаються з рядка, перш ніж решту вважають серіями даних):</p>
+<p><code>chartType</code>, <code>title</code>, <code>stacked</code>, <code>beginAtZeroX</code>, <code>beginAtZeroY</code>, <code>axisLabelX</code>, <code>axisLabelY</code>, <code>axisMinX</code>, <code>axisMinY</code>, <code>axisMaxX</code>, <code>axisMaxY</code>, <code>removeZeroValues</code>, <code>mainDataNumberThreshold</code>.</p>
+<ul>
+<li><code>chartType</code> має бути одним із: <code>Line</code>, <code>Bar</code>, <code>HorizontalBar</code>, <code>Radar</code>, <code>Scatter</code>, <code>Doughnut</code>, <code>Pie</code>, <code>PolarArea</code>, <code>Bubble</code>.</li>
+<li><code>labels</code> (необов'язково) — формула, що створює масив міток категорій/осей.</li>
+<li>Кожен інший заголовок стовпця називає одну серію даних; значення його клітинки — формула, що створює масив чисел цієї серії.</li>
+<li>Діаграмам <code>Scatter</code> потрібно рівно 2 рядки даних (значення X, значення Y); діаграмам <code>Bubble</code> потрібно рівно 3 (X, Y, радіус); кожному іншому типу діаграми потрібен рівно 1 рядок даних.</li>
+<li>Кольори призначаються автоматично з вбудованої палітри (один колір на серію або один на точку даних для pie/doughnut/polar-area).</li>
+</ul>
+<h3 id="image"><code>image</code></h3>
+<p>Лише рядок 1. Обов'язково: <code>url</code> (формула, що створює URL зображення, або буквальний рядок; додайте префікс <code>js:</code> для сирого JS-виразу). Необов'язково: <code>align</code> (<code>left</code>/<code>center</code>/<code>right</code>), <code>width</code>, <code>height</code> (рядки довжини CSS).</p>
+<h3 id="html"><code>html</code></h3>
+<p>Лише рядок 1, один стовпець <code>html</code>, що містить рядок необробленого HTML (не розбирається DSL формул). Підтримує маркери інтерполяції у подвійних квадратних дужках <code>[[expression]]</code>, які обчислюються й підставляються під час рендерингу — використовуйте це, щоб вбудувати значення обчисленої змінної в іншим чином статичну розмітку.</p>
+<h3 id="single--картка-kpi--великого-числа"><code>single</code> — картка KPI / великого числа</h3>
+<p>Лише рядок 1:</p>
+<table>
+<thead>
+<tr>
+<th>Стовпець</th>
+<th>Значення</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>html</code> (необов'язково)</td>
+<td>Заголовок, що показується над числом.</td>
+</tr>
+<tr>
+<td><code>current_value</code></td>
+<td>Обов'язково. Змінна/вираз, значення якої показується як велике число (відображається через <code>[[current_value]]</code>).</td>
+</tr>
+<tr>
+<td><code>percentage_change</code> (необов'язково)</td>
+<td>Якщо присутнє, додає індикатор тренду (стрілка вгору/вниз/без змін із кольором) на основі його знака, показаний як <code>[[percentage_change]]%</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Оскільки той самий текст клітинки використовується і як інтерпольоване значення, і як сирий вираз порівняння, <code>current_value</code> / <code>percentage_change</code> зазвичай мають бути простими назвами змінних, визначених на аркуші <code>variables</code>, а не повними вбудованими формулами.</p>
+<h3 id="graph"><code>graph</code></h3>
+<p>Кожен рядок потребує непорожнього стовпця <code>id</code>. <strong>Кожен</strong> стовпець у кожному рядку (крім <code>id</code>) розбирається як формула, створюючи один набір даних вузлів графа на рядок.</p>
+<h3 id="heatmap"><code>heatmap</code></h3>
+<p>Лише рядок 1, усі стовпці необов'язкові з розумними значеннями за замовчуванням: <code>values</code> (рядок сирого JS/формули, що створює дані інтенсивності — не розбирається через дужкову DSL, має вже бути дійсним), <code>idProp</code> (за замовчуванням <code>'id'</code>), <code>features</code> (рядок GeoJSON), <code>startColor</code>, <code>endColor</code>, <code>highlightColor</code>, <code>showVisualMap</code>.</p>
+<h3 id="paginatedlist"><code>paginatedlist</code></h3>
+<p>Рядок 1: числовий відсоток ширини стовпця для кожного стовпця. Рядок 2 (рядок конфігурації): назва поля для кожного стовпця, плюс <code>dataset</code>, <code>title</code>, <code>pageSize</code> (за замовчуванням 10), <code>link_field</code>/<code>link_position</code>, <code>cellStyles</code>, <code>rowStyle</code> (літерал сирого об'єкта стилю), <code>backgroundColorA</code>/<code>backgroundColorB</code> (кольори зебрового чергування). Кожен отриманий рядок відображається як власний компактний віджет таблиці, а не як одна велика таблиця.</p>
+<h3 id="paginateddialoglist"><code>paginatedDialogList</code></h3>
+<p>Та сама конфігурація, що й <code>paginatedlist</code>, плюс два додаткові рядки (коли присутні): <strong>мітки</strong> полів діалогу, потім <strong>назви</strong> полів діалогу — натискання на рядок відкриває спливне вікно зі списком цих полів як пар мітка/значення.</p>
+<h3 id="filter--global-filter"><code>filter</code> / <code>global filter</code></h3>
+<p>Структуровано як аркуш <code>survey</code> у стилі ODK/XLSForm (з супутнім аркушем <code>choices</code> у тій самій книзі), перетворений на form-схему та прикріплений як інтерактивний елемент керування фільтром:</p>
+<ul>
+<li>Аркуш із назвою, що містить <code>filter</code> (але не <code>global</code>), прикріплюється до віджета наступного аркуша.</li>
+<li>Аркуш із назвою, що містить і <code>filter</code>, і <code>global</code>, прикріплюється до всього report, а не до одного віджета.</li>
+</ul>
+<h2 id="швидкий-контрольний-список-для-створення-нового-xlsreport">Швидкий контрольний список для створення нового XLSReport</h2>
+<ol>
+<li>Визначте потрібні вам form DINO та їхні точні назви form/схеми на вашому примірнику.</li>
+<li>Почніть аркуш <code>variables</code>: завантажте кожну form через <code>forms[...]</code>/<code>schemas[...]</code>, побудуйте набори даних через <code>BUILD_DATASET</code> і негайно застосуйте будь-які фільтри проєкту/області (перепризначаючи ту саму назву змінної).</li>
+<li>Попередньо обчисліть усе, що використовується більш ніж одним віджетом, як окрему іменовану змінну.</li>
+<li>Додайте один аркуш на віджет, названий правильним ключовим словом, у тому порядку, у якому ви хочете, щоб вони з'являлися.</li>
+<li>Надавайте перевагу білому списку DSL із розділу 4.3; вдавайтеся до <code>js:</code> лише тоді, коли обчислення йому не відповідає.</li>
+<li>Перевірте назви полів і значення вибору за фактичною схемою/експортованими даними на вашому примірнику, а не припускайте, що вони точно збігаються з назвами полів вихідної xlsform.</li>
+</ol>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0456\u0439\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u0421\u043a\u043e\u043f\u0456\u044e\u0432\u0430\u0442\u0438 \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0429\u0435 1 \u0437\u0431\u0456\u0433 \u043d\u0430 \u0446\u0456\u0439 \u0441\u0442\u043e\u0440\u0456\u043d\u0446\u0456", "search.result.more.other": "\u0429\u0435 # \u0437\u0431\u0456\u0433\u0456\u0432 \u043d\u0430 \u0446\u0456\u0439 \u0441\u0442\u043e\u0440\u0456\u043d\u0446\u0456", "search.result.none": "\u0417\u0431\u0456\u0433\u0456\u0432 \u043d\u0435 \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u0417\u043d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0437\u0431\u0456\u0433", "search.result.other": "\u0417\u043d\u0430\u0439\u0434\u0435\u043d\u043e # \u0437\u0431\u0456\u0433\u0456\u0432", "search.result.placeholder": "\u0420\u043e\u0437\u043f\u043e\u0447\u043d\u0456\u0442\u044c \u043f\u0438\u0441\u0430\u0442\u0438 \u0434\u043b\u044f \u043f\u043e\u0448\u0443\u043a\u0443", "search.result.term.missing": "\u041d\u0435 \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e \u0437\u0430\u043f\u0438\u0442\u0443", "select.version": "\u041e\u0431\u0440\u0430\u0442\u0438 \u0432\u0435\u0440\u0441\u0456\u044e"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

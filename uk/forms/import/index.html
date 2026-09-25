@@ -1,0 +1,2238 @@
+
+<!doctype html>
+<html lang="uk" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Дізнайтеся, як масово імпортувати структуровані дані в будь-який form schema за допомогою файлу CSV або Excel. Двоетапний майстер дозволяє завантажити файл, а потім зіставити його стовпці з полями form.">
+      
+      
+      
+        <link rel="canonical" href="https://gnucoop.github.io/dino/uk/forms/import/">
+      
+      
+        <link rel="prev" href="../edit-form/">
+      
+      
+        <link rel="next" href="../forms-map/">
+      
+      
+        
+          <link rel="alternate" href="/dino/en/" hreflang="en">
+        
+          <link rel="alternate" href="/dino/it/" hreflang="it">
+        
+          <link rel="alternate" href="/dino/es/" hreflang="es">
+        
+          <link rel="alternate" href="/dino/fr/" hreflang="fr">
+        
+          <link rel="alternate" href="/dino/pt/" hreflang="pt">
+        
+          <link rel="alternate" href="/dino/uk/" hreflang="uk">
+        
+          <link rel="alternate" href="/dino/ar/" hreflang="ar">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Імпорт даних - Документація Dinoapp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#імпорт-даних" class="md-skip">
+          Перейти до змісту
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Хедер">
+    <a href="../.." title="Документація Dinoapp" class="md-header__button md-logo" aria-label="Документація Dinoapp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Документація Dinoapp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Імпорт даних
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Обрати мову">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/dino/en/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/it/" hreflang="it" class="md-select__link">
+              Italiano
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/es/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/fr/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/pt/" hreflang="pt" class="md-select__link">
+              Português
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/uk/" hreflang="uk" class="md-select__link">
+              Українська
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/ar/" hreflang="ar" class="md-select__link">
+              العربية
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Пошук" placeholder="Пошук" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Шукати">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Очистити" aria-label="Очистити" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Пошук розпочато
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Навігація" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Документація Dinoapp" class="md-nav__button md-logo" aria-label="Документація Dinoapp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Документація Dinoapp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Головна
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Початок Роботи
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Початок Роботи
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/login/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Вхід
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/reset-password/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Скидання Пароля
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Інтерфейс та Навігація
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Панель
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Форми
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Форми
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Огляд
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-form-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Редагування схеми форми
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-form/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Редагувати подання форми
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Імпорт даних
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Імпорт даних
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Зміст">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Зміст
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#доступ-до-сторінки-імпорту" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Доступ до сторінки імпорту
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#крок-1--завантаження-файлу" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Крок 1 — Завантаження файлу
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Крок 1 — Завантаження файлу">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#форматування-файлу-для-імпорту" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Форматування файлу для імпорту
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#крок-2--зіставлення-полів" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Крок 2 — Зіставлення полів
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Крок 2 — Зіставлення полів">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#дії-зіставлення" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Дії зіставлення
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#автоматичне-зіставлення" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Автоматичне зіставлення
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#повторення" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Повторення
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#зведення-на-панелі-інструментів" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Зведення на панелі інструментів
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#застосування-імпорту" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Застосування імпорту
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#формат-файлу" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формат файлу
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Формат файлу">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#робота-з-метриками-під-час-імпорту" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Робота з метриками під час імпорту
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#повторювані-слайди" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Повторювані слайди
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#помилки" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Помилки
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../forms-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Карта форм
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datachat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Чат даних
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Звіти
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Звіти
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Огляд
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/edit-report-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Редагувати схему звіту
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/edit-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Редагувати звіт
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/autoreports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Автоматичний звіт
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/xlsreport/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XLSReport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Метрики
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Метрики
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Огляд
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/areas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    тематичні області
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Справи
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/locations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Місцезнаходження
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/organizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Організації
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/projects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Проекти
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aggregation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Агрегація
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Сповіщення
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../public-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Публічні Форми
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Адміністрування
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Адміністрування
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/users/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Керування Користувачами та Групами
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/languages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Керування Мовами
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/users-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Список Користувачів
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/groups-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Список груп
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Зміст">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Зміст
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#доступ-до-сторінки-імпорту" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Доступ до сторінки імпорту
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#крок-1--завантаження-файлу" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Крок 1 — Завантаження файлу
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Крок 1 — Завантаження файлу">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#форматування-файлу-для-імпорту" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Форматування файлу для імпорту
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#крок-2--зіставлення-полів" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Крок 2 — Зіставлення полів
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Крок 2 — Зіставлення полів">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#дії-зіставлення" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Дії зіставлення
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#автоматичне-зіставлення" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Автоматичне зіставлення
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#повторення" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Повторення
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#зведення-на-панелі-інструментів" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Зведення на панелі інструментів
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#застосування-імпорту" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Застосування імпорту
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#формат-файлу" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формат файлу
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Формат файлу">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#робота-з-метриками-під-час-імпорту" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Робота з метриками під час імпорту
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#повторювані-слайди" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Повторювані слайди
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#помилки" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Помилки
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="імпорт-даних">Імпорт даних</h1>
+<p>Сторінка <strong>Імпорт даних</strong> дозволяє масово завантажувати дані в form schema з файлу <code>.xls</code>, <code>.xlsx</code> або <code>.csv</code>. Двоетапний майстер проведе вас через завантаження файлу та зіставлення стовпців файлу з полями form.</p>
+<p><img alt="Головний вигляд сторінки «Імпорт даних»" src="../../imgs/forms/import.png" /></p>
+<h2 id="доступ-до-сторінки-імпорту">Доступ до сторінки імпорту</h2>
+<ol>
+<li>Перейдіть до списку <strong>Forms</strong> і виберіть form schema.</li>
+<li>У поданні даних form натисніть <strong>Імпорт</strong> (кнопка на панелі інструментів).</li>
+</ol>
+<h2 id="крок-1--завантаження-файлу">Крок 1 — Завантаження файлу</h2>
+<p>На першому кроці відображається зона перетягування або засіб вибору файлу.</p>
+<ul>
+<li><strong>Підтримувані формати:</strong> <code>.xls</code>, <code>.xlsx</code>, <code>.csv</code></li>
+<li><strong>Максимальний розмір файлу:</strong> 20 МБ</li>
+</ul>
+<p>Щоб завантажити:</p>
+<ol>
+<li>Перетягніть файл у пунктирну область <strong>або</strong> натисніть <strong>Вибрати файл</strong>, щоб знайти його.</li>
+<li>Після вибору назва файлу з'явиться в чипі разом із кількістю виявлених стовпців.</li>
+<li>(Необов'язково) Залиште позначку <strong>Повторно використовувати наявні метрики з такою ж назвою</strong> (типово), щоб будь-яка метрика у файлі, назва якої збігається з метрикою, що вже є в системі, була пов'язана з цією наявною метрикою замість створення дубліката. Зніміть позначку, щоб завжди створювати нові метрики.</li>
+<li>Натисніть <strong>Далі</strong> (або мітку кроку «2 · Зіставити поля»), щоб продовжити.</li>
+</ol>
+<h3 id="форматування-файлу-для-імпорту">Форматування файлу для імпорту</h3>
+<p>Дивіться опис у розділі <a href="#формат-файлу">нижче</a></p>
+<div class="admonition tip">
+<p class="admonition-title">Прості формати файлів</p>
+<p>Dino приймає той самий файл, отриманий під час <a href="../#експорт">експорту</a>. Отже, найпростіший спосіб отримати файл, належним чином відформатований для імпорту, — спочатку експортувати деякі дані form з тієї ж схеми, а потім видалити рядки з експортованими даними, залишивши лише заголовки стовпців. У будь-якому разі переконайтеся, що заголовки стовпців зрозумілі — вони використовуватимуться як підказки під час зіставлення.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Метрики, ідентифіковані за ID</p>
+<p>Якщо стовпець метрики у вашому файлі містить <strong>ID</strong> (UUID) метрики, цей рядок пов'язується з наявною метрикою з цим ID, і нова метрика не створюється. ID має пріоритет над назвою метрики, тому це відбувається незалежно від опції <strong>Повторно використовувати наявні метрики з такою ж назвою</strong> (яка застосовується лише до зіставлення за назвою).</p>
+</div>
+<h2 id="крок-2--зіставлення-полів">Крок 2 — Зіставлення полів</h2>
+<p>Після завантаження ви побачите таблицю зі всіма стовпцями з вашого файлу. Кожен рядок має три стовпці:</p>
+<ul>
+<li><strong>Стовпець файлу</strong> – вихідний заголовок з вашого файлу.</li>
+<li><strong>Поле form</strong> – випадний список, де ви вибираєте відповідне поле form.</li>
+<li><strong>Статус</strong> – показує, чи стовпець зіставлено, проігноровано або чи є помилка.</li>
+</ul>
+<h3 id="дії-зіставлення">Дії зіставлення</h3>
+<ul>
+<li><strong>Вибір поля form</strong> – відкрийте випадний список для стовпця та виберіть правильне поле. У випадному списку можна виконувати пошук.</li>
+<li><strong>Ігнорування стовпця</strong> – виберіть опцію <strong>— Ігнорувати цей стовпець —</strong> у випадному списку або натисніть кнопку <strong>Ігнорувати</strong> в стовпці статусу. Проігноровані стовпці відображаються сірим.</li>
+<li><strong>Відновлення проігнорованого стовпця</strong> – натисніть кнопку <strong>Відновити</strong> в стовпці статусу.</li>
+</ul>
+<h3 id="автоматичне-зіставлення">Автоматичне зіставлення</h3>
+<p>Натисніть <strong>Автоматичне зіставлення</strong>, щоб Dino автоматично зіставив стовпці з полями form на основі схожості назв. Це хороша відправна точка — перегляньте та за потреби скоригуйте зіставлення.</p>
+<div class="admonition tip">
+<p class="admonition-title">Автоматичне зіставлення найкраще працює із заголовками, які точно збігаються з мітками полів або містять схожі ключові слова.</p>
+</div>
+<h3 id="повторення">Повторення</h3>
+<p>Якщо вибране поле form є повторюваним полем (наприклад, кілька номерів телефонів), під випадним списком з'явиться поле введення <strong>Повторення</strong>. Введіть індекс повторення (0, 1, 2, …), щоб призначити цей стовпець файлу одному входженню повторюваної групи.</p>
+<h3 id="зведення-на-панелі-інструментів">Зведення на панелі інструментів</h3>
+<p>У верхній частині області зіставлення відображаються три чипи:</p>
+<ul>
+<li><strong>Усього стовпців</strong> – кількість стовпців файлу.</li>
+<li><strong>Зіставлено</strong> – стовпці, призначені полю form.</li>
+<li><strong>Проігноровано</strong> – стовпці, які ви вирішили проігнорувати.</li>
+</ul>
+<p>Використовуйте поле введення <strong>Пошук стовпців</strong>, щоб відфільтрувати таблицю за назвою стовпця файлу.</p>
+<h2 id="застосування-імпорту">Застосування імпорту</h2>
+<p>Коли всі потрібні стовпці зіставлено й помилок немає, кнопка <strong>Застосувати імпорт</strong> стає активною. Натисніть її, щоб розпочати імпорт. Під час обробки з'являється індикатор. Ви можете натиснути <strong>Назад</strong>, щоб повернутися до кроку 1, або скасувати імпорт.</p>
+<p>Після успішного імпорту ви повертаєтеся до списку даних form, де з'являються нові дані.</p>
+<div class="admonition warning">
+<p class="admonition-title">Дублювання зіставлення</p>
+<p>Якщо ви зіставите те саме поле form з більш ніж одним стовпцем файлу, відобразиться помилка перевірки, і кнопка <strong>Застосувати імпорт</strong> залишатиметься неактивною, доки це не буде виправлено.</p>
+</div>
+<h2 id="формат-файлу">Формат файлу</h2>
+<p>Ми описуємо процедуру імпорту деяких масових даних за допомогою файлу Excel, згенерованого з Google Sheet. Та сама процедура діє для файлів CSV або під час безпосередньої роботи з Excel.</p>
+<p>Припустімо, ви хочете імпортувати дані у form під назвою Projects, який має 2 слайди, один з яких є повторюваним слайдом:</p>
+<p><img alt="Form Projects із двома слайдами, один з яких є повторюваним слайдом" src="../../imgs/forms/import-repeating-slide.png" /></p>
+<p>Form Projects було створено за допомогою такого XLSForm. Аркуш «survey» має вигляд</p>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>name</th>
+<th>label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>begin group</strong></td>
+<td><strong>start</strong></td>
+<td><strong>Start</strong></td>
+</tr>
+<tr>
+<td>select_one countries</td>
+<td>country</td>
+<td>Country</td>
+</tr>
+<tr>
+<td>select_multiple countries</td>
+<td>country_other</td>
+<td>Other Countries</td>
+</tr>
+<tr>
+<td>text</td>
+<td>title</td>
+<td>Project Title</td>
+</tr>
+<tr>
+<td>date</td>
+<td>project_date_start</td>
+<td>Start date</td>
+</tr>
+<tr>
+<td>select_one donors</td>
+<td>selected_donor</td>
+<td>Donor</td>
+</tr>
+<tr>
+<td>integer</td>
+<td>budget</td>
+<td>Budget</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>isleader</td>
+<td>Leading applicant</td>
+</tr>
+<tr>
+<td><strong>end group</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>begin repeat</strong></td>
+<td><strong>indicators</strong></td>
+<td><strong>Indicators</strong></td>
+</tr>
+<tr>
+<td>text</td>
+<td>indic</td>
+<td>Indicator description</td>
+</tr>
+<tr>
+<td>integer</td>
+<td>value_indic</td>
+<td>Value reached</td>
+</tr>
+<tr>
+<td><strong>end repeat</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>а «choices» має вигляд</p>
+<table>
+<thead>
+<tr>
+<th>list_name</th>
+<th>name</th>
+<th>label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>donors</td>
+<td>ue</td>
+<td>UE</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>govita</td>
+<td>ITALIAN GOVERNMENT</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>un</td>
+<td>UN</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>pub</td>
+<td>ALTRI DONATORI PUBBLICI</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>la</td>
+<td>ENTI LOCALI</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>priv</td>
+<td>DONATORI PRIVATI</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>other</td>
+<td>Others</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>countries</td>
+<td>AFG</td>
+<td>Afghanistan</td>
+</tr>
+<tr>
+<td>countries</td>
+<td>ALB</td>
+<td>Albania</td>
+</tr>
+<tr>
+<td>countries</td>
+<td>DZA</td>
+<td>Algeria</td>
+</tr>
+<tr>
+<td>countries</td>
+<td>ASM</td>
+<td>American Samoa</td>
+</tr>
+</tbody>
+</table>
+<p>Виконайте такі кроки:</p>
+<ol>
+<li>Створіть порожній файл лише з одним аркушем (назви файлу й аркуша не мають значення).   </li>
+<li>У першому рядку потрібно вказати назви полів form і специфічних для DINO полів form. У цьому прикладі полями form можуть бути:  </li>
+<li><strong>country</strong>  </li>
+<li><strong>country_other</strong>  </li>
+<li><strong>title</strong>  </li>
+<li><strong>project_date_start</strong>  </li>
+<li><strong>selected_donor</strong>  </li>
+<li><strong>budget</strong>  </li>
+<li><strong>isleader</strong>  </li>
+<li><strong><em>indic</em></strong> (*)  </li>
+<li><strong><em>value_indic</em></strong> (*)</li>
+</ol>
+<p>зверніть увагу, що поля в повторюваних слайдах потрібно обробляти інакше (саме тому ми поставили зірочку). Будь ласка, зверніться до відповідного розділу нижче.</p>
+<p>Специфічними для DINO полями можуть бути:</p>
+<ol>
+<li><strong>created_at</strong>. Дата створення form. Вказуйте це, лише якщо ви хочете, щоб ваші form мали дату створення, відмінну від дати імпорту;  </li>
+<li><strong>user_data_ref_id</strong>. ID користувача, який буде пов'язаний з form (типово — ID користувача, який імпортує form);  </li>
+<li><strong>area_id</strong>. ID метрики AREA, яку потрібно пов'язати з form;  </li>
+<li>[area_name]  </li>
+<li><strong>case_id</strong>. ID метрики CASE, яку потрібно пов'язати з form;  </li>
+<li>[case_name]     </li>
+<li><strong>project_id</strong>. ID метрики PROJECT, яку потрібно пов'язати з form;  </li>
+<li>[project_name]  </li>
+<li>[project_code]  </li>
+<li><strong>location_id</strong>. ID метрики LOCATION, яку потрібно пов'язати з form;  </li>
+<li>[location_name]  </li>
+<li><strong>organization_id</strong>. ID метрики ORGANISATION, яку потрібно пов'язати з form;  </li>
+<li>
+<p>[organization_name]</p>
+</li>
+<li>
+<p>кожен рядок відповідатиме іншому новому form. Отже, якщо ми створимо файл з одним заголовком +, скажімо, 5 рядками даних, у разі успішного завантаження ми створимо 5 нових form у DINO.   </p>
+</li>
+<li>Не обов'язково мати стовпець для кожного поля form; не обов'язково заповнювати всі рядки певного стовпця, але якщо поле порожнє для всіх рядків, його можна пропустити,   </li>
+<li>Поля дати потрібно форматувати як YYYY-MM-DD у вигляді тексту (будьте уважні).   </li>
+<li>Поля з одним вибором повинні містити один із прийнятих варіантів, зазначених у «choices» (дивіться конструктор form або файл XLSForm).   </li>
+<li>Поля з множинним вибором потрібно форматувати за таким шаблоном: [opt1, opt2] (тобто список варіантів у квадратних дужках). </li>
+</ol>
+<p>Наприклад, допустимим файлом може бути такий:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">country</th>
+<th style="text-align: left;">country_other</th>
+<th style="text-align: left;">title</th>
+<th style="text-align: left;">project_date_start</th>
+<th>budget</th>
+<th style="text-align: left;">isleader</th>
+<th style="text-align: left;">area_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ALB</td>
+<td style="text-align: left;">[AFG,DZA]</td>
+<td style="text-align: left;">Human rights in education</td>
+<td style="text-align: left;">2022-01-28</td>
+<td>120000</td>
+<td style="text-align: left;">true</td>
+<td style="text-align: left;">81387ff7-5c7d-44e7-9dc6-76b8d09265ac</td>
+</tr>
+<tr>
+<td style="text-align: left;">ASM</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">A new approach to social justice</td>
+<td style="text-align: left;">2022-02-14</td>
+<td>20000</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">81387ff7-5c7d-44e7-9dc6-76b8d09265ac</td>
+</tr>
+</tbody>
+</table>
+<p>У цьому випадку ми імпортуємо 2 form, для обох ми вибираємо лише метрику AREA. Крім того, зауважте, що ми надаємо не всі поля form для всіх form, але для полів, де ми надаємо значення, ми суворо дотримуємося вказівок, описаних вище.</p>
+<h3 id="робота-з-метриками-під-час-імпорту">Робота з метриками під час імпорту</h3>
+<p>Під час імпорту деяких даних form, що стосується метрик, ви можете хотіти:</p>
+<ul>
+<li>створити нові метрики під час імпорту  </li>
+<li>повторно використати вже створені метрики</li>
+</ul>
+<p>Правила, яких потрібно дотримуватися для коректного керування метриками, такі:</p>
+<table>
+<thead>
+<tr>
+<th>МЕТРИКА</th>
+<th>СТВОРЕННЯ З UI</th>
+<th>СТВОРЕННЯ З ІМПОРТУ</th>
+<th>СТВОРЕННЯ + ПРИЗНАЧЕННЯ З ІМПОРТУ</th>
+<th>ВИКОРИСТАННЯ З ІМПОРТУ</th>
+<th>СТВОРЕННЯ + ПРИЗНАЧЕННЯ З ІМПОРТУ (parent)</th>
+<th>ВИКОРИСТАННЯ PARENT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Case</strong></td>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>id або name (з опцією reuse), або обидва</td>
+<td>name</td>
+<td>id або name (з опцією reuse), або обидва</td>
+</tr>
+<tr>
+<td><strong>Organization</strong></td>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>id або name (з опцією reuse), або обидва</td>
+<td>name</td>
+<td>id або name (з опцією reuse), або обидва</td>
+</tr>
+<tr>
+<td><strong>Location</strong></td>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>id або name (з опцією reuse), або обидва</td>
+<td>name</td>
+<td>id або name (з опцією reuse), або обидва</td>
+</tr>
+<tr>
+<td><strong>Area</strong></td>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>id або name (з опцією reuse), або обидва</td>
+<td>name</td>
+<td>id або name (з опцією reuse), або обидва</td>
+</tr>
+<tr>
+<td><strong>Project</strong></td>
+<td>name, code</td>
+<td>name, code</td>
+<td>name, code</td>
+<td>id</td>
+<td>name, code</td>
+<td>id</td>
+</tr>
+</tbody>
+</table>
+<h2 id="повторювані-слайди">Повторювані слайди</h2>
+<p>Якщо у вас є поле в повторюваних слайдах, його потрібно назвати інакше. Кожне поле в повторюваному слайді потрібно називати \&lt;field_name&gt;__X, де X — номер повторення, від 0 (відповідає одному повторенню) до N-1, де N — загальна кількість повторень слайда в цьому form. <br />
+Наприклад, припустімо, у вас є лише 1 повторення повторюваного слайда, і ви хочете додати обидва поля «Indicator description» і «Value reached». Вам потрібно буде додати до файлу імпорту ці два стовпці:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">indic__0</th>
+<th>value_indic__0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Number of children</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<p>Отже, наприклад, ми могли б мати:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">country</th>
+<th>budget</th>
+<th style="text-align: left;">indic__0</th>
+<th>value_indic__0</th>
+<th style="text-align: left;">indic__1</th>
+<th>value_indic__1</th>
+<th style="text-align: left;">isleader</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ALB</td>
+<td>120000</td>
+<td style="text-align: left;">Children</td>
+<td>100</td>
+<td style="text-align: left;"></td>
+<td></td>
+<td style="text-align: left;">true</td>
+</tr>
+<tr>
+<td style="text-align: left;">ASM</td>
+<td>20000</td>
+<td style="text-align: left;"></td>
+<td></td>
+<td style="text-align: left;"></td>
+<td></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">AFG</td>
+<td>15000</td>
+<td style="text-align: left;">Parents</td>
+<td>45</td>
+<td style="text-align: left;">Schools</td>
+<td>34</td>
+<td style="text-align: left;">true</td>
+</tr>
+</tbody>
+</table>
+<h2 id="помилки">Помилки</h2>
+<p>Перевірте ID у вашому файлі перед імпортом. Якщо стовпець посилається на сутність за її ID (метрику або користувача), а сутності з таким ID у Dino не існує, імпортовані форми не вдасться синхронізувати із сервером.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0456\u0439\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u0421\u043a\u043e\u043f\u0456\u044e\u0432\u0430\u0442\u0438 \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0429\u0435 1 \u0437\u0431\u0456\u0433 \u043d\u0430 \u0446\u0456\u0439 \u0441\u0442\u043e\u0440\u0456\u043d\u0446\u0456", "search.result.more.other": "\u0429\u0435 # \u0437\u0431\u0456\u0433\u0456\u0432 \u043d\u0430 \u0446\u0456\u0439 \u0441\u0442\u043e\u0440\u0456\u043d\u0446\u0456", "search.result.none": "\u0417\u0431\u0456\u0433\u0456\u0432 \u043d\u0435 \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u0417\u043d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0437\u0431\u0456\u0433", "search.result.other": "\u0417\u043d\u0430\u0439\u0434\u0435\u043d\u043e # \u0437\u0431\u0456\u0433\u0456\u0432", "search.result.placeholder": "\u0420\u043e\u0437\u043f\u043e\u0447\u043d\u0456\u0442\u044c \u043f\u0438\u0441\u0430\u0442\u0438 \u0434\u043b\u044f \u043f\u043e\u0448\u0443\u043a\u0443", "search.result.term.missing": "\u041d\u0435 \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e \u0437\u0430\u043f\u0438\u0442\u0443", "select.version": "\u041e\u0431\u0440\u0430\u0442\u0438 \u0432\u0435\u0440\u0441\u0456\u044e"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
