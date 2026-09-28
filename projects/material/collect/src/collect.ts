@@ -261,14 +261,10 @@ export class Collect implements OnDestroy {
           // written locally only to have every push refused by the server.
           if (isCollect === 'reports') {
             result = this._rs.list();
-            this.displayAddButton = this._pcs
-              .getAllowedActions('report_schema', 'all')
-              .pipe(map(actions => actions.some(act => act === 'create')));
+            this.displayAddButton = this._createAllowed('report_schema');
           } else {
             result = this._fs.list();
-            this.displayAddButton = this._pcs
-              .getAllowedActions('form_schema', 'all')
-              .pipe(map(actions => actions.some(act => act === 'create')));
+            this.displayAddButton = this._createAllowed('form_schema');
           }
           return result.pipe(
             map(docs => {
@@ -444,6 +440,19 @@ export class Collect implements OnDestroy {
   }
 
   static ngAcceptInputType_filterBar: BooleanInput;
+
+  /**
+   * True if the active user can create a schema of the given kind. A permission check that
+   * fails - the permissions never arrived, and `getAllowedActions` gave up waiting - denies
+   * instead of erroring: the error would reach the template through the async pipe and
+   * abort its rendering, taking the grid and the empty-list message down with it.
+   */
+  private _createAllowed(collectionName: 'form_schema' | 'report_schema'): Observable<boolean> {
+    return this._pcs.getAllowedActions(collectionName, 'all').pipe(
+      map(actions => actions.some(act => act === 'create')),
+      catchError(() => obsOf(false)),
+    );
+  }
 
   ngOnDestroy(): void {
     this._deleteSchemaDialogSub.unsubscribe();
