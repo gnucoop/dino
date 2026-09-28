@@ -1,0 +1,2238 @@
+
+<!doctype html>
+<html lang="ar" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="تعلّم كيفية استيراد البيانات المهيكلة بشكل جماعي إلى أي form schema باستخدام ملف CSV أو Excel. يتيح لك المعالج المكوّن من خطوتين رفع ملف ثم ربط أعمدته بحقول النموذج.">
+      
+      
+      
+        <link rel="canonical" href="https://gnucoop.github.io/dino/ar/forms/import/">
+      
+      
+        <link rel="prev" href="../edit-form/">
+      
+      
+        <link rel="next" href="../forms-map/">
+      
+      
+        
+          <link rel="alternate" href="/dino/en/" hreflang="en">
+        
+          <link rel="alternate" href="/dino/it/" hreflang="it">
+        
+          <link rel="alternate" href="/dino/es/" hreflang="es">
+        
+          <link rel="alternate" href="/dino/fr/" hreflang="fr">
+        
+          <link rel="alternate" href="/dino/pt/" hreflang="pt">
+        
+          <link rel="alternate" href="/dino/uk/" hreflang="uk">
+        
+          <link rel="alternate" href="/dino/ar/" hreflang="ar">
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>استيراد البيانات - توثيق Dinoapp</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="rtl">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#استيراد-البيانات" class="md-skip">
+          انتقل إلى المحتوى
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="عنوان العارضة">
+    <a href="../.." title="توثيق Dinoapp" class="md-header__button md-logo" aria-label="توثيق Dinoapp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            توثيق Dinoapp
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              استيراد البيانات
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="إختر اللغة">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/dino/en/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/it/" hreflang="it" class="md-select__link">
+              Italiano
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/es/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/fr/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/pt/" hreflang="pt" class="md-select__link">
+              Português
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/uk/" hreflang="uk" class="md-select__link">
+              Українська
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/dino/ar/" hreflang="ar" class="md-select__link">
+              العربية
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="بحث" placeholder="بحث" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="إبحث">
+        
+        <button type="reset" class="md-search__icon md-icon" title="مسح كلي" aria-label="مسح كلي" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            بدء البحث
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="تصفح" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="توثيق Dinoapp" class="md-nav__button md-logo" aria-label="توثيق Dinoapp" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    توثيق Dinoapp
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    الرئيسية
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    البدء
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    البدء
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/login/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    تسجيل الدخول
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/reset-password/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    إعادة تعيين كلمة المرور
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../interface/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    الواجهة والتنقل
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    لوحة المعلومات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    النماذج
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    النماذج
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    نظرة عامة
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-form-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    تحرير مخطط النموذج
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-form/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    تحرير إرسال نموذج
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    استيراد البيانات
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    استيراد البيانات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="جدول المحتويات">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      جدول المحتويات
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#الوصول-إلى-صفحة-الاستيراد" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        الوصول إلى صفحة الاستيراد
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#الخطوة-1--رفع-الملف" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        الخطوة 1 — رفع الملف
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="الخطوة 1 — رفع الملف">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#تنسيق-ملف-الاستيراد" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        تنسيق ملف الاستيراد
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#الخطوة-2--ربط-الحقول" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        الخطوة 2 — ربط الحقول
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="الخطوة 2 — ربط الحقول">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#إجراءات-الربط" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        إجراءات الربط
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#المطابقة-التلقائية" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        المطابقة التلقائية
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#التكرار" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        التكرار
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ملخص-شريط-الأدوات" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ملخص شريط الأدوات
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#تطبيق-الاستيراد" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        تطبيق الاستيراد
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#تنسيق-الملف" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        تنسيق الملف
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="تنسيق الملف">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#التعامل-مع-الـ-metrics-أثناء-الاستيراد" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        التعامل مع الـ metrics أثناء الاستيراد
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#الشرائح-المتكررة" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        الشرائح المتكررة
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#الأخطاء" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        الأخطاء
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../forms-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    خريطة النماذج
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datachat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datachat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    التقارير
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    التقارير
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    نظرة عامة
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/edit-report-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    تحرير مخطط التقرير
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/edit-report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    تعديل التقرير
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/autoreports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    التقرير التلقائي
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reports/xlsreport/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XLSReport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    المقاييس
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    المقاييس
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    نظرة عامة
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/areas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    المجالات الموضوعية
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    الحالات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/locations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    المواقع
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/organizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    المنظمات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../metrics/projects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    المشاريع
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../aggregation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    التجميع
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    الإشعارات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../public-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    النماذج العامة
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    الإدارة
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    الإدارة
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/users/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    إدارة المستخدمين والمجموعات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/languages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    إدارة اللغات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/users-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    قائمة المستخدمين
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../administration/groups-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    قائمة المجموعات
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="جدول المحتويات">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      جدول المحتويات
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#الوصول-إلى-صفحة-الاستيراد" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        الوصول إلى صفحة الاستيراد
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#الخطوة-1--رفع-الملف" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        الخطوة 1 — رفع الملف
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="الخطوة 1 — رفع الملف">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#تنسيق-ملف-الاستيراد" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        تنسيق ملف الاستيراد
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#الخطوة-2--ربط-الحقول" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        الخطوة 2 — ربط الحقول
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="الخطوة 2 — ربط الحقول">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#إجراءات-الربط" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        إجراءات الربط
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#المطابقة-التلقائية" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        المطابقة التلقائية
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#التكرار" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        التكرار
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ملخص-شريط-الأدوات" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ملخص شريط الأدوات
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#تطبيق-الاستيراد" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        تطبيق الاستيراد
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#تنسيق-الملف" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        تنسيق الملف
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="تنسيق الملف">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#التعامل-مع-الـ-metrics-أثناء-الاستيراد" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        التعامل مع الـ metrics أثناء الاستيراد
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#الشرائح-المتكررة" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        الشرائح المتكررة
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#الأخطاء" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        الأخطاء
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="استيراد-البيانات">استيراد البيانات</h1>
+<p>تتيح لك صفحة <strong>استيراد البيانات</strong> رفع البيانات بشكل جماعي إلى form schema من ملف بامتداد <code>.xls</code> أو <code>.xlsx</code> أو <code>.csv</code>. يرشدك معالج مكوّن من خطوتين خلال رفع الملف وربط أعمدته بحقول النموذج.</p>
+<p><img alt="العرض الرئيسي لصفحة استيراد البيانات" src="../../imgs/forms/import.png" /></p>
+<h2 id="الوصول-إلى-صفحة-الاستيراد">الوصول إلى صفحة الاستيراد</h2>
+<ol>
+<li>انتقل إلى قائمة <strong>Forms</strong> واختر form schema.</li>
+<li>من عرض بيانات النموذج، انقر على <strong>Import</strong> (زر شريط الأدوات).</li>
+</ol>
+<h2 id="الخطوة-1--رفع-الملف">الخطوة 1 — رفع الملف</h2>
+<p>تعرض الخطوة الأولى منطقة سحب وإفلات أو أداة اختيار ملف.</p>
+<ul>
+<li><strong>الصيغ المقبولة:</strong> <code>.xls</code>، <code>.xlsx</code>، <code>.csv</code></li>
+<li><strong>الحد الأقصى لحجم الملف:</strong> 20 ميغابايت</li>
+</ul>
+<p>للرفع:</p>
+<ol>
+<li>اسحب ملفًا إلى المنطقة المتقطعة <strong>أو</strong> انقر على <strong>Choose a file</strong> للتصفح.</li>
+<li>بعد الاختيار، يظهر اسم الملف في شريحة صغيرة إلى جانب عدد الأعمدة المكتشفة.</li>
+<li>(اختياري) أبقِ خيار <strong>Reuse existing metrics with the same name</strong> محدَّدًا (الوضع الافتراضي) بحيث يُربط أي metric في الملف يتطابق اسمه مع metric موجود بالفعل في النظام بذلك الـ metric الموجود بدلًا من إنشاء نسخة مكررة. ألغِ التحديد لإنشاء metrics جديدة دائمًا.</li>
+<li>انقر على <strong>Next</strong> (أو على تسمية الخطوة "2 · Map fields") للمتابعة.</li>
+</ol>
+<h3 id="تنسيق-ملف-الاستيراد">تنسيق ملف الاستيراد</h3>
+<p>راجع الوصف في القسم <a href="#تنسيق-الملف">أدناه</a></p>
+<div class="admonition tip">
+<p class="admonition-title">صيغ الملفات السهلة</p>
+<p>يقبل Dino الملف نفسه الذي يتم الحصول عليه أثناء <a href="../#التصدير">التصدير</a>. لذا، فإن أسهل طريقة للحصول على ملف منسّق بشكل صحيح للاستيراد هي أولًا تصدير بعض بيانات form من الـ schema نفسه ثم حذف الصفوف التي تحتوي على البيانات المصدَّرة، مع الإبقاء على رؤوس الأعمدة فقط. في جميع الأحوال، تأكد من أن رؤوس أعمدتك واضحة – إذ ستُستخدم كاقتراحات أثناء الربط.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">الـ Metrics محدَّدة بالمعرّف</p>
+<p>إذا كان عمود metric في ملفك يوفّر <strong>ID</strong> الخاص بالـ metric (UUID)، فإن ذلك الصف يُربط بالـ metric الموجود بذلك المعرّف ولا يُنشأ metric جديد. للمعرّف الأولوية على اسم الـ metric، لذا يحدث ذلك بغض النظر عن خيار <strong>Reuse existing metrics with the same name</strong> (الذي ينطبق فقط على المطابقة بالاسم).</p>
+</div>
+<h2 id="الخطوة-2--ربط-الحقول">الخطوة 2 — ربط الحقول</h2>
+<p>بعد الرفع، ترى جدولًا يسرد جميع الأعمدة من ملفك. يحتوي كل صف على ثلاثة أعمدة:</p>
+<ul>
+<li><strong>File column</strong> – الرأس الأصلي من ملفك.</li>
+<li><strong>Form field</strong> – قائمة منسدلة تختار منها حقل النموذج المقابل.</li>
+<li><strong>Status</strong> – يُظهر ما إذا كان العمود مربوطًا أو مُتجاهَلًا أو يحتوي على خطأ.</li>
+</ul>
+<h3 id="إجراءات-الربط">إجراءات الربط</h3>
+<ul>
+<li><strong>اختيار حقل النموذج</strong> – افتح القائمة المنسدلة لعمود واختر الحقل الصحيح. يمكنك البحث داخل القائمة المنسدلة.</li>
+<li><strong>تجاهل عمود</strong> – اختر خيار <strong>— Ignore this column —</strong> في القائمة المنسدلة، أو انقر على زر <strong>Ignore</strong> في عمود الحالة. تظهر الأعمدة المُتجاهَلة باهتة.</li>
+<li><strong>استعادة عمود مُتجاهَل</strong> – انقر على زر <strong>Restore</strong> في عمود الحالة.</li>
+</ul>
+<h3 id="المطابقة-التلقائية">المطابقة التلقائية</h3>
+<p>انقر على <strong>Auto‑match</strong> ليتولى Dino إقران الأعمدة بحقول النموذج تلقائيًا بناءً على تشابه الأسماء. تُعدّ هذه نقطة بداية جيدة – راجع عمليات الربط وعدّلها حسب الحاجة.</p>
+<div class="admonition tip">
+<p class="admonition-title">تعمل المطابقة التلقائية بأفضل شكل مع الرؤوس التي تطابق تسميات الحقول تمامًا أو تحتوي على كلمات مفتاحية مشابهة.</p>
+</div>
+<h3 id="التكرار">التكرار</h3>
+<p>إذا كان حقل النموذج المحدد حقلًا متكررًا (مثل أرقام هاتف متعددة)، يظهر حقل إدخال <strong>Repetition</strong> أسفل القائمة المنسدلة. أدخل فهرس التكرار (0، 1، 2، …) لإسناد عمود الملف هذا إلى أحد تكرارات المجموعة المتكررة.</p>
+<h3 id="ملخص-شريط-الأدوات">ملخص شريط الأدوات</h3>
+<p>في أعلى منطقة الربط، يمكنك رؤية ثلاث شرائح صغيرة:</p>
+<ul>
+<li><strong>Total columns</strong> – عدد أعمدة الملف.</li>
+<li><strong>Mapped</strong> – الأعمدة التي أُسندت إلى حقل نموذج.</li>
+<li><strong>Ignored</strong> – الأعمدة التي اخترت تجاهلها.</li>
+</ul>
+<p>استخدم حقل إدخال <strong>Search columns</strong> لتصفية الجدول حسب اسم عمود الملف.</p>
+<h2 id="تطبيق-الاستيراد">تطبيق الاستيراد</h2>
+<p>عندما تُربط جميع الأعمدة المطلوبة ولا توجد أخطاء، يصبح زر <strong>Apply import</strong> مُفعَّلًا. انقر عليه لبدء الاستيراد. أثناء المعالجة، يظهر مؤشر تحميل دوّار. يمكنك النقر على <strong>Back</strong> للعودة إلى الخطوة 1 أو إلغاء الاستيراد.</p>
+<p>بعد استيراد ناجح، تعود إلى قائمة بيانات النموذج، حيث تظهر البيانات الجديدة.</p>
+<div class="admonition warning">
+<p class="admonition-title">ربط مكرر</p>
+<p>إذا ربطت حقل النموذج نفسه بأكثر من عمود ملف، يظهر خطأ في التحقق ويبقى زر <strong>Apply import</strong> معطَّلًا حتى تصحيح ذلك.</p>
+</div>
+<h2 id="تنسيق-الملف">تنسيق الملف</h2>
+<p>نوضح الإجراء الخاص باستيراد بعض البيانات بشكل جماعي باستخدام ملف Excel مُنشأ من Google Sheet. ينطبق الإجراء نفسه على ملفات CSV أو عند العمل مباشرة مع Excel.</p>
+<p>نفترض أنك تريد استيراد بيانات في form يُسمى Projects يحتوي على شريحتين، إحداهما شريحة متكررة:</p>
+<p><img alt="The Projects form, with two slides one of which is a repeating slide" src="../../imgs/forms/import-repeating-slide.png" /></p>
+<p>أُنشئ form Projects باستخدام ملف XLSForm التالي. ورقة "survey" هي</p>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>name</th>
+<th>label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>begin group</strong></td>
+<td><strong>start</strong></td>
+<td><strong>Start</strong></td>
+</tr>
+<tr>
+<td>select_one countries</td>
+<td>country</td>
+<td>Country</td>
+</tr>
+<tr>
+<td>select_multiple countries</td>
+<td>country_other</td>
+<td>Other Countries</td>
+</tr>
+<tr>
+<td>text</td>
+<td>title</td>
+<td>Project Title</td>
+</tr>
+<tr>
+<td>date</td>
+<td>project_date_start</td>
+<td>Start date</td>
+</tr>
+<tr>
+<td>select_one donors</td>
+<td>selected_donor</td>
+<td>Donor</td>
+</tr>
+<tr>
+<td>integer</td>
+<td>budget</td>
+<td>Budget</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>isleader</td>
+<td>Leading applicant</td>
+</tr>
+<tr>
+<td><strong>end group</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>begin repeat</strong></td>
+<td><strong>indicators</strong></td>
+<td><strong>Indicators</strong></td>
+</tr>
+<tr>
+<td>text</td>
+<td>indic</td>
+<td>Indicator description</td>
+</tr>
+<tr>
+<td>integer</td>
+<td>value_indic</td>
+<td>Value reached</td>
+</tr>
+<tr>
+<td><strong>end repeat</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>وورقة "choices" هي</p>
+<table>
+<thead>
+<tr>
+<th>list_name</th>
+<th>name</th>
+<th>label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>donors</td>
+<td>ue</td>
+<td>UE</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>govita</td>
+<td>ITALIAN GOVERNMENT</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>un</td>
+<td>UN</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>pub</td>
+<td>ALTRI DONATORI PUBBLICI</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>la</td>
+<td>ENTI LOCALI</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>priv</td>
+<td>DONATORI PRIVATI</td>
+</tr>
+<tr>
+<td>donors</td>
+<td>other</td>
+<td>Others</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>countries</td>
+<td>AFG</td>
+<td>Afghanistan</td>
+</tr>
+<tr>
+<td>countries</td>
+<td>ALB</td>
+<td>Albania</td>
+</tr>
+<tr>
+<td>countries</td>
+<td>DZA</td>
+<td>Algeria</td>
+</tr>
+<tr>
+<td>countries</td>
+<td>ASM</td>
+<td>American Samoa</td>
+</tr>
+</tbody>
+</table>
+<p>اتبع هذه الخطوات:</p>
+<ol>
+<li>أنشئ ملفًا فارغًا بورقة واحدة فقط (أسماء الملف والورقة لا تهم).</li>
+<li>في الصف الأول تحتاج إلى وضع أسماء حقول النموذج والحقول الخاصة بـ DINO. في هذا المثال، يمكن أن تكون حقول النموذج:</li>
+<li><strong>country</strong></li>
+<li><strong>country_other</strong></li>
+<li><strong>title</strong></li>
+<li><strong>project_date_start</strong></li>
+<li><strong>selected_donor</strong></li>
+<li><strong>budget</strong></li>
+<li><strong>isleader</strong></li>
+<li><strong><em>indic</em></strong> (*)</li>
+<li><strong><em>value_indic</em></strong> (*)</li>
+</ol>
+<p>انتبه إلى أن الحقول الواقعة ضمن شرائح متكررة تحتاج إلى معالجة مختلفة (ولهذا وضعنا نجمة). يُرجى الرجوع إلى القسم المحدد أدناه.</p>
+<p>يمكن أن تكون الحقول الخاصة بـ DINO:</p>
+<ol>
+<li><strong>created_at</strong>. تاريخ إنشاء الـ form. حدّده فقط إذا كنت تريد أن يكون لـ forms الخاصة بك تاريخ إنشاء مختلف عن تاريخ الاستيراد؛</li>
+<li><strong>user_data_ref_id</strong>. معرّف المستخدم الذي سيُربط بالـ form (الافتراضي هو معرّف المستخدم الذي يستورد الـ forms)؛</li>
+<li><strong>area_id</strong>. معرّف الـ metric AREA الذي سيُربط بالـ form؛</li>
+<li>[area_name]</li>
+<li><strong>case_id</strong>. معرّف الـ metric CASE الذي سيُربط بالـ form؛</li>
+<li>[case_name]</li>
+<li><strong>project_id</strong>. معرّف الـ metric PROJECT الذي سيُربط بالـ form؛</li>
+<li>[project_name]</li>
+<li>[project_code]</li>
+<li><strong>location_id</strong>. معرّف الـ metric LOCATION الذي سيُربط بالـ form؛</li>
+<li>[location_name]</li>
+<li><strong>organization_id</strong>. معرّف الـ metric ORGANISATION الذي سيُربط بالـ form؛</li>
+<li>
+<p>[organization_name]</p>
+</li>
+<li>
+<p>سيتوافق كل صف مع form جديد مختلف. لذا، إذا أنشأنا ملفًا برأس واحد +، لنقل، 5 صفوف من البيانات، وإذا نجح الرفع، فسننشئ 5 forms جديدة في DINO.</p>
+</li>
+<li>ليس من الضروري أن يكون لديك عمود لكل حقل في النموذج؛ وليس من الضروري ملء جميع صفوف عمود معين، ولكن إذا كان أحد الحقول فارغًا لجميع الصفوف، فيمكن حذفه،</li>
+<li>يجب تنسيق حقل التاريخ بصيغة YYYY-MM-DD كنص (انتبه).</li>
+<li>يجب أن تحتوي حقول الاختيار الفردي على أحد الخيارات المقبولة كما هو محدَّد في "choices" (راجع منشئ النموذج أو ملف XLSForm).</li>
+<li>يجب تنسيق حقول الاختيار المتعدد وفق النمط التالي: [opt1, opt2] (أي قائمة خيارات بين قوسين مربعين).</li>
+</ol>
+<p>على سبيل المثال، يمكن أن يكون الملف الصالح كالتالي:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">country</th>
+<th style="text-align: left;">country_other</th>
+<th style="text-align: left;">title</th>
+<th style="text-align: left;">project_date_start</th>
+<th>budget</th>
+<th style="text-align: left;">isleader</th>
+<th style="text-align: left;">area_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ALB</td>
+<td style="text-align: left;">[AFG,DZA]</td>
+<td style="text-align: left;">Human rights in education</td>
+<td style="text-align: left;">2022-01-28</td>
+<td>120000</td>
+<td style="text-align: left;">true</td>
+<td style="text-align: left;">81387ff7-5c7d-44e7-9dc6-76b8d09265ac</td>
+</tr>
+<tr>
+<td style="text-align: left;">ASM</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">A new approach to social justice</td>
+<td style="text-align: left;">2022-02-14</td>
+<td>20000</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">81387ff7-5c7d-44e7-9dc6-76b8d09265ac</td>
+</tr>
+</tbody>
+</table>
+<p>في هذه الحالة نستورد 2 forms، ولكليهما نختار فقط الـ metric AREA. علاوة على ذلك، لاحظ أننا لا نوفّر جميع حقول النموذج لجميع الـ forms، لكن بالنسبة للحقول التي نوفّر لها قيمة، فإننا نتبع بدقة الإرشادات الموضحة أعلاه.</p>
+<h3 id="التعامل-مع-الـ-metrics-أثناء-الاستيراد">التعامل مع الـ metrics أثناء الاستيراد</h3>
+<p>أثناء استيراد بعض بيانات form، وفيما يتعلق بالـ metrics، قد ترغب في:</p>
+<ul>
+<li>إنشاء metrics جديدة أثناء الاستيراد</li>
+<li>إعادة استخدام metrics منشأة بالفعل</li>
+</ul>
+<p>القواعد التي يجب اتباعها لإدارة الـ metrics بشكل صحيح هي التالية:</p>
+<table>
+<thead>
+<tr>
+<th>المقياس</th>
+<th>الإنشاء من الواجهة</th>
+<th>الإنشاء عبر الاستيراد</th>
+<th>الإنشاء + التعيين عبر الاستيراد</th>
+<th>الاستخدام عبر الاستيراد</th>
+<th>الإنشاء + التعيين عبر الاستيراد (parent)</th>
+<th>الاستخدام كـ parent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Case</strong></td>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>id، أو name (مع خيار reuse)، أو كلاهما</td>
+<td>name</td>
+<td>id، أو name (مع خيار reuse)، أو كلاهما</td>
+</tr>
+<tr>
+<td><strong>Organization</strong></td>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>id، أو name (مع خيار reuse)، أو كلاهما</td>
+<td>name</td>
+<td>id، أو name (مع خيار reuse)، أو كلاهما</td>
+</tr>
+<tr>
+<td><strong>Location</strong></td>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>id، أو name (مع خيار reuse)، أو كلاهما</td>
+<td>name</td>
+<td>id، أو name (مع خيار reuse)، أو كلاهما</td>
+</tr>
+<tr>
+<td><strong>Area</strong></td>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>id، أو name (مع خيار reuse)، أو كلاهما</td>
+<td>name</td>
+<td>id، أو name (مع خيار reuse)، أو كلاهما</td>
+</tr>
+<tr>
+<td><strong>Project</strong></td>
+<td>name, code</td>
+<td>name, code</td>
+<td>name, code</td>
+<td>id</td>
+<td>name, code</td>
+<td>id</td>
+</tr>
+</tbody>
+</table>
+<h2 id="الشرائح-المتكررة">الشرائح المتكررة</h2>
+<p>إذا كان لديك حقل في شرائح متكررة، فيجب تسميته بشكل مختلف. يجب أن يُسمى كل حقل في الشريحة المتكررة \&lt;field_name&gt;__X حيث X هو رقم التكرار، من 0 (الموافق لتكرار واحد) إلى N-1 حيث N هو العدد الإجمالي لتكرارات الشريحة في ذلك الـ form.
+على سبيل المثال، لنفترض أن لديك تكرارًا واحدًا فقط من الشريحة المتكررة وتريد إضافة كلا الحقلين "Indicator description" و"Value reached". ستحتاج إلى إضافة هذين العمودين إلى ملف الاستيراد:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">indic__0</th>
+<th>value_indic__0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Number of children</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+<p>فمثلًا يمكن أن يكون لدينا:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">country</th>
+<th>budget</th>
+<th style="text-align: left;">indic__0</th>
+<th>value_indic__0</th>
+<th style="text-align: left;">indic__1</th>
+<th>value_indic__1</th>
+<th style="text-align: left;">isleader</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">ALB</td>
+<td>120000</td>
+<td style="text-align: left;">Children</td>
+<td>100</td>
+<td style="text-align: left;"></td>
+<td></td>
+<td style="text-align: left;">true</td>
+</tr>
+<tr>
+<td style="text-align: left;">ASM</td>
+<td>20000</td>
+<td style="text-align: left;"></td>
+<td></td>
+<td style="text-align: left;"></td>
+<td></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">AFG</td>
+<td>15000</td>
+<td style="text-align: left;">Parents</td>
+<td>45</td>
+<td style="text-align: left;">Schools</td>
+<td>34</td>
+<td style="text-align: left;">true</td>
+</tr>
+</tbody>
+</table>
+<h2 id="الأخطاء">الأخطاء</h2>
+<p>تحقق من المعرّفات في ملفك قبل الاستيراد. إذا كان عمود يشير إلى كيان من خلال معرّفه (مقياس أو مستخدم) ولم يكن هناك كيان بهذا المعرّف في Dino، فلن يمكن مزامنة النماذج المستوردة مع الخادم.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u062a\u0645 \u0627\u0644\u0646\u0633\u062e \u0627\u0644\u0649 \u0627\u0644\u062d\u0627\u0641\u0638\u0629", "clipboard.copy": "\u0646\u0633\u062e \u0625\u0644\u0649 \u0627\u0644\u062d\u0627\u0641\u0638\u0629", "search.result.more.one": "\u0623\u0643\u062b\u0631 \u0645\u0646 1 \u0641\u064a \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062d\u0629", "search.result.more.other": "\u0623\u0643\u062b\u0631 \u0645\u0646 # \u0641\u064a \u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062d\u0629", "search.result.none": "\u0644\u0627 \u062a\u0648\u062c\u062f \u0646\u062a\u0627\u0626\u062c", "search.result.one": "\u0646\u062a\u0627\u0626\u062c \u0627\u0644\u0628\u062d\u062b \u0645\u0633\u062a\u0646\u062f \u0648\u0627\u062d\u062f", "search.result.other": "\u0646\u062a\u0627\u0626\u062c \u0627\u0644\u0628\u062d\u062b # \u0645\u0633\u062a\u0646\u062f\u0627\u062a", "search.result.placeholder": "\u0627\u0643\u062a\u0628 \u0644\u0628\u062f\u0621 \u0627\u0644\u0628\u062d\u062b", "search.result.term.missing": "\u0645\u0641\u0642\u0648\u062f", "select.version": "\u0625\u062e\u062a\u0631 \u0627\u0644\u0625\u0635\u062f\u0627\u0631"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
