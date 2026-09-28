@@ -1,5 +1,11 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
+// The row colors are the ones of the sidebar (dino-main-nav, which the pages render in),
+// so that a hovered or selected row reads like a hovered or selected section. The
+// fallbacks are the light values, for a list shown outside the shell.
+$row-hover-bg: var(--dino-shell-hover-bg, rgba(31, 39, 51, 0.05));
+$row-selected-bg: var(--dino-shell-accent-bg, #{mat-css-vars.mat-css-color-primary(500, 0.1)});
+
 // A list fills the height the shell leaves to the page and only its table scrolls, not
 // the page. The routed page holding the list, and the metric section in between, become
 // flex columns so that height reaches the table container: a fixed max-height on the
@@ -226,11 +232,11 @@ dino-list {
     @media only screen and (max-width: 768px) {
       max-height: 70vh;
     }
-    .mat-mdc-row.dino-highlighted-row {
-      background-color: mat-css-vars.mat-css-color-accent(300) !important;
-      .mat-mdc-cell:not(.dino-expanded-cell) {
-        background-color: mat-css-vars.mat-css-color-accent(300);
-      }
+    // A selected row takes the tint of the selected section of the sidebar. The tint is
+    // translucent, so it is layered over the cell background instead of replacing it:
+    // the sticky checkbox cell stays opaque over the columns scrolled under it.
+    .mat-mdc-row.dino-highlighted-row .mat-mdc-cell:not(.dino-expanded-cell) {
+      background-image: linear-gradient($row-selected-bg, $row-selected-bg);
     }
 
     .mat-mdc-row.dino-highlighted-light {
@@ -302,9 +308,13 @@ dino-list {
   }
 
   .mat-mdc-row {
-    min-height: 70px;
+    min-height: 48px;
     height: 100%;
-    display: inline-flex;
+    // Block-level, sized like an inline-flex box: an inline row sat on a line of text,
+    // whose height and baseline added a gap under every row.
+    display: flex;
+    width: fit-content;
+    margin-bottom: 2px;
     // The anchor of `.dino-row-status`: on a compact viewport the first cell is
     // `display: contents` and generates no box for the badges to hang from.
     position: relative;
@@ -411,19 +421,20 @@ dino-list {
     opacity: 1;
   }
 
-  // The checkbox column is the width of its checkbox and no more. The status of
+  // The checkbox column is the width of its checkbox plus a margin. The status of
   // a row does not stand beside it - see `.dino-row-status` below - because a
   // column has one width for every row, and a width kept for the two status
   // icons would be empty space on every row that has nothing to report.
   // A cell is `box-sizing: border-box`, so the border and the padding come out
-  // of that width: 3px border + 14px + 40px checkbox + 4px = 61px. The 14px is
-  // what keeps the checkbox clear of an 18px badge sitting on the border.
+  // of that width: 3px border + 14px + 40px checkbox + 16px = 73px. The 14px is
+  // what keeps the checkbox clear of an 18px badge sitting on the border, the 16px
+  // what keeps it clear of the first column.
   .mat-column-select {
-    flex: 0 0 61px !important;
-    min-width: 61px;
-    max-width: 61px;
+    flex: 0 0 73px !important;
+    min-width: 73px;
+    max-width: 73px;
     padding-left: 14px;
-    padding-right: 4px;
+    padding-right: 16px;
     .mat-mdc-checkbox.dino-row-actions {
       flex: 0 0 auto;
     }
@@ -473,15 +484,15 @@ dino-list {
       align-items: center;
       gap: 4px;
       min-width: auto;
-      // Same icon size as the actions of the selection row above.
+      // Sized for the 48px row: an 18px icon in a 26px circle.
       .mat-icon {
-        height: 24px;
-        width: 24px;
-        font-size: 24px;
-        line-height: 24px;
+        height: 18px;
+        width: 18px;
+        font-size: 18px;
+        line-height: 18px;
         background-color: mat-css-vars.mat-css-color-accent(100);
         border-radius: 100%;
-        padding: 5px;
+        padding: 4px;
         margin: 0;
       }
     }
@@ -586,12 +597,17 @@ dino-list {
     -webkit-transition: all ease-in-out 0.5s;
   }
 
+  // The detail row under every row is empty until its row is expanded: only then does it
+  // take a margin, so that collapsed rows sit right on top of each other.
   .mat-mdc-row.dino-row-details {
     min-height: 0px;
     position: sticky;
     left: 0;
     background-color: transparent !important;
-    margin-bottom: 8px;
+    margin-bottom: 0;
+    &:has(.dino-inner-table-container) {
+      margin-bottom: 8px;
+    }
   }
 
   .dino-expanded-row-actions {
@@ -645,8 +661,8 @@ dino-list {
   }
   // The status of a row - it is invalid, it still has files to send - stacked on
   // its left edge, out of the flow, so that it costs the checkbox column no
-  // width at all. There are at most two, and a row is 70px tall at its
-  // shortest, so the stack always has the room for them.
+  // width at all. There are at most two, and a row is 48px tall at its shortest,
+  // so the stack (38px for two) always has the room for them.
   .dino-row-status {
     position: absolute;
     // Flush with the inner edge of the accent border, and no further left: the
@@ -836,17 +852,27 @@ dino-list {
   color: rgba(var(--mat-sidenav-content-text-color)) !important;
 }
 
-.isDarkTheme .dino-hover .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {
-  background-color: mat-css-vars.mat-css-color-primary(300);
-  .dino-row-actions-container {
-    background-color: mat-css-vars.mat-css-color-primary(300);
-  }
+// A hovered row takes the grey of a hovered entry of the sidebar, layered like the
+// selection tint. A selected row keeps its tint under the hover, and the actions it reveals
+// sit on an opaque box of the same color so that they stay legible over the cell text.
+dino-list .dino-hover .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {
+  background-image: linear-gradient($row-hover-bg, $row-hover-bg);
 }
-.isLightTheme .dino-hover .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {
-  background-color: mat-css-vars.mat-css-color-primary(300);
-  .dino-row-actions-container {
-    background-color: mat-css-vars.mat-css-color-primary(300);
-  }
+dino-list .dino-hover.dino-highlighted-row .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {
+  background-image:
+    linear-gradient($row-hover-bg, $row-hover-bg),
+    linear-gradient($row-selected-bg, $row-selected-bg);
+}
+dino-list .dino-hover .dino-row-actions-container {
+  background:
+    linear-gradient($row-hover-bg, $row-hover-bg),
+    rgb(var(--palette-background-card));
+}
+dino-list .dino-hover.dino-highlighted-row .dino-row-actions-container {
+  background:
+    linear-gradient($row-hover-bg, $row-hover-bg),
+    linear-gradient($row-selected-bg, $row-selected-bg),
+    rgb(var(--palette-background-card));
 }
 .isDarkTheme .mat-mdc-header-row {
   background: var(--mat-sidenav-content-background-color) !important;
