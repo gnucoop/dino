@@ -4,11 +4,12 @@ import {RxDocument} from 'rxdb';
 import {
   AuthenticationEvent,
   AuthEvt,
+  AuthService,
   AuthServiceConfig,
   Credentials,
   User,
 } from '@dino/core/auth';
-import {PermissionContext, PermissionContextService} from '@dino/core/data';
+import {MetricsService, PermissionContext, PermissionContextService} from '@dino/core/data';
 import {UserData, UserDataManager, UserGroup, UserGroupManager} from '@dino/core/users';
 import {BehaviorSubject, Observable, of as obsOf} from 'rxjs';
 import {delay, map, shareReplay} from 'rxjs/operators';
@@ -83,7 +84,11 @@ export class AuthServiceBackendless {
     return this._authConfig.value;
   }
   resetEvt: Observable<boolean> = obsOf(false);
-  logoutEvt: Observable<boolean> = obsOf(false);
+  // Silent, like the one of the real auth service, which emits only on an explicit logout:
+  // the data service ends the session on any emission of it, and an `of(false)` did so at
+  // startup, cancelling every collection registration before the database even existed.
+  // It is never emitted here, as that would also destroy the local database.
+  logoutEvt: EventEmitter<boolean> = new EventEmitter<boolean>();
   tokenRefreshedEvt: EventEmitter<void> = new EventEmitter<void>();
   constructor(private _router: Router) {
     this.config = authMockConfig;
@@ -175,33 +180,50 @@ export class UserDataManagerBackendless extends UserDataManager {
   }
 }
 
+/**
+ * The context of the single, all-powerful user of a backendless instance.
+ */
+const backendlessContext: Omit<PermissionContext, 'user'> = {
+  user_data: userDataMock,
+  user_form_schemas: new Set<string>(['all']),
+  user_report_schemas: new Set<string>(['all']),
+  user_form_statuses: new Set<string>(['all']),
+  user_metrics: {
+    'area': ['all'],
+    'case': ['all'],
+    'location': ['all'],
+    'organization': ['all'],
+    'project': ['all'],
+  },
+  user_permissions: {
+    'admin': {
+      'actions': {
+        'form_data': ['all'],
+        'form_schema': ['all'],
+        'report_data': ['all'],
+        'report_schema': ['all'],
+      },
+      'form_schema': ['all'],
+      'report_schema': ['all'],
+      'form_status': ['all'],
+    },
+  },
+};
+
 @Injectable()
 export class PermissionContextServiceBackendless extends PermissionContextService {
   override fullContext = new BehaviorSubject<PermissionContext | null>({
     user: dummyUser,
-    user_data: userDataMock,
-    user_form_schemas: new Set<string>(['all']),
-    user_report_schemas: new Set<string>(['all']),
-    user_form_statuses: new Set<string>(['all']),
-    user_metrics: {
-      'area': ['all'],
-      'case': ['all'],
-      'location': ['all'],
-      'organization': ['all'],
-      'project': ['all'],
-    },
-    user_permissions: {
-      'admin': {
-        'actions': {
-          'form_data': ['all'],
-          'form_schema': ['all'],
-          'report_data': ['all'],
-          'report_schema': ['all'],
-        },
-        'form_schema': ['all'],
-        'report_schema': ['all'],
-        'form_status': ['all'],
-      },
-    },
+    ...backendlessContext,
   });
+
+  constructor(authService: AuthService, metricsService: MetricsService) {
+    super(authService, metricsService);
+    // The permission checks read `permissionContext`, which is filled by `addToContext`.
+    // On a server-backed instance the user group manager does that once the collections
+    // start, an event a backendless instance never emits: without this the context kept
+    // no permissions, and every check asking for them - the create button of an empty
+    // Forms or Reports page among them - gave up and denied.
+    this.addToContext(backendlessContext);
+  }
 }
