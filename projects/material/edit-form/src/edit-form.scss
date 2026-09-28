@@ -109,3 +109,11 @@ dino-edit-form {
     left: 50%;
   }
 }
+
+// On a phone the slide header drops its back/forward arrows to save a line: the footer
+// of the form carries the same navigation, and the slide menu still jumps anywhere.
+@media only screen and (max-width: 768px) {
+  dino-edit-form ajf-slide-header .ajf-slide-nav {
+    display: none;
+  }
+}
