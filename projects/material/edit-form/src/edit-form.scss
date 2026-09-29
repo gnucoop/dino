@@ -1,6 +1,7 @@
 @use 'angular-material-css-vars' as mat-css-vars;
 
 dino-edit-form {
+  --ajf-slider-min-h: 0;
   display: flex;
   flex-direction: column;
   height: 100%;
