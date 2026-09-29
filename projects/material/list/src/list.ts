@@ -711,6 +711,19 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       return;
     }
     this.selection.clear();
+    if (this._selectExpands()) {
+      for (const row of [...this.expandedRows]) {
+        this.expansionRowsUpdate(row, false);
+      }
+    }
+  }
+
+  /**
+   * True when a click on a row both selects and expands it, so the expanded row
+   * is expected to be a selected one.
+   */
+  private _selectExpands(): boolean {
+    return this._onClickRowActions.includes('select') && this._onClickRowActions.includes('expand');
   }
 
   /**
@@ -853,7 +866,14 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
       }
     }
     if (this._onClickRowActions.some(act => act === 'expand')) {
-      this.expansionRowsUpdate(row);
+      // When the click selects too, the expanded row follows the selection: a
+      // click that deselects a row closes it instead of opening it.
+      const expand = this._selectExpands()
+        ? this.selection.isSelected(row)
+        : !this.isRowExpanded(row);
+      if (expand !== this.isRowExpanded(row)) {
+        this.expansionRowsUpdate(row);
+      }
     }
     if (this._onClickRowActions.some(act => act === 'view')) {
       this.actionOnItems(row, {actionType: 'view'});
