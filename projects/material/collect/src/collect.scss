@@ -93,6 +93,9 @@ dino-collect {
         text-align: center;
         margin: auto;
         margin-top: 5vh;
+        @media only screen and (max-width: 768px) {
+          margin-top: 8px;
+        }
       }
       &:hover {
         border-color: mat-css-vars.mat-css-color-accent(500);

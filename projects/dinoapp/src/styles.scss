@@ -34,6 +34,17 @@ body {
       background-color: transparent !important;
     }
   }
+  ajf-field-row .ajf-field-type-name {
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
+  }
+  ajf-field-row .ajf-field-row {
+    @media only screen and (max-width: 768px) {
+      padding: 5px 10px;
+      border-bottom: none;
+    }
+  }
   .mat-mdc-progress-bar .mdc-linear-progress__buffer-bar {
     background-color: mat-css-vars.mat-css-color-primary(50) !important;
   }
@@ -185,8 +196,7 @@ body {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 300;
-  src:
-    local(''),
+  src: local(''),
     url('assets/fonts/roboto-v27-vietnamese_latin-ext_latin_greek-ext_greek_cyrillic-ext_cyrillic-300.woff2')
       format('woff2'),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
@@ -198,8 +208,7 @@ body {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
-  src:
-    local(''),
+  src: local(''),
     url('assets/fonts/roboto-v27-vietnamese_latin-ext_latin_greek-ext_greek_cyrillic-ext_cyrillic-regular.woff2')
       format('woff2'),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
@@ -211,8 +220,7 @@ body {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 500;
-  src:
-    local(''),
+  src: local(''),
     url('assets/fonts/roboto-v27-vietnamese_latin-ext_latin_greek-ext_greek_cyrillic-ext_cyrillic-500.woff2')
       format('woff2'),
     /* Chrome 26+, Opera 23+, Firefox 39+ */
@@ -225,9 +233,7 @@ body {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src:
-    local('Material Icons'),
-    local('MaterialIcons-Regular'),
+  src: local('Material Icons'), local('MaterialIcons-Regular'),
     url(assets/fonts/MaterialIcons-Regular.ttf) format('truetype');
 }
 

@@ -31,7 +31,7 @@
         <mat-icon class="dino-form-metric-selector-field-icon">event</mat-icon>
         <div class="dino-form-date-selector-text">
           <span class="dino-form-date-selector-label">
-            {{'Creation Date'|transloco}}<span aria-hidden="true"> *</span>
+            {{'Creation Date'|transloco}}<span aria-hidden="true">&nbsp;*</span>
           </span>
           <span class="dino-form-date-selector-value">{{(creationDate|async) | date}}</span>
         </div>
@@ -96,7 +96,7 @@
       <div class="dino-form-metric-selector-row" *ngFor="let field of formMetricsFields|async">
         <div class="dino-form-metric-selector-row-header">
           <span class="dino-form-metric-selector-label">
-            {{field.label|transloco}}<span *ngIf="field.required" aria-hidden="true"> *</span>
+            {{field.label|transloco}}<span *ngIf="field.required" aria-hidden="true">&nbsp;*</span>
           </span>
           <span class="dino-form-metric-selector-hint">{{(field.hint ?? '')|transloco}}</span>
         </div>
