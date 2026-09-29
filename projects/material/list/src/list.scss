@@ -258,7 +258,6 @@ dino-list {
     min-width: auto !important;
     width: auto !important;
     transition: all ease-in-out 0.25s;
-    -webkit-transition: all ease-in-out 0.25s;
   }
 
   .mat-mdc-table {
@@ -357,7 +356,6 @@ dino-list {
     position: relative;
     min-width: 100%;
     transition: box-shadow ease-in-out 0.25s;
-    -webkit-transition: box-shadow ease-in-out 0.25s;
     .mat-mdc-cell {
       border-bottom-style: none;
       .mat-mdc-tab-body-content {
@@ -378,9 +376,6 @@ dino-list {
           color: mat-css-vars.mat-css-color-accent(700);
         }
       }
-    }
-    @media only screen and (max-width: 768px) {
-      position: relative;
     }
   }
   .mat-mdc-row:not(.dino-hover),
@@ -567,14 +562,12 @@ dino-list {
   .dino-edit-status-icon {
     visibility: hidden;
     padding: 5px;
+    border-radius: 50%;
     cursor: pointer;
     &.dino-edit-status-icon-touch,
     &.touranchor--is-active {
       visibility: visible;
     }
-  }
-  .dino-edit-status-icon {
-    border-radius: 50%;
   }
 
   .mat-mdc-cell.dino-expanded-cell {
@@ -582,7 +575,6 @@ dino-list {
     flex: 1 0 auto;
     flex-flow: column wrap;
     transition: all ease-in-out 0.25s;
-    -webkit-transition: all ease-in-out 0.25s;
   }
 
   // .mat-mdc-row:not(.dino-row-details):hover,
@@ -631,7 +623,6 @@ dino-list {
     min-height: 10px;
     border-radius: 3px;
     transition: all ease-in-out 0.5;
-    -webkit-transition: all ease-in-out 0.5s;
   }
 
   // The detail row under every row is empty until its row is expanded: only then does it
@@ -654,7 +645,6 @@ dino-list {
   div.dino-inner-table-container {
     width: 100%;
     transition: all ease-in-out 0.25s;
-    -webkit-transition: all ease-in-out 0.25s;
     .mat-mdc-table {
       background: transparent !important;
     }
@@ -689,7 +679,6 @@ dino-list {
   .dino-columns-sel-btn,
   .dino-header-icon {
     transition: all ease-in-out 0.25s;
-    -webkit-transition: all ease-in-out 0.25s;
   }
   .dino-header-icon:hover,
   .dino-repeating-slide-icon:hover {
@@ -735,7 +724,6 @@ dino-list {
     .dino-invalid-form-icon,
     .dino-upload-files-icon {
       transition: all ease-in-out 0.25s;
-      -webkit-transition: all ease-in-out 0.25s;
       padding: 0;
       width: 18px;
       height: 18px;
@@ -840,38 +828,15 @@ dino-list {
     }
   }
 
-  @-moz-keyframes spinClockWise {
-    0% {
-      -moz-transform: rotate(0deg);
-    }
-    100% {
-      -moz-transform: rotate(360deg);
-    }
-  }
-  @-webkit-keyframes spinClockWise {
-    0% {
-      -webkit-transform: rotate(0deg);
-    }
-    100% {
-      -webkit-transform: rotate(360deg);
-    }
-  }
   @keyframes spinClockWise {
     0% {
-      -webkit-transform: rotate(0deg);
       transform: rotate(0deg);
     }
     100% {
-      -webkit-transform: rotate(360deg);
       transform: rotate(360deg);
     }
   }
-  .isLightTheme .mat-mdc-header-cell:first-of-type,
-  .isLightTheme .mat-mdc-cell:first-of-type {
-    background-color: var(--mat-sidenav-content-background-color);
-  }
-  .isDarkTheme .mat-mdc-header-cell:first-of-type,
-  .isDarkTheme .mat-mdc-cell:first-of-type {
+  :is(.isLightTheme, .isDarkTheme) :is(.mat-mdc-header-cell, .mat-mdc-cell):first-of-type {
     background-color: var(--mat-sidenav-content-background-color);
   }
 }
@@ -908,9 +873,7 @@ dino-list .dino-hover.dino-highlighted-row .dino-row-actions-container {
   background: linear-gradient($row-hover-bg, $row-hover-bg),
     linear-gradient($row-selected-bg, $row-selected-bg), rgb(var(--palette-background-card));
 }
-.isDarkTheme .mat-mdc-header-row {
-  background: var(--mat-sidenav-content-background-color) !important;
-}
+.isDarkTheme .mat-mdc-header-row,
 .isLightTheme .mat-mdc-header-row {
   background: var(--mat-sidenav-content-background-color) !important;
 }
