@@ -4,4 +4,9 @@ dino-form-metric-selector-dialog {
     flex-flow: row wrap;
     justify-content: space-between;
   }
+
+  @media only screen and (max-width: 599px) {
+    --mat-dialog-content-padding: 20px 14px;
+    --mat-dialog-with-actions-content-padding: 20px 14px;
+  }
 }

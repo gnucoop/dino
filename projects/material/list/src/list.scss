@@ -39,6 +39,10 @@ dino-list {
     gap: 8px;
     padding: 4px 8px;
     min-height: 48px;
+    @media only screen and (max-width: 599px) {
+      padding: 2px 8px;
+      min-height: 0;
+    }
 
     .dino-selection-actions-left {
       display: flex;
@@ -68,12 +72,39 @@ dino-list {
       display: flex;
       align-items: center;
       margin-left: auto;
+
+      @media only screen and (max-width: 599px) {
+        .dino-columns-btn {
+          min-width: 40px;
+          height: 32px;
+          padding: 0 8px;
+          > .mat-icon {
+            margin: 0;
+          }
+          .mdc-button__label {
+            display: none;
+          }
+        }
+      }
     }
 
     .dino-selection-clear .mat-icon,
     .dino-selection-bulk .mat-icon,
     .dino-columns-btn .mat-icon {
       margin-right: 4px;
+    }
+
+    .dino-selection-actions-left:has(.dino-selection-action) .dino-selection-clear {
+      @media only screen and (max-width: 599px) {
+        min-width: 0;
+        padding: 0 5px;
+        > .mat-icon {
+          margin: 0;
+        }
+        .mdc-button__label {
+          display: none;
+        }
+      }
     }
 
     // Same button radius as the filter toolbar and the other sections.
@@ -93,6 +124,9 @@ dino-list {
     .dino-selection-action {
       min-width: 0;
       padding: 0 10px;
+      @media only screen and (max-width: 599px) {
+        padding: 0 5px;
+      }
 
       // MDC text buttons shrink leading icons to 18px; keep the original 24px.
       .mat-icon {
@@ -206,6 +240,9 @@ dino-list {
     }
 
     @media only screen and (max-width: 599px) {
+      dino-breadcrumbs .dino-page-title {
+        grid-column: 1 / -1;
+      }
       .mat-mdc-paginator {
         grid-area: 3 / 1 / auto / -1;
         // On a line of its own the lift applied by the general paginator rule
@@ -858,21 +895,18 @@ dino-list {
 dino-list .dino-hover .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {
   background-image: linear-gradient($row-hover-bg, $row-hover-bg);
 }
-dino-list .dino-hover.dino-highlighted-row .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {
-  background-image:
-    linear-gradient($row-hover-bg, $row-hover-bg),
+dino-list
+  .dino-hover.dino-highlighted-row
+  .mat-mdc-cell:not(.mat-mdc-cell:last-of-type.mat-column-actions) {
+  background-image: linear-gradient($row-hover-bg, $row-hover-bg),
     linear-gradient($row-selected-bg, $row-selected-bg);
 }
 dino-list .dino-hover .dino-row-actions-container {
-  background:
-    linear-gradient($row-hover-bg, $row-hover-bg),
-    rgb(var(--palette-background-card));
+  background: linear-gradient($row-hover-bg, $row-hover-bg), rgb(var(--palette-background-card));
 }
 dino-list .dino-hover.dino-highlighted-row .dino-row-actions-container {
-  background:
-    linear-gradient($row-hover-bg, $row-hover-bg),
-    linear-gradient($row-selected-bg, $row-selected-bg),
-    rgb(var(--palette-background-card));
+  background: linear-gradient($row-hover-bg, $row-hover-bg),
+    linear-gradient($row-selected-bg, $row-selected-bg), rgb(var(--palette-background-card));
 }
 .isDarkTheme .mat-mdc-header-row {
   background: var(--mat-sidenav-content-background-color) !important;

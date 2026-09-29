@@ -51,7 +51,7 @@ dino-form-metric-selector {
       flex-direction: column;
       align-items: stretch;
       gap: 20px;
-      padding: 16px;
+      padding: 0;
     }
 
     // Inside a dialog there is no side panel and the dialog draws the surface,
@@ -112,6 +112,13 @@ dino-form-metric-selector {
     color: var(--dino-fms-muted);
   }
 
+  .dino-form-metric-selector-heading,
+  .dino-form-metric-selector-description {
+    @media only screen and (max-width: 992px) {
+      display: none;
+    }
+  }
+
   // The right column: the card holding the date, the status and the metrics.
   .dino-form-metric-selector-card {
     flex: 1 1 auto;
@@ -126,7 +133,7 @@ dino-form-metric-selector {
 
     @media only screen and (max-width: 992px) {
       max-width: none;
-      padding: 16px;
+      padding: 8px;
     }
 
     > form + form {
@@ -306,6 +313,22 @@ dino-form-metric-selector {
       width: 18px;
       height: 18px;
       margin-right: 4px;
+    }
+
+    @media only screen and (max-width: 768px) {
+      min-width: 48px;
+      padding: 0 12px;
+      .mat-icon {
+        margin: 0;
+      }
+      .mdc-button__label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
     }
   }
 

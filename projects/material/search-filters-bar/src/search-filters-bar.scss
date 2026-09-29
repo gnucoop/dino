@@ -123,6 +123,24 @@ dino-search-filters-bar {
         border-radius: 8px;
       }
     }
+
+    @media only screen and (max-width: 599px) {
+      .mat-mdc-button-base {
+        min-width: 40px;
+        padding: 0 8px;
+        > .mat-icon {
+          margin: 0;
+        }
+      }
+      .mdc-button__label > span:not(.dino-filters-count):not(.dino-report-cost) {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+    }
   }
 
   .dino-filters-count {
