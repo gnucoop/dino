@@ -605,7 +605,7 @@ dino-list {
     left: 0;
     background-color: transparent !important;
     margin-bottom: 0;
-    &:has(.dino-inner-table-container) {
+    &:has(.dino-inner-table-container .mat-mdc-table) {
       margin-bottom: 8px;
     }
   }
