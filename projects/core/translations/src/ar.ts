@@ -928,4 +928,20 @@ export const AR: Translation = {
   'signature': 'توقيع',
   'range': 'نطاق',
   'note': 'ملاحظة',
+  'Sign in': 'تسجيل الدخول',
+  'Signing in…': 'جارٍ تسجيل الدخول…',
+  'Use the account your administrator created for you.': 'استخدم الحساب الذي أنشأه لك المسؤول.',
+  'Create account': 'إنشاء حساب',
+  'Source on GitHub': 'الشيفرة المصدرية على GitHub',
+  'Open-source data platform': 'منصة بيانات مفتوحة المصدر',
+  'Collect data in the field. Turn it into knowledge.':
+    'اجمع البيانات في الميدان. وحوّلها إلى معرفة.',
+  'Dino is a platform for building forms, gathering responses and bringing them together into reports and metrics. It keeps working without a connection and synchronizes when one is available. The code is open source, developed by Gnucoop and published on GitHub.':
+    'Dino منصة لبناء النماذج وجمع الإجابات وتجميعها في تقارير ومقاييس. تواصل العمل دون اتصال وتُزامن البيانات عند توفر الاتصال. الشيفرة مفتوحة المصدر، طورتها Gnucoop ونُشرت على GitHub.',
+  'Aggregation': 'التجميع',
+  'Design questionnaires and collect responses.': 'صمّم الاستبيانات واجمع الإجابات.',
+  'Present results as tables and charts.': 'اعرض النتائج في جداول ورسوم بيانية.',
+  'Combine and query data across forms.': 'اجمع البيانات من عدة نماذج واستعلم عنها.',
+  'Define indicators and track them over time.': 'حدّد المؤشرات وتابعها عبر الزمن.',
+  'Dino is free and open-source software by': 'Dino برنامج حر ومفتوح المصدر من',
 };

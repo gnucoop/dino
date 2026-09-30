@@ -1,3 +1,5 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+
 dino-login {
   display: flex;
   align-items: stretch;
@@ -42,7 +44,47 @@ dino-login {
         text-align: left;
       }
 
+      // The sign-in card: a hairline border drawn from the text colour, so it
+      // reads on the light and on the dark theme alike.
       &.dino-login-form-container {
+        width: 380px;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 18px;
+        border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+        border-radius: 4px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14);
+        text-align: start;
+
+        // Rounded and shorter than the 56px default: Material derives the label
+        // position, centred or floated onto the outline, from the height token.
+        --mat-form-field-container-height: 44px;
+        --mat-form-field-container-vertical-padding: 10px;
+        --mdc-outlined-text-field-container-shape: 12px;
+
+        .dino-login-heading {
+          margin-bottom: 14px;
+
+          h2 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 400;
+            line-height: 1.2;
+          }
+
+          p {
+            margin: 4px 0 0;
+            font-size: 13px;
+            opacity: 0.7;
+          }
+        }
+
+        .dino-login-submit {
+          width: 100%;
+          min-height: 40px;
+          margin-top: 4px;
+        }
+
         form {
           mat-form-field {
             display: block;
@@ -50,14 +92,15 @@ dino-login {
               padding-bottom: 0px;
             }
           }
-          input {
+          // Not the Material inputs: the line height and margin below would
+          // stretch the field past its container height.
+          input:not(.mat-mdc-input-element) {
             display: block;
             background-color: transparent;
             font-size: 1.1em;
             line-height: 2.5em;
             margin: 0 auto 1.1em;
             border: none;
-            text-align: center;
 
             &:focus {
               outline: 0;
@@ -73,7 +116,7 @@ dino-login {
               display: block;
               font-size: 1.1em;
               line-height: 2.5em;
-              color: rgba(91, 91, 96, 0.87);
+              color: mat-css-vars.mat-css-color-warn(700);
             }
           }
           mat-progress-bar {

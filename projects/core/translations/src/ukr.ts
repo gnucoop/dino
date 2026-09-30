@@ -839,4 +839,21 @@ export const UKR: Translation = {
   'signature': 'підпис',
   'range': 'діапазон',
   'note': 'примітка',
+  'Sign in': 'Увійти',
+  'Signing in…': 'Вхід…',
+  'Use the account your administrator created for you.':
+    'Використовуйте обліковий запис, який створив для вас адміністратор.',
+  'Create account': 'Створити обліковий запис',
+  'Source on GitHub': 'Вихідний код на GitHub',
+  'Open-source data platform': 'Відкрита платформа даних',
+  'Collect data in the field. Turn it into knowledge.':
+    'Збирайте дані на місцях. Перетворюйте їх на знання.',
+  'Dino is a platform for building forms, gathering responses and bringing them together into reports and metrics. It keeps working without a connection and synchronizes when one is available. The code is open source, developed by Gnucoop and published on GitHub.':
+    "Dino — це платформа для створення форм, збору відповідей і об'єднання їх у звіти та метрики. Вона працює без з'єднання і синхронізується, коли воно з'являється. Код відкритий, розроблений Gnucoop і опублікований на GitHub.",
+  'Design questionnaires and collect responses.': 'Створюйте анкети та збирайте відповіді.',
+  'Present results as tables and charts.': 'Подавайте результати у таблицях і діаграмах.',
+  'Combine and query data across forms.': 'Поєднуйте дані з різних форм і робіть запити до них.',
+  'Define indicators and track them over time.': 'Визначайте показники та відстежуйте їх у часі.',
+  'Dino is free and open-source software by':
+    'Dino — вільне програмне забезпечення з відкритим кодом від',
 };

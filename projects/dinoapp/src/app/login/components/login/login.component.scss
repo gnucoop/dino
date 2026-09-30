@@ -1,7 +1,168 @@
-.theme-toggle {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20vh;
+@use 'angular-material-css-vars' as mat-css-vars;
+
+dinoapp-login {
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+
+  // Hairlines drawn from the text colour, so they hold on either theme.
+  --dinoapp-login-divider: color-mix(in srgb, currentColor 16%, transparent);
+  --dinoapp-login-ink: #{mat-css-vars.mat-css-color-primary(500, 1)};
+
+  .dinoapp-login-page {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 18px;
+    box-sizing: border-box;
+  }
+
+  .dinoapp-login-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--dinoapp-login-divider);
+
+    .dinoapp-login-logo {
+      height: 32px;
+      margin-right: auto;
+    }
+
+    .dinoapp-login-github {
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    dino-lang-selector {
+      margin-right: 0;
+    }
+
+    // On a phone the logo, the language and the full label do not share a row:
+    // the link keeps its icon, and its name stays in the aria-label.
+    @media (max-width: 480px) {
+      gap: 4px;
+
+      .dinoapp-login-github {
+        margin-right: 0;
+      }
+
+      .dinoapp-login-github-label {
+        display: none;
+      }
+    }
+  }
+
+  .dinoapp-login-main {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap-reverse;
+    align-items: center;
+    gap: 28px;
+    padding: 28px 0;
+  }
+
+  .dinoapp-login-intro {
+    flex: 1 1 380px;
+    min-width: 0;
+    max-width: 540px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    .dinoapp-login-kicker {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dinoapp-login-ink);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 44px);
+      font-weight: 300;
+      line-height: 1.08;
+      letter-spacing: -0.015em;
+      text-wrap: balance;
+    }
+
+    p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
+      text-wrap: pretty;
+    }
+  }
+
+  .dinoapp-login-modules {
+    display: grid;
+    // At most two columns: four modules split 3 + 1 would leave one stranded.
+    grid-template-columns: repeat(auto-fit, minmax(max(150px, 45%), 1fr));
+    margin-top: 14px;
+    border-top: 1px solid var(--dinoapp-login-divider);
+
+    .dinoapp-login-module {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 9px 9px 9px 0;
+      border-bottom: 1px solid var(--dinoapp-login-divider);
+    }
+
+    .dinoapp-login-module-title {
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    .dinoapp-login-module-body {
+      font-size: 13px;
+      opacity: 0.72;
+    }
+  }
+
+  .dinoapp-login-form {
+    flex: 1 1 320px;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+
+    dino-login {
+      width: 100%;
+      max-width: 380px;
+    }
+  }
+
+  .dinoapp-login-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 9px;
+    padding: 14px 0;
+    border-top: 1px solid var(--dinoapp-login-divider);
+    font-size: 12px;
+    color: color-mix(in srgb, currentColor 65%, transparent);
+
+    a {
+      color: var(--dinoapp-login-ink);
+    }
+
+    .dinoapp-login-footer-end {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .dinoapp-login-version {
+      font-feature-settings: 'tnum';
+    }
+  }
+}
+
+// On a dark surface the 500 shade reads dim; the lighter end of the palette carries.
+.isDarkTheme dinoapp-login {
+  --dinoapp-login-ink: #{mat-css-vars.mat-css-color-primary(300, 1)};
 }

@@ -450,4 +450,21 @@ export const UGA: Translation = {
   'Upload a file': 'Upload a file',
   'Delete': 'Delete',
   'Transcribe': 'Transcribe',
+  'Sign in': 'Sign in',
+  'Signing in…': 'Signing in…',
+  'Use the account your administrator created for you.':
+    'Use the account your administrator created for you.',
+  'Create account': 'Create account',
+  'Source on GitHub': 'Source on GitHub',
+  'Open-source data platform': 'Open-source data platform',
+  'Collect data in the field. Turn it into knowledge.':
+    'Collect data in the field. Turn it into knowledge.',
+  'Dino is a platform for building forms, gathering responses and bringing them together into reports and metrics. It keeps working without a connection and synchronizes when one is available. The code is open source, developed by Gnucoop and published on GitHub.':
+    'Dino is a platform for building forms, gathering responses and bringing them together into reports and metrics. It keeps working without a connection and synchronizes when one is available. The code is open source, developed by Gnucoop and published on GitHub.',
+  'Aggregation': 'Aggregation',
+  'Design questionnaires and collect responses.': 'Design questionnaires and collect responses.',
+  'Present results as tables and charts.': 'Present results as tables and charts.',
+  'Combine and query data across forms.': 'Combine and query data across forms.',
+  'Define indicators and track them over time.': 'Define indicators and track them over time.',
+  'Dino is free and open-source software by': 'Dino is free and open-source software by',
 };
