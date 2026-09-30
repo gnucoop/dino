@@ -7,16 +7,19 @@ name: Deploy Docs
 # output over those edits, and since the result is not committed back, the
 # published page would change from one deploy to the next.
 #
+# main is published at the root of the site (/dino/<lang>/), dev under /dino/dev/<lang>/.
+# GitHub Pages serves one site per repo, so the two versions are two folders of it.
+#
 # `workflow_run` only uses the version of this file present on the default branch.
 
 on:
   workflow_run:
     workflows: ['CI']
-    # Without this filter every branch whose CI passes republishes the docs. The
-    # run would rebuild main anyway, since a workflow_run checkout defaults to the
-    # default branch, so those pushes to gh-pages are pure waste.
+    # Only the two published versions: any other branch whose CI passes would
+    # republish the docs for nothing.
     branches:
       - main
+      - dev
     types:
       - completed
 jobs:
@@ -25,8 +28,16 @@ jobs:
     # gains another branch.
     if: >-
       ${{ github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main' }}
+      (github.event.workflow_run.head_branch == 'main' ||
+      github.event.workflow_run.head_branch == 'dev') }}
     runs-on: ubuntu-latest
+    # A main deploy rewrites the whole of gh-pages and puts back the dev/ it finds
+    # there: run alongside a dev deploy, it could put back the old one.
+    concurrency:
+      group: gh-pages-deploy
+      cancel-in-progress: false
+    env:
+      DOCS_BRANCH: ${{ github.event.workflow_run.head_branch }}
     permissions:
       contents: write
 
@@ -34,8 +45,12 @@ jobs:
       # ------------------------
       # Checkout repo
       # ------------------------
+      # A workflow_run checks out the default branch unless told otherwise: without
+      # the SHA a dev run would build and publish main. For main it pins the commit
+      # that passed CI rather than whatever the branch points to by now.
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
       # ------------------------
@@ -107,6 +122,13 @@ jobs:
       # ------------------------
       # Build MkDocs (all languages)
       # ------------------------
+      # site_url and the language switcher links are absolute paths under /dino/.
+      # Rewritten on the runner only, never committed.
+      - name: Point the dev docs to /dino/dev/
+        if: env.DOCS_BRANCH == 'dev'
+        working-directory: dino-doc
+        run: sed -i 's#/dino/#/dino/dev/#g' mkdocs.base.yml config/*/mkdocs.yml
+
       - name: Build MkDocs site
         working-directory: dino-doc
         run: |
@@ -131,17 +153,43 @@ jobs:
       # projects wired to this repo try to build the docs branch as if it were
       # the app, and fail. Shipping a vercel.json inside the site gives them an
       # ignore command that always skips. Exit 0 means "skip the build".
+      #
+      # The file belongs at the root of gh-pages, which only main's deploy writes.
       - name: Skip Vercel builds on gh-pages
+        if: env.DOCS_BRANCH == 'main'
         run: |
           echo '{"ignoreCommand": "exit 0"}' > dino-doc/site/vercel.json
 
       # ------------------------
       # Deploy to GitHub Pages
       # ------------------------
-      - name: Deploy to GitHub Pages
+      # main replaces gh-pages with a single orphan commit, so the dev/ already
+      # published is carried over into the new site first. On the very first
+      # deploy there is none yet.
+      - name: Keep the published dev docs
+        if: env.DOCS_BRANCH == 'main'
+        run: |
+          git fetch origin gh-pages || exit 0
+          if git ls-tree -d --name-only origin/gh-pages dev | grep -q .; then
+            git archive origin/gh-pages dev | tar -x -C dino-doc/site
+          fi
+
+      - name: Deploy main to GitHub Pages
+        if: env.DOCS_BRANCH == 'main'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: dino-doc/site
           publish_branch: gh-pages
           force_orphan: true
+
+      # Without force_orphan and with keep_files off, only dev/ is emptied and
+      # refilled: main's folders and the root files stay as they are.
+      - name: Deploy dev to GitHub Pages
+        if: env.DOCS_BRANCH == 'dev'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dino-doc/site
+          publish_branch: gh-pages
+          destination_dir: dev

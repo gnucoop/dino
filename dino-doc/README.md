@@ -297,10 +297,23 @@ To run only a subset (e.g. while iterating on one page):
 ## Publishing (CI)
 
 `.github/workflows/deploy-docs.yml` publishes the docs to GitHub Pages after a
-successful CI run on `main`. It captures fresh screenshots from the app built
-from that commit and builds the MkDocs site from the Markdown **as committed**:
-it never runs `docs-generate.mjs`. Text changes reach the published site only
-through a commit.
+successful CI run on `main` or `dev`. It captures fresh screenshots from the app
+built from that commit and builds the MkDocs site from the Markdown **as
+committed**: it never runs `docs-generate.mjs`. Text changes reach the published
+site only through a commit.
+
+The two versions are two folders of the same site:
+
+- `main` → `https://gnucoop.github.io/dino/<lang>/`
+- `dev` → `https://gnucoop.github.io/dino/dev/<lang>/`
+
+For `dev` the workflow rewrites the absolute `/dino/` paths of `site_url` and of
+the language switcher to `/dino/dev/` on the runner, without committing them. A
+`main` deploy replaces the whole `gh-pages` branch and carries over the `dev/`
+folder already published; a `dev` deploy replaces `dev/` only.
+
+The workflow always runs in the version present on `main`: a change to it takes
+effect only once it reaches `main`.
 
 ## Build static HTML site
 
