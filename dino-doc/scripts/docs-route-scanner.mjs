@@ -145,10 +145,10 @@ const EXTRA_ROUTE_ENTRIES = [
       {
         name: 'forms/index-export',
         description: 'Export dialog for downloading form submissions',
-        // The export button is inside a collapsed mat-expansion-panel (visibility:hidden).
-        // The keyword filter inside the header swallows clicks (stopPropagation),
-        // so we target the expansion indicator arrow to toggle the panel open.
-        setup: "cy.get('.mat-expansion-indicator').first().click(); cy.wait(500); cy.get('.dino-export-button', { timeout: 8000 }).should('be.visible').first().click(); cy.wait(1000);",
+        // The export button sits in the filters toolbar, always visible. A schema
+        // whose list is not exportable has none: the screenshot is skipped.
+        selector: '.dino-export-button',
+        setup: "cy.get('.dino-export-button').first().click(); cy.wait(1000);",
       },
     ],
   },

@@ -9,26 +9,10 @@
         "description": "Main view of the Main Nav page"
       },
       {
-        "name": "interface/index-user-area",
-        "setup": "cy.get('.dino-active-user-icon').first().click(); cy.wait(1000);",
-        "selector": ".dino-active-user-icon",
-        "description": "User area dialog open"
-      },
-      {
         "name": "interface/index-notifications",
         "setup": "cy.get('.dino-notifications-icon').first().click(); cy.wait(500);",
         "selector": ".dino-notifications-icon",
         "description": "Notifications dropdown open"
-      },
-      {
-        "name": "interface/index-sidenav-expanded",
-        "setup": "cy.get('button[aria-label=\"Toggle menu button\"]').first().click(); cy.wait(500); cy.get('.dino-extend-menu-button').first().click(); cy.wait(500);",
-        "selector": ".dino-extend-menu-button",
-        "description": "Sidenav with labels expanded (tablet viewport)",
-        "viewport": {
-          "width": 768,
-          "height": 1024
-        }
       }
     ]
   },
@@ -294,6 +278,17 @@
     ]
   },
   {
+    "url": "/user-area",
+    "dir": "user-area",
+    "screenshots": [
+      {
+        "name": "user-area/index",
+        "setup": null,
+        "description": "Main view of the User Area page"
+      }
+    ]
+  },
+  {
     "url": "/forms/{schemaId}",
     "dir": "forms",
     "resolveFrom": "/forms",
@@ -301,7 +296,8 @@
       {
         "name": "forms/index-export",
         "description": "Export dialog for downloading form submissions",
-        "setup": "cy.get('.mat-expansion-indicator').first().click(); cy.wait(500); cy.get('.dino-export-button', { timeout: 8000 }).should('be.visible').first().click(); cy.wait(1000);"
+        "selector": ".dino-export-button",
+        "setup": "cy.get('.dino-export-button').first().click(); cy.wait(1000);"
       }
     ]
   },
