@@ -1,5 +1,7 @@
 # --- STAGE 1: Builder (Build Generica) ---
-FROM node:20-alpine AS builder
+# The build only produces static files, the same for every architecture: it runs
+# natively on the machine that builds the image, never under emulation.
+FROM --platform=$BUILDPLATFORM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -27,11 +29,9 @@ COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 # Il builder ":browser" produce l'output direttamente in dist/dinoapp (senza sottocartella browser/).
 COPY --from=builder /app/dist/dinoapp /usr/share/nginx/html
 
-# 3. Copiamo lo script di iniezione nella cartella speciale di esecuzione automatica di Nginx
-COPY docker/entrypoint.sh /docker-entrypoint.d/99-inject-env.sh
-
-# 4. Assicuriamoci che lo script abbia i permessi di esecuzione
-RUN chmod +x /docker-entrypoint.d/99-inject-env.sh
+# 3. Copiamo lo script di iniezione nella cartella speciale di esecuzione automatica di Nginx,
+# già eseguibile: nessun RUN in questo stage, così l'immagine arm64 si costruisce senza emulazione.
+COPY --chmod=755 docker/entrypoint.sh /docker-entrypoint.d/99-inject-env.sh
 
 # Esponiamo la porta standard
 EXPOSE 80
