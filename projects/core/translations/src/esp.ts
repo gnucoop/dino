@@ -800,4 +800,21 @@ export const ESP: Translation = {
   'signature': 'firma',
   'range': 'rango',
   'note': 'nota',
+  'Sign in': 'Iniciar sesión',
+  'Signing in…': 'Iniciando sesión…',
+  'Use the account your administrator created for you.':
+    'Usa la cuenta que tu administrador creó para ti.',
+  'Create account': 'Crear cuenta',
+  'Source on GitHub': 'Código fuente en GitHub',
+  'Open-source data platform': 'Plataforma de datos de código abierto',
+  'Collect data in the field. Turn it into knowledge.':
+    'Recoge datos en el terreno. Conviértelos en conocimiento.',
+  'Dino is a platform for building forms, gathering responses and bringing them together into reports and metrics. It keeps working without a connection and synchronizes when one is available. The code is open source, developed by Gnucoop and published on GitHub.':
+    'Dino es una plataforma para crear formularios, recoger respuestas y reunirlas en informes y métricas. Sigue funcionando sin conexión y se sincroniza cuando hay una disponible. El código es abierto, desarrollado por Gnucoop y publicado en GitHub.',
+  'Aggregation': 'Agregación',
+  'Design questionnaires and collect responses.': 'Diseña cuestionarios y recoge respuestas.',
+  'Present results as tables and charts.': 'Presenta los resultados en tablas y gráficos.',
+  'Combine and query data across forms.': 'Combina y consulta datos de varios formularios.',
+  'Define indicators and track them over time.': 'Define indicadores y síguelos en el tiempo.',
+  'Dino is free and open-source software by': 'Dino es software libre y de código abierto de',
 };

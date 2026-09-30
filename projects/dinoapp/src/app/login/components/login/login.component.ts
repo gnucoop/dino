@@ -10,15 +10,18 @@ import {
 import {MatSelect} from '@angular/material/select';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
+import {TranslocoService} from '@ajf/core/transloco';
 import {ConfigResponse, ConfigService, ConfigSet} from '@dino/core/config';
 import {ThemeService} from '@dino/material/core';
-import {Observable} from 'rxjs';
+import {Observable, of as obsOf} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 
 import * as conf from '../../conf';
 import {environment} from 'src/environments/environment';
 import {ActionTrigger} from '@dino/core/data';
+import {LocalizedText} from 'src/environments/environment-interface';
 import {ActionsService} from 'src/app/actions.service';
+import {appVersion, availableLangs} from 'src/app/main-nav/conf';
 
 @Component({
   selector: 'dinoapp-login',
@@ -40,13 +43,54 @@ export class LoginComponent implements OnInit, AfterViewInit {
   readonly logoImagePath: Observable<string>;
   readonly privacyPolicy: string | null = conf.privacyPolicy;
   readonly fullNameLabel: string | undefined = conf.fullNameLabel;
+  readonly showModules: boolean = conf.showLoginModules;
+  readonly appVersion: string = appVersion;
+  readonly availableLangs: string[] = availableLangs;
+  /**
+   * The built-in Dino modules introduced next to the sign-in card, as translation keys.
+   */
+  readonly modules: {title: string; body: string}[] = [
+    {title: 'Forms', body: 'Design questionnaires and collect responses.'},
+    {title: 'Reports', body: 'Present results as tables and charts.'},
+    {title: 'Aggregation', body: 'Combine and query data across forms.'},
+    {title: 'Metrics', body: 'Define indicators and track them over time.'},
+  ];
+
+  /**
+   * The introduction texts set in the environment, in the active language; null where
+   * none is set, and the template falls back to the built-in translated text.
+   */
+  readonly kicker: Observable<string | null>;
+  readonly title: Observable<string | null>;
+  readonly description: Observable<string | null>;
+  /**
+   * The module list set in the environment, or null to show the built-in one.
+   */
+  readonly customModules: Observable<{title: string; body: string}[]> | null;
 
   constructor(
     private _router: Router,
     private _actionService: ActionsService,
     @Optional() private _configService: ConfigService | null,
     readonly ts: ThemeService,
+    private _transloco: TranslocoService,
   ) {
+    const page = conf.loginPage;
+    this.kicker = this._localized(page.kicker);
+    this.title = this._localized(page.title);
+    this.description = this._localized(page.description);
+    const modules = page.modules;
+    this.customModules =
+      modules != null && modules.length > 0
+        ? this._transloco.langChanges$.pipe(
+            map(lang =>
+              modules.map(module => ({
+                title: this._pick(module.title, lang) ?? '',
+                body: this._pick(module.body, lang) ?? '',
+              })),
+            ),
+          )
+        : null;
     this.logoImagePath = this.ts.darkModeChange.pipe(
       map(isdark => {
         if (isdark) {
@@ -127,6 +171,26 @@ export class LoginComponent implements OnInit, AfterViewInit {
       configSets: confSets,
     };
     return confResp;
+  }
+
+  /**
+   * A configured text in the active language, following each language change.
+   * @param text The text per language, or undefined when the environment sets none
+   */
+  private _localized(text: LocalizedText | undefined): Observable<string | null> {
+    if (text == null) {
+      return obsOf(null);
+    }
+    return this._transloco.langChanges$.pipe(map(lang => this._pick(text, lang)));
+  }
+
+  /**
+   * The text for a language: that language's, else the default language's, else the first given.
+   * @param text The text per language
+   * @param lang The Dino language code, eg. 'ITA'
+   */
+  private _pick(text: LocalizedText, lang: string): string | null {
+    return text[lang] ?? text[conf.defaultLanguage] ?? Object.values(text)[0] ?? null;
   }
 
   postLogin() {
