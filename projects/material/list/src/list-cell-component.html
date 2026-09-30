@@ -44,11 +44,12 @@
 
         <!-- AUDIO -->
         <audio *ngIf="fileView.isAudio && fileView.href" class="dino-file-cell-audio" controls
-          [src]="fileView.href"></audio>
+          [src]="fileView.href" (click)="$event.stopPropagation()"></audio>
 
         <!-- DOWNLOAD / URL -->
         <a *ngIf="!fileView.isImage && !fileView.isAudio && fileView.href" [href]="fileView.href"
-          [attr.target]="fileView.targetBlank ? '_blank' : null" [attr.download]="fileView.download ? '' : null">
+          [attr.target]="fileView.targetBlank ? '_blank' : null" [attr.download]="fileView.download ? '' : null"
+          (click)="$event.stopPropagation()">
 
           <mat-icon class="dino-file-cell-icon">
             {{ fileIcon }}
@@ -75,13 +76,12 @@
 
 <!-- Boolean Cell template -->
 <ng-template #booleanCellTemplate>
-  <div (click)="$event.stopPropagation()">
-    <mat-slide-toggle
-      [checked]="item === true"
-      (change)="toggleBoolean($event)"
-      aria-label="Edit boolean field"
-    ></mat-slide-toggle>
-  </div>
+  <mat-slide-toggle
+    [checked]="item === true"
+    (click)="$event.stopPropagation()"
+    (change)="toggleBoolean($event)"
+    aria-label="Edit boolean field"
+  ></mat-slide-toggle>
 </ng-template>
 
 <!-- Standard Cell template -->
@@ -91,7 +91,14 @@
 
 <!-- Link Cell temlate -->
 <ng-template #urlTemplate
-  ><a class="dino-link-cell" [matTooltip]="item" [href]="item" target="_blank">Link</a></ng-template
+  ><a
+    class="dino-link-cell"
+    [matTooltip]="item"
+    [href]="item"
+    target="_blank"
+    (click)="$event.stopPropagation()"
+    >Link</a
+  ></ng-template
 >
 
 <!-- Standard Text Cell template -->
