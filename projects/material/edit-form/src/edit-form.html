@@ -53,18 +53,22 @@
               ajfFormTopToolbarButtons
               type="button"
               class="ajf-btn dino-form-save-draft-button"
+              [attr.aria-label]="'Save draft'|transloco"
               [disabled]="(isSaveDraftDisabled|async) === true"
               (click)="saveDraft()"
             >
-              <mat-icon>save_as</mat-icon>{{'Save draft'|transloco}}
+              <mat-icon>save_as</mat-icon
+              ><span class="dino-form-save-label">{{'Save draft'|transloco}}</span>
             </button>
             <button
               ajfFormSaveButton
               type="button"
               class="ajf-btn--primary dino-form-save-button"
+              [attr.aria-label]="'Save form'|transloco"
               [disabled]="(isSaveDisabled|async) === true"
             >
-              <mat-icon>save</mat-icon>{{'Save form'|transloco}}
+              <mat-icon>save</mat-icon
+              ><span class="dino-form-save-label">{{'Save form'|transloco}}</span>
             </button>
           </ajf-form>
         </div>
@@ -100,18 +104,22 @@
           ajfFormTopToolbarButtons
           type="button"
           class="ajf-btn dino-form-save-draft-button"
+          [attr.aria-label]="'Save draft'|transloco"
           [disabled]="(isSaveDraftDisabled|async) === true"
           (click)="saveDraft()"
         >
-          <mat-icon>save_as</mat-icon>{{'Save draft'|transloco}}
+          <mat-icon>save_as</mat-icon
+          ><span class="dino-form-save-label">{{'Save draft'|transloco}}</span>
         </button>
         <button
           ajfFormSaveButton
           type="button"
           class="ajf-btn--primary dino-form-save-button"
+          [attr.aria-label]="'Save form'|transloco"
           [disabled]="(isSaveDisabled|async) === true"
         >
-          <mat-icon>save</mat-icon>{{'Save form'|transloco}}
+          <mat-icon>save</mat-icon
+          ><span class="dino-form-save-label">{{'Save form'|transloco}}</span>
         </button>
       </ajf-form>
     </div>
