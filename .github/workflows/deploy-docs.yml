@@ -22,12 +22,17 @@ on:
       - dev
     types:
       - completed
+  # TEMPORARY: test of the dev deploy, to be reverted before the PR.
+  push:
+    branches:
+      - ci/docs-main-and-dev
 jobs:
   docs:
     # The branch filter above is belt; this is braces, in case the trigger ever
     # gains another branch.
     if: >-
-      ${{ github.event.workflow_run.conclusion == 'success' &&
+      ${{ github.event_name == 'push' ||
+      github.event.workflow_run.conclusion == 'success' &&
       (github.event.workflow_run.head_branch == 'main' ||
       github.event.workflow_run.head_branch == 'dev') }}
     runs-on: ubuntu-latest
@@ -37,7 +42,7 @@ jobs:
       group: gh-pages-deploy
       cancel-in-progress: false
     env:
-      DOCS_BRANCH: ${{ github.event.workflow_run.head_branch }}
+      DOCS_BRANCH: ${{ github.event_name == 'push' && 'dev' || github.event.workflow_run.head_branch }}
     permissions:
       contents: write
 
