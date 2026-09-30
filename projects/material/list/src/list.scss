@@ -250,6 +250,16 @@ dino-list {
         .mat-mdc-paginator-container {
           bottom: 0;
         }
+        .mat-mdc-paginator-range-actions .mat-mdc-paginator-range-label {
+          margin: 0 4px;
+        }
+        .mat-mdc-paginator-range-actions .mat-mdc-icon-button {
+          --mdc-icon-button-state-layer-size: 36px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+        }
       }
     }
   }
