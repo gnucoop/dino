@@ -54,6 +54,13 @@ dino-create-form {
       font-size: 18px;
     }
   }
+  .dino-form-save-draft-button,
+  .ajf-form-save {
+    margin-left: auto;
+  }
+  .dino-form-save-draft-button ~ .ajf-form-save {
+    margin-left: 0;
+  }
   .mat-stepper-horizontal {
     display: flex;
     flex-direction: column;
@@ -129,6 +136,12 @@ dino-create-form {
 // of the form carries the same navigation, and the slide menu still jumps anywhere.
 @media only screen and (max-width: 768px) {
   dino-create-form ajf-slide-header .ajf-slide-nav {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 420px) {
+  dino-create-form .dino-form-save-label {
     display: none;
   }
 }
