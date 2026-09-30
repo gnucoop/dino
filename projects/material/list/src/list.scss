@@ -107,12 +107,11 @@ dino-list {
       }
     }
 
-    // Same button radius as the filter toolbar and the other sections.
-    .dino-selection-clear,
-    .dino-selection-bulk,
-    .dino-columns-btn,
-    .dino-selection-action {
-      border-radius: 8px;
+    // Same button radius as the filter toolbar and the other sections. Every button in
+    // this bar is an MDC button (clear, single, bulk, columns): naming the four classes
+    // instead multiplied the ripple selectors below into a kilobyte of CSS.
+    .mdc-button {
+      &,
       .mat-mdc-button-persistent-ripple,
       .mat-mdc-button-persistent-ripple::before,
       .mdc-button__ripple {
