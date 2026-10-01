@@ -1258,10 +1258,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-submit-button-is-disabled" class="md-nav__link">
+  <a href="#the-next-or-send-button-is-disabled" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The submit button is disabled.
+        The Next or Send button is disabled.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#this-form-cannot-be-opened-because-some-required-information-is-missing-from-the-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "This form cannot be opened because some required information is missing from the link."
       
     </span>
   </a>
@@ -1303,6 +1314,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Pages
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1480,6 +1502,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Area
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1552,10 +1601,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-submit-button-is-disabled" class="md-nav__link">
+  <a href="#the-next-or-send-button-is-disabled" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The submit button is disabled.
+        The Next or Send button is disabled.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#this-form-cannot-be-opened-because-some-required-information-is-missing-from-the-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "This form cannot be opened because some required information is missing from the link."
       
     </span>
   </a>
@@ -1600,6 +1660,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#related-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Pages
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1620,8 +1691,8 @@
 <h1 id="public-forms">Public Forms</h1>
 <p>Public forms allow anyone with a link to submit data to Dino without needing to log in or have an account. This is commonly used for surveys, registrations, or feedback collection. If you have received a public link to a form, you can use this page to complete it.</p>
 <p>Public form addresses follow the pattern <code>/f/</code> followed by a unique identifier (e.g., <code>https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a</code>). The identifier is the ID of the form schema. If any metric value is to be added to the form data, this can be included in the url using the following syntax (e.g. for the metric case): <code>https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a?case=a6408e72-c60c-4d54-ad2f-44fd4a90cdb2</code>
-where the metric value ID is again the ID of the metric assigned by Dino. </p>
-<p>There is no need to remember this syntax since the link is generated automatically by Dino once you click on the share icon of the form schema. Once generated, the link can be shared by email, whatsapp or any other mechanism. </p>
+where the metric value ID is again the ID of the metric assigned by Dino.</p>
+<p>There is no need to remember this syntax since the link is generated automatically by Dino once you click on the share icon of the form schema. Once generated, the link can be shared by email, WhatsApp or any other mechanism.</p>
 <hr />
 <h2 id="accessing-a-public-form">Accessing a Public Form</h2>
 <ol>
@@ -1629,6 +1700,8 @@ where the metric value ID is again the ID of the metric assigned by Dino. </p>
 <li>The form will open directly in your web browser. You do not need to sign in.</li>
 <li>Review the form title and any introductory text to confirm it's the correct form.</li>
 </ol>
+<p>A language selector in the top bar of the screen lets you choose the language of the form. Use it to switch the form to the language you prefer before you start filling it out.</p>
+<p>If the form includes multiple sections, a progress bar is shown beneath the title so you can see how far along you are.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Public form links contain a long identifier (like <code>/f/abc123def</code>). If the page doesn't load, ensure the entire link was copied correctly.</p>
@@ -1637,36 +1710,37 @@ where the metric value ID is again the ID of the metric assigned by Dino. </p>
 <h2 id="completing-and-submitting">Completing and Submitting</h2>
 <ol>
 <li>Fill in all the fields on the form. Fields marked with an asterisk (<em>) are </em><em>required</em>*.</li>
-<li>If the form has multiple sections, use the navigation tabs or buttons at the top of the form to move between them.</li>
+<li>If the form has multiple sections, use the <strong>Next</strong> and <strong>Previous</strong> buttons at the bottom of the form to move between them. The section title is shown at the top of each step.</li>
 <li>As you fill out fields, the form validates your input. Invalid entries are typically highlighted.</li>
-<li>Once all required fields are valid, the primary submit button (usually a circular button with a send icon) will become active.</li>
-<li>Click the submit button to send your data.</li>
+<li>Once all required fields are valid, the <strong>Send</strong> button becomes active.</li>
+<li>Click <strong>Send</strong> to submit your data.</li>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The submit button will remain disabled (greyed out) if any required field is empty or contains invalid data. Scroll through the form to find and correct any highlighted issues.</p>
+<p>The <strong>Next</strong> button stays disabled if the current section is not yet valid, and the <strong>Send</strong> button stays disabled (greyed out) if any required field is empty or contains invalid data. Review the current section, or navigate back through earlier sections, to find and correct any highlighted issues.</p>
 </div>
 <hr />
 <h2 id="after-submission">After Submission</h2>
 <p>Upon a successful submission, you will see a confirmation screen with a checkmark and the message: <strong>"The form has been successfully submitted."</strong></p>
-<p>A notification will also appear at the bottom of your screen. From this notification, you can:</p>
-<ul>
-<li><strong>Fill out another one</strong>: Click this to reload the page with a fresh, empty copy of the same form, allowing you to make another submission.</li>
-<li><strong>Close</strong>: Dismiss the notification.</li>
-</ul>
+<p>A notification also appears at the bottom of your screen for a few seconds. Click <strong>Fill out another one</strong> in it to reload the page with a fresh, empty copy of the same form, allowing you to make another submission.</p>
 <hr />
 <h2 id="troubleshooting">Troubleshooting</h2>
-<h3 id="the-submit-button-is-disabled">The submit button is disabled.</h3>
-<p>This means the form is not yet valid. Check for:</p>
+<h3 id="the-next-or-send-button-is-disabled">The Next or Send button is disabled.</h3>
+<p>This means the current section or the form as a whole is not yet valid. Check for:</p>
 <ul>
 <li><strong>Empty required fields</strong>: Ensure all fields marked with an asterisk (*) are filled.</li>
 <li><strong>Invalid data</strong>: Look for fields highlighted in red and correct the information (e.g., an invalid email format).</li>
 </ul>
+<h3 id="this-form-cannot-be-opened-because-some-required-information-is-missing-from-the-link">"This form cannot be opened because some required information is missing from the link."</h3>
+<p>The link you used is incomplete. Some forms require metric information (such as a case, location, or organization) to be included in the address.</p>
+<ul>
+<li>Contact the person who sent you the form link and ask them to share the complete link.</li>
+</ul>
 <h3 id="unable-to-save-form">"Unable to save form."</h3>
 <p>Your submission encountered a temporary error, often related to your internet connection.</p>
 <ol>
-<li>Click <strong>"Try again"</strong> in the notification at the bottom of the screen.</li>
-<li>If the error persists, check your internet connection and try refreshing the page.</li>
+<li>Check your internet connection.</li>
+<li>Click <strong>"Try again"</strong> in the notification at the bottom of the screen. This reloads the page with an empty form: <strong>the answers you typed are lost</strong> and you need to fill them in again.</li>
 <li>If it continues to fail, contact the person who sent you the form link.</li>
 </ol>
 <h3 id="oops-we-could-not-find-this-form-schema">"Oops! We could not find this Form Schema."</h3>
@@ -1680,6 +1754,14 @@ where the metric value ID is again the ID of the metric assigned by Dino. </p>
 <li>Refresh your browser page.</li>
 <li>Ensure your internet connection is stable.</li>
 <li>Confirm the link is complete and has not been truncated.</li>
+</ul>
+<hr />
+<h2 id="related-pages">Related Pages</h2>
+<ul>
+<li><a href="../forms/">Forms</a></li>
+<li><a href="../forms/edit-form-schema/">Edit Form Schema</a></li>
+<li><a href="../administration/languages/">Languages</a></li>
+<li><a href="../metrics/">Metrics</a></li>
 </ul>
 
 

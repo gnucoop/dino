@@ -570,6 +570,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#creating-a-form-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating a Form Schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#working-with-submissions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1460,6 +1471,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Area
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1485,6 +1523,17 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-form-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating a Form Schema
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#working-with-submissions" class="md-nav__link">
@@ -1578,67 +1627,91 @@
 <h1 id="forms">Forms</h1>
 <p>The <strong>Forms</strong> page is your starting point for structured data collection in Dino. From here you can browse, create, and manage form schemas, then view and work with the submissions gathered through each form.</p>
 <p><img alt="Main view of the Forms page" src="../imgs/forms/index.png" /></p>
-<p>The main view displays a <strong>grid of form schema tiles</strong>. Each tile shows the form’s label and icon. Hovering over a tile reveals action buttons:</p>
+<p>The main view displays a <strong>grid of form schema tiles</strong>. Each tile shows the form's label and icon. A tile marked with a fingerprint icon is unique: only one submission with that exact set of metrics can exist. Hovering over a tile reveals action buttons:</p>
 <ul>
-<li><strong>Edit Schema</strong> – Modify the form’s structure (fields, validation, metrics).</li>
-<li><strong>Delete Schema</strong> – Remove the form schema (and all its submissions).</li>
-<li><strong>Share URL</strong> – Get a public link to allow external submissions.</li>
+<li><strong>Edit Form Schema</strong> – Modify the form's structure (fields, validation, metrics).</li>
+<li><strong>Delete Form Schema</strong> – Remove the schema. Dino refuses if the schema still has submissions or a report uses it, and asks for confirmation if other forms or user groups refer to it.</li>
+<li><strong>Share Public Url</strong> – Get a public link that allows external submissions.</li>
 <li><strong>View Map</strong> – Open the map view for submissions with location data.</li>
-<li><strong>Chat with your data</strong> – Use the <a href="datachat/">DataChat</a> feature to ask questions about submissions in natural language.</li>
+<li><strong>Chat with your data</strong> – Ask questions about your submissions in natural language using <a href="datachat/">DataChat</a>.</li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>The actions available on a tile depend on your permissions. You may not see all buttons.</p>
 </div>
-<p>To create a new form schema, click the <strong>+</strong> floating button at the bottom right. You will be taken to the <a href="edit-form-schema/">Edit Form Schema</a> page to design your form.</p>
+<p>If no form schemas exist yet, the page shows a message inviting you to add one. When the instance enables it, a <strong>Filter</strong> field above the tiles narrows them by name.</p>
+<h2 id="creating-a-form-schema">Creating a Form Schema</h2>
+<ol>
+<li>Click the <strong>+</strong> floating button at the bottom right of the page.</li>
+<li>Design your form on the <a href="edit-form-schema/">Edit Form Schema</a> page.</li>
+</ol>
 <h2 id="working-with-submissions">Working with Submissions</h2>
-<p>Click a form schema tile to enter its <strong>submission list</strong>. This table shows all data entries collected for that schema.</p>
+<p>Click a form schema tile to open its <strong>submission list</strong>. This table shows every submission collected for that schema.</p>
 <p><img alt="Submission list (data table) for a form schema" src="../imgs/forms/index-list.png" /></p>
-<p>The list includes a <strong>filter bar</strong> that lets you search by keyword, date range, metrics, status, user, and more. You can also save filter presets for quick reuse.</p>
+<p>Above the table you can see how many items were found, and you can move between pages. The toolbar offers:</p>
+<ul>
+<li><strong>Add New form</strong> – Create a new submission.</li>
+<li><strong>Import forms</strong> – Bring in submissions from a file. See <a href="import/">Import Data</a>.</li>
+<li><strong>Filters</strong> – Narrow the list by date range, status, user, metrics, and more. Switch between <em>Simple</em> and <em>Advanced</em> filters, or save a filter preset to reuse later.</li>
+<li><strong>Export</strong> – Download submissions in a file. See <a href="#export">Export</a>.</li>
+</ul>
+<p>On the left of the toolbar, the <strong>Data</strong> / <strong>Map</strong> / <strong>AI</strong> switcher changes view; see <a href="#additional-views">Additional Views</a>.</p>
+<p>A row whose data may be incomplete shows a warning icon. Rows with files waiting to be synced show a cloud upload icon.</p>
 <h3 id="export">Export</h3>
-<p>Use the <strong>export</strong> button to download submissions in CSV or XLSX format.</p>
+<p>Use the <strong>Export</strong> button in the toolbar to download submissions.</p>
 <p><img alt="Export dialog for downloading form submissions" src="../imgs/forms/index-export.png" /></p>
-<p>The export dialog lets you specify some important parameters for the export:</p>
-<p>1) How many forms to export. <br />
-   1) <em>Forms on page</em>. Export only the forms that were displayed on the previous page, potentially filtered and divided into pages. <br />
-   2) <em>Add filters</em> or <em>All items/1filters</em> . If you have already applied one filter to your form list, only the filtered form can be exported (second option). If you do not have applied any filter yet, the first option is displayed and it allows you to add more filters. <br />
-   3) <em>All forms</em>. All forms, without filtering or pagination. <br />
-2) Format. <br />
-    1) <em>CSV</em>. The data will be exported to a CSV file. Each extracted form will be a row in a file where the fields will be the columns. <br />
-    2) <em>XLSX</em>. Export in Excel format.<br />
-    3) <em>Splitted XLSX</em>. Export to Excel format where each slide is a different sheet. <br />
-3) Field options<br />
-    1) <em>Select all form fields</em>. Allows you to export all form fields.<br />
-    2) <em>Label values</em>. For fields that have prefixed values (single or multiple selection fields), the exported value is the displayed value, not the internal code used to represent that value. <br />
-    3) <em>Data Analysis format</em>. Forms that contain repeating slides and multiple choice are exported in multiple rows, each row containing only one repeating slide and only one multiple choice, the other fields remain the same. An extra column is added, called <em>conta</em>. This columns takes the value 1 only in the first row of the repetition group, and 0 in the others.<br />
-    4) <em>Separate Columns</em>. Multiple choice are exported as multiple columns 
-4) <em>Selection slide</em>. Allows you to view the list of fields on each slide, if you want to export only some of the fields and not all of them. <br />
-5) <em>Selection of fields</em>. You can select/deselect single fields.   </p>
-<p>Some columns of the exported file cannot be unselected. These are:</p>
+<p>The <strong>Export data</strong> dialog lets you choose:</p>
+<p>1) Which forms to export.
+    1) <em>Items in page</em>. Only the forms shown on the current page of the list (the default).
+    2) <em>With active filters (N)</em>. All the forms that match the filters you have applied. When no filter is active this option reads <em>Add filters</em>: it closes the dialog so you can set some.
+    3) <em>All items</em>. All forms, without filtering or pagination. On a large form this may slow the device down.
+2) The format.
+    1) <em>csv</em>. Each exported form is a row, and each field a column.
+    2) <em>xlsx</em>. The same, in Excel format.
+    3) <em>splitted xlsx</em>. Excel format, with one sheet per slide.
+3) In the <strong>Fields and formats</strong> menu:
+    1) <em>Select all Form fields</em>. Exports every field of the form.
+    2) <em>Label values</em>. For fields with predefined values (single or multiple choice), exports the displayed label instead of the internal code.
+    3) <em>Value format</em>, one of:
+        - <em>Default</em>.
+        - <em>Data Analysis format</em>. Repeating slides and multiple choice fields are exported on several rows, one repetition and one choice per row; the other fields are repeated on each row. An extra column, <em>conta</em>, is 1 on the first row of each form and 0 on the additional rows generated for the same form, so summing <em>conta</em> counts the forms.
+        - <em>Separate columns</em>. Each option of a multiple choice field gets its own column, with 1 or 0.
+4) The fields to export. The <strong>Sections</strong> list on the left shows each section with its selected and total fields. For the active section you can search a field, use <strong>Select all</strong> / <strong>Deselect</strong>, or tick single fields. The footer shows how many fields are selected; click <strong>Export</strong> to download.</p>
+<p>Some columns are always exported and cannot be unselected:</p>
 <ul>
 <li>Form ID</li>
 <li>Creation date</li>
 <li>Update date</li>
-<li>DINO User data (name and ID)</li>
+<li>DINO user data (ID and full name)</li>
 <li>Metrics data (id, name, etc...)</li>
+<li>Form status (id, name, label, level, color), when the form has statuses</li>
 <li>Dinoinvalid</li>
 </ul>
 <h3 id="row-actions">Row Actions</h3>
-<p>Click a row to expand its details, or use the row actions (view, edit, delete, print as PDF, download as DOCX, print badge). The available actions depend on your permissions and the form’s configuration.</p>
+<p>Hover over a row to show the <strong>View</strong> and <strong>Edit</strong> icons. Click a row to select it: the action bar above the table then shows every action you can use on it (view, edit, delete, print as PDF, download as DOCX, print badge). The available actions depend on your permissions and the form's configuration.</p>
 <h3 id="creating-a-new-submission">Creating a New Submission</h3>
-<p>Click the <strong>+</strong> floating button on the list page to open a blank form for data entry.</p>
+<ol>
+<li>Open the submission list for the form schema you want.</li>
+<li>Click <strong>Add New form</strong> in the toolbar.</li>
+<li>Fill in the blank form and save it. See <a href="edit-form/">Edit Form</a>.</li>
+</ol>
 <p><img alt="Blank form opened to submit a new data entry" src="../imgs/forms/index-create.png" /></p>
-<p>Fill out the fields and submit. The new submission will appear in the list.</p>
+<p>The new submission appears in the list.</p>
 <h3 id="bulk-operations">Bulk Operations</h3>
-<p>Select multiple submissions using the checkboxes to perform bulk <strong>delete</strong> or <strong>edit</strong> (change the same field value in all selected entries).</p>
+<p>Select one or more submissions using the checkboxes to reveal bulk actions. You can <strong>delete</strong> the selected submissions or <strong>edit</strong> them together, applying the same field value to all of them.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Deleting a form schema or its submissions cannot be undone. Take care when using delete actions.</p>
+</div>
 <h2 id="additional-views">Additional Views</h2>
+<p>Switch view with the <strong>Data</strong> / <strong>Map</strong> / <strong>AI</strong> buttons on the left of the submission list toolbar, or from the buttons on a form schema tile. The filters you have applied are kept.</p>
 <ul>
-<li><strong>Map</strong> – View submissions with geographic coordinates on an interactive map. Learn more in <a href="forms-map/">Forms Map</a>.</li>
-<li><strong>DataChat</strong> – Query your form data using natural language. See <a href="datachat/">DataChat</a> for details.</li>
+<li><strong>Map</strong> – View submissions with geographic coordinates on an interactive map. It is available only when the schema collects locations. Learn more in <a href="forms-map/">Forms Map</a>.</li>
+<li><strong>DataChat</strong> (the <strong>AI</strong> view) – Query your form data using natural language. See <a href="datachat/">DataChat</a> for details.</li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The DataChat feature may consume credits. Check your account’s credit balance before using it.</p>
+<p>DataChat may consume credits. Check your account's credit balance before using it.</p>
 </div>
 
 

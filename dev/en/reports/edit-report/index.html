@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Learn how to edit an existing report in Dino, including updating metrics and details.">
+        <meta name="description" content="Learn how to create a report from a report schema in Dino, open a saved report, and export the results.">
       
       
       
@@ -848,10 +848,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#accessing-the-edit-page" class="md-nav__link">
+  <a href="#creating-a-report" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Accessing the Edit Page
+        Creating a Report
       
     </span>
   </a>
@@ -859,38 +859,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#editing-report-information" class="md-nav__link">
+  <a href="#opening-a-saved-report" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Editing Report Information
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Editing Report Information">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#steps-to-edit-a-report" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Steps to Edit a Report
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#viewing-the-rendered-report" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Viewing the Rendered Report
+        Opening a Saved Report
       
     </span>
   </a>
@@ -898,10 +870,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#understanding-the-form-schema" class="md-nav__link">
+  <a href="#reading-the-report" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Understanding the Form Schema
+        Reading the Report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exporting-a-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exporting a Report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Pages
       
     </span>
   </a>
@@ -1449,6 +1443,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Area
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1476,10 +1497,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#accessing-the-edit-page" class="md-nav__link">
+  <a href="#creating-a-report" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Accessing the Edit Page
+        Creating a Report
       
     </span>
   </a>
@@ -1487,38 +1508,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#editing-report-information" class="md-nav__link">
+  <a href="#opening-a-saved-report" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Editing Report Information
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Editing Report Information">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#steps-to-edit-a-report" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Steps to Edit a Report
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#viewing-the-rendered-report" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Viewing the Rendered Report
+        Opening a Saved Report
       
     </span>
   </a>
@@ -1526,10 +1519,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#understanding-the-form-schema" class="md-nav__link">
+  <a href="#reading-the-report" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Understanding the Form Schema
+        Reading the Report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exporting-a-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exporting a Report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Pages
       
     </span>
   </a>
@@ -1554,40 +1569,63 @@
 
 
 <h1 id="edit-report">Edit Report</h1>
-<p>The Edit Report page allows you to modify an existing report. You can update its metrics, details, and other information after it has been created.</p>
-<p><img alt="Main view of the Edit Report page" src="../../imgs/reports/edit-report.png" /></p>
-<h2 id="accessing-the-edit-page">Accessing the Edit Page</h2>
-<p>You can navigate to the Edit Report page in two ways:</p>
-<ul>
-<li>From the main <a href="../">Reports</a> list, click on a report's title or the <strong>Edit</strong> action (often represented by a pencil icon).</li>
-<li>From within a report's detailed view (after clicking <strong>View the Report</strong>), look for an <strong>Edit</strong> button or link.</li>
-</ul>
-<h2 id="editing-report-information">Editing Report Information</h2>
-<p>Once on the Edit Report page, you will see a form similar to the one used for creating a report. The form is pre‑filled with the report’s current data.</p>
-<h3 id="steps-to-edit-a-report">Steps to Edit a Report</h3>
+<p>A report is generated from a <a href="../edit-report-schema/">report schema</a>: it applies the schema to the submissions that match the metrics and the dates you choose. This page explains how to create a new report and how to open and export a saved one.</p>
+<p><img alt="A saved report opened on its Report Metrics step" src="../../imgs/reports/edit-report.png" /></p>
+<h2 id="creating-a-report">Creating a Report</h2>
 <ol>
-<li><strong>Review the pre‑filled data</strong> in the form fields.</li>
-<li><strong>Make your changes</strong> to any of the available fields:</li>
-<li><strong>Primary Metrics:</strong> Update the main numerical values for the report.</li>
-<li><strong>Secondary Metrics:</strong> Edit additional data points (if configured for your form schema).</li>
-<li><strong>Details:</strong> Modify descriptive text, dates, or other supporting information.</li>
-<li><strong>Save your changes</strong> by clicking the <strong>Save</strong> or <strong>Update</strong> button at the bottom of the form.</li>
+<li>Go to the <a href="../">Reports</a> page and click the card of the report schema you want to use. The list of its reports opens.</li>
+<li>Click <strong>Add New Report</strong> above the table. If the report uses AI prompts, the number of DINO-AI tokens it will consume is shown on the button.</li>
+<li>If your Dino uses metrics, the page opens on the <strong>Report Metrics</strong> step:<ol>
+<li>Check the <strong>Creation Date</strong>, and click <strong>Change</strong> to pick another one if needed.</li>
+<li>Optionally pick a <strong>Form Status</strong>, among the form statuses you are allowed to use. The field is shown only when there are any.</li>
+<li>Choose the metric values the report is about, such as a location or a project. The metrics marked with an asterisk (<em>) are required by the report schema; the others are optional and narrow the data further. If a value you need does not exist yet, click </em><em>New</em>* next to its field to create it, when you are allowed to.</li>
+<li>Click <strong>Continue</strong>.</li>
 </ol>
-<div class="admonition tip">
-<p class="admonition-title">Optional Fields</p>
-<p>Depending on your organization’s configuration, some metric fields may be optional. They are usually marked accordingly. You can leave optional fields blank if no data is available.</p>
-</div>
-<h2 id="viewing-the-rendered-report">Viewing the Rendered Report</h2>
-<p>After saving your changes, you can view the formatted report. Click the <strong>View the Report</strong> button or link to see a clean, rendered version of the report data.</p>
-<p><img alt="Rendered report view after clicking View the Report" src="../../imgs/reports/edit-report-view.png" /></p>
-<h2 id="understanding-the-form-schema">Understanding the Form Schema</h2>
-<p>The structure and available fields on the Edit Report page are determined by the <strong>form schema</strong> set up by your administrator. This ensures data is collected consistently.</p>
-<p><img alt="Main view of the Edit Report Schema page" src="../../imgs/reports/edit-report-schema.png" /></p>
-<p>If you need to edit information that does not appear as a field, contact your administrator – the form schema may need to be updated. You can learn more about the underlying structure in the <a href="../edit-report-schema/">Edit Report Schema</a> documentation.</p>
+</li>
+<li>In the <strong>Report Data</strong> step:<ol>
+<li>Enter the <strong>Report Name</strong>. It is required.</li>
+<li>Optionally set <strong>Collected Since</strong> and <strong>Collected Until</strong>: only the submissions created within that range are included in the report. You can set only one of the two, or neither, in which case no date filter is applied.</li>
+</ol>
+</li>
+<li>Click the <strong>Save report</strong> button at the bottom right. It is enabled once the required metrics and the name are filled in.</li>
+</ol>
+<p>Dino confirms that the document was created and takes you back to the list of reports, where the new report appears.</p>
 <div class="admonition warning">
-<p class="admonition-title">Data Integrity</p>
-<p>Be cautious when editing historical report data, as changes can affect trend analysis and historical records. Ensure your updates are accurate.</p>
+<p class="admonition-title">Reports with AI prompts</p>
+<p>Creating a report that uses AI prompts consumes DINO-AI tokens. If you do not have enough, Dino does not create the report and asks you to add more tokens.</p>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Metric values cannot be changed later</p>
+<p>The metrics, the status and the date range are fixed when the report is created. To see the same schema applied to other values, create another report.</p>
+</div>
+<h2 id="opening-a-saved-report">Opening a Saved Report</h2>
+<ol>
+<li>Go to the <a href="../">Reports</a> page and click the card of the report schema.</li>
+<li>In the list of reports, hover over the report's row and click the <strong>View</strong> (eye) icon, or click the row to select it and click <strong>View</strong> in the action bar above the table.</li>
+</ol>
+<p>If your Dino uses metrics, the report opens on the <strong>Report Metrics</strong> step, which shows the values the report was created with. They cannot be changed here. Click <strong>View the Report</strong> to move to the <strong>Report Data</strong> step, where the report is displayed.</p>
+<p>While the report is loading, Dino shows a spinner. A report that uses AI prompts shows a progress bar instead, with the message <em>Generating report prompt X of Y</em>. If no submission matches the report, the page shows <em>No Forms were found for this Report</em>.</p>
+<p><img alt="Rendered report view after clicking View the Report" src="../../imgs/reports/edit-report-view.png" /></p>
+<h2 id="reading-the-report">Reading the Report</h2>
+<p>The top of the <strong>Report Data</strong> step shows the title of the report schema, the <strong>Collected Since</strong> and <strong>Collected Until</strong> dates when the report has them, and the metric values it was created with. The report itself follows, as designed in its <a href="../xlsreport/">XLSReport</a> file: tables, charts and text.</p>
+<p>If the report contains filter widgets, you can use them to narrow the data shown, without changing the saved report.</p>
+<h2 id="exporting-a-report">Exporting a Report</h2>
+<p>Next to <strong>Export as:</strong>, at the top of the <strong>Report Data</strong> step, choose a format:</p>
+<ul>
+<li><strong>pdf portrait</strong> / <strong>pdf landscape</strong> — a PDF document in the chosen orientation.</li>
+<li><strong>docx portrait</strong> / <strong>docx landscape</strong> — a Word document in the chosen orientation.</li>
+<li><strong>xlsx</strong> — an Excel file with the report data.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Where the export buttons are</p>
+<p>The export buttons belong to the <strong>Report Data</strong> step. When your Dino has no active metrics, and on the <a href="../../dashboard/">Dashboard</a>, the report is shown directly, without the steps and without the export buttons.</p>
+</div>
+<h2 id="related-pages">Related Pages</h2>
+<ul>
+<li><a href="../">Reports</a> — browse report schemas and their reports.</li>
+<li><a href="../edit-report-schema/">Edit Report Schema</a> — create or change the schema a report is generated from.</li>
+<li><a href="../autoreports/">Auto reports</a> — reports generated automatically from a form schema.</li>
+</ul>
 
 
 

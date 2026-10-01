@@ -1120,18 +1120,17 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bulk-actions-and-filters" class="md-nav__link">
+  <a href="#bulk-actions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bulk Actions and Filters
+        Bulk Actions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Bulk Actions and Filters">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#search-and-filters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1139,11 +1138,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1163,6 +1157,17 @@
     <span class="md-ellipsis">
       
         Steps: Create a New Organization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steps-import-organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Steps: Import Organizations
       
     </span>
   </a>
@@ -1482,6 +1487,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Area
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1531,18 +1563,17 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bulk-actions-and-filters" class="md-nav__link">
+  <a href="#bulk-actions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bulk Actions and Filters
+        Bulk Actions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Bulk Actions and Filters">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#search-and-filters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1550,11 +1581,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1574,6 +1600,17 @@
     <span class="md-ellipsis">
       
         Steps: Create a New Organization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steps-import-organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Steps: Import Organizations
       
     </span>
   </a>
@@ -1620,7 +1657,7 @@
 
 
 <h1 id="organizations">Organizations</h1>
-<p>The <strong>Organizations</strong> page lists all possible values of the metric organization. Organizations could be your project partners, or any entity that is involved in your activities. Use this screen to view, add, edit, delete, and import organizations, as well as to manage the organizational hierarchy.</p>
+<p>The <strong>Organizations</strong> page lists all possible values of the organization metric. Organizations can be your project partners or any entity involved in your activities. Use this screen to view, add, edit, delete, and import organizations, and to manage the organizational hierarchy.</p>
 <p><img alt="Main view of the Organizations page" src="../../imgs/metrics/organizations.png" /></p>
 <h2 id="table-columns">Table Columns</h2>
 <p>By default, the table shows the following columns:</p>
@@ -1628,53 +1665,62 @@
 <li><strong>Organization Name</strong> – the name of the organization. This column is sortable.</li>
 <li><strong>Parent Organization</strong> – the name of the parent organization, if any.</li>
 </ul>
-<p>Additional columns (ID, Creation Date, Logo path, Website URL, Additional Attributes) are hidden but available when you customize the column display using the <strong>Customize the columns</strong> button (bottom right of the table header).</p>
+<p>Additional columns (ID, Creation Date, Logo path, Website url, Additional Attributes) are hidden by default. Use the <strong>Columns</strong> button, above the table on the right, to show or hide them.</p>
 <h2 id="row-actions">Row Actions</h2>
-<p>Each row has three actions accessible by clicking the <strong>More</strong> button (three dots) next to the row:</p>
+<p>Hover over a row to show the <strong>View</strong> and <strong>Edit</strong> icons. Click the row to select it: the action bar above the table then shows every action:</p>
 <ul>
-<li><strong>View</strong> (visibility icon) – opens a read‑only dialog with organization details.</li>
-<li><strong>Edit</strong> (pencil icon) – opens a dialog to modify the organization’s details.</li>
-<li><strong>Delete</strong> (trash icon) – permanently deletes the organization. A confirmation dialog appears before deletion.</li>
+<li><strong>View</strong> (visibility icon) – opens a read-only dialog with the organization details.</li>
+<li><strong>Edit</strong> (pencil icon) – opens a dialog to change the organization's details.</li>
+<li><strong>Delete</strong> (trash icon) – permanently deletes the organization. A confirmation dialog appears first.</li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Delete organizations with care</p>
-<p>Deleting an organization cannot be undone. Make sure no active cases or forms depend on it before removal.</p>
+<p>Deleting an organization cannot be undone. An organization that is used by forms, or that has child organizations, cannot be deleted; see <a href="../">Metrics</a>.</p>
 </div>
-<p>You can also click directly on a row to <strong>select</strong> it (for bulk actions) or <strong>expand</strong> it to see additional details inline.</p>
-<h2 id="bulk-actions-and-filters">Bulk Actions and Filters</h2>
-<p>Select multiple rows using the checkboxes in the first column, then use the bulk delete or bulk edit buttons that appear in the toolbar.</p>
-<h3 id="search-and-filters">Search and Filters</h3>
+<h2 id="bulk-actions">Bulk Actions</h2>
+<p>Select one or more rows using the checkboxes in the first column. A toolbar appears above the table with the actions you can apply:</p>
+<ul>
+<li>With one row selected, you can view, edit, or delete that organization.</li>
+<li>With several rows selected, you can delete them all at once.</li>
+</ul>
+<h2 id="search-and-filters">Search and Filters</h2>
 <p>The filter bar at the top of the page offers:</p>
 <ul>
-<li><strong>Keyword search</strong> – filters organizations by any text.</li>
-<li><strong>Date range</strong> – filter by creation date range.</li>
-<li><strong>Preset manager</strong> – save and load search filter presets.</li>
-<li><strong>Export</strong> – download the filtered list as a file.</li>
+<li><strong>Keyword search</strong> – filter organizations by any text.</li>
+<li><strong>Filters</strong> – open the filters dialog to narrow the list by creation date (<strong>From date</strong> / <strong>To date</strong>).</li>
+<li><strong>Export</strong> – download the list as a file.</li>
 </ul>
-<p>Click the <strong>Filter</strong> button to open advanced filters for more granular control.</p>
+<p>Applied filters appear as chips below the filter bar. Click the cancel icon on a chip to remove that filter.</p>
 <h2 id="adding-and-importing-organizations">Adding and Importing Organizations</h2>
-<p>Two floating action buttons are always visible in the bottom‑right corner:</p>
+<p>Two buttons are available in the toolbar above the table:</p>
 <ul>
-<li><strong>Add New</strong> (plus icon) – opens a dialog to create a new organization. You will be prompted to enter the organization name, parent organization, website URL, and other details.</li>
-<li><strong>Import</strong> (cloud upload icon) – lets you upload a file (CSV, JSON, or XML) to bulk import organizations. Follow the on‑screen instructions to map the fields.</li>
+<li><strong>Add new ORGANIZATION</strong> (plus icon) – opens a dialog to create a new organization.</li>
+<li><strong>Import ORGANIZATION</strong> (cloud upload icon) – upload a file to bulk import organizations.</li>
 </ul>
 <div class="admonition tip">
-<p class="admonition-title">Internationalization</p>
-<p>Organization names and labels can be translated if your Dino instance supports multiple languages. See <a href="../../administration/languages/">Languages</a> for details.</p>
+<p class="admonition-title">Organizational hierarchy</p>
+<p>Set a <strong>Parent Organization</strong> when creating an organization to build a hierarchy of related entities.</p>
 </div>
 <h2 id="steps-create-a-new-organization">Steps: Create a New Organization</h2>
 <ol>
-<li>Click the <strong>Add New</strong> floating button.</li>
-<li>In the dialog that opens, fill in the required fields (Organization Name and at least one attribute).</li>
-<li>Optionally set a <strong>Parent Organization</strong> to create a hierarchy.</li>
+<li>Click the <strong>Add new ORGANIZATION</strong> button in the toolbar.</li>
+<li>In the dialog that opens, fill in the required fields, starting with the Organization Name. Optional fields are marked <em>(optional)</em>.</li>
+<li>Optionally set a <strong>Parent Organization</strong> to place the new organization in a hierarchy.</li>
+<li>Optionally add a logo path, website URL, and any additional attributes.</li>
 <li>Click <strong>Save</strong>. The new organization appears immediately in the list.</li>
+</ol>
+<h2 id="steps-import-organizations">Steps: Import Organizations</h2>
+<ol>
+<li>Click the <strong>Import ORGANIZATION</strong> button in the toolbar.</li>
+<li>Upload an <code>.xls</code>, <code>.xlsx</code> or <code>.csv</code> file and map its columns to the organization attributes.</li>
+<li>Click <strong>Apply import</strong> and review the result. Organizations whose name already exists are reused, not updated.</li>
 </ol>
 <h2 id="steps-export-organizations">Steps: Export Organizations</h2>
 <ol>
-<li>Apply any filters you need in the search bar.</li>
-<li>Click the <strong>Export</strong> button (cloud download icon) in the filter bar.</li>
-<li>Choose the export format (CSV, Excel, etc.) and confirm.</li>
-<li>The file downloads to your device.</li>
+<li>Apply any filters you need.</li>
+<li>Click the <strong>Export</strong> button in the toolbar.</li>
+<li>Choose what to export: <em>Items in page</em> (the default), the items matching your filters, or <em>All items</em>.</li>
+<li>Choose the format: <em>csv</em>, <em>xlsx</em> or <em>splitted xlsx</em>, then click <strong>Export</strong>.</li>
 </ol>
 <h2 id="related-pages">Related Pages</h2>
 <ul>

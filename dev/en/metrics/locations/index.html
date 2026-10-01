@@ -1504,6 +1504,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Area
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1669,58 +1696,60 @@
 <h2 id="what-you-see">What you see</h2>
 <ul>
 <li><strong>Breadcrumbs</strong> – shows your current position in the navigation.</li>
-<li><strong>Search &amp; Filters</strong> – keyword search, date range picker, and configurable advanced filters (e.g., by metric, status, user). You can also save and load filter presets.</li>
-<li><strong>Table</strong> – displays Location Name and Parent Location by default. Hidden columns (ID, Creation Date, Coordinates, Additional Attributes) can be shown via the <strong>Customize the columns</strong> button (bottom right of the table header).</li>
+<li><strong>Search &amp; Filters</strong> – a keyword search field, and the <strong>Filters</strong> button to filter by creation date (<strong>From date</strong> / <strong>To date</strong>).</li>
+<li><strong>Items found counter</strong> – shows how many locations match the current filters.</li>
+<li><strong>Table</strong> – displays Location Name and Parent Location by default. Hidden columns (ID, Creation Date, Coordinates, Additional Attributes) can be shown via the <strong>Columns</strong> button, above the table on the right.</li>
 <li><strong>Pagination</strong> – controls for navigating through pages.</li>
-<li><strong>Bulk actions</strong> – select rows using checkboxes to delete or edit multiple locations at once.</li>
-<li><strong>Floating action buttons</strong> – <strong>Add New</strong> (plus icon) and <strong>Import</strong> (cloud upload icon) remain available as you scroll.</li>
+<li><strong>Bulk actions</strong> – select rows using checkboxes to delete multiple locations at once.</li>
+<li><strong>Toolbar buttons</strong> – <strong>Add new LOCATION</strong> (plus icon) and <strong>Import LOCATION</strong> (cloud upload icon) sit above the table.</li>
 </ul>
 <h2 id="row-actions">Row actions</h2>
-<p>Each row has three quick actions (visible when hovering over the row):</p>
+<p>Hover over a row to show the <strong>Edit</strong> and <strong>View</strong> icons. Click the row to select and highlight it: the action bar above the table then shows every action:</p>
 <ul>
 <li><strong>Edit</strong> – opens the location dialog to modify details.</li>
 <li><strong>Delete</strong> – removes the location after confirmation.</li>
-<li><strong>View</strong> – opens a read‑only dialog showing all fields.</li>
+<li><strong>View</strong> – opens a read-only dialog showing all fields.</li>
 </ul>
-<p>Clicking a row selects it (highlights) and, if the list is expandable, reveals a detail panel with additional data.</p>
 <h2 id="working-with-locations">Working with locations</h2>
 <h3 id="add-a-new-location">Add a new location</h3>
 <ol>
-<li>Click the <strong>Add New</strong> floating button (bottom‑right corner).</li>
-<li>In the dialog, fill in the required fields (e.g., Location Name).</li>
+<li>Click the <strong>Add new LOCATION</strong> button above the table.</li>
+<li>In the dialog, fill in the required fields (for example, Location Name). Optional fields are marked <em>(optional)</em>.</li>
 <li>Optionally set a Parent Location, Coordinates, and Additional Attributes.</li>
 <li>Click <strong>Save</strong>.</li>
 </ol>
 <h3 id="edit-a-location">Edit a location</h3>
 <ol>
-<li>Click the <strong>Edit</strong> icon (pencil) on the desired row.</li>
+<li>Hover over the row and click the <strong>Edit</strong> icon (pencil), or select the row and click <strong>Edit</strong> in the action bar.</li>
 <li>Update the fields in the dialog.</li>
 <li>Click <strong>Save</strong>.</li>
 </ol>
 <h3 id="delete-a-location">Delete a location</h3>
 <ol>
-<li>Click the <strong>Delete</strong> icon (trash) on the row.</li>
-<li>Confirm deletion in the prompt.</li>
+<li>Click the row to select it, then click <strong>Delete</strong> in the action bar above the table.</li>
+<li>Confirm the deletion in the prompt.</li>
 </ol>
+<p>A location that is used by forms, or that has child locations, cannot be deleted; see <a href="../">Metrics</a>.</p>
 <h3 id="import-locations-from-a-file">Import locations from a file</h3>
 <ol>
-<li>Click the <strong>Import</strong> floating button (cloud upload icon).</li>
-<li>Select a CSV or Excel file following the expected format.</li>
-<li>Map columns to location fields if needed.</li>
-<li>Click <strong>Import</strong>.</li>
+<li>Click the <strong>Import LOCATION</strong> button above the table.</li>
+<li>Upload an <code>.xls</code>, <code>.xlsx</code> or <code>.csv</code> file.</li>
+<li>Map the file's columns to location fields.</li>
+<li>Click <strong>Apply import</strong> and review the result.</li>
 </ol>
-<div class="admonition tip">
-<p class="admonition-title">Bulk editing</p>
-<p>Select multiple rows using checkboxes, then click the <strong>Edit</strong> button (edit_note icon) that appears above the table to update several locations at once.</p>
-</div>
+<p>Locations whose name already exists are reused, not updated.</p>
 <h3 id="export-the-location-list">Export the location list</h3>
 <ol>
-<li>Click the <strong>Export</strong> button (cloud download icon) in the filters bar.</li>
-<li>Choose the export format (CSV or Excel).</li>
-<li>The file downloads automatically.</li>
+<li>Click <strong>Export</strong> in the toolbar.</li>
+<li>Choose what to export: <em>Items in page</em> (the default), the items matching your filters, or <em>All items</em>.</li>
+<li>Choose the format: <em>csv</em>, <em>xlsx</em> or <em>splitted xlsx</em>, then click <strong>Export</strong>.</li>
 </ol>
+<div class="admonition tip">
+<p class="admonition-title">Bulk deleting</p>
+<p>Select multiple rows using the checkboxes, then click <strong>Delete</strong> in the action bar above the table to delete several locations at once.</p>
+</div>
 <h3 id="location-coordinates">Location coordinates</h3>
-<p>If you set the attribute "coordinates" of a specific location value, the information will be used to visualize your form data on a <a href="../../forms/forms-map/">map</a>.</p>
+<p>If you set the <strong>coordinates</strong> attribute for a location, that information is used to visualize your form data on a <a href="../../forms/forms-map/">map</a>.</p>
 <h2 id="related-pages">Related pages</h2>
 <ul>
 <li><a href="../">Metrics Overview</a> – return to the metrics home.</li>

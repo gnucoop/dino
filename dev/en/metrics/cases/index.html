@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Manage cases in Dino — create, edit, view, filter, export, and organize case records with a structured data table.">
+        <meta name="description" content="Manage cases in Dino — create, edit, view, print, filter, and export case records from a structured data table.">
       
       
       
@@ -1053,10 +1053,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#actions-on-a-single-case" class="md-nav__link">
+  <a href="#working-with-a-single-case" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Actions on a single case
+        Working with a single case
       
     </span>
   </a>
@@ -1064,10 +1064,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bulk-actions" class="md-nav__link">
+  <a href="#working-with-multiple-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bulk actions
+        Working with multiple cases
       
     </span>
   </a>
@@ -1075,10 +1075,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-a-new-case" class="md-nav__link">
+  <a href="#creating-a-case" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creating a new case
+        Creating a case
       
     </span>
   </a>
@@ -1097,10 +1097,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#filtering-and-searching" class="md-nav__link">
+  <a href="#searching-and-filtering" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Filtering and searching
+        Searching and filtering
       
     </span>
   </a>
@@ -1112,17 +1112,6 @@
     <span class="md-ellipsis">
       
         Exporting cases
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#customizing-the-table" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Customizing the table
       
     </span>
   </a>
@@ -1487,6 +1476,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Area
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1525,10 +1541,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#actions-on-a-single-case" class="md-nav__link">
+  <a href="#working-with-a-single-case" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Actions on a single case
+        Working with a single case
       
     </span>
   </a>
@@ -1536,10 +1552,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bulk-actions" class="md-nav__link">
+  <a href="#working-with-multiple-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bulk actions
+        Working with multiple cases
       
     </span>
   </a>
@@ -1547,10 +1563,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#creating-a-new-case" class="md-nav__link">
+  <a href="#creating-a-case" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creating a new case
+        Creating a case
       
     </span>
   </a>
@@ -1569,10 +1585,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#filtering-and-searching" class="md-nav__link">
+  <a href="#searching-and-filtering" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Filtering and searching
+        Searching and filtering
       
     </span>
   </a>
@@ -1584,17 +1600,6 @@
     <span class="md-ellipsis">
       
         Exporting cases
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#customizing-the-table" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Customizing the table
       
     </span>
   </a>
@@ -1630,68 +1635,62 @@
 
 
 <h1 id="cases">Cases</h1>
-<p>The Cases page gives you a centralized workspace to track and manage individual cases. Each case is a structured record that can hold a name, code, image, parent relationship, notes, and additional attributes. You can create new cases, edit existing ones, view details, delete records, and export your case list — all from a single interactive table.</p>
+<p>The Cases page is a centralized workspace for tracking and managing individual case records. Each case is a structured record that can hold a name, code, image, parent relationship, notes, and additional attributes. From this page you can create new cases, edit or view existing ones, print case cards, delete records, and export your case list — all from a single interactive table.</p>
 <p><img alt="Main view of the Cases page" src="../../imgs/metrics/cases.png" /></p>
 <h2 id="table-overview">Table overview</h2>
-<p>The main table displays the following columns by default:</p>
+<p>The table displays the following columns by default:</p>
 <ul>
-<li><strong>Case Name</strong> – The name you assign to the case (sortable).</li>
-<li><strong>Code</strong> – A system-generated or manually assigned code (read‑only after creation).</li>
+<li><strong>Case Name</strong> – The name assigned to the case (sortable).</li>
+<li><strong>Code</strong> – A code identifying the case. Dino generates it: you do not enter it, and it is not shown in the case dialog.</li>
 <li><strong>Case Image</strong> – An uploaded image file representing the case.</li>
 <li><strong>Parent case</strong> – The name of any parent case this case belongs to.</li>
 </ul>
-<p>Additional columns (such as <strong>ID</strong>, <strong>Notes</strong>, <strong>Creation Date</strong>, and <strong>Additional Attributes</strong>) are hidden by default. You can customize which columns appear by clicking the <strong>Customize the columns</strong> button in the table header.</p>
-<h2 id="actions-on-a-single-case">Actions on a single case</h2>
-<p>On the right side of each row, you’ll find icons for the following actions:</p>
+<p>Additional columns — <strong>ID</strong>, <strong>Notes</strong>, <strong>Creation Date</strong>, and <strong>Additional Attributes</strong> — are hidden by default. Click <strong>Columns</strong> above the table to choose which columns appear. You can also drag column headers to reorder them, and the page shows the total number of items found next to the paginator.</p>
+<h2 id="working-with-a-single-case">Working with a single case</h2>
+<p>Hover over a row to show the <strong>Edit</strong> and <strong>View</strong> icons. Click the row to select it: the action bar above the table then shows every action:</p>
 <ul>
-<li><strong>Edit</strong> – Opens a dialog to modify the case details.</li>
+<li><strong>Edit</strong> – Opens a dialog where you can modify the case details.</li>
 <li><strong>Print</strong> – Generates a printable PDF card for the case.</li>
-<li><strong>View</strong> – Opens a read‑only dialog to inspect case information.</li>
+<li><strong>View</strong> – Opens a read-only dialog to inspect the case information.</li>
 <li><strong>Delete</strong> – Opens a confirmation dialog to permanently remove the case.</li>
 </ul>
-<p>Click the <strong>More</strong> icon (three vertical dots) to see all available actions if some are hidden.</p>
-<h2 id="bulk-actions">Bulk actions</h2>
-<p>Select multiple cases using the checkboxes in the first column. When at least one case is selected, a <strong>Delete</strong> button appears at the top of the table. You can delete all selected cases at once.</p>
-<div class="admonition warning">
-<p class="admonition-title">Bulk deletion is permanent</p>
-<p>Deleted cases cannot be recovered. Use the bulk delete action carefully.</p>
-</div>
-<h2 id="creating-a-new-case">Creating a new case</h2>
+<h2 id="working-with-multiple-cases">Working with multiple cases</h2>
 <ol>
-<li>Click the <strong>Add New</strong> floating action button (plus icon) at the bottom‑right of the page.</li>
-<li>A dialog will open. Fill in the required fields:</li>
+<li>Select one or more rows using the checkboxes in the first column.</li>
+<li>When a single row is selected, all of its actions become available in the action bar above the table.</li>
+<li>When multiple rows are selected, only bulk actions remain — currently <strong>Delete</strong>.</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Deletion is permanent</p>
+<p>Deleted cases cannot be recovered. Review your selection carefully before confirming a bulk delete. A case that is used by forms, or that has child cases, cannot be deleted; see <a href="../">Metrics</a>.</p>
+</div>
+<h2 id="creating-a-case">Creating a case</h2>
+<ol>
+<li>Click <strong>Add new CASE</strong> in the toolbar above the table.</li>
+<li>In the dialog, fill in the case details. Optional fields are marked <em>(optional)</em>.<ul>
 <li><strong>Case Name</strong> – Enter a descriptive name.</li>
-<li><strong>Code</strong> – (Optional) Provide a unique code. This field is read‑only after creation.</li>
 <li><strong>Case Image</strong> – Upload an image file.</li>
 <li><strong>Parent case</strong> – Optionally link this case to an existing parent case.</li>
 <li><strong>Notes</strong> – Add any relevant notes.</li>
+</ul>
+</li>
 <li>Click <strong>Save</strong> to create the case.</li>
 </ol>
 <h2 id="importing-cases">Importing cases</h2>
-<p>Use the <strong>Import</strong> floating action button (cloud upload icon) to bulk‑upload cases from a file. Supported formats are defined by your system administrator.</p>
-<h2 id="filtering-and-searching">Filtering and searching</h2>
-<p>The search bar at the top lets you filter cases by:</p>
+<p>Click <strong>Import CASE</strong> in the toolbar to bulk-upload cases from an <code>.xls</code>, <code>.xlsx</code> or <code>.csv</code> file. The import page guides you through uploading the file, mapping its columns and reviewing the result. Cases whose name already exists are reused, not updated; the code is generated by Dino and cannot be imported.</p>
+<h2 id="searching-and-filtering">Searching and filtering</h2>
+<p>Use the toolbar to narrow down the table:</p>
 <ul>
-<li><strong>Keyword</strong> – Searches across all displayed fields.</li>
-<li><strong>Date range</strong> – Filter by creation date (From / To).</li>
-<li><strong>Additional filters</strong> – Select from predefined filters such as metric, status, user, or user group.</li>
+<li><strong>Keyword search</strong> – Type into the search field to match text across displayed fields.</li>
+<li><strong>Filters</strong> – Open the filter panel to set a <strong>From date</strong> and a <strong>To date</strong>, which filter by creation date, then click <strong>Search</strong>. The badge on the <strong>Filters</strong> button shows how many filters are active.</li>
+<li>Applied filters appear as chips below the toolbar; click the cancel icon on a chip to remove that filter.</li>
 </ul>
-<p>After applying filters, you can save the combination as a <strong>preset</strong> for quick reuse. To save a preset:</p>
-<ol>
-<li>Open the filter panel.</li>
-<li>Enter a name in the preset field.</li>
-<li>Click <strong>Save</strong>.<br />
-To apply a saved preset, select it from the list and click <strong>Apply</strong>.</li>
-</ol>
 <h2 id="exporting-cases">Exporting cases</h2>
-<p>Click the <strong>Export</strong> button (cloud download icon) in the filter bar. Choose the export format (e.g., CSV or Excel) and select which columns to include. The exported file will contain all currently visible cases, respecting any active filters.</p>
-<h2 id="customizing-the-table">Customizing the table</h2>
-<ul>
-<li><strong>Sort</strong> – Click any sortable column header (e.g., <strong>Case Name</strong>, <strong>Creation Date</strong>) to order the table.</li>
-<li><strong>Column selector</strong> – Open the column selector dialog to show or hide columns.</li>
-<li><strong>Expand rows</strong> – Some cases may have sub‑items (other cases linked as details). Click a row to expand it and see the related records.</li>
-</ul>
-<p>The page also displays a <strong>breadcrumb trail</strong> at the top so you can navigate back to the main Metrics section.</p>
+<ol>
+<li>Click <strong>Export</strong> in the toolbar.</li>
+<li>Choose what to export: <em>Items in page</em> (the default), the items matching your filters, or <em>All items</em>.</li>
+<li>Choose the format: <em>csv</em>, <em>xlsx</em> or <em>splitted xlsx</em>, then click <strong>Export</strong>.</li>
+</ol>
 <h2 id="related-pages">Related pages</h2>
 <ul>
 <li><a href="../">Metrics Overview</a> – Return to the main metrics dashboard.</li>

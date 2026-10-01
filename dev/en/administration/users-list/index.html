@@ -1416,6 +1416,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#related-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Pages
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1456,6 +1467,33 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Area
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1558,6 +1596,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#related-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Pages
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1585,46 +1634,53 @@
 <li><strong>Full Name:</strong> The name associated with the account.</li>
 <li><strong>Disabled:</strong> A toggle indicating if the account is active or disabled. You can click this toggle directly in the list to change the status.</li>
 </ul>
-<p>You can sort the list by the <strong>Creation Date</strong> column. The <strong>ID</strong> column is hidden by default.</p>
+<p>You can sort the list by the <strong>Email</strong>, <strong>Full Name</strong>, or <strong>Creation Date</strong> columns. The <strong>ID</strong> and <strong>Creation Date</strong> columns are hidden by default. To show or hide columns, click the <strong>Columns</strong> button above the list, on the right, and select the ones you want to display.</p>
 <h2 id="working-with-the-list">Working with the List</h2>
 <h3 id="searching-and-filtering">Searching and Filtering</h3>
 <p>Use the search bar at the top of the page to find users by their email or full name.</p>
 <p>To apply more specific filters:</p>
 <ol>
-<li>Click the filter icon in the search bar.</li>
-<li>In the <strong>User Permission Groups</strong> section, you can select one or more user groups to filter the list to show only members of those groups.</li>
+<li>Click the <strong>Filters</strong> button in the search bar.</li>
+<li>Set a <strong>From date</strong> and a <strong>To date</strong> to filter by creation date, and select one or more user groups to narrow the list to members of those groups.</li>
+<li>Click <strong>Search</strong> to apply the filters, or <strong>Reset filters</strong> to clear them.</li>
 </ol>
+<p>Applied filters appear as chips below the search bar. Click the <strong>cancel</strong> icon on a chip to remove that filter.</p>
 <h3 id="user-actions">User Actions</h3>
-<p>Each user row has an action menu (three vertical dots) on the right side. Click it to access the following options:</p>
+<p>Hover over a user's row to show the <strong>Edit</strong> and <strong>View</strong> icons. Click anywhere on the row to select it: the action bar above the list then shows every action you can perform on the selected user:</p>
 <ul>
 <li><strong>Edit:</strong> Open the user editor to modify the account details.</li>
-<li><strong>Delete:</strong> Permanently remove the user account. You will be asked to confirm this action.</li>
 <li><strong>View:</strong> Open a read-only view of the user's details.</li>
+<li><strong>Delete:</strong> Permanently remove the user account. You will be asked to confirm this action.</li>
 </ul>
-<p>You can also click anywhere on a user's row to select it, or click the expand icon to view a summary of the user's information directly in the list.</p>
 <h2 id="creating-a-new-user">Creating a New User</h2>
 <p>To add a new user to your organization:</p>
 <ol>
-<li>Click the blue <strong>+</strong> floating button in the bottom-right corner of the screen.</li>
-<li>A form will open. Enter the new user's details, including email, name, and assign them to the appropriate user groups. For more information on groups, see <a href="../groups-list/">Groups List</a>.</li>
-<li>Click <strong>Save</strong> to create the account. The new user will receive an email with instructions to set their password.</li>
+<li>Click the <strong>Add New User</strong> button in the toolbar above the list.</li>
+<li>A form will open. Enter the new user's <strong>Full Name</strong> and <strong>Email</strong>, and assign them to the appropriate groups in <strong>User Permission Groups</strong>. For more information on groups, see <a href="../groups-list/">Groups List</a>.
+    Depending on how your Dino signs users in, the form may also ask for a <strong>Password</strong> and <strong>Confirm Password</strong>, at least 9 characters long.</li>
+<li>Click <strong>Save</strong> to create the account.</li>
 </ol>
-<div class="admonition warning">
-<p class="admonition-title">Offline Restriction</p>
-<p>The <strong>+</strong> button will be disabled (showing a Wi-Fi off icon) if you are not connected to the internet. New user accounts cannot be created while offline. You can still view and edit existing users offline.</p>
+<p>The <strong>Save</strong> button stays unavailable until all required fields are filled in correctly.</p>
+<div class="admonition tip">
+<p class="admonition-title">Viewing and Editing Modes</p>
+<p>The same form is used for creating, editing, and viewing users. In <strong>view</strong> mode, all fields are read-only and only the <strong>Close</strong> button is shown.</p>
 </div>
 <h2 id="editing-a-user">Editing a User</h2>
 <p>To modify an existing user's information:</p>
 <ol>
-<li>Click the action menu (three dots) on the user's row.</li>
-<li>Select <strong>Edit</strong>.</li>
-<li>In the editor, update any of the user's details or group assignments.</li>
+<li>Hover over the user's row and click the <strong>Edit</strong> icon, or select the row and click <strong>Edit</strong> in the action bar.</li>
+<li>In the editor, update the user's full name or group assignments. The email address cannot be changed here.</li>
 <li>Click <strong>Save</strong> to apply the changes.</li>
 </ol>
 <div class="admonition tip">
 <p class="admonition-title">Quick Disable</p>
-<p>You can quickly enable or disable a user's ability to log in by clicking the <strong>Disabled</strong> toggle switch directly in the list, without opening the full editor.</p>
+<p>You can quickly enable or disable a user's ability to log in by clicking the <strong>Disabled</strong> toggle directly in the list, without opening the full editor.</p>
 </div>
+<h2 id="related-pages">Related Pages</h2>
+<ul>
+<li><a href="../users/">Users</a></li>
+<li><a href="../groups-list/">Groups List</a></li>
+</ul>
 
 
 

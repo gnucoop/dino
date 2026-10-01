@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Learn how to bulk-import structured data into any form schema using a CSV or Excel file. The two-step wizard lets you upload a file and then map its columns to form fields.">
+        <meta name="description" content="Learn how to bulk-import structured data into any form schema using a CSV or Excel file. The wizard lets you upload a file, map its columns to form fields, and review the result of the import.">
       
       
       
@@ -716,10 +716,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#automatch" class="md-nav__link">
+  <a href="#automatic-matching" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Auto‑match
+        Automatic matching
       
     </span>
   </a>
@@ -754,10 +754,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#apply-import" class="md-nav__link">
+  <a href="#step-3--result" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Apply Import
+        Step 3 — Result
       
     </span>
   </a>
@@ -1549,6 +1549,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Area
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1638,10 +1665,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#automatch" class="md-nav__link">
+  <a href="#automatic-matching" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Auto‑match
+        Automatic matching
       
     </span>
   </a>
@@ -1676,10 +1703,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#apply-import" class="md-nav__link">
+  <a href="#step-3--result" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Apply Import
+        Step 3 — Result
       
     </span>
   </a>
@@ -1754,12 +1781,12 @@
 
 
 <h1 id="import-data">Import Data</h1>
-<p>The <strong>Import Data</strong> page lets you bulk-upload submissions into a form schema from an <code>.xls</code>, <code>.xlsx</code>, or <code>.csv</code> file. A two-step wizard guides you through uploading the file and mapping the file’s columns to the form’s fields.</p>
+<p>The <strong>Import Data</strong> page lets you bulk-upload submissions into a form schema from an <code>.xls</code>, <code>.xlsx</code>, or <code>.csv</code> file. A three-step wizard — <strong>Upload file</strong>, <strong>Map fields</strong>, <strong>Result</strong> — guides you through uploading the file, mapping its columns to the form's fields, and reviewing the outcome.</p>
 <p><img alt="Main view of the Import Data page" src="../../imgs/forms/import.png" /></p>
 <h2 id="access-the-import-page">Access the Import Page</h2>
 <ol>
 <li>Navigate to the <strong>Forms</strong> list and select a form schema.</li>
-<li>From the form’s data view, click <strong>Import</strong> (the toolbar button).</li>
+<li>From the form's data view, click <strong>Import forms</strong> in the toolbar.</li>
 </ol>
 <h2 id="step-1--upload-file">Step 1 — Upload File</h2>
 <p>The first step shows a drag‑and‑drop zone or a file picker.</p>
@@ -1769,10 +1796,9 @@
 </ul>
 <p>To upload:</p>
 <ol>
-<li>Drag a file onto the dashed area <strong>or</strong> click <strong>Choose a file</strong> to browse.</li>
-<li>After selection, the file name appears in a chip along with the number of columns detected.</li>
 <li>(Optional) Leave <strong>Reuse existing metrics with the same name</strong> checked (the default) so that any metric in the file whose name matches a metric already in the system is linked to that existing metric instead of creating a duplicate. Uncheck it to always create new metrics.</li>
-<li>Click <strong>Next</strong> (or the stepper label “2 · Map fields”) to proceed.</li>
+<li>Drag a file onto the dashed area <strong>or</strong> click <strong>Choose a file</strong> to browse.</li>
+<li>Once the file has been read, the wizard moves to <strong>Map fields</strong> by itself.</li>
 </ol>
 <h3 id="formatting-the-import-file">Formatting the import file</h3>
 <p>See the description in the section <a href="#file-format">below</a></p>
@@ -1788,7 +1814,7 @@
 <p>After uploading, you see a table listing all columns from your file. Each row has three columns:</p>
 <ul>
 <li><strong>File column</strong> – the original header from your file.</li>
-<li><strong>Form field</strong> – a dropdown where you select the corresponding form field.</li>
+<li><strong>Field</strong> – a dropdown where you select the corresponding form field.</li>
 <li><strong>Status</strong> – shows whether the column is mapped, ignored, or has an error.</li>
 </ul>
 <h3 id="mapping-actions">Mapping Actions</h3>
@@ -1797,10 +1823,11 @@
 <li><strong>Ignore a column</strong> – select the <strong>— Ignore this column —</strong> option in the dropdown, or click the <strong>Ignore</strong> button in the status column. Ignored columns are grayed out.</li>
 <li><strong>Restore an ignored column</strong> – click the <strong>Restore</strong> button in the status column.</li>
 </ul>
-<h3 id="automatch">Auto‑match</h3>
-<p>Click <strong>Auto‑match</strong> to let Dino automatically pair columns with form fields based on name similarity. This is a good starting point – review and adjust mappings as needed.</p>
+<h3 id="automatic-matching">Automatic matching</h3>
+<p>When the file is read, Dino maps every column whose header is exactly the name of a form field, or the name of a repeating field followed by <code>__N</code> (see <a href="#repeating-slides">Repeating slides</a>). The other columns are left for you to map.</p>
+<p>Click <strong>Re-match all</strong> to reset every column and let Dino match them again, this time also pairing columns with fields whose names or labels are similar. Review the result and adjust the mappings as needed.</p>
 <div class="admonition tip">
-<p class="admonition-title">Auto‑match works best with headers that match field labels exactly or contain similar keywords.</p>
+<p class="admonition-title">Matching works best with headers that are the field names, as in an exported file.</p>
 </div>
 <h3 id="repetition">Repetition</h3>
 <p>If a selected form field is a repeating field (e.g., multiple phone numbers), a <strong>Repetition</strong> input appears below the dropdown. Enter the repetition index (0, 1, 2, …) to assign this file column to one occurrence of the repeating group.</p>
@@ -1811,14 +1838,21 @@
 <li><strong>Mapped</strong> – columns that have been assigned to a form field.</li>
 <li><strong>Ignored</strong> – columns you chose to ignore.</li>
 </ul>
-<p>Use the <strong>Search columns</strong> input to filter the table by file column name.</p>
-<h2 id="apply-import">Apply Import</h2>
-<p>When all desired columns are mapped and no errors exist, the <strong>Apply import</strong> button becomes enabled. Click it to start the import. While processing, a spinner appears. You can click <strong>Back</strong> to return to step 1 or cancel the import.</p>
-<p>After a successful import, you are returned to the form’s data list, where the new submissions appear.</p>
+<p>Use the <strong>Search columns…</strong> input to filter the table by file column name.</p>
+<p>Click <strong>Back</strong> to return to the upload step: the file and the mappings are discarded, and you choose the file again.</p>
+<p>When all desired columns are mapped and no errors exist, the <strong>Apply import</strong> button becomes enabled. Click it to start the import. While processing, a spinner appears.</p>
 <div class="admonition warning">
 <p class="admonition-title">Duplicate mapping</p>
-<p>If you map the same form field to more than one file column, a validation error is shown and the <strong>Apply import</strong> button remains disabled until corrected.</p>
+<p>If you map the same form field to more than one file column, a validation error is shown (<em>Field mapped to more than one column</em>) and the <strong>Apply import</strong> button remains disabled until corrected.</p>
 </div>
+<h2 id="step-3--result">Step 3 — Result</h2>
+<p>The last step reports what happened:</p>
+<ul>
+<li>A banner tells you whether the import was <strong>successful</strong>, <strong>partial</strong> (some rows were rejected) or ended with an <strong>error</strong> (nothing was imported).</li>
+<li>Counters show <strong>Rows imported</strong>, <strong>Rows rejected</strong>, <strong>Rows in file</strong> and <strong>Metrics created</strong>.</li>
+<li>The issue lists show the affected file rows and the reason. Use <strong>Search by row or error</strong> to filter long lists.</li>
+</ul>
+<p>Click <strong>Close</strong> to return to the form's data list, where the new submissions appear. After an error, <strong>Back</strong> takes you back to the mapping step to fix the problems.</p>
 <h2 id="file-format">File format</h2>
 <p>We describe the procedure to import some bulk data using a Google Sheet generated Excel file. The same procedure holds for CSV files or if working directly with Excel. </p>
 <p>We suppose that you want to import data in a form called Projects that has 2 slides, one of which is a repeating slide:</p>
@@ -1990,7 +2024,7 @@
 <p>DINO-specific fields can be:</p>
 <ol>
 <li><strong>created_at</strong>. The form creation date. Specify this, only if you want your forms to have a  creation date different from the import date;  </li>
-<li><strong>user_data_ref_id</strong>. The ID of the user that will  be associated to the form (default is the ID of the user who is importing the forms);  </li>
+<li><strong>user_data_ref_id</strong>. The ID of the user that will be associated to the form. It is applied only when an administrator imports; for other users the value is ignored and the forms are assigned to the user who is importing them;  </li>
 <li><strong>area_id</strong>. The ID of the metric AREA to be associated with the form;  </li>
 <li>[area_name]  </li>
 <li><strong>case_id</strong>. The ID of the metric CASE to be associated with the form;  </li>
@@ -2001,8 +2035,10 @@
 <li><strong>location_id</strong>. The ID of the metric LOCATION to be associated with the form;  </li>
 <li>[location_name]  </li>
 <li><strong>organization_id</strong>. The ID of the metric ORGANISATION to be associated with the form;  </li>
+<li>[organization_name]  </li>
+<li><strong>form_status_name</strong>. The name of one of the form schema's statuses. Rows without it get the schema's first status. If any value does not match an existing status name, the file is not imported (<em>Invalid form status</em>);  </li>
 <li>
-<p>[organization_name]</p>
+<p><strong>dinoinvalid</strong>. Marks the form as invalid. Use <code>true</code>, <code>1</code>, <code>yes</code>, <code>y</code> or <code>x</code>; any other value or an empty cell leaves the form valid.</p>
 </li>
 <li>
 <p>every row will correspond to a different new form. So, if we create a file with one header +, let’s say, 5 rows of data, if the upload is successful, we will create 5 new forms in DINO.   </p>
@@ -2073,8 +2109,8 @@
 <td>name</td>
 <td>name</td>
 <td>id, or name (with the reuse option), or both</td>
-<td>name</td>
-<td>id, or name (with the reuse option), or both</td>
+<td>name, in another row of the same file</td>
+<td>id or name</td>
 </tr>
 <tr>
 <td><strong>Organization</strong></td>
@@ -2082,8 +2118,8 @@
 <td>name</td>
 <td>name</td>
 <td>id, or name (with the reuse option), or both</td>
-<td>name</td>
-<td>id, or name (with the reuse option), or both</td>
+<td>name, in another row of the same file</td>
+<td>id or name</td>
 </tr>
 <tr>
 <td><strong>Location</strong></td>
@@ -2091,8 +2127,8 @@
 <td>name</td>
 <td>name</td>
 <td>id, or name (with the reuse option), or both</td>
-<td>name</td>
-<td>id, or name (with the reuse option), or both</td>
+<td>name, in another row of the same file</td>
+<td>id or name</td>
 </tr>
 <tr>
 <td><strong>Area</strong></td>
@@ -2100,20 +2136,22 @@
 <td>name</td>
 <td>name</td>
 <td>id, or name (with the reuse option), or both</td>
-<td>name</td>
-<td>id, or name (with the reuse option), or both</td>
+<td>name, in another row of the same file</td>
+<td>id or name</td>
 </tr>
 <tr>
 <td><strong>Project</strong></td>
 <td>name, code</td>
 <td>name, code</td>
 <td>name, code</td>
-<td>id</td>
-<td>name, code</td>
-<td>id</td>
+<td>id, or name (with the reuse option), or both</td>
+<td>name and code, in another row of the same file</td>
+<td>id or name</td>
 </tr>
 </tbody>
 </table>
+<p>When a row has both the id and the name of a metric, the id wins and the name is ignored. A new metric is created only when the name is given and the id is empty.</p>
+<p>Parents are set with the <code>&lt;metric&gt;_parent_id</code> and <code>&lt;metric&gt;_parent_name</code> columns (for example <code>location_parent_name</code>), and only apply to metrics created by the import. The parent must be of the same metric type, and either already exist or be created by another row of the same file, in any order. A parent that matches nothing is not created: that metric is reported as <em>metric with invalid parent</em>.</p>
 <h2 id="repeating-slides">Repeating slides</h2>
 <p>If you have field in repeating slides, they need to be named differently. Every field in the repeating slide need to be called \&lt;field_name&gt;__X where X is the repetition number, from 0 (corresponding to one repetition) to N-1 where N is the total number of slide repetitions in that form. <br />
 For example, suppose you have only 1 repetition of the repeating slide and you want to add both fields “Indicator description” and “Value reached”. You would need to add these two columns to your import file:</p>
@@ -2175,7 +2213,11 @@ For example, suppose you have only 1 repetition of the repeating slide and you w
 </tbody>
 </table>
 <h2 id="errors">Errors</h2>
-<p>Check the IDs in your file before importing. If a column refers to an entity by its ID (a metric or a user) and no entity with that ID exists in Dino, the imported forms cannot be synchronized with the server.</p>
+<ul>
+<li><strong>Unknown IDs</strong> – if a column refers to a user or a metric by an ID that does not exist in Dino, the whole file is not imported (<em>File not imported!</em>), and the result lists the <em>Invalid user ids</em> or <em>Invalid metric ids</em>. Check the IDs in your file before importing.</li>
+<li><strong>Unknown form status</strong> – a <code>form_status_name</code> that matches no status of the schema stops the import too (<em>Invalid form status</em>).</li>
+<li><strong>Metrics that cannot be linked</strong> – a row that names a metric Dino cannot create or find is rejected, and the result shows the reason; the other rows are imported.</li>
+</ul>
 
 
 

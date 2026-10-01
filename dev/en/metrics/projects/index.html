@@ -1269,6 +1269,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#related-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Pages
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1532,6 +1543,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Area
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1702,6 +1740,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#related-pages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Pages
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1720,83 +1769,85 @@
 
 
 <h1 id="projects">Projects</h1>
-<p>The <strong>Projects</strong> page in Dino lets you manage all values of the Project metric. This can be used to map your organization's projects or a program or collaborations with donors or any other kind of structured group of activities which is relevant to your work. You can view a sortable list of projects, add new ones, edit existing ones, delete them, import data in bulk, and export the list for offline analysis. The page also offers powerful filtering tools to quickly find the project you need.</p>
+<p>The <strong>Projects</strong> page in Dino lets you manage all values of the Project metric. This can be used to map your organization's projects, a program, collaborations with donors, or any other structured group of activities relevant to your work. You can view a sortable list of projects, add new ones, edit existing ones, delete them, import data in bulk, and export the list for offline analysis. The page also offers filtering tools to quickly find the project you need.</p>
 <p><img alt="Main view of the Projects page" src="../../imgs/metrics/projects.png" /></p>
 <h2 id="navigating-to-projects">Navigating to Projects</h2>
-<p>To open the Projects page, expand the <strong>Metrics</strong> section from the main navigation and select <strong>Projects</strong>. The browser URL will end with <code>/metrics/projects</code>.</p>
+<p>To open the Projects page, click <strong>Metrics</strong> in the main navigation, then the <strong>Projects</strong> card. The browser URL will end with <code>/metrics/projects</code>.</p>
 <h2 id="understanding-the-project-list">Understanding the Project List</h2>
 <p>The main table shows a list of all projects. Each row corresponds to one project and displays the following columns by default:</p>
 <ul>
 <li><strong>Project Name</strong> – The name of the project. You can sort the list by this column.</li>
 <li><strong>Parent Project</strong> – The higher-level project this project belongs to, if any.</li>
 <li><strong>Code</strong> – A manually assigned project code.</li>
-<li><strong>Auto Code</strong> – An automatically generated code. This field is read-only and cannot be edited.</li>
+<li><strong>Auto Code</strong> – An automatically generated code. Dino sets it: it is not shown in the project dialog and cannot be edited.</li>
 <li><strong>Sectors of Intervention</strong> – The sectors the project focuses on.</li>
 <li><strong>Donors</strong> – The funding sources for the project.</li>
 <li><strong>Start Date</strong> – The date the project begins.</li>
 <li><strong>End Date</strong> – The date the project ends.</li>
 </ul>
-<p>Hidden columns (ID, Creation Date, and Additional Attributes) can be shown by clicking the <strong>Customize the columns</strong> button at the top-right corner of the table.</p>
+<p>Hidden columns (ID, Creation Date, and Additional Attributes) can be shown with the <strong>Columns</strong> button (tooltip <em>Customize the columns</em>), above the table on the right.</p>
 <div class="admonition tip">
 <p class="admonition-title">Read-only fields</p>
-<p>The <strong>Auto Code</strong> field is automatically generated and cannot be changed. It will appear grayed out in the edit dialog.</p>
+<p>The <strong>Auto Code</strong> field is automatically generated and cannot be changed. It is shown in the list but not in the project dialog.</p>
 </div>
 <p>The top toolbar displays the total number of items found and a paginator. You can choose how many projects to view per page.</p>
 <h2 id="managing-projects">Managing Projects</h2>
 <h3 id="adding-a-new-project">Adding a New Project</h3>
 <ol>
-<li>Click the <strong>Add New</strong> floating button (the circled <strong>+</strong> icon) at the bottom-right of the screen.</li>
-<li>A dialog opens where you fill in the project details. Required fields are marked accordingly.</li>
-<li>Press <strong>Save</strong> to create the project. It will appear in the list immediately.</li>
+<li>Click the <strong>Add new PROJECT</strong> button in the toolbar above the table.</li>
+<li>A dialog opens where you fill in the project details. Optional fields are marked <em>(optional)</em>.</li>
+<li>Press <strong>Save</strong> to create the project. It appears in the list immediately.</li>
 </ol>
 <h3 id="editing-a-project">Editing a Project</h3>
 <ol>
-<li>In the row of the project you want to change, click the <strong>edit</strong> icon (pencil).</li>
-<li>Modify the fields in the dialog. The <strong>Auto Code</strong> field will be grayed out.</li>
+<li>Hover over the project's row and click the <strong>edit</strong> icon (pencil), or select the row and click <strong>Edit</strong> in the action bar above the table.</li>
+<li>Modify the fields in the dialog.</li>
 <li>Click <strong>Save</strong> to apply your changes.</li>
 </ol>
 <h3 id="viewing-a-project">Viewing a Project</h3>
 <ul>
-<li>Click the <strong>view</strong> icon (eye) in the project row to open a read-only version of the project details dialog.</li>
+<li>Hover over the project's row and click the <strong>view</strong> icon (eye), or select the row and click <strong>View</strong> in the action bar, to open a read-only version of the project details dialog.</li>
 </ul>
 <h3 id="deleting-a-project">Deleting a Project</h3>
 <ol>
-<li>Click the <strong>delete</strong> icon (trash can) in the project row.</li>
-<li>Confirm the deletion in the pop-up. The project will be permanently removed.</li>
+<li>Click the project's row to select it, then click <strong>Delete</strong> in the action bar above the table.</li>
+<li>Confirm the deletion in the pop-up. The project is permanently removed.</li>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Deleting a project</p>
-<p>Deleting a project removes it from the system. This action cannot be undone. Ensure you have selected the correct project before confirming.</p>
+<p>Deleting a project removes it from the system. This action cannot be undone. A project that is used by forms, or that has child projects, cannot be deleted; see <a href="../">Metrics</a>.</p>
 </div>
 <h2 id="searching-and-filtering">Searching and Filtering</h2>
-<p>The <strong>search and filters</strong> bar sits below the breadcrumbs. You can:</p>
+<p>The <strong>search and filters</strong> bar sits below the page heading. You can:</p>
 <ul>
 <li><strong>Search by keyword</strong> – Type any term in the keyword field; the list filters automatically.</li>
-<li><strong>Filter by date range</strong> – Use the <strong>From date</strong> and <strong>To date</strong> pickers to narrow down projects by start or end date.</li>
-<li><strong>Apply additional filters</strong> – Click the <strong>filter list</strong> button (funnel icon) to open a dialog with more advanced filters, such as sectors, donors, or other custom attributes.</li>
-<li><strong>Save and load filter presets</strong> – Use the preset manager to save your current filter combination and reload it later.</li>
+<li><strong>Filter by date range</strong> – Click <strong>Filters</strong>, set a <strong>From date</strong> and a <strong>To date</strong>, then click <strong>Search</strong>. The dates filter by the project's creation date, not by its start or end date.</li>
 </ul>
-<p>Filter chips appear below the filter bar, showing active filters. You can remove individual chips by clicking the <strong>cancel</strong> icon on each.</p>
+<p>Filter chips appear below the filter bar, showing the active filters. You can remove individual chips by clicking the <strong>cancel</strong> icon on each.</p>
 <h2 id="exporting-and-importing">Exporting and Importing</h2>
 <h3 id="exporting-projects">Exporting Projects</h3>
 <ol>
-<li>Click the <strong>export</strong> button (cloud download icon) in the filter bar.</li>
-<li>Choose the export format (e.g., CSV, Excel) and the columns you want to include.</li>
-<li>The file will be downloaded to your computer.</li>
+<li>Click the <strong>Export</strong> button in the toolbar.</li>
+<li>Choose what to export: <em>Items in page</em> (the default), the items matching your filters, or <em>All items</em>.</li>
+<li>Choose the format: <em>csv</em>, <em>xlsx</em> or <em>splitted xlsx</em>, then click <strong>Export</strong>.</li>
 </ol>
 <h3 id="importing-projects">Importing Projects</h3>
 <ol>
-<li>Click the <strong>import</strong> floating button (cloud upload icon) at the bottom-right.</li>
-<li>Upload a properly formatted file (e.g., CSV or Excel). The system will create or update projects based on the data.</li>
-<li>Review the import results for any errors or warnings.</li>
+<li>Click the <strong>Import PROJECT</strong> button in the toolbar above the table.</li>
+<li>Upload an <code>.xls</code>, <code>.xlsx</code> or <code>.csv</code> file and map its columns to the project fields.</li>
+<li>Click <strong>Apply import</strong> and review the result for any errors or warnings. Projects whose name already exists are reused, not updated.</li>
 </ol>
 <h2 id="bulk-actions">Bulk Actions</h2>
-<p>You can select multiple projects using the checkboxes at the left of each row. Once at least one project is selected, the toolbar above the table shows bulk actions:</p>
+<p>You can select multiple projects using the checkboxes at the left of each row. With several projects selected, the action bar above the table offers <strong>Delete</strong>, which removes all selected projects after confirmation. There is no bulk edit.</p>
+<p>After deleting, the list updates automatically.</p>
+<h2 id="related-pages">Related Pages</h2>
 <ul>
-<li><strong>Delete selected</strong> – Removes all selected projects after confirmation.</li>
-<li><strong>Edit selected (bulk form edit)</strong> – Opens a dialog where you can edit a common field for all selected projects at once.</li>
+<li><a href="../">Metrics Overview</a></li>
+<li><a href="../areas/">Thematic Areas</a></li>
+<li><a href="../organizations/">Organizations</a></li>
+<li><a href="../locations/">Locations</a></li>
+<li><a href="../cases/">Cases</a></li>
 </ul>
-<p>After bulk editing or deleting, the list updates automatically.</p>
 
 
 
