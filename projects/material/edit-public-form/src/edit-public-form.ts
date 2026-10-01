@@ -60,7 +60,17 @@ import {OnlineUserDataManager} from '@dino/core/users';
 import {TranslocoService} from '@ngneat/transloco';
 import {format} from 'date-fns';
 import {BehaviorSubject, Observable, Subscription, combineLatest, of as obsOf} from 'rxjs';
-import {filter, map, shareReplay, startWith, switchMap, take, tap, withLatestFrom} from 'rxjs/operators';
+import {
+  catchError,
+  filter,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 
 const successMsg = 'Form submitted successfully!';
 const redoBtn = 'FILL OUT ANOTHER ONE';
@@ -497,12 +507,15 @@ export class EditPublicForm implements AfterViewChecked, OnDestroy {
             created_at: format(new Date(), 'yyyy-MM-dd'),
           };
           // Anonymous/public users can insert form_data but only have `select` permission on `id`.
+          // A failed attempt ends as a null result, never as an error: an error would
+          // end this subscription, and with it every later attempt to send the form.
           return formDataManagerInit.pipe(
             switchMap(() =>
               fdm
                 .create(form, ['id'])
                 .pipe(map(res => (res != null ? ({...form, ...res} as FormData) : null))),
             ),
+            catchError(() => obsOf(null)),
           );
         }),
         withLatestFrom(anonymousUserData),
@@ -534,12 +547,14 @@ export class EditPublicForm implements AfterViewChecked, OnDestroy {
             )
             .subscribe();
         } else {
+          // Sends the same answers again: they are still in the form, which a page
+          // reload would have emptied.
           snackBar
             .open(ts.translate(errorMsg), ts.translate(retryBtn), {duration: 15000})
             .onAction()
             .pipe(
               tap(() => {
-                this.windowReload();
+                this.saveForm();
               }),
               take(1),
             )
