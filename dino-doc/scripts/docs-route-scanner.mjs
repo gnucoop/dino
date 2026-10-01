@@ -189,14 +189,13 @@ const EXTRA_ROUTE_ENTRIES = [
     screenshots: [
       {
         name: 'forms/edit-form-schema-relationships',
-        description: 'Form relationships (dependencies) editor dialog',
-        // Actions bar has three buttons in DOM order: Import(0), Relationships(1), Save(2).
-        // eq(1) avoids depending on the translated button label. The Relationships button is
-        // enabled only on an existing schema (isCreation === false), which resolveFrom guarantees.
-        setup: "cy.get('.dino-edit-form-schema-actions button').eq(1).click(); cy.wait(1000);",
+        description: 'Relationships tab of the form schema editor',
+        // The tab is found by its icon, the same in every language. It is enabled only on
+        // an existing schema (isCreation === false), which resolveFrom guarantees.
+        setup: "cy.contains('.mat-mdc-tab mat-icon', /^cable$/).click(); cy.wait(1000);",
         // The guard selector is checked BEFORE setup runs (docs-screenshots.cy.js), so it must
-        // be an element present before the click — the actions bar, not the dialog.
-        selector: '.dino-edit-form-schema-actions',
+        // be an element present before the click — the tab group, not the tab content.
+        selector: '.dino-efs-tabs-wrap',
       },
     ],
   },
@@ -226,9 +225,10 @@ const EXTRA_ROUTE_ENTRIES = [
       {
         name: 'forms/index-create',
         description: 'Blank form opened to submit a new data entry',
-        // Add(0) FAB navigates to a new, empty submission form.
-        setup: "cy.get('.mat-fab-bottom-right').eq(0).click(); cy.wait(2000);",
-        selector: '.mat-fab-bottom-right',
+        // "Add new form" in the filters toolbar, found by its icon rather than its
+        // translated label, navigates to a new, empty submission form.
+        setup: "cy.contains('.dino-filters-toolbar-right button mat-icon', /^add$/).click(); cy.wait(2000);",
+        selector: ".dino-filters-toolbar-right button:has(mat-icon:contains('add'))",
       },
     ],
   },
@@ -236,7 +236,7 @@ const EXTRA_ROUTE_ENTRIES = [
   // own route (forms/:id/import → doc page 'forms/import'), auto-discovered by the
   // scanner. Its main-view screenshot is generated automatically; no EXTRA entry.
   // --- Metric value edit dialog (Thematic Areas page is the example) ---
-  // The first row action icon is the pencil/edit (matIcon 'create') → opens the edit dialog.
+  // Edit, the first action of the selection bar, opens the edit dialog.
   {
     url: '/metrics/thematic_areas',
     dir: 'metrics',
@@ -244,8 +244,10 @@ const EXTRA_ROUTE_ENTRIES = [
       {
         name: 'metrics/areas-edit',
         description: 'Edit dialog for modifying a metric value',
-        setup: "cy.get('.dino-action-icon', {timeout: 8000}).first().scrollIntoView().click({force: true}); cy.wait(1000);",
-        selector: '.dino-action-icon',
+        // The row icons only show on hover: select the row, then the first action of the
+        // selection bar, which is Edit.
+        setup: "cy.get('mat-row').first().click(); cy.wait(500); cy.get('.dino-selection-action').first().click(); cy.wait(1000);",
+        selector: 'mat-row',
       },
     ],
   },
@@ -257,23 +259,25 @@ const EXTRA_ROUTE_ENTRIES = [
       {
         name: 'aggregation/index-new',
         description: 'Dialog to choose a form schema and start a new submission',
-        // The single floating button opens the form-creator (schema picker) dialog.
-        setup: "cy.get('.mat-fab-bottom-right').first().click(); cy.wait(1000);",
-        selector: '.mat-fab-bottom-right',
+        // "Add new form" in the filters toolbar opens the form-creator (schema picker) dialog.
+        setup: "cy.contains('.dino-filters-toolbar-right button mat-icon', /^add$/).click(); cy.wait(1000);",
+        selector: ".dino-filters-toolbar-right button:has(mat-icon:contains('add'))",
       },
     ],
   },
   // --- Administration: edit a user permissions group ---
-  // First row action icon is the pencil/edit (matIcon 'create') → opens the group editor dialog.
+  // Edit, the first action of the selection bar, opens the group editor, a full page on dev.
   {
     url: '/users/groups',
     dir: 'administration',
     screenshots: [
       {
         name: 'administration/groups-list-edit',
-        description: 'Editor dialog for modifying a user permissions group',
-        setup: "cy.get('.dino-action-icon', {timeout: 8000}).first().scrollIntoView().click({force: true}); cy.wait(1000);",
-        selector: '.dino-action-icon',
+        description: 'Editor for modifying a user permissions group',
+        // The row icons only show on hover: select the row, then the first action of the
+        // selection bar, which is Edit.
+        setup: "cy.get('mat-row').first().click(); cy.wait(500); cy.get('.dino-selection-action').first().click(); cy.wait(1000);",
+        selector: 'mat-row',
       },
     ],
   },

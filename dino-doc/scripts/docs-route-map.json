@@ -336,9 +336,9 @@
     "screenshots": [
       {
         "name": "forms/edit-form-schema-relationships",
-        "description": "Form relationships (dependencies) editor dialog",
-        "setup": "cy.get('.dino-edit-form-schema-actions button').eq(1).click(); cy.wait(1000);",
-        "selector": ".dino-edit-form-schema-actions"
+        "description": "Relationships tab of the form schema editor",
+        "setup": "cy.contains('.mat-mdc-tab mat-icon', /^cable$/).click(); cy.wait(1000);",
+        "selector": ".dino-efs-tabs-wrap"
       }
     ]
   },
@@ -361,8 +361,8 @@
       {
         "name": "forms/index-create",
         "description": "Blank form opened to submit a new data entry",
-        "setup": "cy.get('.mat-fab-bottom-right').eq(0).click(); cy.wait(2000);",
-        "selector": ".mat-fab-bottom-right"
+        "setup": "cy.contains('.dino-filters-toolbar-right button mat-icon', /^add$/).click(); cy.wait(2000);",
+        "selector": ".dino-filters-toolbar-right button:has(mat-icon:contains('add'))"
       }
     ]
   },
@@ -373,8 +373,8 @@
       {
         "name": "metrics/areas-edit",
         "description": "Edit dialog for modifying a metric value",
-        "setup": "cy.get('.dino-action-icon', {timeout: 8000}).first().scrollIntoView().click({force: true}); cy.wait(1000);",
-        "selector": ".dino-action-icon"
+        "setup": "cy.get('mat-row').first().click(); cy.wait(500); cy.get('.dino-selection-action').first().click(); cy.wait(1000);",
+        "selector": "mat-row"
       }
     ]
   },
@@ -385,8 +385,8 @@
       {
         "name": "aggregation/index-new",
         "description": "Dialog to choose a form schema and start a new submission",
-        "setup": "cy.get('.mat-fab-bottom-right').first().click(); cy.wait(1000);",
-        "selector": ".mat-fab-bottom-right"
+        "setup": "cy.contains('.dino-filters-toolbar-right button mat-icon', /^add$/).click(); cy.wait(1000);",
+        "selector": ".dino-filters-toolbar-right button:has(mat-icon:contains('add'))"
       }
     ]
   },
@@ -396,9 +396,9 @@
     "screenshots": [
       {
         "name": "administration/groups-list-edit",
-        "description": "Editor dialog for modifying a user permissions group",
-        "setup": "cy.get('.dino-action-icon', {timeout: 8000}).first().scrollIntoView().click({force: true}); cy.wait(1000);",
-        "selector": ".dino-action-icon"
+        "description": "Editor for modifying a user permissions group",
+        "setup": "cy.get('mat-row').first().click(); cy.wait(500); cy.get('.dino-selection-action').first().click(); cy.wait(1000);",
+        "selector": "mat-row"
       }
     ]
   }
