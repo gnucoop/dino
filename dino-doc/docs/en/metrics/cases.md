@@ -1,84 +1,70 @@
 ---
 title: Cases
-description: Manage cases in Dino — create, edit, view, filter, export, and organize case records with a structured data table.
+description: Manage cases in Dino — create, edit, view, print, filter, and export case records from a structured data table.
 ---
 
 # Cases
 
-The Cases page gives you a centralized workspace to track and manage individual cases. Each case is a structured record that can hold a name, code, image, parent relationship, notes, and additional attributes. You can create new cases, edit existing ones, view details, delete records, and export your case list — all from a single interactive table.
+The Cases page is a centralized workspace for tracking and managing individual case records. Each case is a structured record that can hold a name, code, image, parent relationship, notes, and additional attributes. From this page you can create new cases, edit or view existing ones, print case cards, delete records, and export your case list — all from a single interactive table.
 
 ![Main view of the Cases page](../imgs/metrics/cases.png)
 
 ## Table overview
 
-The main table displays the following columns by default:
+The table displays the following columns by default:
 
-- **Case Name** – The name you assign to the case (sortable).
-- **Code** – A system-generated or manually assigned code (read‑only after creation).
+- **Case Name** – The name assigned to the case (sortable).
+- **Code** – A code identifying the case. Dino generates it: you do not enter it, and it is not shown in the case dialog.
 - **Case Image** – An uploaded image file representing the case.
 - **Parent case** – The name of any parent case this case belongs to.
 
-Additional columns (such as **ID**, **Notes**, **Creation Date**, and **Additional Attributes**) are hidden by default. You can customize which columns appear by clicking the **Customize the columns** button in the table header.
+Additional columns — **ID**, **Notes**, **Creation Date**, and **Additional Attributes** — are hidden by default. Click **Columns** above the table to choose which columns appear. You can also drag column headers to reorder them, and the page shows the total number of items found next to the paginator.
 
-## Actions on a single case
+## Working with a single case
 
-On the right side of each row, you’ll find icons for the following actions:
+Hover over a row to show the **Edit** and **View** icons. Click the row to select it: the action bar above the table then shows every action:
 
-- **Edit** – Opens a dialog to modify the case details.
+- **Edit** – Opens a dialog where you can modify the case details.
 - **Print** – Generates a printable PDF card for the case.
-- **View** – Opens a read‑only dialog to inspect case information.
+- **View** – Opens a read-only dialog to inspect the case information.
 - **Delete** – Opens a confirmation dialog to permanently remove the case.
 
-Click the **More** icon (three vertical dots) to see all available actions if some are hidden.
+## Working with multiple cases
 
-## Bulk actions
+1. Select one or more rows using the checkboxes in the first column.
+2. When a single row is selected, all of its actions become available in the action bar above the table.
+3. When multiple rows are selected, only bulk actions remain — currently **Delete**.
 
-Select multiple cases using the checkboxes in the first column. When at least one case is selected, a **Delete** button appears at the top of the table. You can delete all selected cases at once.
+!!! warning "Deletion is permanent"
+    Deleted cases cannot be recovered. Review your selection carefully before confirming a bulk delete. A case that is used by forms, or that has child cases, cannot be deleted; see [Metrics](index.md).
 
-!!! warning "Bulk deletion is permanent"
-    Deleted cases cannot be recovered. Use the bulk delete action carefully.
+## Creating a case
 
-## Creating a new case
-
-1. Click the **Add New** floating action button (plus icon) at the bottom‑right of the page.
-2. A dialog will open. Fill in the required fields:
-   - **Case Name** – Enter a descriptive name.
-   - **Code** – (Optional) Provide a unique code. This field is read‑only after creation.
-   - **Case Image** – Upload an image file.
-   - **Parent case** – Optionally link this case to an existing parent case.
-   - **Notes** – Add any relevant notes.
+1. Click **Add new CASE** in the toolbar above the table.
+2. In the dialog, fill in the case details. Optional fields are marked *(optional)*.
+    - **Case Name** – Enter a descriptive name.
+    - **Case Image** – Upload an image file.
+    - **Parent case** – Optionally link this case to an existing parent case.
+    - **Notes** – Add any relevant notes.
 3. Click **Save** to create the case.
 
 ## Importing cases
 
-Use the **Import** floating action button (cloud upload icon) to bulk‑upload cases from a file. Supported formats are defined by your system administrator.
+Click **Import CASE** in the toolbar to bulk-upload cases from an `.xls`, `.xlsx` or `.csv` file. The import page guides you through uploading the file, mapping its columns and reviewing the result. Cases whose name already exists are reused, not updated; the code is generated by Dino and cannot be imported.
 
-## Filtering and searching
+## Searching and filtering
 
-The search bar at the top lets you filter cases by:
+Use the toolbar to narrow down the table:
 
-- **Keyword** – Searches across all displayed fields.
-- **Date range** – Filter by creation date (From / To).
-- **Additional filters** – Select from predefined filters such as metric, status, user, or user group.
-
-After applying filters, you can save the combination as a **preset** for quick reuse. To save a preset:
-
-1. Open the filter panel.
-2. Enter a name in the preset field.
-3. Click **Save**.  
-To apply a saved preset, select it from the list and click **Apply**.
+- **Keyword search** – Type into the search field to match text across displayed fields.
+- **Filters** – Open the filter panel to set a **From date** and a **To date**, which filter by creation date, then click **Search**. The badge on the **Filters** button shows how many filters are active.
+- Applied filters appear as chips below the toolbar; click the cancel icon on a chip to remove that filter.
 
 ## Exporting cases
 
-Click the **Export** button (cloud download icon) in the filter bar. Choose the export format (e.g., CSV or Excel) and select which columns to include. The exported file will contain all currently visible cases, respecting any active filters.
-
-## Customizing the table
-
-- **Sort** – Click any sortable column header (e.g., **Case Name**, **Creation Date**) to order the table.
-- **Column selector** – Open the column selector dialog to show or hide columns.
-- **Expand rows** – Some cases may have sub‑items (other cases linked as details). Click a row to expand it and see the related records.
-
-The page also displays a **breadcrumb trail** at the top so you can navigate back to the main Metrics section.
+1. Click **Export** in the toolbar.
+2. Choose what to export: *Items in page* (the default), the items matching your filters, or *All items*.
+3. Choose the format: *csv*, *xlsx* or *splitted xlsx*, then click **Export**.
 
 ## Related pages
 

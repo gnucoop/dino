@@ -1,6 +1,6 @@
 ---
 title: Managing Metric Values – Thematic Areas
-description: Learn how to view, add, edit, delete, and search thematic areas in Dino’s metric management section.
+description: Learn how to view, add, edit, delete, and search thematic areas in Dino's metric management section.
 ---
 
 # Managing Metric Values – Thematic Areas
@@ -12,60 +12,59 @@ The **Thematic Areas** page (accessible from the Metrics section) lets you organ
 ## What You See
 
 - **Breadcrumbs** at the top show your current location in the application (e.g., **Metrics > Thematic Areas**).
-- The main table lists all thematic areas, displaying columns such as **Area Name**, **Parent Area**, and (if configured) other attributes. You can customize visible columns by clicking the **Customize the columns** button in the header.
-- A **search bar** and **filter panel** let you find areas by keyword, date range, or other metadata.
+- The main table lists all thematic areas, displaying columns such as **Area Name**, **Parent Area**, and (if configured) other attributes. You can customize the visible columns by clicking the **Columns** button above the table.
+- A **search by keyword** field and the **Filters** button let you find areas by name or by creation date.
 - The **Export** button (cloud_download) allows you to download the current list as a file.
-- Two floating action buttons are available:
-    - **+ (Add New)** – creates a new thematic area.
-    - **cloud_upload** – imports areas from an external file.
+- Two toolbar buttons are available:
+    - **Add new AREA** – creates a new thematic area.
+    - **Import AREA** – opens the import page, where you upload an `.xls`, `.xlsx` or `.csv` file, map its columns and review the result. Areas whose name already exists are reused, not updated.
 
 ## Working with Thematic Areas
 
 ### Adding a New Thematic Area
 
-1. Click the **+** floating button.
-2. In the dialog that opens, fill in the required fields (e.g., **Area Name**, **Parent Area**).
-3. Click **Create** to save the new area.
+1. Click the **Add new AREA** button in the toolbar.
+2. In the dialog that opens, fill in the **Area Name** and, if needed, the **Parent Area** and any additional attributes. Optional fields are marked *(optional)*.
+3. Click **Save** to create the new area.
 
 !!! tip "Parent Area"
-    To create a sub‑area, select a **Parent Area** from the dropdown. If left blank, the new area becomes a top‑level entry.
+    To create a sub‑area, start typing in the **Parent Area** field and pick the parent from the suggestions. If left blank, the new area becomes a top‑level entry.
 
 ### Editing an Existing Area
 
 1. Find the area you want to change in the table.
-2. Click the **edit** icon (pencil) in the row’s actions column.
+2. Hover over its row and click the **edit** icon (pencil), or click the row to select it and click **Edit** in the action bar above the table.
 3. Modify the fields in the dialog and click **Save**.
+
+![Edit dialog for modifying a metric value](../imgs/metrics/areas-edit.png)
 
 ### Viewing Details
 
-- Click the **visibility** icon to open a read‑only dialog showing all fields of the area.
-- You can also **click on a row** to expand it and reveal any child areas (if the hierarchy is configured).
+- Hover over a row and click the **visibility** (eye) icon, or select the row and click **View** in the action bar, to open a read‑only dialog showing all fields of the area.
 
 ### Deleting an Area
 
-1. Click the **delete** icon (trash can) in the row’s actions column.
+1. Click the area's row to select it, then click **Delete** in the action bar above the table.
 2. Confirm the deletion in the dialog that appears.
 
 !!! warning "Delete Considerations"
-    Deleting a parent area may affect child areas. Dino will warn you if there are associated items. Proceed with caution.
+    An area that is used by forms, or that has child areas, cannot be deleted. If only reports use it, Dino warns you and lets you confirm. User groups that grant the area are not checked: remove it from them first. See [Metrics](index.md).
 
 ## Searching and Filtering
 
-- Use the **keyword search** field at the top of the list to filter areas by name.
-- Open the filter panel by clicking the **expand** arrow. You can set:
-    - **From date / To date** – filter by creation date.
-    - **Additional filters** (e.g., metric‑specific fields) – if your instance has custom attributes.
-- Apply a **filter preset** (if available) to quickly load saved filter combinations.
+- Use the **keyword search** field above the list to filter areas by name.
+- Click **Filters** to set a **From date** and a **To date**, which filter by creation date, then click **Search**.
+- Applied filters appear as chips below the toolbar; click the **cancel** icon on a chip to remove it.
 
 ## Exporting the List
 
-1. Click the **cloud_download** button in the toolbar.
-2. Choose the export format (e.g., CSV, Excel).
-3. The file will be generated with the currently visible (filtered) set of areas.
+1. Click the **Export** button in the toolbar.
+2. Choose what to export: *Items in page* (the default), the items matching your filters, or *All items*.
+3. Choose the format: *csv*, *xlsx* or *splitted xlsx*, then click **Export**.
 
 ## Bulk Actions
 
-To perform actions on multiple areas at once (e.g., delete several), select the checkboxes next to the rows. The bulk action buttons will appear in the column header. Currently, the Thematic Areas screen supports **bulk delete**.
+To perform actions on multiple areas at once, select the checkboxes next to the rows. When one row is selected, its individual actions appear in the action bar above the table; when several rows are selected, the bar offers the bulk actions. The Thematic Areas screen currently supports **bulk delete** only.
 
 ## Navigating with Breadcrumbs
 
