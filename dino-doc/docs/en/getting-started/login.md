@@ -23,6 +23,12 @@ If your credentials are correct, you will be taken to the [Dashboard](../dashboa
 
 If the sign-in fails, an error message will appear below the form. Double-check that your email and password are correct, making sure there are no extra spaces, and try again.
 
+!!! tip "Staying signed in"
+    If your session expires, Dino does not sign you out and keeps the data on the device, but the sync stops: the sync button shows a warning. Click it: Dino tries to renew the session and, if it cannot, offers **Go to the login page**, keeping the data on this device, or **Later**. Sign in again with the same account to synchronise the data.
+
+!!! warning "Data not yet synchronised"
+    If data collected on this device has not been synchronised yet, the Login page tells you so, naming the account that collected it when it can. Sign in with that account to synchronise the data: **signing in with a different account deletes it**.
+
 ---
 
 ## Resetting Your Password
@@ -63,6 +69,9 @@ Once your account is created you will be signed in and taken to the [Dashboard](
 
 If you already have an account, click **"Already have an account? Login"** to return to the sign-in form.
 
+!!! tip "Choosing a strong password"
+    Use a password you do not reuse on other websites. A mix of upper- and lower-case letters, numbers, and symbols makes it harder for others to guess.
+
 ---
 
 ## Signing In with an External Account
@@ -84,7 +93,7 @@ A small set of display preferences are available directly on the Login page.
 
 ### Light / Dark Theme
 
-A toggle is available at the bottom of the form, between a sun icon and a moon icon. Click or slide it to switch between **light mode** and **dark mode**. This setting takes effect immediately.
+Two buttons at the bottom of the form, a sun (*Light mode*) and a moon (*Dark mode*), switch between **light mode** and **dark mode**. The setting takes effect immediately.
 
 ### Platform Selection
 

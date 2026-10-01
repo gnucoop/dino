@@ -22,7 +22,7 @@ You will typically see the following cards:
 *   **Metrics**: Navigate to the [Metrics](../metrics/index.md) area to manage reference data like projects, locations, and organizations.
     !!! warning "Visibility"
         The Metrics card is hidden if your user account has guest-only permissions.
-*   **Users**: Navigate to the [Manage Users](../administration/users-list.md) area to manage user accounts and groups.
+*   **Users**: Navigate to the [Users List](../administration/users-list.md) area to manage user accounts and groups.
     !!! tip "Admin Access"
         The Users card is only visible to users with administrator privileges.
 
@@ -40,18 +40,19 @@ If you have not yet selected a favorite report, you will see a welcome message p
 
 1.  Go to the [Reports](../reports/index.md) area.
 2.  Open the report you want to see on your Dashboard.
-3.  In the report list or report view, find and click the **Add to favourites** action (usually represented by a heart icon).
+3.  In the report's list, click the report row to select it, then click the heart button (**Add to favourites**) in the action bar. This option is available only if favourites are enabled for your Dino instance.
 4.  Refresh or return to your Dashboard. The selected report will now be displayed.
 
 ### Changing or Removing a Favorite
 
-To change your favorite report, simply add a different report to your favorites. The new report will replace the old one on your Dashboard. To clear the Dashboard, you can remove the favorite report setting from your browser's local storage, or contact your system administrator.
+To change your favorite report, simply add a different report to your favorites. The new report will replace the old one on your Dashboard. To clear the Dashboard, select the favorite report in the list and click the filled heart button to remove it from your favorites.
 
-<!-- ---
+!!! tip "Working with the displayed report"
+    The report shown on your Dashboard is the same report you open from the [Reports](../reports/index.md) area. If it contains filter widgets, you can use them here too to narrow the data it shows.
 
 ## Guided Tour
 
-The first time you access Dino, a guided tour may automatically start from the Dashboard to introduce you to the application's main features.
+The first time you access Dino, a guided tour may start automatically from the Dashboard to introduce the main areas of the application.
 
-*   You can follow the on-screen prompts to learn about navigation and key actions.
-*   If you skip or finish the tour, you can restart it at any time from the help menu in the [User Area](../interface/index.md#user-area). -->
+*   Follow the on-screen prompts to learn about navigation and key actions.
+*   If you skip or finish the tour, you can restart it at any time with **Start Dino Tour** in the **Tutorials** tab of the [User Area](../user-area/index.md). The tab is shown only when the guided tour is configured for your Dino instance.
