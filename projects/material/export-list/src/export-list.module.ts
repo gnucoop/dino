@@ -32,6 +32,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatRadioModule} from '@angular/material/radio';
+import {MatSelectModule} from '@angular/material/select';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {ExportList} from './export-list';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -52,6 +53,7 @@ import {LoadingSpinnerModule as DinoLoadingSpinnerModule} from '@dino/material/l
     MatMenuModule,
     MatProgressSpinnerModule,
     MatRadioModule,
+    MatSelectModule,
     MatTooltipModule,
     AjfTranslocoModule,
   ],

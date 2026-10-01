@@ -266,9 +266,26 @@ dino-export-list {
     white-space: nowrap;
   }
 
+  .dino-export-section-select {
+    display: none;
+    margin-bottom: 15px;
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    .mdc-line-ripple {
+      display: none;
+    }
+
+    .mat-mdc-text-field-wrapper {
+      border-radius: 8px;
+    }
+  }
+
   .dino-export-fields-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
     gap: 12px;
     align-content: start;
     overflow-y: auto;
@@ -281,6 +298,7 @@ dino-export-list {
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 0;
     padding: 8px 8px 8px 14px;
     border: 1px solid var(--exp-border);
     border-radius: 8px;
@@ -294,6 +312,7 @@ dino-export-list {
 
   .dino-export-field-label {
     flex: 1 1 auto;
+    min-width: 0;
     font-size: 14px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -373,35 +392,35 @@ dino-export-list {
     }
 
     .dino-export-body {
-      grid-template-columns: 1fr;
+      display: flex;
+      flex-direction: column;
       padding: 12px 16px;
     }
 
     .dino-export-sections {
-      padding: 8px;
-    }
-
-    .dino-export-sections-caption {
       display: none;
     }
 
-    .dino-export-sections-list {
-      flex-direction: row;
-      overflow-x: auto;
-      overflow-y: hidden;
+    .dino-export-fields {
+      flex: 1 1 auto;
+      min-width: 0;
     }
 
-    .dino-export-section {
-      width: auto;
-      flex: 0 0 auto;
+    .dino-export-section-select {
+      display: block;
+      width: 100%;
     }
 
-    .dino-export-fields-grid {
-      grid-template-columns: 1fr;
+    .dino-export-fields-title {
+      display: none;
     }
 
     .dino-export-field-search {
       max-width: none;
+    }
+
+    .dino-export-fields-grid {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 }
