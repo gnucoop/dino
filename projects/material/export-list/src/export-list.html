@@ -111,6 +111,18 @@
     </aside>
 
     <section class="dino-export-fields">
+      <!-- On narrower screens the sections sidebar gives way to this select. -->
+      <mat-form-field class="dino-export-section-select" floatLabel="always">
+        <mat-select
+          [value]="activeSectionIndex$|async"
+          (selectionChange)="setActiveSection($event.value)"
+          [attr.aria-label]="'Sections'|transloco"
+        >
+          <mat-option *ngFor="let section of sectionsView$|async" [value]="section.index">
+            {{section.label|transloco}} ({{section.selected}}/{{section.total}})
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
       <div class="dino-export-fields-header">
         <h3 class="dino-export-fields-title" *ngIf="activeSectionLabel$|async as label">
           {{label|transloco}}
