@@ -41,3 +41,4 @@ nav:
     - Languages: administration/languages.md
     - Users List: administration/users-list.md
     - Groups List: administration/groups-list.md
+  - User Area: user-area/index.md

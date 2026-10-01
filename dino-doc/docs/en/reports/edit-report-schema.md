@@ -1,57 +1,56 @@
 ---
 title: Edit Report Schema
-description: Create or modify a report schema to define the structure, layout, and data sources for reports in Dino.
+description: Create or modify a report schema by importing an XLSReport file, then check it in the preview before saving.
 ---
 
 # Edit Report Schema
 
-The **Edit Report Schema** page allows you to create a new report schema or modify an existing one. A report schema defines the structure, layout, and data sources for a report in Dino.
+The **Edit Report Schema** page allows you to create a new report schema or modify an existing one. A report schema defines the structure, layout, and data sources for a report in Dino. Its content comes from an [XLSReport](xlsreport.md) file that you import on this page.
 
 ![Main view of the Edit Report Schema page](../imgs/reports/edit-report-schema.png)
 
-On this page, you configure the report’s name, description, and the specific data fields that will appear in the report from your form submissions.
+## Page fields
+
+| Field | Description |
+|-------|-------------|
+| **Report Name** | Required. Must be unique: if it is already in use, the page shows *This name is already being used.* |
+| **Report Label** | Required. The name displayed in lists and cards. |
+| **Icon Set** | **Default** or **Humanitarian**. |
+| **Icon Identifier** | Pick an icon from the autocomplete list. The preview updates live. |
+| **Required Metrics** | The metrics that must be chosen when a report is generated from this schema. |
+
+Below the fields, the page shows:
+
+- **Associated Form Schemas** – the form schemas the report uses, read-only. They are taken from the imported XLSReport file when you save.
+- **Report Preview** – the report rendered from the imported or saved schema.
+
+Data sources, columns and filters are all defined in the XLSReport file: the page has no controls to choose them.
 
 ## Creating a New Report Schema
 
-To create a new report schema:
+1. Open the **Reports** section in the main menu.
+2. Click the **+** button (*Add new Reports schema*) in the bottom-right corner.
+3. Enter the **Report Name** and **Report Label**, and optionally the icon and the **Required Metrics**.
+4. Click **Import**, then **Choose file** and select your XLSReport file (.xls or .xlsx).
+5. Click **Apply**: the file is loaded into the page and shown in the **Report Preview**.
+6. Click **Save** to store the schema. **Save** stays disabled until the required fields are valid.
 
-1. Navigate to the **Reports** section in the main menu.
-2. Click **Create Report Schema**.
-3. You are taken to the Edit Report Schema page.
-4. Enter a descriptive **Name** for your report.
-5. (Optional) Provide a **Description** to explain the report’s purpose.
-6. Import an XLSReport file
-7. Click **Save** to create the schema.
+!!! warning "Import before saving"
+    A new report schema cannot be saved without an imported file: saving it empty shows *Oops! Something went wrong saving the Report*. **Apply** only loads the file into the page; nothing is stored until you click **Save**.
 
 ## Editing an Existing Report Schema
 
-To modify a report schema you have already created:
+1. Open the **Reports** section.
+2. On the report schema's card, click the pencil icon (*Edit Report Schema*).
+3. Change the fields, or import a new XLSReport file to replace the report's content.
+4. Click **Save** to update the schema.
 
-1. Navigate to the **Reports** section.
-2. Find the report schema you wish to edit in the list and click on it.
-3. Click the **Edit** button (often represented by a pencil icon).
-4. You are taken to the Edit Report Schema page with the current configuration loaded.
-5. Make your desired changes to the name, description, or data configuration.
-6. Click **Save** to update the schema.
-
-!!! tip "Saving Your Work"
-    Always remember to click **Save** after making changes. Your modifications are not applied until you save the schema.
-
-## Configuring Report Data
-
-The core of the report schema is defining which data from your form submissions will appear in the report. You can typically:
-
-* **Select Data Source:** Choose the form schema that contains the data you want to report on.
-* **Select Data Fields:** Choose specific fields from your connected form schemas to include as columns in the report.
-* **Set Display Names:** Customize the column header shown in the report for each selected field.
-* **Define Filters:** Set conditions to include only specific submissions that meet your criteria (for example, submissions from a certain date range).
-
-!!! warning "Data Source"
-    A report schema must be connected to at least one form schema to have data to display. Ensure the relevant form exists before creating your report.
+To delete a report schema, click the bin icon (*Delete Report Schema*) on its card. A schema that still has reports cannot be deleted: delete its reports first.
 
 ## Next Steps
 
 After saving your report schema, you can:
 
 * Navigate to the [Reports](index.md) page to view and run your new report.
+* Use [Edit Report](edit-report.md) to work with the report itself once the schema is in place.
 * Return to this page to make further adjustments as needed.

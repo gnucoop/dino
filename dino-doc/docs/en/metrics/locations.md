@@ -12,61 +12,64 @@ The **Locations** page lets you manage the geographic locations referenced by yo
 ## What you see
 
 - **Breadcrumbs** – shows your current position in the navigation.
-- **Search & Filters** – keyword search, date range picker, and configurable advanced filters (e.g., by metric, status, user). You can also save and load filter presets.
-- **Table** – displays Location Name and Parent Location by default. Hidden columns (ID, Creation Date, Coordinates, Additional Attributes) can be shown via the **Customize the columns** button (bottom right of the table header).
+- **Search & Filters** – a keyword search field, and the **Filters** button to filter by creation date (**From date** / **To date**).
+- **Items found counter** – shows how many locations match the current filters.
+- **Table** – displays Location Name and Parent Location by default. Hidden columns (ID, Creation Date, Coordinates, Additional Attributes) can be shown via the **Columns** button, above the table on the right.
 - **Pagination** – controls for navigating through pages.
-- **Bulk actions** – select rows using checkboxes to delete or edit multiple locations at once.
-- **Floating action buttons** – **Add New** (plus icon) and **Import** (cloud upload icon) remain available as you scroll.
+- **Bulk actions** – select rows using checkboxes to delete multiple locations at once.
+- **Toolbar buttons** – **Add new LOCATION** (plus icon) and **Import LOCATION** (cloud upload icon) sit above the table.
 
 ## Row actions
 
-Each row has three quick actions (visible when hovering over the row):
+Hover over a row to show the **Edit** and **View** icons. Click the row to select and highlight it: the action bar above the table then shows every action:
 
 - **Edit** – opens the location dialog to modify details.
 - **Delete** – removes the location after confirmation.
-- **View** – opens a read‑only dialog showing all fields.
-
-Clicking a row selects it (highlights) and, if the list is expandable, reveals a detail panel with additional data.
+- **View** – opens a read-only dialog showing all fields.
 
 ## Working with locations
 
 ### Add a new location
 
-1. Click the **Add New** floating button (bottom‑right corner).
-2. In the dialog, fill in the required fields (e.g., Location Name).
+1. Click the **Add new LOCATION** button above the table.
+2. In the dialog, fill in the required fields (for example, Location Name). Optional fields are marked *(optional)*.
 3. Optionally set a Parent Location, Coordinates, and Additional Attributes.
 4. Click **Save**.
 
 ### Edit a location
 
-1. Click the **Edit** icon (pencil) on the desired row.
+1. Hover over the row and click the **Edit** icon (pencil), or select the row and click **Edit** in the action bar.
 2. Update the fields in the dialog.
 3. Click **Save**.
 
 ### Delete a location
 
-1. Click the **Delete** icon (trash) on the row.
-2. Confirm deletion in the prompt.
+1. Click the row to select it, then click **Delete** in the action bar above the table.
+2. Confirm the deletion in the prompt.
+
+A location that is used by forms, or that has child locations, cannot be deleted; see [Metrics](index.md).
 
 ### Import locations from a file
 
-1. Click the **Import** floating button (cloud upload icon).
-2. Select a CSV or Excel file following the expected format.
-3. Map columns to location fields if needed.
-4. Click **Import**.
+1. Click the **Import LOCATION** button above the table.
+2. Upload an `.xls`, `.xlsx` or `.csv` file.
+3. Map the file's columns to location fields.
+4. Click **Apply import** and review the result.
 
-!!! tip "Bulk editing"
-    Select multiple rows using checkboxes, then click the **Edit** button (edit_note icon) that appears above the table to update several locations at once.
+Locations whose name already exists are reused, not updated.
 
 ### Export the location list
 
-1. Click the **Export** button (cloud download icon) in the filters bar.
-2. Choose the export format (CSV or Excel).
-3. The file downloads automatically.
+1. Click **Export** in the toolbar.
+2. Choose what to export: *Items in page* (the default), the items matching your filters, or *All items*.
+3. Choose the format: *csv*, *xlsx* or *splitted xlsx*, then click **Export**.
+
+!!! tip "Bulk deleting"
+    Select multiple rows using the checkboxes, then click **Delete** in the action bar above the table to delete several locations at once.
 
 ### Location coordinates
 
-If you set the attribute "coordinates" of a specific location value, the information will be used to visualize your form data on a [map](../forms/forms-map.md).
+If you set the **coordinates** attribute for a location, that information is used to visualize your form data on a [map](../forms/forms-map.md).
 
 ## Related pages
 
@@ -74,4 +77,3 @@ If you set the attribute "coordinates" of a specific location value, the informa
 - [Cases](cases.md) – manage cases that reference locations.
 - [Organizations](organizations.md) – manage organizations tied to locations.
 - [Projects](projects.md) – view projects associated with locations.
-

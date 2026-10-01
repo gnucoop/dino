@@ -1,45 +1,52 @@
 ---
 title: Datachat
-description: Use DinoGPT, an AI assistant, to ask questions about your form data.
+description: Use DinoAi, an AI assistant, to ask questions about your form data.
 ---
 
 # Datachat
 
-The Datachat page provides access to **Dino AI**, an AI-powered assistant that can answer questions about the data collected in your forms. You can ask questions in natural language to get insights from your submissions.
+Datachat gives access to **DinoAi**, an AI-powered assistant that can answer questions about the data collected in your forms. You can ask questions in natural language to get insights from your submissions.
 
-When you open the Datachat page, you will see the Dino AI interface and a terms of service agreement. You must read and accept the terms before you can start a chat session.
+To open it, go to a form's submission list and click **AI** in the view switcher of the toolbar, next to **Data** and **Map**. The filters you have applied to the list are kept.
 
 !!! warning "AI-Generated Information"
-    Dino AI generates answers based on the specific data in your form database. Its knowledge is limited to this data and may not be complete, accurate, or up-to-date. You are responsible for verifying any information provided. Dino AI does not provide professional advice.
+    DinoAi generates answers based on the specific data in your form database. Its knowledge is limited to this data and may not be complete, accurate, or up-to-date. You are responsible for verifying any information provided. DinoAi does not provide professional advice.
 
 ## Accepting the Terms of Use
 
-Before you can use Dino AI, you must read and accept its terms of use.
+The first time you open Datachat, the DinoAi terms of use are shown (currently in Italian). You must accept them before you can start chatting.
 
-1.  Carefully read the **Dino AI Terms of Use** displayed on the page.
-2.  If you accept all terms and conditions, proceed to start a chat session.
+1.  Carefully read the terms of use displayed on the page.
+2.  Click **Accept**.
 
-## Starting a Chat Session
+If no DataChat API key is stored yet, you are then asked to enter it (*Enter your DataChat API key*): type it and press **Enter**, or click the arrow button. The key is kept in this browser and reused automatically.
 
-To begin asking questions about your data:
+## Asking Questions
 
-1.  After accepting the terms, the main chat interface becomes active.
-2.  Type your question about the form data into the input field.
-3.  Press **Enter** or click the send button to submit your question.
+1.  Type your question about the form data in the input field (*Write a question about the data...*), or pick one of the suggested questions under **Ask your data**.
+2.  Press **Enter** or click **Send**.
 
-The AI assistant will process your question and provide an answer based on the available submission data.
+DinoAi answers based on the available submission data. Each answer can be rated, copied or regenerated, and comes with suggested follow-up questions.
 
 !!! tip "Effective Questions"
     For better results, ask clear, specific questions about the data. For example, "What is the average age of respondents?" or "List all submissions from last week."
 
-## During a Chat
+If your AI credits run out, the page shows *Sorry, you don't have enough Credits!*: click the message to open the page where you can buy more.
 
-- You can ask follow-up questions in the same session; Dino AI will maintain the context of your conversation.
-- The chat history is visible, allowing you to review previous questions and answers.
+If the form schema has no submissions yet, Datachat tells you that no forms were found.
 
-## Ending a Chat Session
+## Downloading Results
 
-Your chat session ends automatically when you navigate away from the Datachat page. You can switch to other pages, such as the [Forms list](index.md), and return later to start a new session.
+Some answers include a downloadable file. When one is available, click the **Download** button on the answer.
+
+- In a web browser, the file is saved to your usual downloads folder.
+- In the Dino mobile app, the file is saved to your **Documents** folder and a confirmation message appears.
+
+## Your Chats
+
+- You can ask follow-up questions in the same chat; DinoAi keeps the context of your conversation.
+- Your conversations are kept in this browser under **Chats**, one list per form schema: leaving the page does not delete them. They are not synchronised to other devices.
+- Click **New chat** to start another conversation, or the delete icon next to a chat to remove it.
 
 !!! warning "Data Privacy"
-    Dino AI only accesses the data from the current form schema. It cannot see data from other forms or external sources.
+    DinoAi only accesses the data from the current form schema. It cannot see data from other forms or external sources.

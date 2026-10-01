@@ -1,70 +1,76 @@
 ---
 title: Aggregation
-description: View and manage aggregated form submissions in Dino.
+description: View, filter, and manage all form submissions across your form schemas from a single page.
 ---
 
 # Aggregation
 
-The Aggregation page gives you a centralized view of all form submissions across your form schemas. You can browse, filter, and take actions on form submissions without having to open each form individually.
+The Aggregation page gives you a centralized view of all form submissions across your form schemas. Instead of opening each form individually, you can browse every submission in one table, narrow it down with filters, and take actions such as viewing, editing, printing, or deleting.
 
 ![Main view of the Aggregation page](../imgs/aggregation/index.png)
 
 ## Viewing the Aggregation List
 
-The main table displays one row per submission. By default you see the **Form Schema** and **Status** columns, but you can customize which columns appear using the **Customize the columns** button in the table header.
+The table displays one row per submission. By default you see the **Form Schema** and **Status** columns; use the **Columns** button above the table, on the right, to choose which columns are displayed.
 
-- Each row shows a status icon and, if the form has validation issues, a warning icon.
-- Hover over a row to see a highlight; click anywhere on a row to select it and reveal available actions.
+- Each row shows a status icon. If a submission has validation issues, a warning icon appears on the row.
+- Hover over a row to show the **View** and **Edit** icons; click anywhere on a row to select it and reveal all available actions.
+- The **Items found** counter and the paginator at the top of the page tell you how many submissions exist and let you move between pages.
 
-At the top of the list, the **Items found** counter and paginator let you know how many submissions exist and navigate through pages.
-
-If you do not apply any filter to the list in the Aggregation page, you will see the total number of forms submitted to your Dino that you are allowed to see, according to your user's permissions. 
+If you do not apply any filter, the list shows every submission you are allowed to see, based on your user permissions.
 
 ## Filtering and Searching
 
-A search bar and filter panel are available to narrow down the list.
+1. Type in the **search by keyword** field in the toolbar to search across the submissions.
+2. Click **Filters** in the toolbar to open the filter panel.
+3. Pick a **From date** and a **To date** to filter by creation date.
+4. Fill in any of the additional filters: **Area**, **Case**, **Case code**, **Location**, **Organization**, **Project**, **Form Status**, and **User**. The values offered depend on the metrics configured in your Dino.
+5. Click **Search** to apply your filters, or **Reset filters** to clear them.
 
-1. Click the **search icon** in the top bar to expand the filter panel.
-2. Use the **keyword** field to search across all fields.
-3. Use the **date range** pickers to filter by creation date.
-4. Additional filters appear for **Area**, **Case**, **Location**, **Organization**, **Project**, **Form Status**, and **User**. These are dynamic and respect your form’s metric definitions.
-5. Active filters are shown as chips below the filter bar – click the **cancel** icon on a chip to remove it.
+Active filters appear as chips below the toolbar. Click the **cancel** icon on a chip to remove that filter.
 
-!!! tip "Preset filters"
-    The Aggregation page does not support saved filter presets. You can combine filters each time you need a custom view.
+!!! tip "No saved presets"
+    The Aggregation page does not support saved filter presets or advanced filter conditions. You combine the filters each time you need a custom view; removing a chip is the quickest way to loosen an existing search.
 
 ## Row Actions
 
-After selecting a row, the action icons appear in the **Actions** column on the right side of the table.
+Hover over a row to show the **View** (eye) and **Edit** (pencil) icons. To see every action, click the row to select it: the action bar above the table then shows a button for each action you are allowed to use.
 
-| Icon | Action | Description |
-|------|--------|-------------|
-| `view` | View | Open the submission in read-only mode. |
-| `edit` | Edit | Modify the submission data. |
-| `print` | Print | Generate a PDF of the submission. |
-| `delete` | Delete | Remove the submission after confirmation. |
+| Action | Description |
+|--------|-------------|
+| **View** | Open the submission in read-only mode. |
+| **Edit** | Modify the submission data. |
+| **Print** | Generate a PDF of the submission. |
+| **Delete** | Remove the submission. |
 
-Click **More Horiz** (three dots) to see additional actions for that row. The **Print** and **Delete** actions ask for confirmation before executing.
+**Print** and **Delete** ask for confirmation (*Do you want to print the selected items?*, **Yes** / **No**) before executing.
 
 ## Creating a New Submission
 
-The floating **+** button at the bottom right of the screen lets you start a new submission.
+The **Add New form** button in the toolbar lets you start a new submission. It is shown only if creating submissions from the Aggregation page is enabled for your Dino instance.
 
 ![Dialog to choose a form schema and start a new submission](../imgs/aggregation/index-new.png)
 
-1. Click the **+** button. A dialog opens showing available form schemas.
-2. Select or search for the form schema you want to use.
-3. After selection, you are taken directly to the [Edit Form](../forms/edit-form.md) page to fill in the data.
+1. Click **Add New form**. The **Create Form** dialog opens, listing the available form schemas.
+2. Select the form schema you want to use.
+3. Click **Create Form**. You are taken to the [Edit Form](../forms/edit-form.md) page, where you fill in and save the data.
 
 ## Printing a PDF
 
-You can generate a PDF of any submission that includes the form schema label, active metric names, and the filled‑in data.
+You can generate a PDF of any submission. The PDF includes the form schema label, the active metric names, and the data that was filled in.
 
-1. On the row you want to print, click the **Printer** icon (or use the **More Horiz** menu if available).
-2. Confirm the action when prompted.
+1. Click the row you want to print to select it, then click **Print** in the action bar.
+2. Confirm with **Yes**.
 3. The PDF opens in a new browser tab or downloads automatically.
 
 The PDF header includes the form schema title and all metric names currently active in the system.
 
 !!! warning "Metric availability"
-    The printed PDF includes only the metrics that are active at the moment you trigger the print. If a metric was added after the submission was created, it won’t appear.
+    The PDF includes only the metrics that are active at the moment you trigger the print. A metric added after the submission was created will not appear.
+
+## Related Pages
+
+- [Forms](../forms/index.md) — manage the form schemas behind your submissions.
+- [Edit Form](../forms/edit-form.md) — fill in and update submission data.
+- [Import Data](../forms/import.md) — bring submissions into Dino in bulk.
+- [Metrics](../metrics/index.md) — configure the metrics that drive filters and printed output.

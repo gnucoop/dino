@@ -1,50 +1,66 @@
 ---
 title: Edit Report
-description: Learn how to edit an existing report in Dino, including updating metrics and details.
+description: Learn how to create a report from a report schema in Dino, open a saved report, and export the results.
 ---
 
 # Edit Report
 
-The Edit Report page allows you to modify an existing report. You can update its metrics, details, and other information after it has been created.
+A report is generated from a [report schema](edit-report-schema.md): it applies the schema to the submissions that match the metrics and the dates you choose. This page explains how to create a new report and how to open and export a saved one.
 
-![Main view of the Edit Report page](../imgs/reports/edit-report.png)
+![A saved report opened on its Report Metrics step](../imgs/reports/edit-report.png)
 
-## Accessing the Edit Page
+## Creating a Report
 
-You can navigate to the Edit Report page in two ways:
+1. Go to the [Reports](index.md) page and click the card of the report schema you want to use. The list of its reports opens.
+2. Click **Add New Report** above the table. If the report uses AI prompts, the number of DINO-AI tokens it will consume is shown on the button.
+3. If your Dino uses metrics, the page opens on the **Report Metrics** step:
+    1. Check the **Creation Date**, and click **Change** to pick another one if needed.
+    2. Optionally pick a **Form Status**, among the form statuses you are allowed to use. The field is shown only when there are any.
+    3. Choose the metric values the report is about, such as a location or a project. The metrics marked with an asterisk (*) are required by the report schema; the others are optional and narrow the data further. If a value you need does not exist yet, click **New** next to its field to create it, when you are allowed to.
+    4. Click **Continue**.
+4. In the **Report Data** step:
+    1. Enter the **Report Name**. It is required.
+    2. Optionally set **Collected Since** and **Collected Until**: only the submissions created within that range are included in the report. You can set only one of the two, or neither, in which case no date filter is applied.
+5. Click the **Save report** button at the bottom right. It is enabled once the required metrics and the name are filled in.
 
-* From the main [Reports](index.md) list, click on a report's title or the **Edit** action (often represented by a pencil icon).
-* From within a report's detailed view (after clicking **View the Report**), look for an **Edit** button or link.
+Dino confirms that the document was created and takes you back to the list of reports, where the new report appears.
 
-## Editing Report Information
+!!! warning "Reports with AI prompts"
+    Creating a report that uses AI prompts consumes DINO-AI tokens. If you do not have enough, Dino does not create the report and asks you to add more tokens.
 
-Once on the Edit Report page, you will see a form similar to the one used for creating a report. The form is pre‑filled with the report’s current data.
+!!! tip "Metric values cannot be changed later"
+    The metrics, the status and the date range are fixed when the report is created. To see the same schema applied to other values, create another report.
 
-### Steps to Edit a Report
+## Opening a Saved Report
 
-1. **Review the pre‑filled data** in the form fields.
-2. **Make your changes** to any of the available fields:
-   - **Primary Metrics:** Update the main numerical values for the report.
-   - **Secondary Metrics:** Edit additional data points (if configured for your form schema).
-   - **Details:** Modify descriptive text, dates, or other supporting information.
-3. **Save your changes** by clicking the **Save** or **Update** button at the bottom of the form.
+1. Go to the [Reports](index.md) page and click the card of the report schema.
+2. In the list of reports, hover over the report's row and click the **View** (eye) icon, or click the row to select it and click **View** in the action bar above the table.
 
-!!! tip "Optional Fields"
-    Depending on your organization’s configuration, some metric fields may be optional. They are usually marked accordingly. You can leave optional fields blank if no data is available.
+If your Dino uses metrics, the report opens on the **Report Metrics** step, which shows the values the report was created with. They cannot be changed here. Click **View the Report** to move to the **Report Data** step, where the report is displayed.
 
-## Viewing the Rendered Report
-
-After saving your changes, you can view the formatted report. Click the **View the Report** button or link to see a clean, rendered version of the report data.
+While the report is loading, Dino shows a spinner. A report that uses AI prompts shows a progress bar instead, with the message *Generating report prompt X of Y*. If no submission matches the report, the page shows *No Forms were found for this Report*.
 
 ![Rendered report view after clicking View the Report](../imgs/reports/edit-report-view.png)
 
-## Understanding the Form Schema
+## Reading the Report
 
-The structure and available fields on the Edit Report page are determined by the **form schema** set up by your administrator. This ensures data is collected consistently.
+The top of the **Report Data** step shows the title of the report schema, the **Collected Since** and **Collected Until** dates when the report has them, and the metric values it was created with. The report itself follows, as designed in its [XLSReport](xlsreport.md) file: tables, charts and text.
 
-![Main view of the Edit Report Schema page](../imgs/reports/edit-report-schema.png)
+If the report contains filter widgets, you can use them to narrow the data shown, without changing the saved report.
 
-If you need to edit information that does not appear as a field, contact your administrator – the form schema may need to be updated. You can learn more about the underlying structure in the [Edit Report Schema](edit-report-schema.md) documentation.
+## Exporting a Report
 
-!!! warning "Data Integrity"
-    Be cautious when editing historical report data, as changes can affect trend analysis and historical records. Ensure your updates are accurate.
+Next to **Export as:**, at the top of the **Report Data** step, choose a format:
+
+* **pdf portrait** / **pdf landscape** — a PDF document in the chosen orientation.
+* **docx portrait** / **docx landscape** — a Word document in the chosen orientation.
+* **xlsx** — an Excel file with the report data.
+
+!!! note "Where the export buttons are"
+    The export buttons belong to the **Report Data** step. When your Dino has no active metrics, and on the [Dashboard](../dashboard/index.md), the report is shown directly, without the steps and without the export buttons.
+
+## Related Pages
+
+* [Reports](index.md) — browse report schemas and their reports.
+* [Edit Report Schema](edit-report-schema.md) — create or change the schema a report is generated from.
+* [Auto reports](autoreports.md) — reports generated automatically from a form schema.
