@@ -290,7 +290,7 @@ export class Exporter implements OnDestroy {
           });
           slides.forEach(slide => {
             res[slide.name] = `${slide.label}`;
-            (slide.nodes as AjfField[]).forEach(field => {
+            (this._slideNodes(slide) as AjfField[]).forEach(field => {
               res[field.name] = `${this._ts.translate(field.label)}`;
               if (field.visibility != null && field.visibility.condition != null) {
                 const rootField = field.visibility.condition.split(' ')[0];
@@ -322,7 +322,7 @@ export class Exporter implements OnDestroy {
       map((slides: AjfSlide[], _ctxList) =>
         slides.map((slide, index) => {
           slide.id = index; // prevent no sequencial id
-          slide.nodes = slide.nodes
+          slide.nodes = this._slideNodes(slide)
             .map(node => ({
               ...node,
               ...{
@@ -746,7 +746,7 @@ export class Exporter implements OnDestroy {
         ? (schema.nodes! as AjfSlide[])
             .map((slide, index) => {
               slide.id = index;
-              slide.nodes = slide.nodes
+              slide.nodes = this._slideNodes(slide)
                 .map(node => ({
                   ...node,
                   ...{
@@ -987,6 +987,23 @@ export class Exporter implements OnDestroy {
    * @param nodes The schema nodes
    * @returns
    */
+  /**
+   * The nodes of a slide as the export sees them: the fields the slide holds
+   * directly, plus the fields of any group it holds.
+   *
+   * A group is a bracket around its fields -- it carries a visibility condition
+   * for the whole block and draws nothing of its own -- so the slide renders the
+   * fields inside it as if the group were not there, and the export owes them a
+   * column each. A group cannot hold another group, so one pass is enough.
+   */
+  private _slideNodes(slide: AjfContainerNode): AjfNode[] {
+    return (slide.nodes || []).reduce(
+      (acc: AjfNode[], node: AjfNode) =>
+        acc.concat(isContainerNode(node) ? (node as AjfContainerNode).nodes || [] : node),
+      [] as AjfNode[],
+    );
+  }
+
   private _flattenNodes(nodes: AjfNode[]): AjfNode[] {
     let flatNodes: AjfNode[] = [];
 
