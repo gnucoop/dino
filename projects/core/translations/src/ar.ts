@@ -933,15 +933,18 @@ export const AR: Translation = {
   'Use the account your administrator created for you.': 'استخدم الحساب الذي أنشأه لك المسؤول.',
   'Create account': 'إنشاء حساب',
   'Source on GitHub': 'الشيفرة المصدرية على GitHub',
-  'Open-source data platform': 'منصة بيانات مفتوحة المصدر',
-  'Collect data in the field. Turn it into knowledge.':
-    'اجمع البيانات في الميدان. وحوّلها إلى معرفة.',
-  'Dino is a platform for building forms, gathering responses and bringing them together into reports and metrics. It keeps working without a connection and synchronizes when one is available. The code is open source, developed by Gnucoop and published on GitHub.':
+  'login_module_1_title': 'النماذج',
+  'login_module_2_title': 'التقارير',
+  'login_module_3_title': 'التجميع',
+  'login_module_4_title': 'مقاييس',
+  'login_kicker': 'منصة بيانات مفتوحة المصدر',
+  'login_title': 'اجمع البيانات في الميدان. وحوّلها إلى معرفة.',
+  'login_description':
     'Dino منصة لبناء النماذج وجمع الإجابات وتجميعها في تقارير ومقاييس. تواصل العمل دون اتصال وتُزامن البيانات عند توفر الاتصال. الشيفرة مفتوحة المصدر، طورتها Gnucoop ونُشرت على GitHub.',
   'Aggregation': 'التجميع',
-  'Design questionnaires and collect responses.': 'صمّم الاستبيانات واجمع الإجابات.',
-  'Present results as tables and charts.': 'اعرض النتائج في جداول ورسوم بيانية.',
-  'Combine and query data across forms.': 'اجمع البيانات من عدة نماذج واستعلم عنها.',
-  'Define indicators and track them over time.': 'حدّد المؤشرات وتابعها عبر الزمن.',
+  'login_module_1_body': 'صمّم الاستبيانات واجمع الإجابات.',
+  'login_module_2_body': 'اعرض النتائج في جداول ورسوم بيانية.',
+  'login_module_3_body': 'اجمع البيانات من عدة نماذج واستعلم عنها.',
+  'login_module_4_body': 'حدّد المؤشرات وتابعها عبر الزمن.',
   'Dino is free and open-source software by': 'Dino برنامج حر ومفتوح المصدر من',
 };

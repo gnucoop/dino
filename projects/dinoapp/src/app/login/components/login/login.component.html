@@ -34,32 +34,16 @@
        once the row wraps, so on a phone the form is what comes first. -->
   <main class="dinoapp-login-main">
     <section class="dinoapp-login-intro">
-      <div class="dinoapp-login-kicker">
-        {{ (kicker | async) ?? ('Open-source data platform' | transloco) }}
-      </div>
-      <h1>{{ (title | async) ?? ('Collect data in the field. Turn it into knowledge.' | transloco) }}</h1>
-      <p *ngIf="description | async as text; else defaultDescription" [innerHTML]="text"></p>
-      <ng-template #defaultDescription>
-        <p>
-          {{
-            'Dino is a platform for building forms, gathering responses and bringing them together into reports and metrics. It keeps working without a connection and synchronizes when one is available. The code is open source, developed by Gnucoop and published on GitHub.'
-              | transloco
-          }}
-        </p>
-      </ng-template>
+      <div class="dinoapp-login-kicker">{{ 'login_kicker' | transloco }}</div>
+      <h1>{{ 'login_title' | transloco }}</h1>
+      <p [innerHTML]="'login_description' | transloco"></p>
       <div *ngIf="showModules" class="dinoapp-login-modules">
-        <ng-container *ngIf="customModules; else defaultModules">
-          <div *ngFor="let module of customModules | async" class="dinoapp-login-module">
-            <div class="dinoapp-login-module-title">{{ module.title }}</div>
-            <div class="dinoapp-login-module-body" [innerHTML]="module.body"></div>
+        <ng-container *ngFor="let module of modules | async">
+          <div *ngIf="module.title | transloco as title" class="dinoapp-login-module">
+            <div class="dinoapp-login-module-title">{{ title }}</div>
+            <div class="dinoapp-login-module-body" [innerHTML]="module.body | transloco"></div>
           </div>
         </ng-container>
-        <ng-template #defaultModules>
-          <div *ngFor="let module of modules" class="dinoapp-login-module">
-            <div class="dinoapp-login-module-title">{{ module.title | transloco }}</div>
-            <div class="dinoapp-login-module-body">{{ module.body | transloco }}</div>
-          </div>
-        </ng-template>
       </div>
     </section>
 

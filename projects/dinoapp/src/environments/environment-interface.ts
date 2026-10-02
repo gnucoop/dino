@@ -289,44 +289,21 @@ export interface OptionalConfig {
 }
 
 /**
- * Represents custom image paths for logos, spinners and some basic app icons
- */
-/**
- * A text given once per language, keyed by the Dino language code, eg.
- * `{"ITA": "Raccogli dati sul campo.", "ENG": "Collect data in the field."}`.
- * A language left out shows the text of the default language, or the first one given.
- */
-export type LocalizedText = {[lang: string]: string};
-
-/**
- * The texts of the login page introduction. Every field is optional: one left out keeps
- * the built-in Dino text, translated in all the app languages.
+ * The login page introduction. Its texts are not set here: they are the translation keys
+ * `login_kicker`, `login_title`, `login_description` and `login_module_{1-4}_title` /
+ * `login_module_{1-4}_body`, which hold the Dino texts and a deployment overrides in the
+ * languages editor.
  */
 export interface LoginPageConfig {
-  /**
-   * The short uppercase label above the title. Plain text.
-   */
-  kicker?: LocalizedText;
-  /**
-   * The title. Plain text.
-   */
-  title?: LocalizedText;
-  /**
-   * The paragraph under the title. May hold simple HTML (`<b>`, `<i>`, `<a>`, `<br>`):
-   * scripts, inline styles and event handlers are stripped by Angular.
-   */
-  description?: LocalizedText;
   /**
    * Whether the module list is shown under the paragraph. Defaults to true.
    */
   showModules?: boolean;
-  /**
-   * The module list, replacing the built-in one. The title is plain text, the body may
-   * hold simple HTML, as the description.
-   */
-  modules?: {title: LocalizedText; body: LocalizedText}[];
 }
 
+/**
+ * Represents custom image paths for logos, spinners and some basic app icons
+ */
 export interface CustomImagesConfig {
   /**
    * Logo image for the light theme

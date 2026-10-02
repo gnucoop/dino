@@ -820,14 +820,17 @@ export const ITA: Translation = {
     "Usa l'account che il tuo amministratore ha creato per te.",
   'Create account': 'Crea account',
   'Source on GitHub': 'Codice sorgente su GitHub',
-  'Open-source data platform': 'Piattaforma dati open source',
-  'Collect data in the field. Turn it into knowledge.':
-    'Raccogli dati sul campo. Trasformali in conoscenza.',
-  'Dino is a platform for building forms, gathering responses and bringing them together into reports and metrics. It keeps working without a connection and synchronizes when one is available. The code is open source, developed by Gnucoop and published on GitHub.':
+  'login_module_1_title': 'Form',
+  'login_module_2_title': 'Report',
+  'login_module_3_title': 'Aggregazione',
+  'login_module_4_title': 'Metriche',
+  'login_kicker': 'Piattaforma dati open source',
+  'login_title': 'Raccogli dati sul campo. Trasformali in conoscenza.',
+  'login_description':
     "Dino è una piattaforma per costruire form, raccogliere risposte e riunirle in report e metriche. Funziona anche senza connessione e si sincronizza quando ce n'è una disponibile. Il codice è open source, sviluppato da Gnucoop e pubblicato su GitHub.",
-  'Design questionnaires and collect responses.': 'Progetta questionari e raccogli le risposte.',
-  'Present results as tables and charts.': 'Presenta i risultati in tabelle e grafici.',
-  'Combine and query data across forms.': 'Combina e interroga i dati di più form.',
-  'Define indicators and track them over time.': 'Definisci indicatori e seguili nel tempo.',
+  'login_module_1_body': 'Progetta questionari e raccogli le risposte.',
+  'login_module_2_body': 'Presenta i risultati in tabelle e grafici.',
+  'login_module_3_body': 'Combina e interroga i dati di più form.',
+  'login_module_4_body': 'Definisci indicatori e seguili nel tempo.',
   'Dino is free and open-source software by': 'Dino è software libero e open source di',
 };

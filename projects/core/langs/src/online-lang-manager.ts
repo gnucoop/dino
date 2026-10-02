@@ -49,13 +49,16 @@ export class OnlineLangManager extends OnlineDataModelManager<Lang> {
    * Fetches langs from the backend via GQL, registers them in TranslocoService
    * and re-applies the active language so the view picks up the new translations.
    * Intended for anonymous/online-only contexts where localStorage is unavailable.
+   * @param names The Dino language codes to fetch, eg. `['ITA']`; all of them when omitted.
+   *   Each row holds a whole dictionary, so asking for one language moves a fraction
+   *   of the data.
    */
-  loadLangs(): Observable<void> {
-    // An empty selector is passed on purpose: the default one (`is_deleted: {$ne:
+  loadLangs(names?: string[]): Observable<void> {
+    // No `is_deleted` condition on purpose: the default one (`is_deleted: {$ne:
     // true}`) is a Mango operator with no Hasura equivalent (`_ne` does not
     // exist), and even `_eq: false` would drop the rows where `is_deleted` is
     // NULL. Soft-deleted langs are filtered client-side below instead.
-    return this.query({selector: {}}).pipe(
+    return this.query({selector: names != null ? {name: {$in: names}} : {}}).pipe(
       take(1),
       map(langs => {
         langs
