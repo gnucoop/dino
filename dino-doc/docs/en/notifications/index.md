@@ -17,6 +17,8 @@ The list displays every notification you have received, showing its **message te
 
 A small link icon next to the message text indicates that the notification will take you somewhere when clicked.
 
+Notifications you have not read yet are **highlighted** with a colored background, so you can tell them apart from the ones you have already read.
+
 The total number of notifications matching your current search is shown at the top of the page.
 
 ---
@@ -52,9 +54,9 @@ The number of notifications found for your current search is displayed next to t
 
 ## Opening a Notification
 
-If the notification contains a **link** (shown by the link icon next to the message), click its row: Dino marks the notification as read and takes you directly to the relevant page in the application.
+Click a notification's row to mark it as read: its highlight goes away.
 
-A notification without a link has nothing more to open: its message is the text shown in the list.
+If the notification contains a **link** (shown by the link icon next to the message), Dino also takes you directly to the relevant page in the application. A notification without a link has nothing more to open: its message is the text shown in the list.
 
 ---
 
@@ -68,7 +70,7 @@ You can change which columns are visible in the list.
 4. Close the panel when done — your selection is applied immediately.
 
 !!! tip "Marking as read"
-    When you click a notification that has a link, it is automatically marked as read. Notifications without a link are not marked as read from this page.
+    Clicking a notification marks it as read, whether or not it has a link. You can also mark notifications as read from the notification bell in the sidebar, including all of them at once with **Mark all as read**.
 
 !!! warning "Opening a link leaves the page"
     Following a notification link navigates you away from the Notifications page to the linked area of Dino. Use your browser's back button to return to the list.
