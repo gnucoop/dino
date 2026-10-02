@@ -61,23 +61,29 @@ export class NotificationsListComponent implements OnDestroy, OnInit {
   };
 
   /**
-   * Redirects to an url attached to the notification
+   * Marks the notification as read, then redirects to the url attached to it, if any
    * @param trigger The notification
    */
   markAsReadAndGoToUrl(trigger: ActionTrigger<Notification>) {
-    console.log(trigger);
     const doc = trigger.triggerData?.doc;
-    if (doc == null || doc.redirect_url == null) {
+    if (doc == null) {
       return;
     }
+    const goToUrl = () => {
+      if (doc.redirect_url != null) {
+        this._router.navigateByUrl(doc.redirect_url);
+      }
+    };
+    // An already read notification is not patched again: the readers would get the
+    // same user twice, and the notification a needless push.
+    if (this._userDataId == null || doc.readers.includes(this._userDataId)) {
+      goToUrl();
+      return;
+    }
+    this._ntmSub.unsubscribe();
     this._ntmSub = this._notificationManager
       .markNotificationAsRead(doc, this._userDataId)
-      .subscribe(() => {
-        if (doc == null || doc.redirect_url == null) {
-          return;
-        }
-        this._router.navigateByUrl(doc.redirect_url);
-      });
+      .subscribe(() => goToUrl());
   }
 
   ngOnInit(): void {
