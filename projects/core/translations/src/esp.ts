@@ -806,15 +806,18 @@ export const ESP: Translation = {
     'Usa la cuenta que tu administrador creó para ti.',
   'Create account': 'Crear cuenta',
   'Source on GitHub': 'Código fuente en GitHub',
-  'Open-source data platform': 'Plataforma de datos de código abierto',
-  'Collect data in the field. Turn it into knowledge.':
-    'Recoge datos en el terreno. Conviértelos en conocimiento.',
-  'Dino is a platform for building forms, gathering responses and bringing them together into reports and metrics. It keeps working without a connection and synchronizes when one is available. The code is open source, developed by Gnucoop and published on GitHub.':
+  'login_module_1_title': 'Formularios',
+  'login_module_2_title': 'Informes',
+  'login_module_3_title': 'Agregación',
+  'login_module_4_title': 'Métricas',
+  'login_kicker': 'Plataforma de datos de código abierto',
+  'login_title': 'Recoge datos en el terreno. Conviértelos en conocimiento.',
+  'login_description':
     'Dino es una plataforma para crear formularios, recoger respuestas y reunirlas en informes y métricas. Sigue funcionando sin conexión y se sincroniza cuando hay una disponible. El código es abierto, desarrollado por Gnucoop y publicado en GitHub.',
   'Aggregation': 'Agregación',
-  'Design questionnaires and collect responses.': 'Diseña cuestionarios y recoge respuestas.',
-  'Present results as tables and charts.': 'Presenta los resultados en tablas y gráficos.',
-  'Combine and query data across forms.': 'Combina y consulta datos de varios formularios.',
-  'Define indicators and track them over time.': 'Define indicadores y síguelos en el tiempo.',
+  'login_module_1_body': 'Diseña cuestionarios y recoge respuestas.',
+  'login_module_2_body': 'Presenta los resultados en tablas y gráficos.',
+  'login_module_3_body': 'Combina y consulta datos de varios formularios.',
+  'login_module_4_body': 'Define indicadores y síguelos en el tiempo.',
   'Dino is free and open-source software by': 'Dino es software libre y de código abierto de',
 };

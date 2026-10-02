@@ -16,8 +16,3 @@ export const loginPage: LoginPageConfig = environment.loginPageConfig ?? {};
  * Whether the login page lists the Dino modules under its introduction.
  */
 export const showLoginModules: boolean = loginPage.showModules ?? true;
-
-/**
- * The language whose text stands in for a language the configuration leaves out.
- */
-export const defaultLanguage: string = environment.languageConfig.defaultLanguage ?? 'ENG';

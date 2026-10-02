@@ -806,16 +806,18 @@ export const PRT: Translation = {
     'Use a conta que o seu administrador criou para você.',
   'Create account': 'Criar conta',
   'Source on GitHub': 'Código-fonte no GitHub',
-  'Open-source data platform': 'Plataforma de dados de código aberto',
-  'Collect data in the field. Turn it into knowledge.':
-    'Colete dados no campo. Transforme-os em conhecimento.',
-  'Dino is a platform for building forms, gathering responses and bringing them together into reports and metrics. It keeps working without a connection and synchronizes when one is available. The code is open source, developed by Gnucoop and published on GitHub.':
+  'login_module_1_title': 'Formulários',
+  'login_module_2_title': 'Relatórios',
+  'login_module_3_title': 'Agregação',
+  'login_module_4_title': 'Métricas',
+  'login_kicker': 'Plataforma de dados de código aberto',
+  'login_title': 'Colete dados no campo. Transforme-os em conhecimento.',
+  'login_description':
     'Dino é uma plataforma para criar formulários, coletar respostas e reuni-las em relatórios e métricas. Continua funcionando sem conexão e sincroniza quando houver uma disponível. O código é aberto, desenvolvido pela Gnucoop e publicado no GitHub.',
   'Aggregation': 'Agregação',
-  'Design questionnaires and collect responses.': 'Crie questionários e colete respostas.',
-  'Present results as tables and charts.': 'Apresente os resultados em tabelas e gráficos.',
-  'Combine and query data across forms.': 'Combine e consulte dados de vários formulários.',
-  'Define indicators and track them over time.':
-    'Defina indicadores e acompanhe-os ao longo do tempo.',
+  'login_module_1_body': 'Crie questionários e colete respostas.',
+  'login_module_2_body': 'Apresente os resultados em tabelas e gráficos.',
+  'login_module_3_body': 'Combine e consulte dados de vários formulários.',
+  'login_module_4_body': 'Defina indicadores e acompanhe-os ao longo do tempo.',
   'Dino is free and open-source software by': 'Dino é software livre e de código aberto da',
 };

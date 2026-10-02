@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  OnDestroy,
   OnInit,
   Optional,
   ViewChild,
@@ -13,13 +14,14 @@ import {Router} from '@angular/router';
 import {TranslocoService} from '@ajf/core/transloco';
 import {ConfigResponse, ConfigService, ConfigSet} from '@dino/core/config';
 import {ThemeService} from '@dino/material/core';
-import {Observable, of as obsOf} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import {Observable, Subscription} from 'rxjs';
+import {filter, map, mergeMap, startWith, switchMap, tap} from 'rxjs/operators';
 
 import * as conf from '../../conf';
 import {environment} from 'src/environments/environment';
+import {AuthService} from '@dino/core/auth';
 import {ActionTrigger} from '@dino/core/data';
-import {LocalizedText} from 'src/environments/environment-interface';
+import {OnlineLangManager} from '@dino/core/langs';
 import {ActionsService} from 'src/app/actions.service';
 import {appVersion, availableLangs} from 'src/app/main-nav/conf';
 
@@ -30,7 +32,7 @@ import {appVersion, availableLangs} from 'src/app/main-nav/conf';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   dynamicConfig: boolean = conf.dynamicConfiguration;
   configurationSets: Observable<ConfigSet[] | null> = new Observable<null>();
   @ViewChild('platformselect') platformSelect: MatSelect | undefined;
@@ -47,26 +49,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
   readonly appVersion: string = appVersion;
   readonly availableLangs: string[] = availableLangs;
   /**
-   * The built-in Dino modules introduced next to the sign-in card, as translation keys.
+   * The translation keys of the module slots in the active language. A slot whose title
+   * is translated as an empty string is left out, so a deployment can present fewer than
+   * four modules. The raw translation is read because the transloco pipe shows the key
+   * of an empty translation.
    */
-  readonly modules: {title: string; body: string}[] = [
-    {title: 'Forms', body: 'Design questionnaires and collect responses.'},
-    {title: 'Reports', body: 'Present results as tables and charts.'},
-    {title: 'Aggregation', body: 'Combine and query data across forms.'},
-    {title: 'Metrics', body: 'Define indicators and track them over time.'},
-  ];
+  readonly modules: Observable<{title: string; body: string}[]>;
 
-  /**
-   * The introduction texts set in the environment, in the active language; null where
-   * none is set, and the template falls back to the built-in translated text.
-   */
-  readonly kicker: Observable<string | null>;
-  readonly title: Observable<string | null>;
-  readonly description: Observable<string | null>;
-  /**
-   * The module list set in the environment, or null to show the built-in one.
-   */
-  readonly customModules: Observable<{title: string; body: string}[]> | null;
+  private _onlineLangsSub: Subscription = Subscription.EMPTY;
 
   constructor(
     private _router: Router,
@@ -74,23 +64,44 @@ export class LoginComponent implements OnInit, AfterViewInit {
     @Optional() private _configService: ConfigService | null,
     readonly ts: ThemeService,
     private _transloco: TranslocoService,
+    onlineLangManager: OnlineLangManager,
+    authService: AuthService,
   ) {
-    const page = conf.loginPage;
-    this.kicker = this._localized(page.kicker);
-    this.title = this._localized(page.title);
-    this.description = this._localized(page.description);
-    const modules = page.modules;
-    this.customModules =
-      modules != null && modules.length > 0
-        ? this._transloco.langChanges$.pipe(
-            map(lang =>
-              modules.map(module => ({
-                title: this._pick(module.title, lang) ?? '',
-                body: this._pick(module.body, lang) ?? '',
-              })),
-            ),
-          )
-        : null;
+    const slots = [1, 2, 3, 4].map(slot => ({
+      title: `login_module_${slot}_title`,
+      body: `login_module_${slot}_body`,
+    }));
+    this.modules = this._transloco.langChanges$.pipe(
+      map(lang => {
+        const translation = this._transloco.getTranslation(lang) ?? {};
+        return slots.filter(slot => translation[slot.title] !== '');
+      }),
+    );
+    // The languages editor is where a deployment sets the texts of this page, and its
+    // translations live in the local database, which a device that never logged in does
+    // not have. They are fetched online instead, as the public forms do, and only without
+    // a token: the request then runs under Hasura's anonymous role, which every deployment
+    // has for the public forms, and cannot be answered with a JWT error that would start a
+    // token refresh. Without that role Hasura answers `invalid-headers`, which the
+    // JWTInterceptor counts as a failed refresh attempt. Offline the query fails silently
+    // and the built-in texts stay.
+    //
+    // Only the active language is fetched, and then each one picked in the selector:
+    // the whole table is a dictionary per language, over a megabyte, on the connections
+    // the app is used on. A language is asked for once, which also stops the loop the
+    // `setActiveLang` that `loadLangs` ends with would otherwise start.
+    if (authService.getAuthToken() == null) {
+      const fetched = new Set<string>();
+      this._onlineLangsSub = onlineLangManager
+        .init()
+        .pipe(
+          switchMap(() => this._transloco.langChanges$),
+          filter(lang => !fetched.has(lang)),
+          tap(lang => fetched.add(lang)),
+          mergeMap(lang => onlineLangManager.loadLangs([lang])),
+        )
+        .subscribe();
+    }
     this.logoImagePath = this.ts.darkModeChange.pipe(
       map(isdark => {
         if (isdark) {
@@ -124,6 +135,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
         }
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this._onlineLangsSub.unsubscribe();
   }
 
   setupCpaConfig(apiConfig: {instances: [{[key: string]: any}]}): ConfigResponse {
@@ -171,26 +186,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
       configSets: confSets,
     };
     return confResp;
-  }
-
-  /**
-   * A configured text in the active language, following each language change.
-   * @param text The text per language, or undefined when the environment sets none
-   */
-  private _localized(text: LocalizedText | undefined): Observable<string | null> {
-    if (text == null) {
-      return obsOf(null);
-    }
-    return this._transloco.langChanges$.pipe(map(lang => this._pick(text, lang)));
-  }
-
-  /**
-   * The text for a language: that language's, else the default language's, else the first given.
-   * @param text The text per language
-   * @param lang The Dino language code, eg. 'ITA'
-   */
-  private _pick(text: LocalizedText, lang: string): string | null {
-    return text[lang] ?? text[conf.defaultLanguage] ?? Object.values(text)[0] ?? null;
   }
 
   postLogin() {
