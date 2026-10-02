@@ -67,7 +67,7 @@ The link you used is incomplete. Some forms require metric information (such as 
 Your submission encountered a temporary error, often related to your internet connection.
 
 1.  Check your internet connection.
-2.  Click **"Try again"** in the notification at the bottom of the screen. This reloads the page with an empty form: **the answers you typed are lost** and you need to fill them in again.
+2.  Click **"Try again"** in the notification at the bottom of the screen. Dino sends the form again with the answers you typed: you do not need to fill it in again.
 3.  If it continues to fail, contact the person who sent you the form link.
 
 ### "Oops! We could not find this Form Schema."
