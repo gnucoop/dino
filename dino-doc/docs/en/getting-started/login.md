@@ -9,15 +9,21 @@ The Login page is the starting point for accessing Dino. From here you can sign 
 
 ![Main view of the Login page](../imgs/getting-started/login.png)
 
+The page has three parts:
+
+- a **header**, with the logo, the language selector and a link to Dino's source code on GitHub;
+- the **sign-in card**, next to a short introduction to the platform and its modules. On a phone the card comes first and the introduction follows it, so you can sign in without scrolling;
+- a **footer**, with the light/dark theme switch and the version of the application.
+
 ---
 
 ## Signing In
 
-Use your credentials to access the platform.
+Use your credentials to access the platform. If your installation does not let you create an account yourself, the card reminds you to use the account your administrator created for you.
 
 1.  On the Login page, enter your **username or email address** in the first field.
 2.  Enter your **password** in the second field.
-3.  Click the **arrow button** to sign in.
+3.  Click **Sign in**. While Dino checks your credentials the button reads **Signing in…**.
 
 If your credentials are correct, you will be taken to the [Dashboard](../dashboard/index.md) automatically.
 
@@ -40,7 +46,7 @@ If you have forgotten your password, you can request a reset link by email.
 
 1.  On the Login page, click **"Forgot your password?"** below the sign-in form.
 2.  Enter the **email address** associated with your account.
-3.  Click the **arrow button** to send the request.
+3.  Click **Send** to send the request.
 
 You will receive a confirmation message at the top of the screen. Check your inbox for an email containing a link to set a new password. If the email does not arrive within a few minutes, check your spam folder.
 
@@ -63,7 +69,7 @@ If you do not have an account yet, you may be able to register directly from the
 4.  Choose a **password** (at least 9 characters long).
 5.  Re-enter your password in the **Confirm Password** field to make sure it matches.
 6.  If a **Privacy Policy** is shown, read the text and tick the checkbox to accept the terms and conditions. You must accept in order to proceed.
-7.  Click the **arrow button** to create your account.
+7.  Click **Create account**.
 
 Once your account is created you will be signed in and taken to the [Dashboard](../dashboard/index.md) automatically.
 
@@ -91,9 +97,13 @@ Your organization may allow you to sign in using your existing Microsoft or Goog
 
 A small set of display preferences are available directly on the Login page.
 
+### Language
+
+The language selector in the header, showing the code of the current language (for example **ENG**), changes the language of the page before you sign in. Dino remembers your choice on this device.
+
 ### Light / Dark Theme
 
-Two buttons at the bottom of the form, a sun (*Light mode*) and a moon (*Dark mode*), switch between **light mode** and **dark mode**. The setting takes effect immediately.
+Two buttons in the footer, a sun (*Light mode*) and a moon (*Dark mode*), switch between **light mode** and **dark mode**. The setting takes effect immediately.
 
 ### Platform Selection
 
