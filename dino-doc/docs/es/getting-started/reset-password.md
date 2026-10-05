@@ -1,11 +1,11 @@
 ---
 title: Restablecer tu contraseña
-description: Cómo establecer una nueva contraseña después de solicitar un enlace de restablecimiento desde la página de inicio de sesión.
+description: Cómo establecer una Nueva contraseña después de solicitar un enlace de restablecimiento desde la página de inicio de sesión.
 ---
 
 # Restablecer tu contraseña
 
-La página Restablecer contraseña te permite elegir una nueva contraseña después de solicitar un enlace de restablecimiento. Llegas aquí al hacer clic en el enlace enviado a tu dirección de correo electrónico, el mismo enlace que solicitaste con la opción **"¿Olvidaste tu contraseña?"** en la [página de inicio de sesión](login.md).
+La página Restablecer contraseña te permite elegir una Nueva contraseña después de solicitar un enlace de restablecimiento. Llegas aquí al hacer clic en el enlace enviado a tu dirección de correo electrónico, el mismo enlace que solicitaste desde la opción **"¿Olvidaste tu contraseña?"** en la [página de inicio de sesión](login.md).
 
 ![Vista principal de la página Restablecer contraseña](../imgs/getting-started/reset-password.png)
 
@@ -14,20 +14,20 @@ La página Restablecer contraseña te permite elegir una nueva contraseña despu
 
 ---
 
-## Establecer una nueva contraseña
+## Establecer una Nueva contraseña
 
 1.  Abre el enlace de restablecimiento de contraseña desde tu correo electrónico. Esto te llevará directamente a la página Restablecer contraseña.
-2.  Introduce tu **nueva contraseña** en el primer campo. Tu contraseña debe tener al menos 9 caracteres.
-3.  Vuelve a introducir la misma contraseña en el campo **Confirmar nueva contraseña** para asegurarte de que coincidan.
-4.  Haz clic en el **botón de flecha** para confirmar tu nueva contraseña.
+2.  Introduce tu **Nueva contraseña** en el primer campo. Tu contraseña debe tener al menos 9 caracteres.
+3.  Vuelve a introducir la misma contraseña en el campo **Confirmar una nueva contraseña** para asegurarte de que coincidan.
+4.  Haz clic en el **botón de flecha** para confirmar tu Nueva contraseña.
 
-Si se acepta la contraseña, aparecerá un mensaje de confirmación en la parte superior de la pantalla y se te redirigirá automáticamente a la página de inicio de sesión después de unos segundos. A continuación, podrás iniciar sesión con tu nueva contraseña.
+Si se acepta la contraseña, aparecerá un mensaje de confirmación en la parte superior de la pantalla y se te redirigirá automáticamente a la página de inicio de sesión después de unos segundos. A continuación, podrás iniciar sesión con tu Nueva contraseña.
 
 ---
 
 ## Solución de problemas
 
-### "Tu ticket de restablecimiento de contraseña no es válido o ha caducado. Vuelve a intentarlo."
+### "Tu ticket de restablecimiento de contraseña no es válido o ha caducado. Inténtalo de nuevo."
 
 !!! warning
     El enlace que utilizaste ya no es válido. Los enlaces de restablecimiento caducan tras un breve periodo de tiempo por motivos de seguridad. Vuelve a la [página de inicio de sesión](login.md), haz clic de nuevo en **"¿Olvidaste tu contraseña?"** y solicita un nuevo enlace.
@@ -37,7 +37,7 @@ Si se acepta la contraseña, aparecerá un mensaje de confirmación en la parte 
 !!! warning
     No se pudo guardar la contraseña. Asegúrate de que ambos campos contengan exactamente la misma contraseña y de que tenga al menos 9 caracteres, y vuelve a intentarlo. Si el problema persiste, solicita un nuevo enlace de restablecimiento desde la página de inicio de sesión.
 
-### La página no redirige después de un restablecimiento correcto
+### La página no redirige tras un restablecimiento correcto
 
 !!! tip
-    Si aparece el mensaje de confirmación pero la página no se redirige por sí sola a la página de inicio de sesión, ve allí manualmente. Tu contraseña ya se ha cambiado correctamente.
+    Si aparece el mensaje de confirmación pero la página no redirige por sí sola a la página de inicio de sesión, navega allí manualmente. Tu contraseña ya se ha cambiado correctamente.

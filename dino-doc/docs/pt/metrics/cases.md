@@ -1,88 +1,74 @@
 ---
 title: Casos
-description: Gerencie casos no Dino — crie, edite, visualize, filtre, exporte e organize registros de casos com uma tabela de dados estruturada.
+description: Gerencie casos no Dino — crie, edite, visualize, imprima, filtre e exporte registros de casos a partir de uma tabela de dados estruturada.
 ---
 
 # Casos
 
-A página Casos oferece um espaço de trabalho centralizado para acompanhar e gerenciar casos individuais. Cada caso é um registro estruturado que pode conter um nome, código, imagem, relação de hierarquia, notas e atributos adicionais. Você pode criar novos casos, editar os existentes, visualizar detalhes, excluir registros e exportar sua lista de casos — tudo em uma única tabela interativa.
+A página Casos é um espaço de trabalho centralizado para acompanhar e gerenciar registros de casos individuais. Cada caso é um registro estruturado que pode conter um nome, um código, uma imagem, uma relação de caso principal, notas e atributos adicionais. A partir desta página, você pode criar novos casos, editar ou visualizar casos existentes, imprimir cards de casos, deletar registros e exportar sua lista de casos — tudo em uma única tabela interativa.
 
 ![Visualização principal da página Casos](../imgs/metrics/cases.png)
 
 ## Visão geral da tabela
 
-A tabela principal exibe as seguintes colunas por padrão:
+A tabela exibe as seguintes colunas por padrão:
 
-- **Nome do caso** – O nome que você atribui ao caso (classificável).
-- **Código** – Um código gerado pelo sistema ou atribuído manualmente (somente leitura após a criação).
+- **Nome do caso** – O nome atribuído ao caso (ordenável).
+- **Código** – Um código que identifica o caso. O Dino o gera: você não o insere, e ele não é exibido no diálogo do caso.
 - **Imagem do caso** – Um arquivo de imagem enviado que representa o caso.
-- **Caso pai** – O nome do caso pai ao qual este caso pertence.
+- **Caso principal** – O nome de qualquer caso principal ao qual este caso pertence.
 
-Colunas adicionais (como **ID**, **Notas**, **Data de criação** e **Atributos adicionais**) ficam ocultas por padrão. Você pode personalizar quais colunas aparecem clicando no botão **Personalize as colunas** no cabeçalho da tabela.
+Colunas adicionais — **ID**, **Notas**, **Data de criação** e **Atributos adicionais** — ficam ocultas por padrão. Clique em **Colunas** acima da tabela para escolher quais colunas aparecem. Você também pode arrastar os cabeçalhos das colunas para reordená-las, e a página mostra o número total de itens encontrados ao lado do paginador.
 
-## Ações em um único caso
+## Trabalhando com um único caso
 
-No lado direito de cada linha, você encontra ícones para as seguintes ações:
+Passe o mouse sobre uma linha para exibir os ícones **Editar** e **Ver**. Clique na linha para selecioná-la: a barra de ações acima da tabela passa então a mostrar todas as ações:
 
-- **Editar** – Abre uma caixa de diálogo para modificar os detalhes do caso.
-- **Imprimir** – Gera um cartão em PDF imprimível para o caso.
-- **Visualizar** – Abre uma caixa de diálogo somente leitura para inspecionar as informações do caso.
-- **Excluir** – Abre uma caixa de diálogo de confirmação para remover o caso permanentemente.
+- **Editar** – Abre um diálogo onde você pode modificar os detalhes do caso.
+- **Imprimir** – Gera um card em PDF imprimível para o caso.
+- **Ver** – Abre um diálogo somente leitura para inspecionar as informações do caso.
+- **Deletar** – Abre um diálogo de confirmação para remover o caso permanentemente.
 
-Clique no ícone **Mais** (três pontos verticais) para ver todas as ações disponíveis caso algumas estejam ocultas.
+## Trabalhando com vários casos
 
-## Ações em massa
+1. Selecione uma ou mais linhas usando as caixas de seleção na primeira coluna.
+2. Quando uma única linha está selecionada, todas as suas ações ficam disponíveis na barra de ações acima da tabela.
+3. Quando várias linhas estão selecionadas, apenas as ações em massa permanecem — atualmente **Deletar**.
 
-Selecione vários casos usando as caixas de seleção na primeira coluna. Quando pelo menos um caso está selecionado, um botão **Excluir** aparece no topo da tabela. Você pode excluir todos os casos selecionados de uma só vez.
+!!! warning "A exclusão é permanente"
+    Casos deletados não podem ser recuperados. Revise sua seleção com atenção antes de confirmar uma exclusão em massa. Um caso que é usado por forms, ou que possui casos filhos, não pode ser deletado; consulte [Métricas](index.md).
 
-!!! warning "A exclusão em massa é permanente"
-    Casos excluídos não podem ser recuperados. Use a ação de exclusão em massa com cuidado.
+## Criando um caso
 
-## Criando um novo caso
-
-1. Clique no botão de ação flutuante **Adicionar novo** (ícone de mais) no canto inferior direito da página.
-2. Uma caixa de diálogo será aberta. Preencha os campos obrigatórios:
-   - **Nome do caso** – Insira um nome descritivo.
-   - **Código** – (Opcional) Informe um código exclusivo. Este campo é somente leitura após a criação.
-   - **Imagem do caso** – Envie um arquivo de imagem.
-   - **Caso pai** – Opcionalmente, vincule este caso a um caso pai existente.
-   - **Notas** – Adicione quaisquer notas relevantes.
+1. Clique em **Adicionar novo CASO** na barra de ferramentas acima da tabela.
+2. No diálogo, preencha os detalhes do caso. Os campos opcionais estão marcados com *(opcional)*.
+    - **Nome do caso** – Insira um nome descritivo.
+    - **Imagem do caso** – Envie um arquivo de imagem.
+    - **Caso principal** – Opcionalmente, vincule este caso a um caso principal existente.
+    - **Notas** – Adicione quaisquer notas relevantes.
 3. Clique em **Salvar** para criar o caso.
 
 ## Importando casos
 
-Use o botão de ação flutuante **Importar** (ícone de upload na nuvem) para enviar casos em massa a partir de um arquivo. Os formatos suportados são definidos pelo administrador do seu sistema.
+Clique em **Importar CASO** na barra de ferramentas para enviar casos em massa a partir de um arquivo `.xls`, `.xlsx` ou `.csv`. A página de importação orienta você no envio do arquivo, no mapeamento de suas colunas e na revisão do resultado. Casos cujo nome já existe são reutilizados, não atualizados; o código é gerado pelo Dino e não pode ser importado.
 
-## Filtragem e busca
+## Pesquisar e filtrar
 
-A barra de busca no topo permite filtrar casos por:
+Use a barra de ferramentas para restringir a tabela:
 
-- **Palavra-chave** – Busca em todos os campos exibidos.
-- **Intervalo de datas** – Filtra pela data de criação (De / Até).
-- **Filtros adicionais** – Selecione entre filtros predefinidos, como métrica, status, usuário ou grupo de usuários.
-
-Depois de aplicar os filtros, você pode salvar a combinação como uma **predefinição** para reutilizá-la rapidamente. Para salvar uma predefinição:
-
-1. Abra o painel de filtros.
-2. Insira um nome no campo de predefinição.
-3. Clique em **Salvar**.  
-Para aplicar uma predefinição salva, selecione-a na lista e clique em **Aplicar**.
+- **Pesquisa por palavra-chave** – Digite no campo de pesquisa para encontrar texto nos campos exibidos.
+- **Filtros** – Abra o painel de filtros para definir uma **Data inicial** e uma **Até à data**, que filtram pela data de criação, e clique em **Pesquisar**. O selo no botão **Filtros** mostra quantos filtros estão ativos.
+- Os filtros aplicados aparecem como chips abaixo da barra de ferramentas; clique no ícone de cancelar em um chip para remover aquele filtro.
 
 ## Exportando casos
 
-Clique no botão **Exportar** (ícone de download na nuvem) na barra de filtros. Escolha o formato de exportação (por exemplo, CSV ou Excel) e selecione quais colunas incluir. O arquivo exportado conterá todos os casos atualmente visíveis, respeitando os filtros ativos.
-
-## Personalizando a tabela
-
-- **Classificar** – Clique no cabeçalho de qualquer coluna classificável (por exemplo, **Nome do caso**, **Data de criação**) para ordenar a tabela.
-- **Seletor de colunas** – Abra a caixa de diálogo do seletor de colunas para mostrar ou ocultar colunas.
-- **Expandir linhas** – Alguns casos podem ter subitens (outros casos vinculados como detalhes). Clique em uma linha para expandi-la e ver os registros relacionados.
-
-A página também exibe um **percurso de navegação** no topo, para que você possa voltar à seção principal de Métricas.
+1. Clique em **Exportar** na barra de ferramentas.
+2. Escolha o que exportar: *Itens da página* (o padrão), os itens correspondentes aos seus filtros, ou *Todos os itens*.
+3. Escolha o formato: *csv*, *xlsx* ou *splitted xlsx*, e clique em **Exportar**.
 
 ## Páginas relacionadas
 
-- [Visão geral de métricas](index.md) – Volte ao painel principal de métricas.
+- [Visão geral das métricas](index.md) – Retorne ao painel principal de métricas.
 - [Áreas temáticas](areas.md) – Organize casos por área temática.
 - [Posições](locations.md) – Associe casos a posições geográficas.
 - [Organizações](organizations.md) – Vincule casos a organizações.

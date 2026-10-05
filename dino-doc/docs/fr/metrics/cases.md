@@ -1,89 +1,75 @@
 ---
 title: Cas
-description: Gérez les cas dans Dino — créez, modifiez, visualisez, filtrez, exportez et organisez les fiches de cas à l'aide d'un tableau de données structuré.
+description: Gérer les cas dans Dino — créez, modifiez, consultez, imprimez, filtrez et exportez les enregistrements de cas depuis un tableau de données structuré.
 ---
 
 # Cas
 
-La page Cas vous offre un espace de travail centralisé pour suivre et gérer les cas individuels. Chaque cas est un enregistrement structuré pouvant contenir un nom, un code, une image, une relation parent, des notes et des attributs supplémentaires. Vous pouvez créer de nouveaux cas, modifier ceux qui existent déjà, consulter leurs détails, supprimer des enregistrements et exporter votre liste de cas — le tout depuis un seul tableau interactif.
+La page Cas est un espace de travail centralisé pour suivre et gérer les enregistrements de cas individuels. Chaque cas est un enregistrement structuré qui peut contenir un nom, un code, une image, une relation parent, des notes et des attributs supplémentaires. Depuis cette page, vous pouvez créer de nouveaux cas, modifier ou consulter les cas existants, imprimer des fiches de cas, supprimer des enregistrements et exporter votre liste de cas — le tout à partir d'un seul tableau interactif.
 
-![Main view of the Cases page](../imgs/metrics/cases.png)
+![Vue principale de la page Cas](../imgs/metrics/cases.png)
 
 ## Aperçu du tableau
 
-Le tableau principal affiche les colonnes suivantes par défaut :
+Le tableau affiche les colonnes suivantes par défaut :
 
-- **Nom du cas** – Le nom que vous attribuez au cas (triable).
-- **Code** – Un code généré par le système ou attribué manuellement (en lecture seule après la création).
-- **Image du cas** – Un fichier image téléversé représentant le cas.
-- **Cas parent** – Le nom du cas parent auquel ce cas appartient, le cas échéant.
+- **Case Name** – Le nom attribué au cas (triable).
+- **Code** – Un code identifiant le cas. Dino le génère : vous ne le saisissez pas, et il n'est pas affiché dans la boîte de dialogue du cas.
+- **Case Image** – Un fichier image téléversé représentant le cas.
+- **Cas parent** – Le nom du cas parent auquel ce cas appartient.
 
-Des colonnes supplémentaires (telles que **ID**, **Notes**, **Date de création** et **Attributs supplémentaires**) sont masquées par défaut. Vous pouvez personnaliser les colonnes affichées en cliquant sur le bouton **Personnalisez les colonnes** dans l'en-tête du tableau.
+Les colonnes supplémentaires — **ID**, **Notes**, **Date de création** et **Attributs supplémentaires** — sont masquées par défaut. Cliquez sur **Colonnes** au-dessus du tableau pour choisir les colonnes à afficher. Vous pouvez également faire glisser les en-têtes de colonnes pour les réorganiser, et la page affiche le nombre total d'éléments trouvés à côté du paginateur.
 
-## Actions sur un cas individuel
+## Travailler avec un seul cas
 
-À droite de chaque ligne, vous trouverez des icônes correspondant aux actions suivantes :
+Survolez une ligne pour afficher les icônes **Modifier** et **Voir**. Cliquez sur la ligne pour la sélectionner : la barre d'actions au-dessus du tableau affiche alors toutes les actions :
 
-- **Modifier** – Ouvre une boîte de dialogue permettant de modifier les détails du cas.
+- **Modifier** – Ouvre une boîte de dialogue dans laquelle vous pouvez modifier les détails du cas.
 - **Imprimer** – Génère une fiche PDF imprimable pour le cas.
-- **Visualiser** – Ouvre une boîte de dialogue en lecture seule permettant de consulter les informations du cas.
+- **Voir** – Ouvre une boîte de dialogue en lecture seule pour consulter les informations du cas.
 - **Supprimer** – Ouvre une boîte de dialogue de confirmation pour supprimer définitivement le cas.
 
-Cliquez sur l'icône **Plus** (trois points verticaux) pour afficher toutes les actions disponibles si certaines sont masquées.
+## Travailler avec plusieurs cas
 
-## Actions groupées
+1. Sélectionnez une ou plusieurs lignes à l'aide des cases à cocher de la première colonne.
+2. Lorsqu'une seule ligne est sélectionnée, toutes ses actions deviennent disponibles dans la barre d'actions au-dessus du tableau.
+3. Lorsque plusieurs lignes sont sélectionnées, seules les actions groupées restent disponibles — actuellement **Supprimer**.
 
-Sélectionnez plusieurs cas à l'aide des cases à cocher de la première colonne. Dès qu'au moins un cas est sélectionné, un bouton **Supprimer** apparaît en haut du tableau. Vous pouvez supprimer tous les cas sélectionnés en une seule fois.
+!!! warning "La suppression est définitive"
+    Les cas supprimés ne peuvent pas être récupérés. Vérifiez attentivement votre sélection avant de confirmer une suppression groupée. Un cas utilisé par des form, ou comportant des cas enfants, ne peut pas être supprimé ; voir [Metrics](index.md).
 
-!!! warning "La suppression groupée est définitive"
-    Les cas supprimés ne peuvent pas être récupérés. Utilisez l'action de suppression groupée avec prudence.
+## Créer un cas
 
-## Créer un nouveau cas
-
-1. Cliquez sur le bouton d'action flottant **Ajouter** (icône plus) en bas à droite de la page.
-2. Une boîte de dialogue s'ouvre. Remplissez les champs obligatoires :
-   - **Nom du cas** – Saisissez un nom descriptif.
-   - **Code** – (Facultatif) Indiquez un code unique. Ce champ est en lecture seule après la création.
-   - **Image du cas** – Téléversez un fichier image.
-   - **Cas parent** – Associez éventuellement ce cas à un cas parent existant.
-   - **Notes** – Ajoutez toute note pertinente.
+1. Cliquez sur **Add new CASE** dans la barre d'outils au-dessus du tableau.
+2. Dans la boîte de dialogue, renseignez les détails du cas. Les champs facultatifs sont marqués *(optional)*.
+    - **Case Name** – Saisissez un nom descriptif.
+    - **Case Image** – Téléversez un fichier image.
+    - **Cas parent** – Liez éventuellement ce cas à un cas parent existant.
+    - **Notes** – Ajoutez toute note pertinente.
 3. Cliquez sur **Enregistrer** pour créer le cas.
 
 ## Importer des cas
 
-Utilisez le bouton d'action flottant **Importer** (icône de téléversement vers le cloud) pour importer des cas en masse depuis un fichier. Les formats pris en charge sont définis par votre administrateur système.
+Cliquez sur **Import CASE** dans la barre d'outils pour téléverser des cas en masse à partir d'un fichier `.xls`, `.xlsx` ou `.csv`. La page d'importation vous guide à travers le téléversement du fichier, le mappage de ses colonnes et la vérification du résultat. Les cas dont le nom existe déjà sont réutilisés, et non mis à jour ; le code est généré par Dino et ne peut pas être importé.
 
-## Filtrage et recherche
+## Rechercher et filtrer
 
-La barre de recherche située en haut vous permet de filtrer les cas par :
+Utilisez la barre d'outils pour affiner le tableau :
 
-- **Mot-clé** – Effectue une recherche dans tous les champs affichés.
-- **Plage de dates** – Filtre par date de création (Du / Au).
-- **Filtres supplémentaires** – Sélectionnez parmi des filtres prédéfinis tels que la métrique, le statut, l'utilisateur ou le groupe d'utilisateurs.
-
-Après avoir appliqué des filtres, vous pouvez enregistrer la combinaison sous forme de **préréglage** pour la réutiliser rapidement. Pour enregistrer un préréglage :
-
-1. Ouvrez le panneau de filtres.
-2. Saisissez un nom dans le champ de préréglage.
-3. Cliquez sur **Enregistrer**.  
-Pour appliquer un préréglage enregistré, sélectionnez-le dans la liste et cliquez sur **Appliquer**.
+- **Recherche par mot-clé** – Saisissez du texte dans le champ de recherche pour trouver une correspondance dans les champs affichés.
+- **Filtres** – Ouvrez le panneau de filtres pour définir un **De date** et un **À ce jour**, qui filtrent par date de création, puis cliquez sur **Chercher**. Le badge sur le bouton **Filtres** indique le nombre de filtres actifs.
+- Les filtres appliqués apparaissent sous forme de puces sous la barre d'outils ; cliquez sur l'icône d'annulation d'une puce pour supprimer ce filtre.
 
 ## Exporter des cas
 
-Cliquez sur le bouton **Exporter** (icône de téléchargement depuis le cloud) dans la barre de filtres. Choisissez le format d'export (par exemple CSV ou Excel) et sélectionnez les colonnes à inclure. Le fichier exporté contiendra tous les cas actuellement visibles, en tenant compte des filtres actifs.
-
-## Personnaliser le tableau
-
-- **Trier** – Cliquez sur l'en-tête d'une colonne triable (par exemple **Nom du cas**, **Date de création**) pour ordonner le tableau.
-- **Sélecteur de colonnes** – Ouvrez la boîte de dialogue du sélecteur de colonnes pour afficher ou masquer des colonnes.
-- **Développer les lignes** – Certains cas peuvent comporter des sous-éléments (d'autres cas liés en tant que détails). Cliquez sur une ligne pour la développer et voir les enregistrements associés.
-
-La page affiche également un **fil d'Ariane** en haut, qui vous permet de revenir à la section Métriques principale.
+1. Cliquez sur **Exportation** dans la barre d'outils.
+2. Choisissez ce qu'il faut exporter : *Éléments de la page* (par défaut), les éléments correspondant à vos filtres, ou *Tous les éléments*.
+3. Choisissez le format : *csv*, *xlsx* ou *splitted xlsx*, puis cliquez sur **Exportation**.
 
 ## Pages associées
 
-- [Vue d'ensemble des métriques](index.md) – Revenez au tableau de bord principal des métriques.
-- [Zones thématiques](areas.md) – Organisez les cas par zone thématique.
-- [Emplacements](locations.md) – Associez les cas à des emplacements géographiques.
-- [Organisations](organizations.md) – Liez les cas à des organisations.
-- [Projets](projects.md) – Regroupez les cas dans des projets.
+- [Metrics Overview](index.md) – Revenir au tableau de bord principal des métriques.
+- [Thematic Areas](areas.md) – Organiser les cas par domaine thématique.
+- [Locations](locations.md) – Associer les cas à des localisations géographiques.
+- [Organizations](organizations.md) – Lier les cas à des organisations.
+- [Projects](projects.md) – Regrouper les cas sous des projets.

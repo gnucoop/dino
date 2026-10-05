@@ -42,3 +42,4 @@ nav:
     - إدارة اللغات: administration/languages.md
     - قائمة المستخدمين: administration/users-list.md
     - قائمة المجموعات: administration/groups-list.md
+  - منطقة المستخدم: user-area/index.md

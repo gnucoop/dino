@@ -1,76 +1,79 @@
 ---
 title: Localizações
-description: Gerencie localizações geográficas usadas nas métricas e formulários do Dino.
+description: Gerenciar localizações geográficas usadas nas métricas e nos form do Dino.
 ---
 
 # Localizações
 
-A página **Localizações** permite gerenciar as localizações geográficas referenciadas pelos seus formulários, casos e outras métricas. Você pode adicionar novas localizações, editar entradas existentes, importar dados em massa e exportar a lista atual.
+A página **Localizações** permite gerenciar as localizações geográficas referenciadas pelos seus form, casos e outras métricas. Você pode adicionar novas localizações, editar entradas existentes, importar dados em massa e exportar a lista atual.
 
 ![Visualização principal da página Localizações](../imgs/metrics/locations.png)
 
 ## O que você vê
 
-- **Caminho de navegação** – mostra sua posição atual na navegação.
-- **Busca e Filtros** – busca por palavra-chave, seletor de intervalo de datas e filtros avançados configuráveis (por exemplo, por métrica, status, usuário). Você também pode salvar e carregar predefinições de filtros.
-- **Tabela** – exibe Nome da Localização e Localização Pai por padrão. As colunas ocultas (ID, Data de Criação, Coordenadas, Atributos Adicionais) podem ser exibidas pelo botão **Personalize as colunas** (canto inferior direito do cabeçalho da tabela).
+- **Percorso di navigazione** – mostra sua posição atual na navegação.
+- **Busca e Filtros** – um campo de busca por palavra-chave e o botão **Filtros** para filtrar por data de criação (**Data inicial** / **Até à data**).
+- **Contador de itens encontrados** – mostra quantas localizações correspondem aos filtros atuais.
+- **tabela** – exibe Nome da Localização e Localização Pai por padrão. As colunas ocultas (ID, Data de Criação, Coordenadas, Atributos Adicionais) podem ser exibidas pelo botão **Colunas**, acima da tabela, à direita.
 - **Paginação** – controles para navegar entre as páginas.
-- **Ações em massa** – selecione linhas usando as caixas de seleção para excluir ou editar várias localizações de uma vez.
-- **Botões de ação flutuantes** – **Adicionar Novo** (ícone de mais) e **Importar** (ícone de upload na nuvem) permanecem disponíveis enquanto você rola a página.
+- **Ações em massa** – selecione linhas usando as caixas de seleção para deletar várias localizações de uma vez.
+- **Botões da barra de ferramentas** – **Adicionar nova LOCALIZAÇÃO** (ícone de mais) e **Importar LOCALIZAÇÃO** (ícone de upload na nuvem) ficam acima da tabela.
 
 ## Ações da linha
 
-Cada linha tem três ações rápidas (visíveis ao passar o mouse sobre a linha):
+Passe o mouse sobre uma linha para exibir os ícones **Editar** e **Ver**. Clique na linha para selecioná-la e destacá-la: a barra de ações acima da tabela mostra então todas as ações:
 
 - **Editar** – abre a caixa de diálogo da localização para modificar os detalhes.
-- **Excluir** – remove a localização após confirmação.
-- **Ver** – abre uma caixa de diálogo somente leitura mostrando todos os campos.
-
-Clicar em uma linha a seleciona (destaca) e, se a lista for expansível, revela um painel de detalhes com dados adicionais.
+- **Deletar** – remove a localização após confirmação.
+- **Ver** – abre uma caixa de diálogo somente leitura exibindo todos os campos.
 
 ## Trabalhando com localizações
 
 ### Adicionar uma nova localização
 
-1. Clique no botão flutuante **Adicionar Novo** (canto inferior direito).
-2. Na caixa de diálogo, preencha os campos obrigatórios (por exemplo, Nome da Localização).
+1. Clique no botão **Adicionar nova LOCALIZAÇÃO** acima da tabela.
+2. Na caixa de diálogo, preencha os campos obrigatórios (por exemplo, Nome da Localização). Os campos opcionais estão marcados como *(opcional)*.
 3. Opcionalmente, defina uma Localização Pai, Coordenadas e Atributos Adicionais.
 4. Clique em **Salvar**.
 
 ### Editar uma localização
 
-1. Clique no ícone **Editar** (lápis) na linha desejada.
+1. Passe o mouse sobre a linha e clique no ícone **Editar** (lápis), ou selecione a linha e clique em **Editar** na barra de ações.
 2. Atualize os campos na caixa de diálogo.
 3. Clique em **Salvar**.
 
-### Excluir uma localização
+### Deletar uma localização
 
-1. Clique no ícone **Excluir** (lixeira) na linha.
-2. Confirme a exclusão no aviso.
+1. Clique na linha para selecioná-la e, em seguida, clique em **Deletar** na barra de ações acima da tabela.
+2. Confirme a exclusão na janela de confirmação.
+
+Uma localização que é usada por form, ou que possui localizações filhas, não pode ser deletada; consulte [Métricas](index.md).
 
 ### Importar localizações de um arquivo
 
-1. Clique no botão flutuante **Importar** (ícone de upload na nuvem).
-2. Selecione um arquivo CSV ou Excel seguindo o formato esperado.
-3. Mapeie as colunas para os campos de localização, se necessário.
-4. Clique em **Importar**.
+1. Clique no botão **Importar LOCALIZAÇÃO** acima da tabela.
+2. Envie um arquivo `.xls`, `.xlsx` ou `.csv`.
+3. Mapeie as colunas do arquivo para os campos da localização.
+4. Clique em **Aplicar importação** e revise o resultado.
 
-!!! tip "Edição em massa"
-    Selecione várias linhas usando as caixas de seleção e clique no botão **Editar** (ícone edit_note) que aparece acima da tabela para atualizar várias localizações de uma vez.
+Localizações cujo nome já existe são reutilizadas, não atualizadas.
 
 ### Exportar a lista de localizações
 
-1. Clique no botão **Exportar** (ícone de download na nuvem) na barra de filtros.
-2. Escolha o formato de exportação (CSV ou Excel).
-3. O arquivo será baixado automaticamente.
+1. Clique em **Exportar** na barra de ferramentas.
+2. Escolha o que exportar: *Itens da página* (o padrão), os itens que correspondem aos seus filtros, ou *Todos os itens*.
+3. Escolha o formato: *csv*, *xlsx* ou *splitted xlsx* e, em seguida, clique em **Exportar**.
+
+!!! tip "Exclusão em massa"
+    Selecione várias linhas usando as caixas de seleção e, em seguida, clique em **Deletar** na barra de ações acima da tabela para deletar várias localizações de uma vez.
 
 ### Coordenadas da localização
 
-Se você definir o atributo "coordinates" de um valor de localização específico, a informação será usada para visualizar os dados do seu formulário em um [mapa](../forms/forms-map.md).
+Se você definir o atributo **Coordenadas** para uma localização, essa informação é usada para visualizar os dados do seu form em um [mapa](../forms/forms-map.md).
 
 ## Páginas relacionadas
 
-- [Visão Geral das Métricas](index.md) – retornar à página inicial das métricas.
-- [Casos](cases.md) – gerenciar casos que fazem referência a localizações.
+- [Visão Geral das Métricas](index.md) – voltar à página inicial das métricas.
+- [Casos](cases.md) – gerenciar casos que referenciam localizações.
 - [Organizações](organizations.md) – gerenciar organizações vinculadas a localizações.
 - [Projetos](projects.md) – visualizar projetos associados a localizações.

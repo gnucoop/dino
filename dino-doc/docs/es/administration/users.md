@@ -1,32 +1,41 @@
 ---
 title: Usuarios
-description: Acceda a las secciones de gestión de Usuarios y Grupos para controlar las cuentas de usuario y los permisos en Dino.
+description: Gestiona las cuentas de usuario de Dino y los grupos de permisos desde un área de administración central.
 ---
 
 # Usuarios
 
-El área de **Usuarios** es el centro principal para gestionar quién puede acceder a Dino y qué puede hacer. Desde aquí, puede navegar a dos secciones clave de administración: **Usuarios** (para cuentas individuales) y **Grupos** (para conjuntos de permisos).
+El área **Usuarios** es el centro principal para gestionar quién puede acceder a Dino y qué puede hacer. Da acceso a dos secciones de administración: **Usuarios** para cuentas individuales y **Grupos** para conjuntos de permisos que controlan el acceso a form, report y datos.
 
 ![Vista principal de la página Usuarios](../imgs/administration/users.png)
 
-Al abrir la página Usuarios, verá un menú con las siguientes opciones:
+La página muestra un menú con un mosaico para cada sección. Haz clic en un mosaico para abrir esa sección.
 
-*   **Usuarios**: Abre la página [Gestionar Usuarios](users-list.md) para crear, editar y gestionar cuentas de usuario individuales.
+## Secciones disponibles
 
-    Al hacer clic en esta opción, accederá a la lista de usuarios, donde podrá ver todas las cuentas, añadir nuevos usuarios, editar detalles y desactivar cuentas.
+### Usuarios
 
-    ![Vista principal de la página Lista de Usuarios](../imgs/administration/users-list.png)
+El mosaico **Usuarios** abre la página [Gestionar usuarios](users-list.md). Úsala para crear cuentas nuevas, revisar las existentes, actualizar los datos de los usuarios y desactivar las cuentas que ya no sean necesarias.
 
-*   **Grupos**: Abre la página [Grupos](groups-list.md) para crear y gestionar grupos de permisos que controlan el acceso a formularios, informes y datos.
+![Vista principal de la página Lista de usuarios](../imgs/administration/users-list.png)
 
-Simplemente haga clic en cualquiera de los elementos del menú para navegar a la sección correspondiente.
+### Grupos
+
+El mosaico **Grupos** abre la página [Grupos](groups-list.md). Los grupos agrupan permisos para que puedas asignar los mismos derechos de acceso a varios usuarios a la vez. Usa esta sección para crear grupos y ajustar sus permisos. Los usuarios se asignan a los grupos desde el editor de cada usuario, en el campo **User Permission Groups**.
+
+## Abrir una sección
+
+1. Abre la página **Usuarios** desde la navegación principal.
+2. Haz clic en el mosaico de la sección en la que quieras trabajar: **Usuarios** o **Grupos**.
+3. Dino te lleva a la lista de esa sección, donde puedes trabajar con cuentas individuales o definiciones de grupos.
+
+!!! tip "Empieza por los grupos"
+    Si varias personas necesitan el mismo nivel de acceso, crea primero un grupo y luego asígnalo a cada una de ellas en el campo **User Permission Groups** del editor de usuario. Así los permisos se mantienen consistentes y te ahorras editar cada cuenta por separado.
 
 !!! warning "Se requiere acceso de administrador"
-    El área de Usuarios solo es visible para los usuarios con el rol de Administrador. Si no puede ver esta página, póngase en contacto con el administrador de su sistema.
-
----
+    El área Usuarios solo es visible para los usuarios con el rol de Administrador. Si no puedes ver esta página, ponte en contacto con el administrador de tu sistema.
 
 ## Páginas relacionadas
 
-*   [Gestionar Usuarios](users-list.md): Guía detallada sobre cómo crear, editar y gestionar cuentas de usuario.
-*   [Grupos](groups-list.md): Guía detallada sobre cómo crear y gestionar grupos de permisos.
+*   [Gestionar usuarios](users-list.md): Crea, edita y gestiona cuentas de usuario individuales.
+*   [Grupos](groups-list.md): Crea y gestiona grupos de permisos que controlan el acceso a form, report y datos.

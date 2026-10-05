@@ -1,45 +1,52 @@
 ---
 title: Datachat
-description: Utilisez DinoGPT, un assistant IA, pour poser des questions sur les données de vos formulaires.
+description: Utilisez DinoAi, un assistant IA, pour poser des questions sur les données de vos form.
 ---
 
 # Datachat
 
-La page Datachat donne accès à **Dino AI**, un assistant doté d'intelligence artificielle capable de répondre à des questions sur les données collectées dans vos formulaires. Vous pouvez poser vos questions en langage naturel pour tirer des informations de vos soumissions.
+Datachat donne accès à **DinoAi**, un assistant propulsé par l'IA qui peut répondre à des questions sur les données collectées dans vos form. Vous pouvez poser des questions en langage naturel pour obtenir des informations à partir de vos données.
 
-Lorsque vous ouvrez la page Datachat, vous voyez l'interface de Dino AI ainsi qu'un accord relatif aux conditions d'utilisation. Vous devez lire et accepter ces conditions avant de pouvoir démarrer une session de chat.
+Pour l'ouvrir, accédez à la lista di form d'un form et cliquez sur **IA** dans le sélecteur de visualisation de la barre d'outils, à côté de **Données** et **Carte**. Les filtres que vous avez appliqués à la liste sont conservés.
 
-!!! warning "Informations générées par IA"
-    Dino AI génère ses réponses à partir des données spécifiques présentes dans la base de données de votre formulaire. Ses connaissances se limitent à ces données et peuvent être incomplètes, inexactes ou obsolètes. Il vous appartient de vérifier toute information fournie. Dino AI ne fournit pas de conseils professionnels.
+!!! warning "Informations générées par l'IA"
+    DinoAi génère des réponses basées sur les données spécifiques de la base de données de votre form. Ses connaissances sont limitées à ces données et peuvent être incomplètes, inexactes ou obsolètes. Il vous appartient de vérifier toute information fournie. DinoAi ne fournit pas de conseils professionnels.
 
 ## Accepter les conditions d'utilisation
 
-Avant de pouvoir utiliser Dino AI, vous devez lire et accepter ses conditions d'utilisation.
+La première fois que vous ouvrez Datachat, les conditions d'utilisation de DinoAi s'affichent (actuellement en italien). Vous devez les accepter avant de pouvoir commencer à discuter.
 
-1.  Lisez attentivement les **Conditions d'utilisation de Dino AI** affichées sur la page.
-2.  Si vous acceptez l'ensemble des termes et conditions, vous pouvez démarrer une session de chat.
+1.  Lisez attentivement les conditions d'utilisation affichées sur la page.
+2.  Cliquez sur **Accepter**.
 
-## Démarrer une session de chat
+Si aucune clé API DataChat n'est encore enregistrée, il vous est ensuite demandé de la saisir (*Entrez votre clé API DataChat*) : tapez-la et appuyez sur **Entrée**, ou cliquez sur le bouton fléché. La clé est conservée dans ce navigateur et réutilisée automatiquement.
 
-Pour commencer à poser des questions sur vos données :
+## Poser des questions
 
-1.  Après avoir accepté les conditions, l'interface de chat principale devient active.
-2.  Saisissez votre question sur les données du formulaire dans le champ de saisie.
-3.  Appuyez sur **Entrée** ou cliquez sur le bouton d'envoi pour envoyer votre question.
+1.  Tapez votre question sur les données du form dans le champ de saisie (*Écrivez une question sur les données...*), ou choisissez l'une des questions suggérées sous **Interrogez vos données**.
+2.  Appuyez sur **Entrée** ou cliquez sur **Envoyer**.
 
-L'assistant IA traitera votre question et vous fournira une réponse fondée sur les soumissions disponibles.
+DinoAi répond en fonction des données disponibles. Chaque réponse peut être notée, copiée ou régénérée, et est accompagnée de questions de suivi suggérées.
 
-!!! tip "Poser des questions efficaces"
-    Pour de meilleurs résultats, posez des questions claires et précises sur les données. Par exemple : « Quel est l'âge moyen des personnes interrogées ? » ou « Listez toutes les soumissions de la semaine dernière. »
+!!! tip "Questions efficaces"
+    Pour de meilleurs résultats, posez des questions claires et précises sur les données. Par exemple : « Quel est l'âge moyen des répondants ? » ou « Listez toutes les données de la semaine dernière. »
 
-## Pendant une conversation
+Si vos crédits IA sont épuisés, la page affiche *Désolé, vous n'avez pas assez de crédits !* : cliquez sur le message pour ouvrir la page où vous pouvez en acheter.
 
-- Vous pouvez poser des questions de suivi dans la même session ; DinoAI conservera le contexte de votre conversation.
-- L'historique du chat reste visible, ce qui vous permet de consulter les questions et réponses précédentes.
+Si le form schema ne contient pas encore de données, Datachat vous indique qu'aucun form n'a été trouvé.
 
-## Mettre fin à une session de chat
+## Télécharger les résultats
 
-Votre session de chat se termine automatiquement dès que vous quittez la page Datachat. Vous pouvez passer à d'autres pages, comme la [liste des formulaires](index.md), puis revenir plus tard pour démarrer une nouvelle session.
+Certaines réponses incluent un fichier téléchargeable. Lorsqu'un fichier est disponible, cliquez sur le bouton **Télécharger** sur la réponse.
+
+- Dans un navigateur web, le fichier est enregistré dans votre dossier de téléchargements habituel.
+- Dans l'application mobile Dino, le fichier est enregistré dans votre dossier **Documents** et un message de confirmation apparaît.
+
+## Vos chats
+
+- Vous pouvez poser des questions de suivi dans le même chat ; DinoAi conserve le contexte de votre conversation.
+- Vos conversations sont conservées dans ce navigateur sous **Chats**, une liste par form schema : quitter la page ne les supprime pas. Elles ne sont pas synchronisées sur d'autres appareils.
+- Cliquez sur **Nouveau chat** pour démarrer une autre conversation, ou sur l'icône de suppression à côté d'un chat pour le supprimer.
 
 !!! warning "Confidentialité des données"
-    Dino AI n'accède qu'aux données du schéma de formulaire en cours. Il ne peut pas voir les données d'autres formulaires ni de sources externes.
+    DinoAi accède uniquement aux données du form schema actuel. Il ne peut pas voir les données d'autres form ni de sources externes.

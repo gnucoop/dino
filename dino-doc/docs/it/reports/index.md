@@ -1,46 +1,71 @@
 ---
 title: Report
-description: Una panoramica dell'area Report di Dino — come trovare i report schema e accedere ai tuoi report.
+description: Una panoramica dell'area Report in Dino — come trovare i report schema e navigare tra i tuoi report.
 ---
 
 # Report
 
-L'area Report è il tuo punto di accesso a tutti i report schema disponibili. Un report schema definisce la struttura e il contenuto di un report che può essere generato a partire dai dati raccolti. Da qui puoi consultare gli schemi e accedere ai report già creati.
+L'area Report è il tuo punto di accesso a tutti i report schema disponibili. Un report schema definisce la struttura e il contenuto di un report che può essere generato dai dati raccolti. Da qui puoi sfogliare gli schemi e accedere ai report già creati per ciascuno di essi.
 
 ![Vista principale della pagina Report](../imgs/reports/index.png)
 
-I report possono essere creati solo utilizzando un formato basato su Excel chiamato [XLSReport](xlsreport.md). Per creare un nuovo report devi prima creare un file XLSReport, quindi importarlo in Dino seguendo la procedura descritta di seguito.
+I report schema vengono creati da un formato basato su Excel chiamato [XLSReport](xlsreport.md), oppure generati automaticamente da un form schema (vedi [Report automatici](autoreports.md)). Per crearne uno da un file, devi prima preparare un file XLSReport e poi importarlo in Dino. Per la procedura completa, vedi [Modifica report schema](edit-report-schema.md).
 
 ---
 
-## Consultare i report schema
+## Sfogliare i report schema
 
-Quando apri la pagina Report, visualizzi un elenco di tutti i report schema a cui hai i permessi di accesso. L'elenco è ordinato alfabeticamente in base all'etichetta dello schema.
+Quando apri la pagina Report, vedi una scheda per ogni report schema a cui hai il permesso di accedere. Le schede sono ordinate alfabeticamente in base all'etichetta dello schema.
 
 Per trovare uno schema specifico:
 
-1. Usa la barra di ricerca nella parte superiore della pagina.
+1. Usa il campo **Filtra** nella parte superiore della pagina.
 2. Digita una qualsiasi parte del nome o dell'etichetta dello schema.
-3. L'elenco verrà filtrato in tempo reale per mostrare solo gli schemi corrispondenti.
+3. L'elenco si filtra mentre digiti, mostrando solo gli schemi corrispondenti.
 
-Per visualizzare i report di uno schema specifico, fai clic sulla sua scheda nell'elenco.
+Per aprire i report di uno schema, clicca in un punto qualsiasi della sua scheda.
 
-!!! tip "Per iniziare"
-    Se vedi il messaggio "Non ci sono report", significa che non è ancora stato creato alcun report schema né ne è stato condiviso nessuno con te. Contatta l'amministratore di Dino per iniziare.
+Su ogni scheda che puoi modificare, le icone nell'angolo in alto a destra ti permettono di gestire direttamente lo schema:
+
+- **Modifica** (icona a matita) — apre lo schema per la modifica. Vedi [Modifica report schema](edit-report-schema.md).
+- **Elimina** (icona a cestino) — rimuove lo schema dopo la conferma. Uno schema che ha ancora dei report non può essere eliminato: elimina prima i suoi report.
+
+Un'icona a impronta digitale su una scheda indica che il report schema è *univoco*: può produrre un solo report per un insieme esatto di metriche. Se provi a creare un report che esiste già per quelle metriche, Dino non creerà un duplicato.
+
+!!! tip "Nessuno schema ancora?"
+    Se vedi il messaggio "There are not any Reports currently available", non è ancora stato creato né condiviso con te alcun report schema. Chiedi al tuo amministratore Dino di crearne uno, oppure aggiungine uno tu stesso se hai i permessi.
 
 ---
 
-## Creare un nuovo report schema
+## Aggiungere un nuovo report schema
 
-Puoi avviare il processo di creazione di un nuovo report schema direttamente dalla pagina principale dei Report. Fai clic sul pulsante **+** (più) situato nell'angolo in basso a destra dello schermo.
+Puoi iniziare a creare un nuovo report schema dalla pagina principale Report.
 
-Per i passaggi dettagliati, consulta la guida su [Modifica report](edit-report.md).
+1. Clicca il pulsante **+** (*Add new Reports schema*) nell'angolo in basso a destra dello schermo. Viene mostrato solo se hai il permesso di creare report schema.
+2. Segui i passaggi descritti in [Modifica report schema](edit-report-schema.md).
 
 ---
 
-## Cosa puoi fare
+## Aprire i report di uno schema
 
-Dalla pagina principale dei Report puoi accedere alle seguenti azioni principali:
+Cliccando sulla scheda di uno schema accedi all'elenco dei report generati da quello schema. Da qui puoi:
 
-* **[Modifica report](edit-report.md)** — Genera un nuovo documento report selezionando uno schema, scegliendo le metriche e impostando un intervallo di date.
-* **[Modifica report schema](edit-report-schema.md)** — Crea nuovi report schema o modifica quelli esistenti per definire quali dati compaiono nei report. In genere richiede i permessi di amministratore.
+1. Sfogliare i report esistenti in una tabella, con dettagli come l'utente che ha creato il report, il nome del report e l'intervallo di date raccolte.
+2. Filtrare e cercare nell'elenco per restringere i report che ti servono. Usa la ricerca per parola chiave, i campi dell'intervallo di date e il pulsante **Filtri** per condizioni più avanzate. Puoi anche salvare un insieme di filtri come preset e applicarlo di nuovo in seguito.
+3. Aprire un report per esaminarlo: passa il mouse sulla sua riga e clicca l'icona **Vedi** (occhio), oppure seleziona la riga e clicca **Vedi** nella barra delle azioni sopra la tabella. Vedi [Modifica report](edit-report.md).
+4. Eliminare un report che non ti serve più: seleziona la sua riga, poi clicca **Elimina** nella barra delle azioni.
+
+Per creare un nuovo report dallo schema selezionato, clicca **Aggiungi nuovo report** sopra la tabella. I report che usano prompt AI consumano DINO-AI Token. Il numero di token che il report utilizzerà è mostrato accanto al pulsante, così conosci sempre il costo prima di iniziare.
+
+!!! warning "Token insufficienti"
+    Se non hai abbastanza DINO-AI Token nel tuo account, Dino non avvierà il report e mostrerà un messaggio che ti chiede di aggiungere altri token. Aggiungi token al tuo account e riprova.
+
+---
+
+## Cosa puoi fare dopo
+
+Dall'area Report puoi passare a queste attività:
+
+* **[Modifica report](edit-report.md)** — Esamina un report ed esportalo.
+* **[Modifica report schema](edit-report-schema.md)** — Crea nuovi report schema o modifica quelli esistenti per definire cosa appare nei tuoi report. Di solito richiede permessi di amministratore.
+* **[Aggregazione](../aggregation/index.md)** — Sfoglia i dati di tutti i tuoi form schema in un unico elenco.

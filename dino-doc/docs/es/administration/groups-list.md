@@ -1,11 +1,11 @@
 ---
 title: Lista de grupos
-description: "Administre grupos de usuarios en Dino: vea, cree, edite y elimine grupos de permisos con roles, form schemas, report schemas y métricas asignados."
+description: "Gestiona grupos de usuarios en Dino: consulta, crea, edita y elimina grupos de permisos con roles, formularios, reportes y métricas asignados."
 ---
 
 # Lista de grupos
 
-La página **Lista de grupos** muestra todos los grupos de usuarios en Dino. Desde aquí puede ver, editar, eliminar y crear grupos. Cada grupo define un conjunto de permisos y reglas de acceso al vincular un rol de usuario con form schemas, report schemas, estados de form y tipos de métricas específicos (como áreas, casos, proyectos, ubicaciones u organizaciones).
+La página **Lista de grupos** muestra todos los grupos de usuarios de Dino. Desde aquí puedes consultar, editar, eliminar y crear grupos. Cada grupo define un conjunto de permisos y reglas de acceso al vincular un rol de usuario con formularios, reportes, estados del formulario y tipos de métricas específicos (como áreas, casos, proyectos, ubicaciones u organizaciones).
 
 ![Vista principal de la página Lista de grupos](../imgs/administration/groups-list.png)
 
@@ -13,67 +13,77 @@ La página **Lista de grupos** muestra todos los grupos de usuarios en Dino. Des
 
 La tabla muestra las siguientes columnas:
 
-- **Nombre del grupo**: el nombre del grupo de usuarios (visible de forma predeterminada).
-- **ID**: identificador interno (oculto de forma predeterminada).
-- **Fecha de creación**: cuándo se creó el grupo (oculta de forma predeterminada).
+- **Nombre de grupo** – el nombre del grupo de usuarios (visible de forma predeterminada).
+- **ID** – identificador interno (oculto de forma predeterminada).
+- **Fecha de creación** – cuándo se creó el grupo (oculta de forma predeterminada).
 
-Puede personalizar qué columnas aparecen haciendo clic en el icono **Personaliza las columnas** en el lado derecho del encabezado de la tabla.
+El número de elementos encontrados aparece encima de la tabla, junto al paginador. Usa el botón **Columnas** (información sobre herramientas *Personalizar las columnas*), encima de la tabla a la derecha, para cambiar qué columnas se muestran.
 
 ## Búsqueda y filtrado
 
-Use la **barra de búsqueda** en la parte superior de la página para filtrar grupos por palabra clave. El panel **Filtros** (expandible) le permite acotar la lista por:
+Usa el campo **buscar por palabra clave** de la barra de herramientas para filtrar grupos por nombre. Abre el cuadro de diálogo **Filtros** para ver más opciones:
 
-- Rango de fechas (desde/hasta)
-- Cualquier tipo de métrica definido en su implementación, es decir, uno o más de los siguientes: Proyecto, Ubicación, Área, Caso, Organización
+1. Haz clic en **Filtros**.
+2. Establece un **Desde fecha** y un **Hasta la fecha** para restringir los resultados a los grupos creados en ese intervalo.
+3. Acota la lista con uno o varios filtros de métricas: **Proyecto**, **Ubicación**, **Área**, **Caso** u **Organización**, según cuáles estén activos en tu implementación.
+4. Haz clic en **Buscar** para aplicar los filtros, o en **Restablecer los filtros** para borrarlos.
 
-También puede guardar y cargar ajustes predefinidos de filtros usando el gestor de ajustes predefinidos.
+Los filtros aplicados aparecen como etiquetas debajo de la barra de herramientas. Haz clic en el icono **cancelar** de una etiqueta para quitar ese filtro.
 
 ## Acciones sobre los grupos
 
-Cada fila tiene tres iconos de acción a la derecha:
+Pasa el cursor sobre una fila para mostrar los iconos **Editar** y **Ver**. Haz clic en una fila para seleccionarla: la barra de acciones encima de la tabla mostrará entonces todas las acciones que puedes usar sobre ella:
 
-- **Ver**: ver los detalles del grupo (abre el editor en modo de solo lectura)
-- **Editar**: editar las propiedades del grupo
-- **Eliminar**: eliminar el grupo (requiere confirmación)
+- **Ver** – Ver los detalles del grupo (abre la página del grupo en modo de solo lectura)
+- **Editar** – Editar las propiedades del grupo
+- **Eliminar** – Eliminar el grupo (se requiere confirmación)
 
+## Crear un grupo nuevo
 
-## Crear un nuevo grupo
+Los grupos se crean y se editan en una página dedicada, no en un cuadro de diálogo.
 
-1. Haga clic en el botón flotante **+** en la esquina inferior derecha de la pantalla.
-2. En el cuadro de diálogo del editor que se abre, introduzca un **Nombre del grupo** (obligatorio).
-3. Navegue por las pestañas para seleccionar:
-    - **Rol de usuario** (obligatorio: debe elegir exactamente un rol)
-    - **Form schemas**
-    - **Estados del form**
-    - **Report schemas**
-    - **Tipos de métricas** (todos los tipos activos para su implementación: Área, Caso, Proyecto, Ubicación, Organización), si están activos
-4. En el cuadro de diálogo de **elementos disponibles** a la derecha, seleccione uno o más elementos haciendo clic en el icono **añadir** junto a cada elemento para moverlo al panel **Elementos del grupo**.
-5. Haga clic en **Guardar**.
+1. Haz clic en **Añadir nuevo grupo** en la barra de herramientas. Se abre la página *Crear grupo*.
+2. Escribe el **Nombre de grupo** en el encabezado de la página.
+3. Elige los elementos del grupo, una pestaña a la vez. Cada pestaña muestra cuántos elementos contiene y solo aparece si su categoría tiene elementos:
+    - **Rol de usuario** (obligatorio: un grupo contiene exactamente un rol; si añades otro, lo reemplaza)
+    - **Formulario**
+    - **Estado del formulario**
+    - **Reporte**
+    - Una pestaña por cada tipo de métrica activo (**Área**, **Caso**, **Proyecto**, **Ubicación**, **Organización**)
+4. En el panel izquierdo, busca los elementos y haz clic en **Añadir** junto a cada uno que quieras, o en **Añadir todos los mostrados** para añadir todos los elementos de la lista. El panel derecho (*En el grupo*) muestra lo que el grupo contiene para esa categoría.
+5. Haz clic en **Guardar**. Solo se habilita cuando el grupo tiene un nombre y un rol de usuario.
 
-!!! tip "Opción «Todos»"
-    Para los tipos de métricas y otras categorías, es posible que vea una opción «Todos …». Al seleccionarla, la restricción se aplica a todos los elementos de ese tipo.
+!!! tip "Opción Todos"
+    Todas las categorías excepto Rol de usuario tienen una opción "Todos los…" en la parte superior de su lista (por ejemplo, *Todos los formularios*). Al elegirla, se reemplazan los elementos individuales; al añadir un elemento individual, se elimina. En las métricas con jerarquía, añadir un valor también añade sus elementos secundarios.
+
+!!! note "Grupos de administrador"
+    Si el rol del grupo es un rol de administrador, **Formulario** y **Reporte** siempre se establecen en **Todos** y quedan bloqueados, tal como indica un icono de candado: solo un grupo que tenga **Todos** en ellos puede crear nuevos esquemas. Elige un rol diferente para liberar el bloqueo.
 
 ## Editar o ver un grupo
 
-1. En la tabla, haga clic en el icono **Editar** (edit) o **Ver** (view) del grupo que desea modificar.
-2. En el cuadro de diálogo del editor, puede:
-    - Cambiar el **Nombre del grupo**.
-    - Añadir o quitar elementos de cualquier pestaña (solo en modo de edición).
-    - Quitar elementos haciendo clic en el icono **eliminar** junto a ellos.
-3. Haga clic en **Guardar** para aplicar los cambios (el modo de vista solo muestra un botón **Cerrar**).
+1. En la tabla, haz clic en el icono **Editar** o **Ver** del grupo. Se abre la página *Editar grupo* o *Ver grupo*.
+
+    ![Editor para modificar un grupo de permisos de usuario](../imgs/administration/groups-list-edit.png)
+
+2. En el modo de edición puedes:
+    - Cambiar el **Nombre de grupo**.
+    - Añadir elementos desde el panel izquierdo, o quitarlos del panel derecho con el botón × (**Vaciar** elimina todos los elementos de la categoría).
+3. Haz clic en **Guardar** para aplicar los cambios. No hay botón Cancelar: para salir sin guardar, vuelve atrás mediante el recorrido de navegación.
+
+En el modo de visualización todo es de solo lectura y no hay **Guardar**.
 
 ## Eliminar un grupo
 
-1. Haga clic en el icono **eliminar** del grupo.
-2. Confirme la eliminación en el cuadro de diálogo que aparece.
+1. Haz clic en la fila del grupo para seleccionarla y, a continuación, haz clic en **Eliminar** en la barra de acciones.
+2. Confirma la eliminación en el cuadro de diálogo que aparece.
 
 !!! warning "Acción irreversible"
-    La eliminación de un grupo no se puede deshacer. Asegúrese de que ningún usuario dependa del grupo antes de eliminarlo.
+    Eliminar un grupo no se puede deshacer. Asegúrate de que ningún usuario dependa del grupo antes de eliminarlo.
 
 ## Páginas relacionadas
 
-- [Lista de usuarios](users-list.md): administre cuentas de usuario individuales y sus asignaciones de grupos.
-- [Métricas](../metrics/index.md): configure los tipos de métricas que se pueden asignar a los grupos (áreas, casos, proyectos, etc.).
-- [Form schemas](../forms/edit-form-schema.md): cree y edite form schemas que se pueden vincular a grupos.
-- [Report schemas](../reports/edit-report-schema.md): administre los report schemas disponibles para los grupos.
-- [Descripción general de la interfaz](../interface/index.md): conozca la navegación y el diseño general.
+- [Lista de usuarios](users-list.md) – gestiona las cuentas de usuario individuales y sus asignaciones de grupo.
+- [Métricas](../metrics/index.md) – configura los tipos de métricas que se pueden asignar a los grupos (áreas, casos, proyectos, etc.).
+- [Formularios](../forms/edit-form-schema.md) – crea y edita formularios que se pueden vincular a los grupos.
+- [Reportes](../reports/edit-report-schema.md) – gestiona los reportes disponibles para los grupos.
+- [Descripción general de la interfaz](../interface/index.md) – conoce la navegación y el diseño general.

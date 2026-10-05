@@ -1,94 +1,97 @@
 ---
 title: Proyectos
-description: Gestione sus proyectos en Dino. Vea, agregue, edite, elimine, importe y exporte registros de proyectos con filtrado y acciones masivas.
+description: Gestiona tus proyectos en Dino. Consulta, añade, edita, elimina, importa y exporta registros de proyectos con filtros y acciones masivas.
 ---
 
 # Proyectos
 
-La página **Proyectos** en Dino le permite gestionar todos los valores de la métrica Proyecto. Esto puede utilizarse para mapear los proyectos de su organización, un programa, colaboraciones con donantes o cualquier otro tipo de grupo estructurado de actividades relevante para su trabajo. Puede ver una lista ordenable de proyectos, agregar nuevos, editar los existentes, eliminarlos, importar datos de forma masiva y exportar la lista para su análisis offline. La página también ofrece potentes herramientas de filtrado para encontrar rápidamente el proyecto que necesita.
+La página **Proyectos** de Dino te permite gestionar todos los valores de la métrica Proyecto. Puede utilizarse para mapear los proyectos de tu organización, un programa, colaboraciones con donantes o cualquier otro grupo estructurado de actividades relevante para tu trabajo. Puedes consultar una lista ordenable de proyectos, añadir nuevos, editar los existentes, eliminarlos, importar datos de forma masiva y exportar la lista para analizarla sin conexión. La página también ofrece herramientas de filtrado para encontrar rápidamente el proyecto que necesitas.
 
 ![Vista principal de la página Proyectos](../imgs/metrics/projects.png)
 
-## Navegar a Proyectos
+## Cómo acceder a Proyectos
 
-Para abrir la página Proyectos, expanda la sección **Métricas** en la navegación principal y seleccione **Proyectos**. La URL del navegador terminará con `/metrics/projects`.
+Para abrir la página Proyectos, haz clic en **Métricas** en la navegación principal y, a continuación, en la tarjeta **Proyectos**. La URL del navegador terminará en `/metrics/projects`.
 
-## Entender la lista de proyectos
+## Cómo entender la lista de proyectos
 
-La tabla principal muestra una lista de todos los proyectos. Cada fila corresponde a un proyecto y muestra las siguientes columnas por defecto:
+La tabla principal muestra una lista de todos los proyectos. Cada fila corresponde a un proyecto y muestra las siguientes columnas de forma predeterminada:
 
-- **Nombre del proyecto** – El nombre del proyecto. Puede ordenar la lista por esta columna.
-- **Proyecto padre** – El proyecto de nivel superior al que pertenece este proyecto, si corresponde.
+- **Nombre del proyecto** – El nombre del proyecto. Puedes ordenar la lista por esta columna.
+- **Proyecto principal** – El proyecto de nivel superior al que pertenece este proyecto, si lo hay.
 - **Código** – Un código de proyecto asignado manualmente.
-- **Código automático** – Un código generado automáticamente. Este campo es de solo lectura y no puede editarse.
-- **Sectores de intervención** – Los sectores en los que se enfoca el proyecto.
-- **Donantes** – Las fuentes de financiamiento del proyecto.
+- **Código automático** – Un código generado automáticamente. Lo establece Dino: no se muestra en el cuadro de diálogo del proyecto y no se puede editar.
+- **Sectores de Intervención** – Los sectores en los que se centra el proyecto.
+- **Donantes** – Las fuentes de financiación del proyecto.
 - **Fecha de inicio** – La fecha en que comienza el proyecto.
-- **Fecha de finalización** – La fecha en que finaliza el proyecto.
+- **Fecha final** – La fecha en que finaliza el proyecto.
 
-Las columnas ocultas (ID, Fecha de creación y Atributos adicionales) pueden mostrarse haciendo clic en el botón **Personaliza las columnas** en la esquina superior derecha de la tabla.
+Las columnas ocultas (ID, Fecha de creación y Atributos adicionales) se pueden mostrar con el botón **Columnas** (información sobre herramientas *Personalizar las columnas*), situado encima de la tabla, a la derecha.
 
 !!! tip "Campos de solo lectura"
-    El campo **Código automático** se genera automáticamente y no puede modificarse. Aparecerá atenuado en el cuadro de diálogo de edición.
+    El campo **Código automático** se genera automáticamente y no se puede modificar. Se muestra en la lista, pero no en el cuadro de diálogo del proyecto.
 
-La barra de herramientas superior muestra el número total de elementos encontrados y un paginador. Puede elegir cuántos proyectos ver por página.
+La barra de herramientas superior muestra el número total de elementos encontrados y un paginador. Puedes elegir cuántos proyectos ver por página.
 
-## Gestionar proyectos
+## Gestión de proyectos
 
-### Agregar un nuevo proyecto
+### Añadir un nuevo proyecto
 
-1. Haga clic en el botón flotante **Agregar nuevo** (el icono **+** dentro de un círculo) en la esquina inferior derecha de la pantalla.
-2. Se abre un cuadro de diálogo donde completa los detalles del proyecto. Los campos obligatorios están marcados como tales.
-3. Pulse **Guardar** para crear el proyecto. Aparecerá en la lista inmediatamente.
+1. Haz clic en el botón **Añadir nuevo PROYECTO** en la barra de herramientas situada encima de la tabla.
+2. Se abre un cuadro de diálogo en el que rellenas los detalles del proyecto. Los campos opcionales están marcados como *(opcional)*.
+3. Pulsa **Guardar** para crear el proyecto. Aparece en la lista inmediatamente.
 
 ### Editar un proyecto
 
-1. En la fila del proyecto que desea modificar, haga clic en el icono **editar** (lápiz).
-2. Modifique los campos en el cuadro de diálogo. El campo **Código automático** aparecerá atenuado.
-3. Haga clic en **Guardar** para aplicar sus cambios.
+1. Pasa el cursor sobre la fila del proyecto y haz clic en el icono **Editar** (lápiz), o selecciona la fila y haz clic en **Editar** en la barra de acciones situada encima de la tabla.
+2. Modifica los campos en el cuadro de diálogo.
+3. Haz clic en **Guardar** para aplicar los cambios.
 
 ### Ver un proyecto
 
-- Haga clic en el icono **ver** (ojo) en la fila del proyecto para abrir una versión de solo lectura del cuadro de diálogo de detalles del proyecto.
+- Pasa el cursor sobre la fila del proyecto y haz clic en el icono **Ver** (ojo), o selecciona la fila y haz clic en **Ver** en la barra de acciones, para abrir una versión de solo lectura del cuadro de diálogo de detalles del proyecto.
 
 ### Eliminar un proyecto
 
-1. Haga clic en el icono **eliminar** (papelera) en la fila del proyecto.
-2. Confirme la eliminación en la ventana emergente. El proyecto se eliminará de forma permanente.
+1. Haz clic en la fila del proyecto para seleccionarla y, a continuación, haz clic en **Eliminar** en la barra de acciones situada encima de la tabla.
+2. Confirma la eliminación en la ventana emergente. El proyecto se elimina de forma permanente.
 
 !!! warning "Eliminar un proyecto"
-    Eliminar un proyecto lo remueve del sistema. Esta acción no puede deshacerse. Asegúrese de haber seleccionado el proyecto correcto antes de confirmar.
+    Eliminar un proyecto lo quita del sistema. Esta acción no se puede deshacer. Un proyecto que esté siendo utilizado por formularios, o que tenga proyectos secundarios, no se puede eliminar; consulta [Métricas](index.md).
 
-## Buscar y filtrar
+## Búsqueda y filtrado
 
-La barra de **búsqueda y filtros** se encuentra debajo del recorrido de navegación. Puede:
+La barra de **búsqueda y filtros** se encuentra debajo del encabezado de la página. Puedes:
 
-- **Buscar por palabra clave** – Escriba cualquier término en el campo de palabra clave; la lista se filtra automáticamente.
-- **Filtrar por rango de fechas** – Use los selectores **Desde fecha** y **Hasta fecha** para acotar los proyectos por fecha de inicio o de finalización.
-- **Aplicar filtros adicionales** – Haga clic en el botón **lista de filtros** (icono de embudo) para abrir un cuadro de diálogo con filtros más avanzados, como sectores, donantes u otros atributos personalizados.
-- **Guardar y cargar presets de filtros** – Use el gestor de presets para guardar su combinación actual de filtros y recargarla más tarde.
+- **buscar por palabra clave** – Escribe cualquier término en el campo de palabra clave; la lista se filtra automáticamente.
+- **Filtrar por rango de fechas** – Haz clic en **Filtros**, establece un **Desde fecha** y un **Hasta la fecha**, y luego haz clic en **Buscar**. Las fechas filtran por la fecha de creación del proyecto, no por su fecha de inicio o finalización.
 
-Los chips de filtros aparecen debajo de la barra de filtros, mostrando los filtros activos. Puede eliminar chips individuales haciendo clic en el icono **cancelar** de cada uno.
+Debajo de la barra de filtros aparecen etiquetas de filtro que muestran los filtros activos. Puedes eliminar etiquetas individuales haciendo clic en el icono **cancelar** de cada una.
 
 ## Exportar e importar
 
 ### Exportar proyectos
 
-1. Haga clic en el botón **exportar** (icono de descarga en la nube) en la barra de filtros.
-2. Elija el formato de exportación (por ejemplo, CSV, Excel) y las columnas que desea incluir.
-3. El archivo se descargará en su computadora.
+1. Haz clic en el botón **Exportar** de la barra de herramientas.
+2. Elige qué exportar: *Elementos de la página* (opción predeterminada), los elementos que coincidan con tus filtros o *Todos los elementos*.
+3. Elige el formato: *csv*, *xlsx* o *splitted xlsx*, y luego haz clic en **Exportar**.
 
 ### Importar proyectos
 
-1. Haga clic en el botón flotante **importar** (icono de carga en la nube) en la esquina inferior derecha.
-2. Suba un archivo con el formato adecuado (por ejemplo, CSV o Excel). El sistema creará o actualizará los proyectos según los datos.
-3. Revise los resultados de la importación para detectar posibles errores o advertencias.
+1. Haz clic en el botón **Importar PROYECTO** en la barra de herramientas situada encima de la tabla.
+2. Sube un archivo `.xls`, `.xlsx` o `.csv` y asigna sus columnas a los campos del proyecto.
+3. Haz clic en **Aplicar importación** y revisa el resultado por si hay errores o advertencias. Los proyectos cuyo nombre ya existe se reutilizan, no se actualizan.
 
 ## Acciones masivas
 
-Puede seleccionar varios proyectos usando las casillas de verificación a la izquierda de cada fila. Una vez que se selecciona al menos un proyecto, la barra de herramientas sobre la tabla muestra las acciones masivas:
+Puedes seleccionar varios proyectos con las casillas de verificación situadas a la izquierda de cada fila. Con varios proyectos seleccionados, la barra de acciones situada encima de la tabla ofrece **Eliminar**, que quita todos los proyectos seleccionados tras la confirmación. No hay edición masiva.
 
-- **Eliminar seleccionados** – Elimina todos los proyectos seleccionados después de la confirmación.
-- **Editar seleccionados (edición masiva de formulario)** – Abre un cuadro de diálogo donde puede editar un campo común para todos los proyectos seleccionados a la vez.
+Después de eliminar, la lista se actualiza automáticamente.
 
-Después de la edición o eliminación masiva, la lista se actualiza automáticamente.
+## Páginas relacionadas
+
+- [Descripción general de Métricas](index.md)
+- [Áreas temáticas](areas.md)
+- [Organizaciones](organizations.md)
+- [Ubicaciones](locations.md)
+- [Casos](cases.md)

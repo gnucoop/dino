@@ -1,70 +1,76 @@
 ---
 title: Agregação
-description: Visualize e gerencie dados de formulários agregados no Dino.
+description: Veja, filtre e gerencie todos os dados de formulários de todos os seus form schemas numa única página.
 ---
 
 # Agregação
 
-A página Agregação oferece uma visualização centralizada de todos os dados enviados pelos form schema. Você pode navegar, filtrar e executar ações sobre os dados dos formulários sem precisar abrir cada formulário individualmente.
+A página Agregação dá-lhe uma visualização centralizada de todos os dados de formulários dos seus form schemas. Em vez de abrir cada formulário individualmente, pode percorrer todos os dados numa única tabela, restringi-los com filtros e realizar ações como ver, editar, imprimir ou apagar.
 
-![Visualização principal da página Agregação](../imgs/aggregation/index.png)
+![Vista principal da página Agregação](../imgs/aggregation/index.png)
 
-## Visualizando a lista de agregação
+## Ver a lista de agregação
 
-A tabela principal exibe uma linha por dado enviado. Por padrão, você vê as colunas **Form Schema** e **Status**, mas pode personalizar quais colunas aparecem usando o ícone **Personalize as colunas** no cabeçalho da tabela.
+A tabela apresenta uma linha por cada dado submetido. Por predefinição, vê as colunas **Formulários** e **Status**; utilize o botão **Colunas** acima da tabela, à direita, para escolher que colunas são apresentadas.
 
-- Cada linha mostra um ícone de status e, se o formulário tiver problemas de validação, um ícone de aviso.
-- Passe o mouse sobre uma linha para ver um destaque; clique em qualquer lugar de uma linha para selecioná-la e revelar as ações disponíveis.
+- Cada linha mostra um ícone de estado. Se um dado tiver problemas de validação, aparece um ícone de aviso na linha.
+- Passe o cursor sobre uma linha para mostrar os ícones **Ver** e **Editar**; clique em qualquer ponto de uma linha para a selecionar e revelar todas as ações disponíveis.
+- O contador **Itens encontrados** e o paginador no topo da página indicam quantos dados existem e permitem-lhe navegar entre páginas.
 
-No topo da lista, o contador **Items found** e o paginador informam quantos dados existem e permitem navegar entre as páginas.
-
-Se você não aplicar nenhum filtro à lista na página Agregação, verá o número total de formulários enviados ao seu Dino que você tem permissão para ver, de acordo com as permissões do seu usuário.
+Se não aplicar nenhum filtro, a lista mostra todos os dados que lhe é permitido ver, com base nas suas permissões de utilizador.
 
 ## Filtro e pesquisa
 
-Uma barra de pesquisa e um painel de filtros estão disponíveis para restringir a lista.
+1. Escreva no campo **pesquisa por palavra-chave** na barra de ferramentas para pesquisar entre os dados.
+2. Clique em **Filtros** na barra de ferramentas para abrir o painel de filtros.
+3. Escolha uma **Data inicial** e uma **Até à data** para filtrar por data de criação.
+4. Preencha qualquer um dos filtros adicionais: **Área**, **Caso**, **Código do caso**, **Localização**, **Organização**, **Projeto**, **Estado do formulário** e **Utilizador**. Os valores apresentados dependem das métricas configuradas no seu Dino.
+5. Clique em **Pesquisar** para aplicar os filtros, ou em **Repor os filtros** para os limpar.
 
-1. Clique no **ícone de pesquisa** na barra superior para expandir o painel de filtros.
-2. Use o campo **keyword** para pesquisar em todos os campos.
-3. Use os seletores de **intervalo de datas** para filtrar por data de criação.
-4. Filtros adicionais aparecem para **Area**, **Case**, **Location**, **Organization**, **Project**, **Form Status** e **User**. Eles são dinâmicos e respeitam as definições de métricas do seu formulário.
-5. Os filtros ativos são exibidos como chips abaixo da barra de filtros – clique no **ícone de cancelar** em um chip para removê-lo.
+Os filtros ativos aparecem como etiquetas por baixo da barra de ferramentas. Clique no ícone **cancelar** de uma etiqueta para remover esse filtro.
 
-!!! tip "Filtros predefinidos"
-    A página Agregação não oferece suporte a filtros predefinidos salvos. Você pode combinar filtros sempre que precisar de uma visualização personalizada.
+!!! tip "Sem predefinições guardadas"
+    A página Agregação não suporta predefinições de filtros guardadas nem condições de filtro avançadas. Combine os filtros de cada vez que precisar de uma visualização personalizada; remover uma etiqueta é a forma mais rápida de aliviar uma pesquisa existente.
 
 ## Ações de linha
 
-Após selecionar uma linha, os ícones de ação aparecem na coluna **Actions** no lado direito da tabela.
+Passe o cursor sobre uma linha para mostrar os ícones **Ver** (olho) e **Editar** (lápis). Para ver todas as ações, clique na linha para a selecionar: a barra de ações acima da tabela mostra então um botão para cada ação que lhe é permitido utilizar.
 
-| Ícone | Ação | Descrição |
-|------|--------|-------------|
-| `view` | Visualizar | Abrir o dado em modo somente leitura. |
-| `edit` | Editar | Modificar os dados do formulário. |
-| `print` | Imprimir | Gerar um PDF do dado. |
-| `delete` | Excluir | Remover o dado após confirmação. |
+| Ação | Descrição |
+|--------|-------------|
+| **Ver** | Abrir o dado em modo só de leitura. |
+| **Editar** | Modificar os dados do formulário. |
+| **Imprimir** | Gerar um PDF do dado. |
+| **Deletar** | Remover o dado. |
 
-Clique em **More Horiz** (três pontos) para ver ações adicionais para essa linha. As ações **Print** e **Delete** pedem confirmação antes de serem executadas.
+**Imprimir** e **Deletar** pedem confirmação (*Do you want to print the selected items?*, **Sim** / **Não**) antes de serem executadas.
 
-## Criando um novo dado
+## Criar um novo dado
 
-O botão flutuante **+** no canto inferior direito da tela permite iniciar um novo preenchimento.
+O botão **Adicionar novo formulário** na barra de ferramentas permite-lhe iniciar um novo dado. Só é apresentado se a criação de dados a partir da página Agregação estiver ativada na sua instância do Dino.
 
-![Diálogo para escolher um form schema e iniciar um novo preenchimento](../imgs/aggregation/index-new.png)
+![Caixa de diálogo para escolher um form schema e iniciar um novo dado](../imgs/aggregation/index-new.png)
 
-1. Clique no botão **+**. Um diálogo é aberto mostrando os form schema disponíveis.
-2. Selecione ou pesquise o form schema que deseja usar.
-3. Após a seleção, você é levado diretamente à página [Edit Form](../forms/edit-form.md) para preencher os dados.
+1. Clique em **Adicionar novo formulário**. A caixa de diálogo **Criar formulário** abre-se, listando os form schemas disponíveis.
+2. Selecione o form schema que pretende utilizar.
+3. Clique em **Criar formulário**. É encaminhado para a página [Editar formulário](../forms/edit-form.md), onde preenche e guarda os dados.
 
-## Imprimindo um PDF
+## Imprimir um PDF
 
-Você pode gerar um PDF de qualquer dado que inclua o rótulo do form schema, os nomes das métricas ativas e os dados preenchidos.
+Pode gerar um PDF de qualquer dado submetido. O PDF inclui a etiqueta do form schema, os nomes das métricas ativas e os dados que foram preenchidos.
 
-1. Na linha que deseja imprimir, clique no ícone **Printer** (ou use o menu **More Horiz**, se disponível).
-2. Confirme a ação quando solicitado.
-3. O PDF abre em uma nova aba do navegador ou é baixado automaticamente.
+1. Clique na linha que pretende imprimir para a selecionar e, em seguida, clique em **Imprimir** na barra de ações.
+2. Confirme com **Sim**.
+3. O PDF abre num novo separador do navegador ou é transferido automaticamente.
 
-O cabeçalho do PDF inclui o título do form schema e todos os nomes de métricas ativos no sistema no momento.
+O cabeçalho do PDF inclui o título do form schema e todos os nomes das métricas atualmente ativas no sistema.
 
-!!! warning "Disponibilidade de métricas"
-    O PDF impresso inclui apenas as métricas que estão ativas no momento em que você dispara a impressão. Se uma métrica foi adicionada depois que o dado foi criado, ela não aparecerá.
+!!! warning "Disponibilidade das métricas"
+    O PDF inclui apenas as métricas que estão ativas no momento em que aciona a impressão. Uma métrica adicionada depois de o dado ter sido criado não aparecerá.
+
+## Páginas relacionadas
+
+- [Formulários](../forms/index.md) — gerir os form schemas por trás dos seus dados.
+- [Editar formulário](../forms/edit-form.md) — preencher e atualizar dados de formulários.
+- [Importar dados](../forms/import.md) — trazer dados para o Dino em massa.
+- [Métricas](../metrics/index.md) — configurar as métricas que alimentam os filtros e o resultado impresso.

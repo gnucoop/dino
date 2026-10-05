@@ -1,145 +1,118 @@
 ---
 title: Navigation et interface
-description: Un aperçu de l'interface de l'application Dino — la barre d'outils, la navigation latérale, les notifications, la synchronisation des données et l'espace utilisateur.
+description: Un aperçu de la structure de l'application Dino — la barre latérale, la synchronisation des données, les notifications, le menu utilisateur et la déconnexion.
 ---
 
 # Navigation et interface
 
-L'interface de Dino se compose d'une barre d'outils supérieure et d'un menu de navigation latéral, présents sur chaque page après votre connexion.
+Une fois connecté, chaque page de Dino est encadrée par une **barre latérale** à gauche. Elle contient la navigation entre les zones de l'application et, en bas, la synchronisation des données, les notifications et votre carte utilisateur.
 
-![Main view of the Main Nav page](../imgs/interface/index.png)
-
----
-
-## Navigation latérale
-
-Le menu latéral vous permet de passer d'une zone principale de l'application à l'autre.
-
-**Sections standard** (visibles par tous les utilisateurs authentifiés) :
-
-| Section | Description |
-|---|---|
-| Tableau de bord | L'écran d'accueil. |
-| Formulaires | Formulaires de collecte de données et soumissions. |
-| Rapports | Rapports générés. |
-| Agrégation | Vue unifiée des soumissions issues de plusieurs formulaires. |
-| Métriques | Données de référence (projets, sites, organisations, etc.). *(Masqué pour les utilisateurs invités uniquement.)* |
-| IA | Assistant IA (DinoGPT). |
-
-**Sections d'administration** (visibles uniquement par les administrateurs, affichées sous un séparateur) :
-
-| Section | Description |
-|---|---|
-| Utilisateurs | Comptes utilisateurs et groupes de permissions. |
-| Langues | Gestion des traductions de l'interface. |
-
-Sur les grands écrans, le menu est toujours visible à gauche. Sur les écrans plus petits, il se replie et peut être ouvert à l'aide du **bouton de menu** (icône hamburger) de la barre d'outils supérieure. Quelle que soit la taille de l'écran, cliquez sur le bouton de menu pour afficher les libellés du menu ou les réduire aux seules icônes.
+![Vue principale de la page de navigation principale](../imgs/interface/index.png)
 
 ---
 
-## Barre d'outils supérieure
+## La barre latérale
 
-La barre d'outils située en haut de l'écran contient les commandes suivantes, de gauche à droite :
+En haut de la barre latérale se trouvent le logo et le **bouton de menu**, qui déploie la barre latérale pour afficher les noms des sections ou la réduit aux icônes uniquement.
 
-- **Bouton de menu** — ouvre ou replie le menu latéral.
-- **Logo** — affiche le logo de votre organisation ou celui de Dino.
-- **Indicateur de nouvelle version** — une icône de téléchargement apparaît lorsqu'une nouvelle version de Dino est disponible. Cliquez dessus pour recharger l'application et appliquer la mise à jour.
-- **Crédits DINO-AI** — affiche votre solde de crédits IA restant sous forme de badge. Cliquez pour ouvrir l'[espace utilisateur](#espace-utilisateur) sur le panneau Crédits. *(Visible uniquement si une clé API DINO-AI a été configurée.)*
-- **Bouton mode sombre / clair** — une icône soleil, un curseur et une icône lune. Utilisez le curseur pour basculer entre les thèmes clair et sombre. *(Masqué sur mobile — utilisez plutôt l'espace utilisateur.)*
-- **Icône d'information** — survolez-la pour afficher les informations de version de cette installation.
-- **Icône d'aide** — ouvre la playlist de tutoriels Dino dans un nouvel onglet.
-- **Icône de paramètres** — ouvre l'[espace utilisateur](#espace-utilisateur).
-- **Icône de synchronisation** — affiche l'état actuel de la synchronisation des données. Cliquez pour lancer une synchronisation manuelle.
-- **Cloche de notifications** — affiche le nombre de notifications non lues sous forme de badge. La cloche sonne lorsque de nouvelles notifications arrivent. Voir [Notifications](#notifications) ci-dessous.
-- **Sélecteur de langue** — change la langue de l'interface.
-- **Nom d'utilisateur** — cliquez pour ouvrir l'[espace utilisateur](#espace-utilisateur).
-- **Icône de déconnexion** — cliquez pour vous déconnecter. L'icône est grisée pendant une synchronisation ou lorsque l'appareil est hors ligne ; la déconnexion n'est pas disponible dans ces cas.
+!!! tip "Menu réduit"
+    Lorsque la barre latérale est réduite aux icônes uniquement, survolez une icône pour voir le nom de sa section dans une infobulle.
+
+Sur un téléphone ou un petit écran, la barre latérale est masquée. Une fine barre en haut de la page affiche alors le bouton de menu, qui ouvre la barre latérale par-dessus la page, le logo et le bouton de synchronisation.
+
+### Sections
+
+La navigation répertorie les zones de Dino que vous pouvez utiliser. Celles qui apparaissent dépendent de la configuration de votre instance Dino et de vos permissions.
+
+**Sections utilisateur**, sous le titre **Utilisateur** :
+
+| Section | Description |
+|---|---|
+| Tableau de bord | L'écran d'accueil. Voir [Tableau de bord](../dashboard/index.md). |
+| Form | Formulaires de collecte de données et données. Voir [Form](../forms/index.md). |
+| Report | Report générés. Voir [Report](../reports/index.md). |
+| Agrégation | Vue unifiée des données de tous les form. Voir [Agrégation](../aggregation/index.md). |
+| AI | L'assistant DinoAi, lorsqu'il est activé pour votre instance. |
+| Métriques | Données de référence (projets, posizioni, organisations, etc.). Voir [Métriques](../metrics/index.md). *(Masqué pour les utilisateurs invités uniquement.)* |
+
+**Sections d'administration**, sous le titre **Administration**, visibles uniquement par les administrateurs :
+
+| Section | Description |
+|---|---|
+| Utilisateurs | Comptes utilisateur et groupes de permissions. Voir [Utilisateurs](../administration/users.md). |
+| Langues | Gestion de la traduction de l'interface. Voir [Gestion des langues](../administration/languages.md). |
+
+Votre instance peut déplacer certaines sections, comme Métriques, Report ou Agrégation, parmi les sections d'administration. Lorsque la barre latérale est réduite, les deux groupes sont séparés par une ligne au lieu de leurs titres.
 
 ---
 
 ## Synchronisation des données
 
-Dino synchronise vos données avec le serveur en arrière-plan. L'**icône de synchronisation** de la barre d'outils indique l'état actuel :
+Dino conserve vos données sur l'appareil et les synchronise avec le serveur en arrière-plan. Le bouton **Synchroniser** en bas de la barre latérale indique l'état actuel et, lorsque la barre latérale est déployée, l'heure de la dernière synchronisation terminée (ou *Jamais synchronisé*). Cliquez dessus pour lancer une synchronisation.
 
-| Icône | Signification |
+| Bouton | Signification |
 |---|---|
-| `sync` (statique) | Toutes les données sont à jour. |
-| `sync_problem` (pulsation) | Vous avez des modifications locales qui n'ont pas encore été synchronisées. Cliquez pour lancer une synchronisation. |
-| `sync` (rotation) | Une synchronisation est en cours. |
-| `sync_disabled` | L'appareil est hors ligne ; la synchronisation n'est pas disponible. |
-| `sync` avec un badge `!` | Un problème de synchronisation a été rencontré. Consultez vos notifications pour plus de détails. |
+| Icône `sync` | Toutes les données sont à jour. |
+| Icône `sync`, en rotation | Une synchronisation est en cours. |
+| Icône `sync_problem` sur un bouton coloré | Vous avez des modifications locales qui n'ont pas encore été synchronisées. Cliquez pour les synchroniser. |
+| Badge `!` sur l'icône | Un problème a été rencontré lors de la dernière synchronisation. Consultez vos notifications pour plus de détails. |
+| Icône `sync_disabled`, *Hors ligne* | L'appareil est hors ligne ; la synchronisation n'est pas disponible tant que la connexion n'est pas rétablie. |
 
-Lorsqu'une synchronisation se termine, une notification apparaît brièvement en bas de l'écran :
+Lorsqu'une synchronisation se termine, un message apparaît brièvement en bas de l'écran :
 
 - *« Synchronisation terminée »* — toutes les données ont été synchronisées avec succès.
 - *« Synchronisation terminée avec des erreurs. Impossible de synchroniser : [éléments]. Veuillez consulter vos notifications. »* — une ou plusieurs collections de données n'ont pas pu être synchronisées. Une notification est également créée dans votre liste de notifications.
+
+!!! warning "Session expirée"
+    Si votre session a expiré, la synchronisation s'arrête et le bouton de synchronisation affiche `sync_problem`. Vos données restent sur cet appareil. Cliquez sur le bouton : Dino tente de renouveler la session et, s'il n'y parvient pas, propose **Aller à la page de connexion**, en conservant les données sur cet appareil, ou **Plus tard**. Reconnectez-vous avec le même compte pour synchroniser les données.
+
+---
+
+## Boutons utilitaires
+
+Sous le bouton de synchronisation, une rangée de petits boutons donne accès à :
+
+- **Nouvelle version** — une icône de téléchargement apparaît lorsqu'une nouvelle version de Dino est prête. Cliquez dessus pour recharger l'application et appliquer la mise à jour.
+- **Notifications** — la cloche, avec un badge comptant vos notifications non lues. Voir [Notifications](#notifications) ci-dessous.
+- **Mode clair / sombre** — un bouton soleil et un bouton lune. Ils sont affichés lorsque la barre latérale est déployée et sur les petits écrans ; vous pouvez également changer de mode depuis l'[Espace utilisateur](../user-area/index.md).
+- **DINO-AI Credits** — un badge indiquant vos crédits AI restants, affiché uniquement lorsque DINO-AI est configuré pour votre compte. Cliquez dessus pour ouvrir l'onglet AI de l'Espace utilisateur.
 
 ---
 
 ## Notifications
 
-Cliquez sur l'**icône de cloche** de la barre d'outils pour ouvrir le menu déroulant des notifications. Le badge affiché sur la cloche indique le nombre de messages non lus.
+Cliquez sur la **cloche** pour ouvrir le panneau des notifications. Son en-tête indique combien de notifications ne sont pas lues. Les notifications sont regroupées par jour, chacune avec son ancienneté, et les messages répétés sont regroupés en une seule ligne avec un compteur (par exemple ×3).
 
-![Notifications dropdown open](../imgs/interface/index-notifications.png)
+![Menu déroulant des notifications ouvert](../imgs/interface/index-notifications.png)
 
-Depuis ce menu déroulant, vous pouvez :
+Depuis le panneau, vous pouvez :
 
-1.  **Cliquer sur une notification** pour la marquer comme lue.
-2.  **Cliquer sur le bouton fléché** d'une notification (s'il est présent) pour accéder directement à la zone concernée de l'application.
-3.  **Tout marquer comme lu** — marque toutes les notifications actuelles comme lues.
-4.  **Voir toutes les notifications** — accède à la page complète [Notifications](../notifications/index.md).
+1.  **Cliquer sur une notification** pour la marquer comme lue. Si elle renvoie vers un endroit de Dino, indiqué par une flèche à droite, le clic vous y amène également.
+2.  **Marquez tout comme lu** — affiché lorsqu'il y a des notifications non lues.
+3.  **Voir toutes les notifications** — ouvre la page complète [Notifications](../notifications/index.md).
 
 ---
 
-## Espace utilisateur
+## Carte utilisateur et menu
 
-Cliquez sur l'**icône de paramètres**, sur votre **nom d'utilisateur** ou sur le **compteur de crédits DINO-AI** pour ouvrir la boîte de dialogue de l'espace utilisateur. Votre nom complet et votre adresse e-mail s'affichent en haut.
+Tout en bas de la barre latérale, la carte utilisateur affiche vos initiales, votre nom et une ligne avec votre rôle, la langue d'interface active et la version de Dino. Cliquez sur la carte pour ouvrir le menu utilisateur :
 
-![User area dialog open](../imgs/interface/index-user-area.png)
+- **Espace utilisateur** — votre page de compte, pour changer votre mot de passe, consulter votre clé et vos crédits DINO-AI, personnaliser le thème, et plus encore. Voir [Espace utilisateur](../user-area/index.md).
+- **Langue** — choisissez la langue de l'interface.
+- **Aide** — un lien vers les directives configurées pour votre instance, lorsqu'il y en a.
+- Les informations de build de l'installation.
 
-### Changer le mot de passe
+---
 
-1.  Saisissez votre **mot de passe actuel**.
-2.  Saisissez un **nouveau mot de passe**.
-3.  **Confirmez le nouveau mot de passe**.
-4.  Cliquez sur le bouton fléché pour enregistrer.
+## Déconnexion
 
-Un message d'erreur s'affiche si le mot de passe actuel est incorrect ou si les nouveaux mots de passe ne correspondent pas.
+Cliquez sur le bouton **Déconnexion** à côté de votre carte utilisateur. Dino demande toujours ce qu'il faut faire des données sur cet appareil :
 
-### Clés API
+- **Se déconnecter et supprimer les données** — met fin à la session et supprime toutes les données locales de cet appareil.
+- **Fermer la session et conserver les données** — met fin à la session et vous amène à la page de connexion, en conservant les données sur cet appareil pour votre prochaine connexion.
+- **Annuler** — reste connecté.
 
-Consultez ou définissez votre **clé API DINO-AI**. Une fois une clé valide enregistrée, elle s'affiche en lecture seule. Utilisez l'icône en forme d'œil pour afficher ou masquer la clé, et l'icône de copie pour la copier dans le presse-papiers.
+Le bouton Déconnexion est grisé et ne peut pas être utilisé pendant une synchronisation ou lorsque l'appareil est hors ligne.
 
-### Crédits
-
-Affiche votre **solde de crédits DINO-AI** actuel. Si une intégration de paiement est configurée, un bouton **Ajouter** permet d'acheter des crédits supplémentaires.
-
-!!! tip "Visibilité"
-    Cette section n'est visible que lorsqu'une clé API DINO-AI a été configurée.
-
-### Thème Dino
-
-Personnalisez le jeu de couleurs de l'application :
-
-- **Couleur principale**, **Couleur d'accentuation**, **Couleur d'avertissement** — cliquez sur les champs de couleur pour ouvrir un sélecteur de couleur.
-- **Nom du préréglage** — saisissez ou sélectionnez un nom pour enregistrer ou charger un préréglage de couleurs.
-- Cliquez sur **Enregistrer** pour enregistrer les couleurs actuelles sous forme de préréglage nommé, ou sur **Charger** pour appliquer un préréglage enregistré.
-
-Sur mobile, un **bouton de bascule mode sombre / clair** apparaît également ici.
-
-### Tutoriels
-
-Cliquez sur **Démarrer la visite Dino** pour relancer depuis le début la visite guidée de l'application.
-
-!!! tip "Disponibilité"
-    Cette section n'est affichée que si la visite guidée est configurée dans votre installation.
-
-### Sauvegarde et restauration
-
-*(Administrateurs uniquement, si activé.)*
-
-- **Sauvegarder les données** — télécharge un export complet de la base de données de l'application au format JSON.
-- **Restaurer les données** — téléverse un fichier JSON précédemment exporté pour restaurer la base de données.
-
-!!! warning "Prudence avec la restauration"
-    La restauration des données remplacera la base de données actuelle. Cette action est irréversible.
+!!! warning "Données pas encore synchronisées"
+    Les données que vous n'avez pas encore synchronisées n'existent que sur cet appareil : les supprimer lors de la déconnexion les perd définitivement. En cas de doute, synchronisez d'abord ou choisissez **Fermer la session et conserver les données**. Vous connecter plus tard avec un autre compte les supprime également — voir [Connexion](../getting-started/login.md).

@@ -1,55 +1,60 @@
 ---
-title: Editar el envío de un formulario
-description: Aprende a editar el envío de un formulario existente en Dino.
+title: Editar los datos de un formulario
+description: Aprende a editar los datos ya enviados de un formulario en Dino, incluidas las Métricas de formulario, los borradores y cómo guardar los cambios.
 ---
 
-# Editar el envío de un formulario
+# Editar los datos de un formulario
 
-La pantalla de Editar formulario te permite modificar el envío de un formulario existente. Puedes actualizar los datos, añadir información nueva o guardar los cambios como borrador para completarlo más tarde.
-
-Cuando abres el envío de un formulario para editarlo, ves la misma interfaz de formulario que se usa para la introducción de datos, pero con todos los datos guardados previamente ya rellenados.
+La pantalla Editar formulario te permite modificar datos que ya se han guardado. Verás la misma interfaz del formulario que se usa para introducir información, pero con todas las respuestas guardadas previamente ya rellenadas. Desde aquí puedes corregir valores, completar la información que falte o guardar tu progreso como borrador y terminarlo más tarde.
 
 ![Vista principal de la página Editar formulario](../imgs/forms/edit-form.png)
 
-## Cómo editar un envío
+## Cómo abrir los datos de un formulario para editarlos
 
-1.  Ve a la lista de envíos de tu formulario.
-2.  Localiza el envío específico que quieres editar.
-3.  Haz clic en el botón **Editar** (normalmente representado por un icono de lápiz) de ese envío. Esto abre el formulario en modo de edición.
-4.  Realiza los cambios que desees en cualquier campo del formulario.
-5.  Elige una acción en la parte inferior del formulario:
-    *   **Guardar borrador**: guarda tus cambios actuales sin enviar el formulario. Puedes volver y editarlo de nuevo más tarde.
-    *   **Enviar**: guarda todos los cambios y envía los datos actualizados del formulario.
+1. Ve a la página [Form](index.md).
+2. Abre el form schema que contiene los datos.
+3. Localiza en la lista de form los datos que quieres cambiar.
+4. Pasa el cursor sobre su fila y haz clic en el icono **Editar** (lápiz), o haz clic en la fila para seleccionarla y pulsa **Editar** en la barra de acciones situada encima de la tabla. Se abrirá la pantalla Editar formulario con los datos guardados ya cargados.
 
-!!! tip "Seguimiento de cambios"
-    Dino registra automáticamente los cambios que haces entre el envío original y la versión editada. Esto crea un historial de quién cambió qué y cuándo.
+## Trabajar con las Métricas de formulario
 
-<!-- ## Available Features
+Si tu formulario usa métricas, la pantalla se abre en el paso **Métricas de formulario** antes de mostrar el cuestionario. Estos valores determinan la fecha y la agrupación de los datos en los report y las agregaciones; no forman parte del cuestionario en sí.
 
-While editing, you have access to the same features as when creating a new submission:
+1. Revisa o cambia la **Fecha de creación** haciendo clic en **Cambiar** y eligiendo una nueva fecha.
+2. Rellena los campos de métrica que se muestren, como posizione, proyecto u organización.
+3. Si el form schema tiene estados, elige el **Estado del formulario** de los datos.
+4. Haz clic en **Rellenar el formulario** para pasar al cuestionario. Si has abierto los datos con **Ver**, el botón mostrará **Ver el formulario**.
 
-*   **Optional Metrics**: Some forms may have optional sections or questions that you can choose to fill out.
-*   **File Upload**: Attach new files or replace existing ones if this feature is enabled for your form.
-*   **Secondary Fields**: For certain data points, additional related fields may be displayed for more detailed entry.
-*   **Form Relationships (Dependencies)**: If the form includes dependent fields, you may see additional prompts based on previous answers. The dependencies are defined when the form schema is created.
+!!! tip "Crear una métrica sobre la marcha"
+    Si la métrica que necesitas aún no existe, haz clic en **Nuevo** junto al campo de métrica para crearla sin salir del formulario. Esta opción solo aparece si tienes permiso para crear métricas.
 
-![Form relationships (dependencies) editor dialog](../imgs/forms/edit-form-schema-relationships.png)
+![El paso Métricas de formulario](../imgs/forms/index-create.png)
 
-!!! warning "Data Integrity"
-    Be cautious when editing critical data. Other reports or analyses may depend on the original submitted values. Consider if creating a new, corrected submission might be more appropriate than editing an old one. -->
+## Editar tus respuestas
 
-<!-- ## Understanding the Form Structure
+Una vez mostrado el cuestionario, puedes cambiar cualquier campo que tengas permiso para editar. Según cómo se haya configurado el formulario, los campos pueden organizarse en una, dos o tres columnas, y algunos pueden validarse mientras escribes.
 
-The form you see while editing is based on a **form schema** — the underlying blueprint that defines all fields, sections, and rules. You can view a compiled preview of the form schema from the designer.
+1. Haz clic en un campo y actualiza su valor.
+2. Avanza por los pasos o secciones restantes del cuestionario.
+3. Cuando termines, elige una acción en la parte superior del formulario:
+    * **Guardar formulario**: guarda todos tus cambios y actualiza los datos.
+    * **Guardar borrador**: almacena tus cambios actuales sin finalizarlos, para que puedas volver y continuar más tarde. Este botón solo aparece si los borradores están habilitados en tu formulario.
 
-![Compiled form view after clicking View the Form](../imgs/forms/edit-form-view.png)
+!!! tip "Seguimiento de los cambios"
+    Cuando el módulo de logs está habilitado en tu instancia de Dino, Dino registra los cambios realizados en cada conjunto de datos. Selecciona unos datos en la lista y haz clic en **Ver historial** en la barra de acciones para ver quién cambió qué y cuándo.
 
-The schema itself can be edited separately. If you need to change the structure of a form (add or remove fields, adjust validation), see [Edit Form Schema](edit-form-schema.md).
+!!! warning "Editar datos críticos"
+    Otros report o análisis pueden depender de los valores de estos datos. Si estás corrigiendo un error grave, valora si unos datos nuevos podrían ser más apropiados que modificar unos antiguos.
 
-![Main view of the Edit Form Schema page](../imgs/forms/edit-form-schema.png)
+## Revisar los datos enviados
 
-## Related Actions
+Si abres los datos con la acción **Ver** en lugar de **Editar**, el formulario se abre en modo de solo lectura. Todos los campos son visibles, pero no se pueden editar, y las acciones de guardado no están disponibles. Usa esta visualización para comprobar lo que se registró.
 
-*   To understand the structure of the form itself, see [Edit Form Schema](edit-form-schema.md).
-*   To create a brand new submission, you typically start from the main [Forms](index.md) page.
-*   To browse your forms and submissions on a map, see [Forms Map](forms-map.md). -->
+![Vista del formulario cumplimentado tras hacer clic en Ver el formulario](../imgs/forms/edit-form-view.png)
+
+## Acciones relacionadas
+
+* Para cambiar la estructura del propio formulario —sus campos, secciones y reglas de validación—, consulta [Editar form schema](edit-form-schema.md).
+* Para entender cómo se relacionan los campos entre sí y cómo se comportan las dependencias, consulta las opciones de relaciones en [Editar form schema](edit-form-schema.md).
+* Para ver los datos en un mapa, consulta [Mapa de formularios](forms-map.md).
+* Para crear datos completamente nuevos, empieza desde la página [Form](index.md).

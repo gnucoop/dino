@@ -1,88 +1,112 @@
 ---
 title: Formularios
-description: Gestiona esquemas de formularios y recopila envíos de datos estructurados en Dino.
+description: Gestiona esquemas de formulario y recopila datos estructurados en Dino.
 ---
 
 # Formularios
 
-La página **Formularios** es tu punto de partida para la recopilación de datos estructurados en Dino. Desde aquí puedes explorar, crear y gestionar esquemas de formularios, y luego ver y trabajar con los envíos recopilados a través de cada formulario.
+La página **Formularios** es tu punto de partida para la recopilación de datos estructurados en Dino. Desde aquí puedes explorar, crear y gestionar esquemas de formulario, y luego ver y trabajar con los datos recopilados a través de cada formulario.
 
 ![Vista principal de la página Formularios](../imgs/forms/index.png)
 
-La vista principal muestra una **cuadrícula de tarjetas de esquemas de formularios**. Cada tarjeta muestra la etiqueta y el ícono del formulario. Al pasar el cursor sobre una tarjeta, aparecen botones de acción:
+La vista principal muestra una **cuadrícula de tarjetas de esquemas de formulario**. Cada tarjeta muestra la etiqueta y el icono del formulario. Una tarjeta marcada con un icono de huella dactilar es única: solo puede existir un dato con ese conjunto exacto de métricas. Al pasar el cursor sobre una tarjeta, aparecen botones de acción:
 
-- **Editar esquema**: modifica la estructura del formulario (campos, validación, métricas).
-- **Eliminar esquema**: elimina el esquema de formulario (y todos sus envíos).
-- **Compartir URL**: obtén un enlace público para permitir envíos externos.
-- **Ver mapa**: abre la vista de mapa para los envíos con datos de ubicación.
-- **Chatear con tus datos**: usa la función [DataChat](datachat.md) para hacer preguntas sobre los envíos en lenguaje natural.
+- **Editar esquema de formulario** – Modifica la estructura del formulario (campos, validación, métricas).
+- **Borrar esquema de formulario** – Elimina el esquema. Dino se niega si el esquema todavía tiene datos o si un report lo utiliza, y pide confirmación si otros formularios o grupos de usuarios hacen referencia a él.
+- **Compartir url pública** – Obtén un enlace público que permite recibir datos externos.
+- **Ver mapa** – Abre la vista de mapa para los datos con información de posiciones.
+- **Chatea con tus datos** – Haz preguntas sobre tus datos en lenguaje natural usando [DataChat](datachat.md).
 
 !!! tip
     Las acciones disponibles en una tarjeta dependen de tus permisos. Es posible que no veas todos los botones.
 
-Para crear un nuevo esquema de formulario, haz clic en el botón flotante **+** en la esquina inferior derecha. Se te llevará a la página [Editar esquema de formulario](edit-form-schema.md) para diseñar tu formulario.
+Si todavía no existe ningún esquema de formulario, la página muestra un mensaje que te invita a agregar uno. Cuando la instancia lo habilita, un campo **Filtrar** sobre las tarjetas las filtra por nombre.
 
-## Trabajar con envíos
+## Crear un esquema de formulario
 
-Haz clic en una tarjeta de esquema de formulario para entrar en su **lista de envíos**. Esta tabla muestra todas las entradas de datos recopiladas para ese esquema.
+1. Haz clic en el botón flotante **+** en la esquina inferior derecha de la página.
+2. Diseña tu formulario en la página [Editar esquema de formulario](edit-form-schema.md).
 
-![Lista de envíos (tabla de datos) de un esquema de formulario](../imgs/forms/index-list.png)
+## Trabajar con datos
 
-La lista incluye una **barra de filtros** que te permite buscar por palabra clave, rango de fechas, métricas, estado, usuario y más. También puedes guardar filtros preestablecidos para reutilizarlos rápidamente.
+Haz clic en la tarjeta de un esquema de formulario para abrir su **lista de form**. Esta tabla muestra todos los datos recopilados para ese esquema.
+
+![Lista de form (tabla de datos) de un esquema de formulario](../imgs/forms/index-list.png)
+
+Sobre la tabla puedes ver cuántos elementos se encontraron y puedes moverte entre páginas. La barra de herramientas ofrece:
+
+- **Agregar nuevo formulario** – Crea un nuevo dato.
+- **Importar formularios** – Incorpora datos desde un archivo. Consulta [Importar datos](import.md).
+- **Filtros** – Filtra la lista por rango de fechas, estado, usuario, métricas y más. Cambia entre filtros *Simple* y *Avanzado*, o guarda un filtro predefinido para reutilizarlo más tarde.
+- **Exportar** – Descarga los datos en un archivo. Consulta [Exportar](#exportar).
+
+A la izquierda de la barra de herramientas, el selector **Datos** / **Mapa** / **IA** cambia la vista; consulta [Vistas adicionales](#vistas-adicionales).
+
+Una fila cuyos datos puedan estar incompletos muestra un icono de advertencia. Las filas con archivos pendientes de sincronización muestran un icono de carga en la nube.
 
 ### Exportar
 
-Usa el botón **exportar** para descargar los envíos en formato CSV o XLSX.
+Usa el botón **Exportar** de la barra de herramientas para descargar los datos.
 
-![Diálogo de exportación para descargar envíos de formularios](../imgs/forms/index-export.png)
+![Diálogo de exportación para descargar datos de formularios](../imgs/forms/index-export.png)
 
-El diálogo de exportación te permite especificar algunos parámetros importantes para la exportación:
+El diálogo **Exportar datos** te permite elegir:
 
-1) Cuántos formularios exportar.   
-   1) *Formularios en la página*. Exporta solo los formularios que se mostraban en la página anterior, potencialmente filtrados y divididos en páginas.   
-   2) *Agregar filtros* o *Todos los elementos/1 filtro*. Si ya has aplicado un filtro a tu lista de formularios, solo se puede exportar el formulario filtrado (segunda opción). Si aún no has aplicado ningún filtro, se muestra la primera opción y te permite agregar más filtros.   
-   3) *Todos los formularios*. Todos los formularios, sin filtrado ni paginación.   
-2) Formato.   
-    1) *CSV*. Los datos se exportarán a un archivo CSV. Cada formulario extraído será una fila en un archivo donde los campos serán las columnas.   
-    2) *XLSX*. Exportación en formato Excel.  
-    3) *XLSX dividido*. Exportación a formato Excel donde cada diapositiva es una hoja diferente.   
-3) Opciones de campos  
-    1) *Seleccionar todos los campos del formulario*. Te permite exportar todos los campos del formulario.  
-    2) *Valores de etiquetas*. Para los campos que tienen valores predefinidos (campos de selección única o múltiple), el valor exportado es el valor mostrado, no el código interno utilizado para representar ese valor.   
-    3) *Formato de análisis de datos*. Los formularios que contienen diapositivas repetitivas y opción múltiple se exportan en varias filas, donde cada fila contiene solo una diapositiva repetitiva y solo una opción múltiple; los demás campos permanecen iguales. Se agrega una columna adicional llamada *conta*. Esta columna toma el valor 1 solo en la primera fila del grupo de repetición, y 0 en las demás.  
-    4) *Columnas separadas*. Las opciones múltiples se exportan como varias columnas 
-4) *Diapositiva de selección*. Te permite ver la lista de campos en cada diapositiva, si deseas exportar solo algunos de los campos y no todos.   
-5) *Selección de campos*. Puedes seleccionar/deseleccionar campos individuales.   
+1) Qué formularios exportar.
+    1) *Elementos de la página*. Solo los formularios que aparecen en la página actual de la lista (opción predeterminada).
+    2) *Con filtros activos (N)*. Todos los formularios que coinciden con los filtros que has aplicado. Cuando no hay ningún filtro activo, esta opción dice *Agregar filtros*: cierra el diálogo para que puedas configurar algunos.
+    3) *Todos los elementos*. Todos los formularios, sin filtro ni paginación. En un formulario grande, esto puede ralentizar el dispositivo.
+2) El formato.
+    1) *csv*. Cada formulario exportado es una fila y cada campo una columna.
+    2) *xlsx*. Lo mismo, en formato Excel.
+    3) *splitted xlsx*. Formato Excel, con una hoja por diapositiva.
+3) En el menú **Campos y formatos**:
+    1) *Seleccionar todo Form fields*. Exporta todos los campos del formulario.
+    2) *Valores de etiqueta*. Para los campos con valores predefinidos (opción única o múltiple), exporta la etiqueta mostrada en lugar del código interno.
+    3) *Formato de valores*, una de estas opciones:
 
-Algunas columnas del archivo exportado no se pueden deseleccionar. Estas son:
+        - *Por defecto*.
+        - *Formato Data Analysis*. Las diapositivas repetidas y los campos de opción múltiple se exportan en varias filas, una repetición y una opción por fila; los demás campos se repiten en cada fila. Una columna adicional, *conta*, vale 1 en la primera fila de cada formulario y 0 en las filas adicionales generadas para el mismo formulario, de modo que sumar *conta* cuenta los formularios.
+        - *Columnas separadas*. Cada opción de un campo de opción múltiple obtiene su propia columna, con 1 o 0.
+4) Los campos que exportar. La lista **Secciones** de la izquierda muestra cada sección con sus campos seleccionados y totales. Para la sección activa puedes buscar un campo, usar **Seleccionar todo** / **Deseleccionar**, o marcar campos individuales. El pie de página muestra cuántos campos están seleccionados; haz clic en **Exportar** para descargar.
+
+Algunas columnas siempre se exportan y no se pueden deseleccionar:
 
 - ID del formulario
 - Fecha de creación
 - Fecha de actualización
-- Datos del usuario DINO (nombre e ID)
+- Datos del usuario DINO (ID y nombre completo)
 - Datos de métricas (id, nombre, etc...)
+- Estado del formulario (id, nombre, etiqueta, nivel, color), cuando el formulario tiene estados
 - Dinoinvalid
 
 ### Acciones de fila
 
-Haz clic en una fila para expandir sus detalles, o usa las acciones de fila (ver, editar, eliminar, imprimir como PDF, descargar como DOCX, imprimir credencial). Las acciones disponibles dependen de tus permisos y de la configuración del formulario.
+Pasa el cursor sobre una fila para mostrar los iconos **Ver** y **Editar**. Haz clic en una fila para seleccionarla: la barra de acciones sobre la tabla muestra entonces todas las acciones que puedes usar sobre ella (ver, editar, eliminar, imprimir como PDF, descargar como DOCX, imprimir credencial). Las acciones disponibles dependen de tus permisos y de la configuración del formulario.
 
-### Crear un nuevo envío
+### Crear un nuevo dato
 
-Haz clic en el botón flotante **+** en la página de la lista para abrir un formulario en blanco para la entrada de datos.
+1. Abre la lista de form del esquema de formulario que quieras.
+2. Haz clic en **Agregar nuevo formulario** en la barra de herramientas.
+3. Rellena el formulario en blanco y guárdalo. Consulta [Editar formulario](edit-form.md).
 
-![Formulario en blanco abierto para enviar una nueva entrada de datos](../imgs/forms/index-create.png)
+![Formulario en blanco abierto para enviar un nuevo dato](../imgs/forms/index-create.png)
 
-Completa los campos y envía. El nuevo envío aparecerá en la lista.
+El nuevo dato aparece en la lista.
 
 ### Operaciones masivas
 
-Selecciona varios envíos usando las casillas de verificación para realizar **eliminaciones** o **ediciones** masivas (cambiar el mismo valor de campo en todas las entradas seleccionadas).
+Selecciona uno o varios datos con las casillas para mostrar las acciones masivas. Puedes **eliminar** los datos seleccionados o **Editar**los juntos, aplicando el mismo valor de campo a todos ellos.
+
+!!! warning
+    Eliminar un esquema de formulario o sus datos no se puede deshacer. Ten cuidado al usar las acciones de eliminación.
 
 ## Vistas adicionales
 
-- **Mapa**: visualiza los envíos con coordenadas geográficas en un mapa interactivo. Obtén más información en [Mapa de formularios](forms-map.md).
-- **DataChat**: consulta los datos de tu formulario usando lenguaje natural. Consulta [DataChat](datachat.md) para más detalles.
+Cambia de vista con los botones **Datos** / **Mapa** / **IA** a la izquierda de la barra de herramientas de la lista de form, o desde los botones de la tarjeta de un esquema de formulario. Los filtros que hayas aplicado se conservan.
+
+- **Mapa** – Consulta los datos con coordenadas geográficas en un mapa interactivo. Solo está disponible cuando el esquema recopila posiciones. Más información en [Mapa de formularios](forms-map.md).
+- **DataChat** (la vista **IA**) – Consulta los datos de tus formularios en lenguaje natural. Consulta [DataChat](datachat.md) para más detalles.
 
 !!! warning
-    La función DataChat puede consumir créditos. Verifica el saldo de créditos de tu cuenta antes de usarla.
+    DataChat puede consumir créditos. Comprueba el saldo de créditos de tu cuenta antes de usarlo.

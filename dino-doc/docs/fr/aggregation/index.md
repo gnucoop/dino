@@ -1,70 +1,76 @@
 ---
 title: Agrégation
-description: Affichez et gérez les soumissions de form agrégées dans Dino.
+description: Consultez, filtrez et gérez tous les formulaires soumis pour l'ensemble de vos Formulaires depuis une seule page.
 ---
 
 # Agrégation
 
-La page Agrégation vous offre une vue centralisée de toutes les soumissions de form de vos form schema. Vous pouvez parcourir, filtrer et agir sur les soumissions de form sans avoir à ouvrir chaque form individuellement.
+La page Agrégation vous offre une vue centralisée de tous les formulaires soumis pour l'ensemble de vos Formulaires. Au lieu d'ouvrir chaque formulaire individuellement, vous pouvez parcourir tous les formulaires soumis dans un seul tableau, les affiner à l'aide de filtres et effectuer des actions telles que Voir, Modifier, Imprimer ou Supprimer.
 
-![Vue principale de la page Agrégation](../imgs/aggregation/index.png)
+![Main view of the Aggregation page](../imgs/aggregation/index.png)
 
 ## Consulter la liste d'agrégation
 
-Le tableau principal affiche une ligne par soumission. Par défaut, vous voyez les colonnes **Form Schema** et **Statut**, mais vous pouvez personnaliser les colonnes affichées à l'aide de l'icône **Personnalisez les colonnes** dans l'en-tête du tableau.
+Le tableau affiche une ligne par formulaire soumis. Par défaut, vous voyez les colonnes **Formulaires** et **Statut** ; utilisez le bouton **Colonnes** au-dessus du tableau, à droite, pour choisir les colonnes affichées.
 
-- Chaque ligne affiche une icône de statut et, si le form présente des problèmes de validation, une icône d'avertissement.
-- Survolez une ligne pour la mettre en surbrillance ; cliquez n'importe où sur une ligne pour la sélectionner et faire apparaître les actions disponibles.
+- Chaque ligne affiche une icône de statut. Si un formulaire soumis présente des problèmes de validation, une icône d'avertissement apparaît sur la ligne.
+- Survolez une ligne pour afficher les icônes **Voir** et **Modifier** ; cliquez n'importe où sur une ligne pour la sélectionner et révéler toutes les actions disponibles.
+- Le compteur **Éléments trouvés** et le paginateur en haut de la page vous indiquent combien de formulaires soumis existent et vous permettent de naviguer entre les pages.
 
-En haut de la liste, le compteur **Éléments trouvés** et la pagination vous indiquent combien de soumissions existent et vous permettent de naviguer d'une page à l'autre.
+Si vous n'appliquez aucun filtre, la liste affiche tous les formulaires soumis que vous êtes autorisé à voir, en fonction de vos permissions d'utilisateur.
 
-Si vous n'appliquez aucun filtre à la liste de la page Agrégation, vous verrez le nombre total de form envoyés à votre Dino que vous êtes autorisé à consulter, en fonction des permissions de votre utilisateur.
+## Filtre et recherche
 
-## Filtrage et recherche
+1. Saisissez un terme dans le champ **recherche par mot-clé** de la barre d'outils pour effectuer une recherche dans les formulaires soumis.
+2. Cliquez sur **Filtres** dans la barre d'outils pour ouvrir le panneau de filtres.
+3. Choisissez une **De date** et une **À ce jour** pour filtrer par date de création.
+4. Renseignez l'un des filtres supplémentaires : **Domaine**, **Cas**, **Case code**, **Emplacement**, **Organisation**, **Projet**, **Statut du formulaire** et **Utilisateur**. Les valeurs proposées dépendent des métriques configurées dans votre Dino.
+5. Cliquez sur **Chercher** pour appliquer vos filtres, ou sur **Réinitialiser les filtres** pour les effacer.
 
-Une barre de recherche et un panneau de filtres sont disponibles pour affiner la liste.
+Les filtres actifs apparaissent sous forme de puces sous la barre d'outils. Cliquez sur l'icône **annuler** d'une puce pour supprimer ce filtre.
 
-1. Cliquez sur l'**icône de recherche** dans la barre supérieure pour déplier le panneau de filtres.
-2. Utilisez le champ **mot-clé** pour effectuer une recherche dans tous les champs.
-3. Utilisez les sélecteurs de **plage de dates** pour filtrer par date de création.
-4. Des filtres supplémentaires apparaissent pour **Zone**, **Cas**, **Emplacement**, **Organisation**, **Projet**, **Statut du form** et **Utilisateur**. Ils sont dynamiques et respectent les définitions de métriques de votre form.
-5. Les filtres actifs s'affichent sous forme de puces sous la barre de filtres – cliquez sur l'icône **Annuler** d'une puce pour la retirer.
-
-!!! tip "Filtres prédéfinis"
-    La page Agrégation ne prend pas en charge les préréglages de filtres enregistrés. Vous pouvez combiner les filtres chaque fois que vous avez besoin d'une vue personnalisée.
+!!! tip "Aucun préréglage enregistré"
+    La page Agrégation ne prend pas en charge les préréglages de filtres enregistrés ni les conditions de filtre avancées. Vous combinez les filtres chaque fois que vous avez besoin d'une visualisation personnalisée ; supprimer une puce est le moyen le plus rapide d'assouplir une recherche existante.
 
 ## Actions sur les lignes
 
-Après avoir sélectionné une ligne, les icônes d'action apparaissent dans la colonne **Actions** à droite du tableau.
+Survolez une ligne pour afficher les icônes **Voir** (œil) et **Modifier** (crayon). Pour voir toutes les actions, cliquez sur la ligne pour la sélectionner : la barre d'actions au-dessus du tableau affiche alors un bouton pour chaque action que vous êtes autorisé à utiliser.
 
-| Icône | Action | Description |
-|------|--------|-------------|
-| `view` | Visualiser | Ouvrir la soumission en lecture seule. |
-| `edit` | Modifier | Modifier les données de la soumission. |
-| `print` | Imprimer | Générer un PDF de la soumission. |
-| `delete` | Supprimer | Supprimer la soumission après confirmation. |
+| Action | Description |
+|--------|-------------|
+| **Voir** | Ouvrir le formulaire soumis en mode lecture seule. |
+| **Modifier** | Modifier les données du formulaire soumis. |
+| **Imprimer** | Générer un PDF du formulaire soumis. |
+| **Supprimer** | Supprimer le formulaire soumis. |
 
-Cliquez sur **More Horiz** (trois points) pour afficher d'autres actions pour cette ligne. Les actions **Imprimer** et **Supprimer** demandent une confirmation avant d'être exécutées.
+**Imprimer** et **Supprimer** demandent une confirmation (*Do you want to print the selected items?*, **Oui** / **Non**) avant de s'exécuter.
 
-## Créer une nouvelle soumission
+## Créer un nouveau formulaire soumis
 
-Le bouton flottant **+** en bas à droite de l'écran vous permet de démarrer une nouvelle soumission.
+Le bouton **Ajouter un nouveau formulaire** dans la barre d'outils vous permet de démarrer un nouveau formulaire soumis. Il n'est affiché que si la création de formulaires soumis depuis la page Agrégation est activée pour votre instance Dino.
 
-![Boîte de dialogue permettant de choisir un form schema et de démarrer une nouvelle soumission](../imgs/aggregation/index-new.png)
+![Dialog to choose a form schema and start a new submission](../imgs/aggregation/index-new.png)
 
-1. Cliquez sur le bouton **+**. Une boîte de dialogue s'ouvre et affiche les form schema disponibles.
-2. Sélectionnez ou recherchez le form schema que vous souhaitez utiliser.
-3. Après la sélection, vous êtes directement redirigé vers la page [Modifier le form](../forms/edit-form.md) pour saisir les données.
+1. Cliquez sur **Ajouter un nouveau formulaire**. La boîte de dialogue **Créer le formulaire** s'ouvre et liste les Formulaires disponibles.
+2. Sélectionnez le Formulaires que vous souhaitez utiliser.
+3. Cliquez sur **Créer le formulaire**. Vous êtes redirigé vers la page [Modifier le formulaire](../forms/edit-form.md), où vous renseignez et enregistrez les données.
 
 ## Imprimer un PDF
 
-Vous pouvez générer un PDF de n'importe quelle soumission, comprenant le libellé du form schema, les noms des métriques actives et les données saisies.
+Vous pouvez générer un PDF de n'importe quel formulaire soumis. Le PDF inclut le libellé du Formulaires, les noms des métriques actives et les données saisies.
 
-1. Sur la ligne concernée, cliquez sur l'icône **Imprimante** (ou utilisez le menu **More Horiz** si disponible).
-2. Confirmez l'action lorsque vous y êtes invité.
+1. Cliquez sur la ligne que vous souhaitez imprimer pour la sélectionner, puis cliquez sur **Imprimer** dans la barre d'actions.
+2. Confirmez avec **Oui**.
 3. Le PDF s'ouvre dans un nouvel onglet du navigateur ou se télécharge automatiquement.
 
-L'en-tête du PDF inclut le titre du form schema et tous les noms des métriques actuellement actives dans le système.
+L'en-tête du PDF inclut le titre du Formulaires et tous les noms des métriques actuellement actives dans le système.
 
 !!! warning "Disponibilité des métriques"
-    Le PDF imprimé inclut uniquement les métriques actives au moment où vous lancez l'impression. Si une métrique a été ajoutée après la création de la soumission, elle n'apparaîtra pas.
+    Le PDF inclut uniquement les métriques actives au moment où vous lancez l'impression. Une métrique ajoutée après la création du formulaire soumis n'apparaîtra pas.
+
+## Pages associées
+
+- [Formulaires](../forms/index.md) — gérer les Formulaires derrière vos formulaires soumis.
+- [Modifier le formulaire](../forms/edit-form.md) — renseigner et mettre à jour les données des formulaires soumis.
+- [Import Data](../forms/import.md) — importer des formulaires soumis dans Dino en masse.
+- [Métriques](../metrics/index.md) — configurer les métriques qui alimentent les filtres et le rendu imprimé.

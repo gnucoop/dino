@@ -1,50 +1,66 @@
 ---
 title: Modifica report
-description: Scopri come modificare un report esistente in Dino, inclusi l'aggiornamento delle metriche e dei dettagli.
+description: Scopri come creare un report da un report schema in Dino, aprire un report salvato ed esportare i risultati.
 ---
 
 # Modifica report
 
-La pagina Modifica report ti permette di modificare un report esistente. Dopo averlo creato, puoi aggiornarne le metriche, i dettagli e altre informazioni.
+Un report viene generato da un [report schema](edit-report-schema.md): applica lo schema ai dati che corrispondono alle metriche e alle date che scegli. Questa pagina spiega come creare un nuovo report e come aprire ed esportare un report salvato.
 
-![Vista principale della pagina Modifica report](../imgs/reports/edit-report.png)
+![Un report salvato aperto sul suo passaggio Metriche del report](../imgs/reports/edit-report.png)
 
-## Accedere alla pagina di modifica
+## Creare un report
 
-Puoi raggiungere la pagina Modifica report in due modi:
+1. Vai alla pagina [Report](index.md) e clicca sulla card del report schema che vuoi usare. Si apre la lista dei suoi report.
+2. Clicca **Aggiungi nuovo report** sopra la tabella. Se il report usa prompt AI, il numero di token DINO-AI che consumerà è mostrato sul pulsante.
+3. Se il tuo Dino usa le metriche, la pagina si apre sul passaggio **Metriche del report**:
+    1. Controlla la **Data di creazione** e clicca **Modifica** per sceglierne un'altra se necessario.
+    2. Facoltativamente, scegli uno **Stato del Form**, tra gli stati del form che ti è consentito usare. Il campo è mostrato solo quando ce ne sono.
+    3. Scegli i valori delle metriche a cui si riferisce il report, come una posizione o un progetto. Le metriche contrassegnate da un asterisco (*) sono richieste dal report schema; le altre sono facoltative e restringono ulteriormente i dati. Se un valore che ti serve non esiste ancora, clicca **Nuovo** accanto al suo campo per crearlo, quando ti è consentito.
+    4. Clicca **Continua**.
+4. Nel passaggio **DATI DEL REPORT**:
+    1. Inserisci il **Nome report**. È obbligatorio.
+    2. Facoltativamente, imposta **Raccolto da** e **Raccolto fino a**: solo i dati creati all'interno di quell'intervallo sono inclusi nel report. Puoi impostare solo uno dei due, o nessuno, nel qual caso non viene applicato alcun filtro sulle date.
+5. Clicca il pulsante **Salva report** in basso a destra. È attivo una volta compilate le metriche richieste e il nome.
 
-* Dalla lista principale [Report](index.md), fai clic sul titolo di un report o sull'azione **Modifica** (spesso rappresentata da un'icona a forma di matita).
-* Dall'interno della visualizzazione dettagliata di un report (dopo aver fatto clic su **Visualizza il report**), cerca un pulsante o un link **Modifica**.
+Dino conferma che il documento è stato creato e ti riporta alla lista dei report, dove appare il nuovo report.
 
-## Modificare le informazioni del report
+!!! warning "Report con prompt AI"
+    Creare un report che usa prompt AI consuma token DINO-AI. Se non ne hai abbastanza, Dino non crea il report e ti chiede di aggiungere altri token.
 
-Una volta sulla pagina Modifica report, vedrai un form simile a quello usato per creare un report. Il form è precompilato con i dati attuali del report.
+!!! tip "I valori delle metriche non possono essere modificati in seguito"
+    Le metriche, lo stato e l'intervallo di date sono fissati quando il report viene creato. Per vedere lo stesso schema applicato ad altri valori, crea un altro report.
 
-### Passaggi per modificare un report
+## Aprire un report salvato
 
-1. **Controlla i dati precompilati** nei campi del form.
-2. **Apporta le tue modifiche** a uno qualsiasi dei campi disponibili:
-   - **Metriche primarie:** aggiorna i valori numerici principali del report.
-   - **Metriche secondarie:** modifica ulteriori punti dati (se configurati per il tuo form schema).
-   - **Dettagli:** modifica il testo descrittivo, le date o altre informazioni di supporto.
-3. **Salva le modifiche** facendo clic sul pulsante **Salva** o **Aggiorna** in fondo al form.
+1. Vai alla pagina [Report](index.md) e clicca sulla card del report schema.
+2. Nella lista dei report, passa il mouse sulla riga del report e clicca l'icona **Vedi** (occhio), oppure clicca la riga per selezionarla e clicca **Vedi** nella barra delle azioni sopra la tabella.
 
-!!! tip "Campi opzionali"
-    A seconda della configurazione della tua organizzazione, alcuni campi delle metriche potrebbero essere opzionali. Di solito sono contrassegnati come tali. Puoi lasciare vuoti i campi opzionali se non sono disponibili dati.
+Se il tuo Dino usa le metriche, il report si apre sul passaggio **Metriche del report**, che mostra i valori con cui il report è stato creato. Qui non possono essere modificati. Clicca **Visualizza il report** per passare al passaggio **DATI DEL REPORT**, dove il report viene mostrato.
 
-## Visualizzare il report renderizzato
+Mentre il report si carica, Dino mostra uno spinner. Un report che usa prompt AI mostra invece una barra di avanzamento, con il messaggio *Generating report prompt X of Y*. Se nessun dato corrisponde al report, la pagina mostra *Non sono stati trovati form per questo report*.
 
-Dopo aver salvato le modifiche, puoi visualizzare il report formattato. Fai clic sul pulsante o sul link **Visualizza il report** per vedere una versione pulita e renderizzata dei dati del report.
+![Visualizzazione del report generato dopo aver cliccato Visualizza il report](../imgs/reports/edit-report-view.png)
 
-![Vista del report renderizzato dopo aver fatto clic su Visualizza il report](../imgs/reports/edit-report-view.png)
+## Leggere il report
 
-## Comprendere il form schema
+La parte superiore del passaggio **DATI DEL REPORT** mostra il titolo del report schema, le date **Raccolto da** e **Raccolto fino a** quando il report le ha, e i valori delle metriche con cui è stato creato. Segue il report stesso, come definito nel suo file [XLSReport](xlsreport.md): tabelle, grafici e testo.
 
-La struttura e i campi disponibili nella pagina Modifica report sono determinati dal **form schema** configurato dal tuo amministratore. Questo garantisce che i dati vengano raccolti in modo coerente.
+Se il report contiene widget di filtro, puoi usarli per restringere i dati mostrati, senza modificare il report salvato.
 
-![Vista principale della pagina Modifica report schema](../imgs/reports/edit-report-schema.png)
+## Esportare un report
 
-Se devi modificare informazioni che non compaiono come campo, contatta il tuo amministratore: potrebbe essere necessario aggiornare il form schema. Puoi saperne di più sulla struttura sottostante nella documentazione [Modifica report schema](edit-report-schema.md).
+Accanto a **Esporta come:**, nella parte superiore del passaggio **DATI DEL REPORT**, scegli un formato:
 
-!!! warning "Integrità dei dati"
-    Fai attenzione quando modifichi dati storici dei report, perché le modifiche possono influire sull'analisi delle tendenze e sui record storici. Assicurati che i tuoi aggiornamenti siano accurati.
+* **pdf portrait** / **pdf landscape** — un documento PDF nell'orientamento scelto.
+* **docx portrait** / **docx landscape** — un documento Word nell'orientamento scelto.
+* **xlsx** — un file Excel con i dati del report.
+
+!!! note "Dove sono i pulsanti di esportazione"
+    I pulsanti di esportazione appartengono al passaggio **DATI DEL REPORT**. Quando il tuo Dino non ha metriche attive, e nella [Dashboard](../dashboard/index.md), il report viene mostrato direttamente, senza i passaggi e senza i pulsanti di esportazione.
+
+## Pagine correlate
+
+* [Report](index.md) — sfoglia i report schema e i loro report.
+* [Modifica report schema](edit-report-schema.md) — crea o modifica lo schema da cui viene generato un report.
+* [Report automatici](autoreports.md) — report generati automaticamente da un form schema.

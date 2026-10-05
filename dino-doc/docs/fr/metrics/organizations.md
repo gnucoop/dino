@@ -1,79 +1,86 @@
 ---
 title: Organisations
-description: Gérez les organisations dans Dino – affichez, ajoutez, modifiez, supprimez et importez des organisations.
+description: Gérez les organisations dans Dino – consultez, ajoutez, modifiez, supprimez et importez des organisations.
 ---
 
 # Organisations
 
-La page **Organisations** répertorie toutes les valeurs possibles de la métrique organisation. Les organisations peuvent être vos partenaires de projet ou toute entité impliquée dans vos activités. Utilisez cet écran pour afficher, ajouter, modifier, supprimer et importer des organisations, ainsi que pour gérer la hiérarchie organisationnelle.
+La page **Organisations** liste toutes les valeurs possibles de la métrique organisation. Les organisations peuvent être vos partenaires de projet ou toute entité impliquée dans vos activités. Utilisez cet écran pour consulter, ajouter, modifier, supprimer et importer des organisations, et pour gérer la hiérarchie organisationnelle.
 
-![Main view of the Organizations page](../imgs/metrics/organizations.png)
+![Vue principale de la page Organisations](../imgs/metrics/organizations.png)
 
 ## Colonnes du tableau
 
 Par défaut, le tableau affiche les colonnes suivantes :
 
-- **Nom de l'organisation** – le nom de l'organisation. Cette colonne est triable.
-- **Organisation parente** – le nom de l'organisation parente, le cas échéant.
+- **Organization Name** – le nom de l'organisation. Cette colonne est triable.
+- **Organisation parent** – le nom de l'organisation parente, le cas échéant.
 
-Des colonnes supplémentaires (ID, Date de création, Chemin du logo, URL du site web, Attributs supplémentaires) sont masquées, mais disponibles lorsque vous personnalisez l'affichage des colonnes à l'aide de l'icône **Personnalisez les colonnes** (en bas à droite de l'en-tête du tableau).
+Des colonnes supplémentaires (ID, Creation Date, Logo path, Website url, Additional Attributes) sont masquées par défaut. Utilisez le bouton **Colonnes**, au-dessus du tableau à droite, pour les afficher ou les masquer.
 
 ## Actions sur les lignes
 
-Chaque ligne comporte trois actions accessibles en cliquant sur le bouton **Plus** (trois points) à côté de la ligne :
+Survolez une ligne pour faire apparaître les icônes **Voir** et **Modifier**. Cliquez sur la ligne pour la sélectionner : la barre d'actions au-dessus du tableau affiche alors toutes les actions :
 
-- **Afficher** (icône de visibilité) – ouvre une boîte de dialogue en lecture seule avec les détails de l'organisation.
-- **Modifier** (icône de crayon) – ouvre une boîte de dialogue pour modifier les détails de l'organisation.
-- **Supprimer** (icône de corbeille) – supprime définitivement l'organisation. Une boîte de dialogue de confirmation apparaît avant la suppression.
+- **Voir** (icône de visibilité) – ouvre une fenêtre en lecture seule avec les détails de l'organisation.
+- **Modifier** (icône de crayon) – ouvre une fenêtre pour modifier les détails de l'organisation.
+- **Supprimer** (icône de corbeille) – supprime définitivement l'organisation. Une fenêtre de confirmation s'affiche d'abord.
 
-!!! warning "Supprimez les organisations avec prudence"
-    La suppression d'une organisation est irréversible. Assurez-vous qu'aucun cas ni formulaire actif n'en dépend avant de la supprimer.
+!!! warning "Supprimez les organisations avec précaution"
+    La suppression d'une organisation est irréversible. Une organisation utilisée par des form, ou qui possède des organisations enfants, ne peut pas être supprimée ; voir [Métriques](index.md).
 
-Vous pouvez également cliquer directement sur une ligne pour la **sélectionner** (pour les actions groupées) ou la **développer** pour voir des détails supplémentaires directement dans la ligne.
+## Actions groupées
 
-## Actions groupées et filtres
+Sélectionnez une ou plusieurs lignes à l'aide des cases à cocher de la première colonne. Une barre d'outils apparaît au-dessus du tableau avec les actions que vous pouvez appliquer :
 
-Sélectionnez plusieurs lignes à l'aide des cases à cocher de la première colonne, puis utilisez les boutons de suppression groupée ou de modification groupée qui apparaissent dans la barre d'outils.
+- Avec une ligne sélectionnée, vous pouvez consulter, modifier ou supprimer cette organisation.
+- Avec plusieurs lignes sélectionnées, vous pouvez toutes les supprimer en une seule fois.
 
-### Recherche et filtres
+## Recherche et filtres
 
 La barre de filtres en haut de la page propose :
 
 - **Recherche par mot-clé** – filtre les organisations par n'importe quel texte.
-- **Plage de dates** – filtre par plage de dates de création.
-- **Gestionnaire de préréglages** – enregistre et charge des préréglages de filtres de recherche.
-- **Exporter** – télécharge la liste filtrée sous forme de fichier.
+- **Filtres** – ouvre la fenêtre de filtres pour affiner la liste par date de création (**De date** / **À ce jour**).
+- **Exportation** – télécharge la liste sous forme de fichier.
 
-Cliquez sur le bouton **Filtrer** pour ouvrir des filtres avancés et obtenir un contrôle plus précis.
+Les filtres appliqués apparaissent sous forme de puces sous la barre de filtres. Cliquez sur l'icône d'annulation d'une puce pour supprimer ce filtre.
 
 ## Ajouter et importer des organisations
 
-Deux boutons d'action flottants sont toujours visibles dans le coin inférieur droit :
+Deux boutons sont disponibles dans la barre d'outils au-dessus du tableau :
 
-- **Ajouter** (icône plus) – ouvre une boîte de dialogue pour créer une organisation. Vous serez invité à saisir le nom de l'organisation, l'organisation parente, l'URL du site web et d'autres détails.
-- **Importer** (icône de téléversement cloud) – vous permet de téléverser un fichier (CSV, JSON ou XML) pour importer des organisations en masse. Suivez les instructions à l'écran pour mapper les champs.
+- **Add new ORGANIZATION** (icône plus) – ouvre une fenêtre pour créer une nouvelle organisation.
+- **Import ORGANIZATION** (icône de téléversement cloud) – téléversez un fichier pour importer des organisations en masse.
 
-!!! tip "Internationalisation"
-    Les noms et libellés des organisations peuvent être traduits si votre instance Dino prend en charge plusieurs langues. Consultez [Langues](../administration/languages.md) pour plus de détails.
+!!! tip "Hiérarchie organisationnelle"
+    Définissez une **Organisation parent** lors de la création d'une organisation pour construire une hiérarchie d'entités liées.
 
-## Étapes : créer une organisation
+## Étapes : créer une nouvelle organisation
 
-1. Cliquez sur le bouton flottant **Ajouter**.
-2. Dans la boîte de dialogue qui s'ouvre, remplissez les champs obligatoires (Nom de l'organisation et au moins un attribut).
-3. Si vous le souhaitez, définissez une **Organisation parente** pour créer une hiérarchie.
-4. Cliquez sur **Enregistrer**. La nouvelle organisation apparaît immédiatement dans la liste.
+1. Cliquez sur le bouton **Add new ORGANIZATION** dans la barre d'outils.
+2. Dans la fenêtre qui s'ouvre, remplissez les champs obligatoires, en commençant par le nom de l'organisation. Les champs facultatifs sont marqués *(optional)*.
+3. Définissez éventuellement une **Organisation parent** pour placer la nouvelle organisation dans une hiérarchie.
+4. Ajoutez éventuellement un chemin de logo, une URL de site web et tout attribut supplémentaire.
+5. Cliquez sur **Enregistrer**. La nouvelle organisation apparaît immédiatement dans la liste.
+
+## Étapes : importer des organisations
+
+1. Cliquez sur le bouton **Import ORGANIZATION** dans la barre d'outils.
+2. Téléversez un fichier `.xls`, `.xlsx` ou `.csv` et mappez ses colonnes aux attributs de l'organisation.
+3. Cliquez sur **Appliquer l'importation** et vérifiez le résultat. Les organisations dont le nom existe déjà sont réutilisées, et non mises à jour.
 
 ## Étapes : exporter des organisations
 
-1. Appliquez les filtres dont vous avez besoin dans la barre de recherche.
-2. Cliquez sur le bouton **Exporter** (icône de téléchargement cloud) dans la barre de filtres.
-3. Choisissez le format d'export (CSV, Excel, etc.) et confirmez.
-4. Le fichier est téléchargé sur votre appareil.
+1. Appliquez les filtres dont vous avez besoin.
+2. Cliquez sur le bouton **Exportation** dans la barre d'outils.
+3. Choisissez ce qu'il faut exporter : *Éléments de la page* (par défaut), les éléments correspondant à vos filtres, ou *Tous les éléments*.
+4. Choisissez le format : *csv*, *xlsx* ou *splitted xlsx*, puis cliquez sur **Exportation**.
 
 ## Pages associées
 
-- [Aperçu des métriques](index.md) – toutes les pages de gestion des métriques.
-- [Zones thématiques](areas.md) – gérer les zones thématiques pour les organisations.
-- [Cas](cases.md) – associer des cas aux organisations.
-- [Lieux](locations.md) – relier des lieux aux organisations.
-- [Projets](projects.md) – connecter les organisations aux projets.
+- [Présentation des métriques](index.md) – toutes les pages de gestion des métriques.
+- [Zones thématiques](areas.md) – gérez les zones thématiques des organisations.
+- [Cas](cases.md) – associez des cas aux organisations.
+- [Positions](locations.md) – liez des positions aux organisations.
+- [Projets](projects.md) – connectez les organisations aux projets.

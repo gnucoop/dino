@@ -1,55 +1,60 @@
 ---
-title: تعديل بيانات نموذج
-description: تعلّم كيفية تعديل بيانات نموذج موجودة في Dino.
+title: تحرير بيانات نموذج
+description: تعرّف على كيفية تحرير بيانات نموذج موجودة في دينو، بما في ذلك مقاييس النموذج والمسودات وحفظ التغييرات.
 ---
 
-# تعديل بيانات نموذج
+# تحرير بيانات نموذج
 
-تتيح لك شاشة تعديل النموذج تعديل بيانات نموذج موجودة. يمكنك تحديث البيانات، أو إضافة معلومات جديدة، أو حفظ تغييراتك كمسودة لإكمالها لاحقًا.
+تتيح لك شاشة تحرير النموذج تعديل بيانات تم حفظها مسبقًا. سترى نفس واجهة النموذج المستخدمة لإدخال البيانات، لكن مع تعبئة جميع الإجابات المحفوظة سابقًا. من هنا يمكنك تصحيح القيم، أو إكمال المعلومات الناقصة، أو حفظ تقدمك كمسودة وإكماله لاحقًا.
 
-عند فتح بيانات نموذج لتعديلها، ترى واجهة النموذج نفسها المستخدمة لإدخال البيانات، ولكن مع تعبئة جميع البيانات المحفوظة سابقًا مسبقًا.
+![العرض الرئيسي لصفحة تحرير النموذج](../imgs/forms/edit-form.png)
 
-![العرض الرئيسي لصفحة تعديل النموذج](../imgs/forms/edit-form.png)
+## كيفية فتح بيانات للتحرير
 
-## كيفية تعديل البيانات
+1. انتقل إلى صفحة [النماذج](index.md).
+2. افتح مخطط النموذج الذي يحتوي على البيانات.
+3. اعثر على البيانات التي تريد تغييرها في قائمة النماذج.
+4. مرّر المؤشر فوق صفها وانقر على أيقونة **تحرير** (القلم)، أو انقر على الصف لتحديده ثم انقر على **تحرير** في شريط الإجراءات أعلى الجدول. ستُفتح شاشة تحرير النموذج مع تحميل البيانات المحفوظة.
 
-1.  انتقل إلى قائمة النماذج الخاصة بنموذجك.
-2.  حدّد البيانات المحددة التي تريد تعديلها.
-3.  انقر على زر **تعديل** (الذي يظهر عادةً على شكل أيقونة قلم رصاص) لتلك البيانات. يؤدي هذا إلى فتح النموذج في وضع التعديل.
-4.  أجرِ التغييرات المطلوبة على أي حقل في النموذج.
-5.  اختر إجراءً في أسفل النموذج:
-    *   **حفظ كمسودة**: يحفظ تغييراتك الحالية دون إرسال النموذج. يمكنك العودة وتعديله مرة أخرى لاحقًا.
-    *   **إرسال**: يحفظ جميع التغييرات ويرسل بيانات النموذج المحدّثة.
+## العمل مع مقاييس النموذج
+
+إذا كان نموذجك يستخدم المقاييس، تُفتح الشاشة على خطوة **مقاييس النموذج** قبل عرض الاستبيان. تحدد هذه القيم كيفية تأريخ البيانات وتجميعها في التقارير وعمليات التجميع — وهي ليست جزءًا من الاستبيان نفسه.
+
+1. راجع **تاريخ الإنشاء** أو غيّره بالنقر على **تغيير** واختيار تاريخ جديد.
+2. املأ أي حقول مقاييس معروضة، مثل الموقع أو المشروع أو المؤسسة.
+3. إذا كان مخطط النموذج يحتوي على حالات، فاختر **حالة النموذج** للبيانات.
+4. انقر على **املأ النموذج** للانتقال إلى الاستبيان. عند فتح البيانات باستخدام **عرض**، يصبح نص الزر **عرض النموذج**.
+
+!!! tip "إنشاء مقياس جديد أثناء العمل"
+    إذا لم يكن المقياس الذي تحتاجه موجودًا بعد، انقر على **جديد** بجانب حقل المقياس لإنشائه دون مغادرة النموذج. يظهر هذا الخيار فقط إذا كانت لديك صلاحية إنشاء المقاييس.
+
+![خطوة مقاييس النموذج](../imgs/forms/index-create.png)
+
+## تحرير إجاباتك
+
+بمجرد عرض الاستبيان، يمكنك تغيير أي حقل لديك صلاحية تحريره. وفقًا لكيفية إعداد النموذج، قد تُرتَّب الحقول في عمود واحد أو عمودين أو ثلاثة، وقد يخضع بعضها للتحقق أثناء الكتابة.
+
+1. انقر داخل حقل وحدّث قيمته.
+2. تنقّل عبر الخطوات أو الأقسام المتبقية من الاستبيان.
+3. عند الانتهاء، اختر إجراءً من أعلى النموذج:
+    * **حفظ النموذج**: يحفظ جميع تغييراتك ويحدّث البيانات.
+    * **حفظ المسودة**: يخزّن تغييراتك الحالية دون إنهائها، بحيث يمكنك العودة والمتابعة لاحقًا. يظهر هذا الزر فقط إذا كانت المسودات مفعّلة لنموذجك.
 
 !!! tip "تتبّع التغييرات"
-    يسجّل Dino تلقائيًا التغييرات التي تجريها بين البيانات الأصلية والنسخة المعدّلة. يؤدي هذا إلى إنشاء سجلّ لمن غيّر ماذا ومتى.
+    عند تفعيل وحدة السجلات في نسخة دينو الخاصة بك، يسجّل دينو التغييرات التي أُجريت على كل بيانات. حدد بيانات في القائمة وانقر على **عرض السجل** في شريط الإجراءات لمعرفة من غيّر ماذا ومتى.
 
-<!-- ## Available Features
+!!! warning "تحرير بيانات حساسة"
+    قد تعتمد تقارير أو تحليلات أخرى على القيم الموجودة في هذه البيانات. إذا كنت تصحّح خطأً جسيمًا، ففكّر فيما إذا كانت بيانات جديدة قد تكون أنسب من تغيير بيانات قديمة.
 
-While editing, you have access to the same features as when creating a new submission:
+## مراجعة النموذج المُرسَل
 
-*   **Optional Metrics**: Some forms may have optional sections or questions that you can choose to fill out.
-*   **File Upload**: Attach new files or replace existing ones if this feature is enabled for your form.
-*   **Secondary Fields**: For certain data points, additional related fields may be displayed for more detailed entry.
-*   **Form Relationships (Dependencies)**: If the form includes dependent fields, you may see additional prompts based on previous answers. The dependencies are defined when the form schema is created.
+إذا فتحت البيانات باستخدام إجراء **عرض** بدلًا من **تحرير**، يُفتح النموذج في وضع القراءة فقط. تكون جميع الحقول مرئية لكن لا يمكن تحريرها، وتكون إجراءات الحفظ غير متاحة. استخدم هذا العرض للتحقق مما تم تسجيله.
 
-![Form relationships (dependencies) editor dialog](../imgs/forms/edit-form-schema-relationships.png)
+![عرض النموذج المُعبأ بعد النقر على عرض النموذج](../imgs/forms/edit-form-view.png)
 
-!!! warning "Data Integrity"
-    Be cautious when editing critical data. Other reports or analyses may depend on the original submitted values. Consider if creating a new, corrected submission might be more appropriate than editing an old one. -->
+## إجراءات ذات صلة
 
-<!-- ## Understanding the Form Structure
-
-The form you see while editing is based on a **form schema** — the underlying blueprint that defines all fields, sections, and rules. You can view a compiled preview of the form schema from the designer.
-
-![Compiled form view after clicking View the Form](../imgs/forms/edit-form-view.png)
-
-The schema itself can be edited separately. If you need to change the structure of a form (add or remove fields, adjust validation), see [Edit Form Schema](edit-form-schema.md).
-
-![Main view of the Edit Form Schema page](../imgs/forms/edit-form-schema.png)
-
-## Related Actions
-
-*   To understand the structure of the form itself, see [Edit Form Schema](edit-form-schema.md).
-*   To create a brand new submission, you typically start from the main [Forms](index.md) page.
-*   To browse your forms and submissions on a map, see [Forms Map](forms-map.md). -->
+* لتغيير بنية النموذج نفسه — حقوله وأقسامه وقواعد التحقق — راجع [تحرير مخطط النموذج](edit-form-schema.md).
+* لفهم كيفية ارتباط الحقول ببعضها وكيفية عمل التبعيات، راجع خيارات العلاقات في [تحرير مخطط النموذج](edit-form-schema.md).
+* لعرض البيانات على خريطة، راجع [خريطة النماذج](forms-map.md).
+* لإنشاء بيانات جديدة تمامًا بدلًا من ذلك، ابدأ من صفحة [النماذج](index.md).
