@@ -163,16 +163,78 @@ async function anthropicMessage({system, user}) {
 
 /**
  * Languages to generate besides English (the default).
- * Each entry: { code, name, dir (text direction) }
+ * Each entry: { code, name, dir (text direction), appFile (the app's translation
+ * file under projects/core/translations/src, the source of the UI glossary) }
  */
 const LANGUAGES = [
-  {code: 'it', name: 'Italian', dir: 'ltr'},
-  {code: 'es', name: 'Spanish', dir: 'ltr'},
-  {code: 'fr', name: 'French', dir: 'ltr'},
-  {code: 'pt', name: 'Portuguese', dir: 'ltr'},
-  {code: 'uk', name: 'Ukrainian', dir: 'ltr'},
-  {code: 'ar', name: 'Arabic', dir: 'rtl'},
+  {code: 'it', name: 'Italian', dir: 'ltr', appFile: 'ita.ts'},
+  {code: 'es', name: 'Spanish', dir: 'ltr', appFile: 'esp.ts'},
+  {code: 'fr', name: 'French', dir: 'ltr', appFile: 'fra.ts'},
+  {code: 'pt', name: 'Portuguese', dir: 'ltr', appFile: 'prt.ts'},
+  {code: 'uk', name: 'Ukrainian', dir: 'ltr', appFile: 'ukr.ts'},
+  {code: 'ar', name: 'Arabic', dir: 'rtl', appFile: 'ar.ts'},
 ];
+
+const appTranslationsCache = new Map();
+
+/**
+ * Loads the app's own translations for a language as a Map from the English
+ * string to the translated one. The files are plain `'key': 'value',` lines, so
+ * they are read as text rather than compiled.
+ */
+function loadAppTranslations(lang) {
+  if (appTranslationsCache.has(lang.code)) return appTranslationsCache.get(lang.code);
+  const map = new Map();
+  const file = path.join(REPO_ROOT, 'projects/core/translations/src', lang.appFile);
+  if (fs.existsSync(file)) {
+    const str = `(?:'((?:[^'\\\\]|\\\\.)*)'|"((?:[^"\\\\]|\\\\.)*)")`;
+    const line = new RegExp(`^\\s*${str}\\s*:\\s*${str},?\\s*$`, 'gm');
+    const unescape = s => s.replace(/\\(.)/g, '$1');
+    for (const m of fs.readFileSync(file, 'utf8').matchAll(line)) {
+      const key = unescape(m[1] ?? m[2]);
+      const value = unescape(m[3] ?? m[4]);
+      if (value.trim()) map.set(key, value);
+    }
+  } else {
+    console.warn(`  WARN: app translations ${file} not found — no UI glossary for ${lang.code}`);
+  }
+  appTranslationsCache.set(lang.code, map);
+  return map;
+}
+
+/**
+ * Builds the prompt section listing how the app itself translates the UI labels
+ * the page names. Without it the model renders a label in its own words (or
+ * leaves it in English), and the reader is told to click a button that does not
+ * exist on their screen. Labels are the bold spans of the page, and the italic
+ * or quoted ones too, which is how the pages cite the app's messages; each is
+ * matched exactly first and then ignoring case and a trailing full stop.
+ */
+function uiGlossaryFor(lang, englishContent) {
+  const app = loadAppTranslations(lang);
+  if (!app.size) return '';
+  const normalize = s => s.trim().toLowerCase().replace(/[.!]+$/, '');
+  const lowerKeys = new Map([...app.keys()].map(k => [normalize(k), k]));
+  const spans = [
+    /\*\*([^*\n]+?)\*\*/g,
+    /(?<![*\w])\*([^*\n]+?)\*(?!\*)/g,
+    /["“«]([^"“”«»\n]+?)["”»]/g,
+  ];
+  const entries = new Map();
+  for (const pattern of spans) {
+    for (const [, label] of englishContent.matchAll(pattern)) {
+      const term = label.trim();
+      const key = app.has(term) ? term : lowerKeys.get(normalize(term));
+      if (key && !entries.has(term)) entries.set(term, app.get(key));
+    }
+  }
+  if (!entries.size) return '';
+  const lines = [...entries].map(([en, tr]) => `- "${en}" -> "${tr}"`).join('\n');
+  return `
+These are the exact labels and messages the app shows in ${lang.name} for the UI elements this page names. Wherever the page refers to one of these elements or quotes one of these messages, use the text exactly as given here — same words, same capitalisation — even if another rendering would read better, and never leave it in English. They take precedence over the terminology glossary.
+${lines}
+`;
+}
 
 const SYSTEM_PROMPT = `You are a technical writer creating user-facing documentation for Dino, a web-based platform for structured data collection, monitoring, and analysis.
 
@@ -628,7 +690,7 @@ Instructions:
 
 Keep all image references exactly as-is — they are shared across all languages and the paths are already correct.
 For cross-page links, keep the same relative filenames (e.g. getting-started/login.md stays the same).
-
+${uiGlossaryFor(lang, englishContent)}
 --- ENGLISH SOURCE ---
 ${englishContent}`;
 
@@ -778,7 +840,7 @@ async function translateDocFile(docFile, englishContent) {
     const translationPrompt = `Translate the following English documentation page into ${lang.name}.
 
 Keep all image references (![...](../imgs/...)) exactly as-is — they are shared across all languages and the paths are already correct.
-
+${uiGlossaryFor(lang, translatableEnglish)}
 --- ENGLISH SOURCE ---
 ${translatableEnglish}`;
 
