@@ -1,88 +1,112 @@
 ---
 title: Formulários
-description: Gerencie form schemas e colete dados estruturados no Dino.
+description: Faça a gestão de esquemas de formulário e recolha dados estruturados no Dino.
 ---
 
 # Formulários
 
-A página **Formulários** é o seu ponto de partida para a coleta de dados estruturados no Dino. A partir daqui, você pode navegar, criar e gerenciar form schemas, além de visualizar e trabalhar com os dados coletados por meio de cada form.
+A página **Formulários** é o seu ponto de partida para a recolha de dados estruturados no Dino. A partir daqui pode explorar, criar e gerir esquemas de formulário e, em seguida, ver e trabalhar com os dados recolhidos através de cada formulário.
 
-![Visualização principal da página Formulários](../imgs/forms/index.png)
+![Vista principal da página Formulários](../imgs/forms/index.png)
 
-A visualização principal exibe uma **grade de cards de form schema**. Cada card mostra o rótulo e o ícone do form. Ao passar o mouse sobre um card, aparecem botões de ação:
+A vista principal apresenta uma **grelha de mosaicos de esquemas de formulário**. Cada mosaico mostra a etiqueta e o ícone do formulário. Um mosaico marcado com um ícone de impressão digital é único: só pode existir um dado com esse conjunto exato de métricas. Ao passar o cursor sobre um mosaico, aparecem botões de ação:
 
-- **Editar Schema** – Modifique a estrutura do form (campos, validação, métricas).
-- **Excluir Schema** – Remova o form schema (e todos os seus dados).
-- **Compartilhar URL** – Obtenha um link público para permitir envios externos.
-- **Ver Mapa** – Abra a visualização de mapa para dados com informações de posição.
-- **Conversar com seus dados** – Use o recurso [DataChat](datachat.md) para fazer perguntas sobre os dados em linguagem natural.
+- **Editar esquema de formulário** – Modificar a estrutura do formulário (campos, validação, métricas).
+- **Eliminar esquema de formulário** – Remover o esquema. O Dino recusa se o esquema ainda tiver dados ou se um report o utilizar, e pede confirmação se outros formulários ou grupos de utilizadores lhe fizerem referência.
+- **Partilhar url público** – Obter um link público que permite submissões externas.
+- **Ver mapa** – Abrir a vista de mapa para os dados com informações de posição.
+- **Converse com seus dados** – Fazer perguntas sobre os seus dados em linguagem natural através do [DataChat](datachat.md).
 
 !!! tip
-    As ações disponíveis em um card dependem das suas permissões. Você pode não ver todos os botões.
+    As ações disponíveis num mosaico dependem das suas permissões. É possível que não veja todos os botões.
 
-Para criar um novo form schema, clique no botão flutuante **+** no canto inferior direito. Você será direcionado para a página [Editar Form Schema](edit-form-schema.md) para projetar seu form.
+Se ainda não existirem esquemas de formulário, a página mostra uma mensagem a convidá-lo a adicionar um. Quando a instância o permite, um campo **Filtrar** acima dos mosaicos permite restringi-los por nome.
 
-## Trabalhando com Dados
+## Criar um esquema de formulário
 
-Clique em um card de form schema para acessar sua **lista de form**. Esta tabela mostra todos os dados coletados para esse schema.
+1. Clique no botão flutuante **+** no canto inferior direito da página.
+2. Desenhe o seu formulário na página [Editar esquema de formulário](edit-form-schema.md).
 
-![Lista de form (tabela de dados) de um form schema](../imgs/forms/index-list.png)
+## Trabalhar com dados
 
-A lista inclui uma **barra de filtro** que permite pesquisar por palavra-chave, intervalo de datas, métricas, status, usuário e muito mais. Você também pode salvar predefinições de filtros para reutilizá-las rapidamente.
+Clique num mosaico de esquema de formulário para abrir a sua **lista de form**. Esta tabela mostra todos os dados recolhidos para esse esquema.
+
+![Lista de form (tabela de dados) de um esquema de formulário](../imgs/forms/index-list.png)
+
+Acima da tabela pode ver quantos itens foram encontrados e pode navegar entre páginas. A barra de ferramentas oferece:
+
+- **Adicionar novo formulário** – Criar um novo dado.
+- **Importar formulários** – Trazer dados a partir de um ficheiro. Ver [Importar dados](import.md).
+- **Filtros** – Restringir a lista por intervalo de datas, estado, utilizador, métricas e mais. Alterne entre filtros *Simples* e *Avançados*, ou guarde um filtro predefinido para reutilizar mais tarde.
+- **Exportar** – Descarregar dados num ficheiro. Ver [Exportar](#exportar).
+
+À esquerda da barra de ferramentas, o seletor **Dados** / **Mapa** / **IA** altera a vista; ver [Vistas adicionais](#vistas-adicionais).
+
+Uma linha cujos dados possam estar incompletos mostra um ícone de aviso. As linhas com ficheiros à espera de sincronização mostram um ícone de carregamento para a nuvem.
 
 ### Exportar
 
-Use o botão **exportar** para baixar os dados em formato CSV ou XLSX.
+Utilize o botão **Exportar** na barra de ferramentas para descarregar dados.
 
-![Diálogo de exportação para baixar dados do form](../imgs/forms/index-export.png)
+![Diálogo Exportar para descarregar dados de formulários](../imgs/forms/index-export.png)
 
-O diálogo de exportação permite especificar alguns parâmetros importantes para a exportação:
+O diálogo **Exportar dados** permite-lhe escolher:
 
-1) Quantos forms exportar.   
-   1) *Forms na página*. Exporta apenas os forms que foram exibidos na página anterior, potencialmente filtrados e divididos em páginas.   
-   2) *Adicionar filtros* ou *Todos os itens/1filters*. Se você já aplicou um filtro à sua lista de form, apenas o form filtrado pode ser exportado (segunda opção). Se você ainda não aplicou nenhum filtro, a primeira opção é exibida e permite adicionar mais filtros.   
-   3) *Todos os forms*. Todos os forms, sem filtro ou paginação.   
-2) Formato.   
-    1) *CSV*. Os dados serão exportados para um arquivo CSV. Cada form extraído será uma linha em um arquivo onde os campos serão as colunas.   
-    2) *XLSX*. Exportação em formato Excel.  
-    3) *XLSX dividido*. Exportação em formato Excel onde cada slide é uma planilha diferente.   
-3) Opções de campos  
-    1) *Selecionar todos os campos do form*. Permite exportar todos os campos do form.  
-    2) *Valores dos rótulos*. Para campos que possuem valores prefixados (campos de seleção única ou múltipla), o valor exportado é o valor exibido, não o código interno usado para representar esse valor.   
-    3) *Formato de Análise de Dados*. Forms que contêm slides repetidos e múltipla escolha são exportados em várias linhas, cada linha contendo apenas um slide repetido e apenas uma múltipla escolha, os demais campos permanecem os mesmos. Uma coluna extra é adicionada, chamada *conta*. Essa coluna assume o valor 1 apenas na primeira linha do grupo de repetição, e 0 nas demais.  
-    4) *Colunas Separadas*. Múltipla escolha são exportadas como múltiplas colunas 
-4) *Slide de seleção*. Permite visualizar a lista de campos em cada slide, caso você queira exportar apenas alguns dos campos e não todos.   
-5) *Seleção de campos*. Você pode selecionar/desselecionar campos individuais.   
+1) Que formulários exportar.
+    1) *Itens na página*. Apenas os formulários apresentados na página atual da lista (a predefinição).
+    2) *Com filtros ativos (N)*. Todos os formulários que correspondem aos filtros que aplicou. Quando não há nenhum filtro ativo, esta opção apresenta *Adicionar filtros*: fecha o diálogo para que possa definir alguns.
+    3) *Todos os itens*. Todos os formulários, sem filtro nem paginação. Num formulário extenso, isto pode tornar o dispositivo mais lento.
+2) O formato.
+    1) *csv*. Cada formulário exportado é uma linha e cada campo uma coluna.
+    2) *xlsx*. O mesmo, em formato Excel.
+    3) *splitted xlsx*. Formato Excel, com uma folha por slide.
+3) No menu **Campos e formatos**:
+    1) *Selecionar tudo Form fields*. Exporta todos os campos do formulário.
+    2) *Etiquetas dos valores*. Para campos com valores predefinidos (escolha única ou múltipla), exporta a etiqueta apresentada em vez do código interno.
+    3) *Formato do valor*, um de:
 
-Algumas colunas do arquivo exportado não podem ser desmarcadas. São elas:
+        - *Predefinido*.
+        - *Formato de análise de dados*. Os slides repetidos e os campos de escolha múltipla são exportados em várias linhas, uma repetição e uma escolha por linha; os outros campos são repetidos em cada linha. Uma coluna adicional, *conta*, é 1 na primeira linha de cada formulário e 0 nas linhas adicionais geradas para o mesmo formulário, pelo que somar *conta* conta os formulários.
+        - *Colunas separadas*. Cada opção de um campo de escolha múltipla recebe a sua própria coluna, com 1 ou 0.
+4) Os campos a exportar. A lista **Secções** à esquerda mostra cada secção com os seus campos selecionados e o total. Para a secção ativa pode pesquisar um campo, utilizar **Selecionar tudo** / **Desselecionar**, ou marcar campos individuais. O rodapé mostra quantos campos estão selecionados; clique em **Exportar** para descarregar.
 
-- ID do Form
+Algumas colunas são sempre exportadas e não podem ser desselecionadas:
+
+- ID do formulário
 - Data de criação
 - Data de atualização
-- Dados do Usuário DINO (nome e ID)
-- Dados de métricas (id, nome, etc...)
+- Dados do utilizador DINO (ID e nome completo)
+- Dados das métricas (id, nome, etc...)
+- Estado do formulário (id, nome, etiqueta, nível, cor), quando o formulário tem estados
 - Dinoinvalid
 
-### Ações de Linha
+### Ações de linha
 
-Clique em uma linha para expandir seus detalhes, ou use as ações de linha (visualizar, editar, excluir, imprimir como PDF, baixar como DOCX, imprimir crachá). As ações disponíveis dependem das suas permissões e da configuração do form.
+Passe o cursor sobre uma linha para mostrar os ícones **Ver** e **Editar**. Clique numa linha para a selecionar: a barra de ações acima da tabela mostra então todas as ações que pode utilizar sobre ela (ver, editar, deletar, imprimir como PDF, descarregar como DOCX, imprimir crachá). As ações disponíveis dependem das suas permissões e da configuração do formulário.
 
-### Criando um Novo Dado
+### Criar um novo dado
 
-Clique no botão flutuante **+** na página da lista para abrir um form em branco para entrada de dados.
+1. Abra a lista de form do esquema de formulário que pretende.
+2. Clique em **Adicionar novo formulário** na barra de ferramentas.
+3. Preencha o formulário em branco e guarde-o. Ver [Editar formulário](edit-form.md).
 
-![Form em branco aberto para enviar um novo dado](../imgs/forms/index-create.png)
+![Formulário em branco aberto para submeter um novo dado](../imgs/forms/index-create.png)
 
-Preencha os campos e envie. O novo dado aparecerá na lista.
+O novo dado aparece na lista.
 
-### Operações em Massa
+### Operações em massa
 
-Selecione vários dados usando as caixas de seleção para realizar **exclusão** ou **edição** em massa (alterar o mesmo valor de campo em todos os dados selecionados).
-
-## Visualizações Adicionais
-
-- **Mapa** – Visualize dados com coordenadas geográficas em um mapa interativo. Saiba mais em [Mapa de Forms](forms-map.md).
-- **DataChat** – Consulte os dados do seu form usando linguagem natural. Veja [DataChat](datachat.md) para detalhes.
+Selecione um ou mais dados através das caixas de seleção para revelar as ações em massa. Pode **deletar** os dados selecionados ou **Editar** todos em conjunto, aplicando o mesmo valor de campo a todos eles.
 
 !!! warning
-    O recurso DataChat pode consumir créditos. Verifique o saldo de créditos da sua conta antes de usá-lo.
+    Eliminar um esquema de formulário ou os seus dados não pode ser anulado. Tenha cuidado ao utilizar ações de eliminação.
+
+## Vistas adicionais
+
+Altere a vista com os botões **Dados** / **Mapa** / **IA** à esquerda da barra de ferramentas da lista de form, ou a partir dos botões num mosaico de esquema de formulário. Os filtros que aplicou são mantidos.
+
+- **Mapa** – Ver os dados com coordenadas geográficas num mapa interativo. Está disponível apenas quando o esquema recolhe informações de posições. Saiba mais em [Mapa de formulários](forms-map.md).
+- **DataChat** (a vista **IA**) – Consulte os dados dos seus formulários em linguagem natural. Ver [DataChat](datachat.md) para mais detalhes.
+
+!!! warning
+    O DataChat pode consumir créditos. Verifique o saldo de créditos da sua conta antes de o utilizar.

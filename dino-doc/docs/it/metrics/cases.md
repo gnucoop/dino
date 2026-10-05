@@ -1,84 +1,70 @@
 ---
 title: Casi
-description: "Gestisci i casi in Dino: crea, modifica, visualizza, filtra, esporta e organizza i record dei casi con una tabella dati strutturata."
+description: Gestisci i casi in Dino — crea, modifica, visualizza, stampa, filtra ed esporta i record dei casi da una tabella dati strutturata.
 ---
 
 # Casi
 
-La pagina Casi offre uno spazio di lavoro centralizzato per monitorare e gestire i singoli casi. Ogni caso è un record strutturato che può contenere un nome, un codice, un'immagine, una relazione con un caso padre, note e attributi aggiuntivi. Puoi creare nuovi casi, modificare quelli esistenti, visualizzarne i dettagli, eliminare record ed esportare la tua lista di casi — tutto da un'unica tabella interattiva.
+La pagina Casi è uno spazio di lavoro centralizzato per tracciare e gestire i singoli record dei casi. Ogni caso è un record strutturato che può contenere un nome, un codice, un'immagine, una relazione con un caso genitore, note e attributi aggiuntivi. Da questa pagina puoi creare nuovi casi, modificare o visualizzare quelli esistenti, stampare le schede dei casi, eliminare record ed esportare la tua lista di casi — tutto da un'unica tabella interattiva.
 
-![Main view of the Cases page](../imgs/metrics/cases.png)
+![Vista principale della pagina Casi](../imgs/metrics/cases.png)
 
 ## Panoramica della tabella
 
-La tabella principale mostra per impostazione predefinita le seguenti colonne:
+La tabella mostra le seguenti colonne per impostazione predefinita:
 
-- **Nome del caso** – Il nome che assegni al caso (ordinabile).
-- **Codice** – Un codice generato dal sistema o assegnato manualmente (di sola lettura dopo la creazione).
-- **Immagine del caso** – Un file immagine caricato che rappresenta il caso.
-- **Caso padre** – Il nome dell'eventuale caso padre a cui appartiene questo caso.
+- **Case Name** – Il nome assegnato al caso (ordinabile).
+- **Codice** – Un codice che identifica il caso. Lo genera Dino: non lo inserisci tu e non viene mostrato nella finestra del caso.
+- **Case Image** – Un file immagine caricato che rappresenta il caso.
+- **Caso genitore** – Il nome dell'eventuale caso genitore a cui appartiene questo caso.
 
-Altre colonne (come **ID**, **Note**, **Data di creazione** e **Attributi aggiuntivi**) sono nascoste per impostazione predefinita. Puoi personalizzare le colonne visualizzate facendo clic sul pulsante **Personalizza le colonne** nell'intestazione della tabella.
+Le colonne aggiuntive — **ID**, **Notes**, **Data di creazione** e **Attributi aggiuntivi** — sono nascoste per impostazione predefinita. Clicca **Colonne** sopra la tabella per scegliere quali colonne visualizzare. Puoi anche trascinare le intestazioni delle colonne per riordinarle; la pagina mostra il numero totale di elementi trovati accanto al paginatore.
 
-## Azioni su un singolo caso
+## Lavorare con un singolo caso
 
-Sul lato destro di ogni riga trovi le icone per le seguenti azioni:
+Passa il mouse su una riga per mostrare le icone **Modifica** e **Vedi**. Clicca sulla riga per selezionarla: la barra delle azioni sopra la tabella mostra quindi tutte le azioni disponibili:
 
-- **Modifica** – Apre una finestra di dialogo per modificare i dettagli del caso.
+- **Modifica** – Apre una finestra in cui puoi modificare i dettagli del caso.
 - **Stampa** – Genera una scheda PDF stampabile per il caso.
-- **Visualizza** – Apre una finestra di dialogo di sola lettura per consultare le informazioni del caso.
-- **Elimina** – Apre una finestra di dialogo di conferma per rimuovere definitivamente il caso.
+- **Vedi** – Apre una finestra di sola lettura per consultare le informazioni del caso.
+- **Elimina** – Apre una finestra di conferma per rimuovere definitivamente il caso.
 
-Fai clic sull'icona **Altro** (tre punti verticali) per vedere tutte le azioni disponibili, nel caso alcune fossero nascoste.
+## Lavorare con più casi
 
-## Azioni in blocco
+1. Seleziona una o più righe usando le caselle di controllo nella prima colonna.
+2. Quando è selezionata una sola riga, tutte le sue azioni diventano disponibili nella barra delle azioni sopra la tabella.
+3. Quando sono selezionate più righe, restano solo le azioni di massa — attualmente **Elimina**.
 
-Seleziona più casi usando le caselle di controllo nella prima colonna. Quando è selezionato almeno un caso, nella parte superiore della tabella compare un pulsante **Elimina**. Puoi eliminare tutti i casi selezionati in una sola volta.
+!!! warning "L'eliminazione è definitiva"
+    I casi eliminati non possono essere recuperati. Controlla attentamente la selezione prima di confermare un'eliminazione di massa. Un caso utilizzato da form, o che ha casi figli, non può essere eliminato; vedi [Metriche](index.md).
 
-!!! warning "L'eliminazione in blocco è definitiva"
-    I casi eliminati non possono essere recuperati. Usa l'azione di eliminazione in blocco con attenzione.
+## Creare un caso
 
-## Creare un nuovo caso
+1. Clicca **Add new CASE** nella barra degli strumenti sopra la tabella.
+2. Nella finestra, compila i dettagli del caso. I campi opzionali sono contrassegnati con *(optional)*.
+    - **Case Name** – Inserisci un nome descrittivo.
+    - **Case Image** – Carica un file immagine.
+    - **Caso genitore** – Collega facoltativamente questo caso a un caso genitore esistente.
+    - **Notes** – Aggiungi eventuali note rilevanti.
+3. Clicca **Salva** per creare il caso.
 
-1. Fai clic sul pulsante flottante **Aggiungi nuovo** (icona più) in basso a destra nella pagina.
-2. Si aprirà una finestra di dialogo. Compila i campi obbligatori:
-   - **Nome del caso** – Inserisci un nome descrittivo.
-   - **Codice** – (Facoltativo) Fornisci un codice univoco. Questo campo è di sola lettura dopo la creazione.
-   - **Immagine del caso** – Carica un file immagine.
-   - **Caso padre** – Collega facoltativamente questo caso a un caso padre esistente.
-   - **Note** – Aggiungi eventuali note pertinenti.
-3. Fai clic su **Salva** per creare il caso.
+## Importare casi
 
-## Importare i casi
+Clicca **Import CASE** nella barra degli strumenti per caricare in blocco i casi da un file `.xls`, `.xlsx` o `.csv`. La pagina di importazione ti guida attraverso il caricamento del file, la mappatura delle sue colonne e la verifica del risultato. I casi il cui nome esiste già vengono riutilizzati, non aggiornati; il codice è generato da Dino e non può essere importato.
 
-Usa il pulsante flottante **Importa** (icona di caricamento su cloud) per caricare i casi in blocco da un file. I formati supportati sono definiti dall'amministratore del sistema.
+## Ricerca e filtro
 
-## Filtro e ricerca
+Usa la barra degli strumenti per restringere la tabella:
 
-La barra di ricerca in alto ti consente di filtrare i casi per:
+- **Ricerca per parola chiave** – Digita nel campo di ricerca per trovare corrispondenze nel testo dei campi visualizzati.
+- **Filtri** – Apri il pannello dei filtri per impostare una **Data di partenza** e una **Fino ad oggi**, che filtrano per data di creazione, poi clicca **Cerca**. Il badge sul pulsante **Filtri** mostra quanti filtri sono attivi.
+- I filtri applicati appaiono come chip sotto la barra degli strumenti; clicca sull'icona di annullamento su un chip per rimuovere quel filtro.
 
-- **Parola chiave** – Cerca in tutti i campi visualizzati.
-- **Intervallo di date** – Filtra per data di creazione (Da / A).
-- **Filtri aggiuntivi** – Seleziona tra filtri predefiniti come metrica, stato, utente o gruppo di utenti.
+## Esportare casi
 
-Dopo aver applicato i filtri, puoi salvare la combinazione come **preset** per riutilizzarla rapidamente. Per salvare un preset:
-
-1. Apri il pannello dei filtri.
-2. Inserisci un nome nel campo del preset.
-3. Fai clic su **Salva**.  
-Per applicare un preset salvato, selezionalo dall'elenco e fai clic su **Applica**.
-
-## Esportare i casi
-
-Fai clic sul pulsante **Esporta** (icona di download da cloud) nella barra dei filtri. Scegli il formato di esportazione (ad es. CSV o Excel) e seleziona quali colonne includere. Il file esportato conterrà tutti i casi attualmente visibili, rispettando i filtri attivi.
-
-## Personalizzare la tabella
-
-- **Ordina** – Fai clic sull'intestazione di qualsiasi colonna ordinabile (ad es. **Nome del caso**, **Data di creazione**) per ordinare la tabella.
-- **Selettore di colonne** – Apri la finestra di dialogo del selettore di colonne per mostrare o nascondere le colonne.
-- **Espandi le righe** – Alcuni casi possono avere sotto-elementi (altri casi collegati come dettagli). Fai clic su una riga per espanderla e vedere i record correlati.
-
-La pagina mostra inoltre un **percorso di navigazione** in alto, così puoi tornare alla sezione principale Metriche.
+1. Clicca **Esporta** nella barra degli strumenti.
+2. Scegli cosa esportare: *Elementi nella pagina* (l'opzione predefinita), gli elementi corrispondenti ai tuoi filtri oppure *Tutti gli elementi*.
+3. Scegli il formato: *csv*, *xlsx* o *splitted xlsx*, poi clicca **Esporta**.
 
 ## Pagine correlate
 

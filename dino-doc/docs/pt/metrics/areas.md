@@ -1,81 +1,80 @@
 ---
-title: Gerenciando Valores de Métricas – Áreas Temáticas
-description: Aprenda a visualizar, adicionar, editar, excluir e pesquisar áreas temáticas na seção de gerenciamento de métricas do Dino.
+title: Gerenciando valores de métricas – Áreas temáticas
+description: Aprenda como visualizar, adicionar, editar, deletar e pesquisar áreas temáticas na seção de gerenciamento de métricas do Dino.
 ---
 
-# Gerenciando Valores de Métricas – Áreas Temáticas
+# Gerenciando valores de métricas – Áreas temáticas
 
-A página **Áreas Temáticas** (acessível a partir da seção Métricas) permite organizar os dados das suas métricas em categorias hierárquicas. Aqui você pode visualizar, criar, editar e excluir áreas temáticas, além de filtrar e exportar a lista.
+A página **Áreas temáticas** (acessível pela seção Métricas) permite organizar os dados das suas métricas em categorias hierárquicas. Aqui você pode visualizar, criar, editar e deletar áreas temáticas, além de filtrar e exportar a lista.
 
-![Visualização principal da página Áreas Temáticas](../imgs/metrics/areas.png)
+![Visualização principal da página Áreas temáticas](../imgs/metrics/areas.png)
 
-## O Que Você Vê
+## O que você vê
 
-- Os **percursos de navegação** na parte superior mostram sua localização atual no aplicativo (por exemplo, **Métricas > Áreas Temáticas**).
-- A tabela principal lista todas as áreas temáticas, exibindo colunas como **Nome da Área**, **Área Superior** e (se configurado) outros atributos. Você pode personalizar as colunas visíveis clicando no ícone **Personalize as colunas** no cabeçalho.
-- Uma **barra de pesquisa** e um **painel de filtro** permitem encontrar áreas por palavra-chave, intervalo de datas ou outros metadados.
+- O **percurso de navegação** no topo mostra sua localização atual no aplicativo (por exemplo, **Métricas > Áreas temáticas**).
+- A tabela principal lista todas as áreas temáticas, exibindo colunas como **Nome da área**, **Área principal** e (se configurado) outros atributos. Você pode personalizar as colunas visíveis clicando no botão **Colunas** acima da tabela.
+- Um campo de **pesquisa por palavra-chave** e o botão **Filtros** permitem encontrar áreas por nome ou por data de criação.
 - O botão **Exportar** (cloud_download) permite baixar a lista atual como um arquivo.
-- Dois botões de ação flutuantes estão disponíveis:
-    - **+ (Adicionar Novo)** – cria uma nova área temática.
-    - **cloud_upload** – importa áreas de um arquivo externo.
+- Dois botões estão disponíveis na barra de ferramentas:
+    - **Adicionar nova ÁREA** – cria uma nova área temática.
+    - **Importar ÁREA** – abre a página de importação, onde você envia um arquivo `.xls`, `.xlsx` ou `.csv`, mapeia suas colunas e revisa o resultado. Áreas cujo nome já existe são reutilizadas, não atualizadas.
 
-## Trabalhando com Áreas Temáticas
+## Trabalhando com áreas temáticas
 
-### Adicionando uma Nova Área Temática
+### Adicionando uma nova área temática
 
-1. Clique no botão flutuante **+**.
-2. Na caixa de diálogo que se abre, preencha os campos obrigatórios (por exemplo, **Nome da Área**, **Área Superior**).
-3. Clique em **Criar** para salvar a nova área.
+1. Clique no botão **Adicionar nova ÁREA** na barra de ferramentas.
+2. No diálogo que abre, preencha o **Nome da área** e, se necessário, a **Área principal** e quaisquer atributos adicionais. Campos opcionais são marcados como *(opcional)*.
+3. Clique em **Salvar** para criar a nova área.
 
-!!! tip "Área Superior"
-    Para criar uma subárea, selecione uma **Área Superior** na lista suspensa. Se deixado em branco, a nova área se tornará uma entrada de nível superior.
+!!! tip "Área principal"
+    Para criar uma subárea, comece a digitar no campo **Área principal** e escolha a área principal entre as sugestões. Se deixado em branco, a nova área se torna uma entrada de nível superior.
 
-### Editando uma Área Existente
+### Editando uma área existente
 
-1. Encontre a área que deseja alterar na tabela.
-2. Clique no ícone **editar** (lápis) na coluna de ações da linha.
-3. Modifique os campos na caixa de diálogo e clique em **Salvar**.
+1. Encontre na tabela a área que deseja alterar.
+2. Passe o mouse sobre a linha e clique no ícone **Editar** (lápis), ou clique na linha para selecioná-la e clique em **Editar** na barra de ações acima da tabela.
+3. Modifique os campos no diálogo e clique em **Salvar**.
 
-### Visualizando Detalhes
+![Diálogo de edição para modificar um valor de métrica](../imgs/metrics/areas-edit.png)
 
-- Clique no ícone **visibilidade** para abrir uma caixa de diálogo somente leitura exibindo todos os campos da área.
-- Você também pode **clicar em uma linha** para expandi-la e revelar quaisquer subáreas (se a hierarquia estiver configurada).
+### Visualizando detalhes
 
-### Excluindo uma Área
+- Passe o mouse sobre uma linha e clique no ícone de **Visibilidade** (olho), ou selecione a linha e clique em **Ver** na barra de ações, para abrir um diálogo somente leitura mostrando todos os campos da área.
 
-1. Clique no ícone **excluir** (lixeira) na coluna de ações da linha.
-2. Confirme a exclusão na caixa de diálogo que aparece.
+### Deletando uma área
 
-!!! warning "Considerações sobre Exclusão"
-    Excluir uma área superior pode afetar as subáreas. O Dino avisará você se houver itens associados. Prossiga com cautela.
+1. Clique na linha da área para selecioná-la e, em seguida, clique em **Deletar** na barra de ações acima da tabela.
+2. Confirme a exclusão no diálogo que aparece.
 
-## Pesquisando e Filtrando
+!!! warning "Considerações ao deletar"
+    Uma área usada por form, ou que tenha áreas filhas, não pode ser deletada. Se apenas report a utilizarem, o Dino avisa e permite confirmar. Grupos de usuários que concedem a área não são verificados: remova-a deles primeiro. Veja [Métricas](index.md).
 
-- Use o campo de **pesquisa por palavra-chave** na parte superior da lista para filtrar áreas por nome.
-- Abra o painel de filtro clicando na seta **expandir**. Você pode definir:
-    - **Data inicial / Data final** – filtra pela data de criação.
-    - **Filtros adicionais** (por exemplo, campos específicos da métrica) – se a sua instância tiver atributos personalizados.
-- Aplique um **preset de filtro** (se disponível) para carregar rapidamente combinações de filtros salvas.
+## Pesquisando e filtrando
 
-## Exportando a Lista
+- Use o campo de **pesquisa por palavra-chave** acima da lista para filtrar áreas por nome.
+- Clique em **Filtros** para definir uma **Data inicial** e uma **Até à data**, que filtram por data de criação, e então clique em **Pesquisar**.
+- Os filtros aplicados aparecem como chips abaixo da barra de ferramentas; clique no ícone **cancelar** em um chip para removê-lo.
 
-1. Clique no botão **cloud_download** na barra de ferramentas.
-2. Escolha o formato de exportação (por exemplo, CSV, Excel).
-3. O arquivo será gerado com o conjunto de áreas atualmente visível (filtrado).
+## Exportando a lista
 
-## Ações em Massa
+1. Clique no botão **Exportar** na barra de ferramentas.
+2. Escolha o que exportar: *Itens na página* (o padrão), os itens que correspondem aos seus filtros, ou *Todos os itens*.
+3. Escolha o formato: *csv*, *xlsx* ou *splitted xlsx*, e então clique em **Exportar**.
 
-Para executar ações em várias áreas ao mesmo tempo (por exemplo, excluir várias), marque as caixas de seleção ao lado das linhas. Os botões de ação em massa aparecerão no cabeçalho da coluna. Atualmente, a tela Áreas Temáticas suporta **exclusão em massa**.
+## Ações em massa
 
-## Navegando com Percursos de Navegação
+Para executar ações em várias áreas ao mesmo tempo, marque as caixas de seleção ao lado das linhas. Quando uma linha está selecionada, suas ações individuais aparecem na barra de ações acima da tabela; quando várias linhas estão selecionadas, a barra oferece as ações em massa. A tela Áreas temáticas atualmente suporta apenas **exclusão em massa**.
 
-Os percursos de navegação mostram sua localização atual (por exemplo, **Métricas > Áreas Temáticas**). Clique em qualquer link do percurso de navegação para ir a um nível superior.
+## Navegando com o percurso de navegação
 
-## Páginas Relacionadas
+O percurso de navegação mostra sua localização atual (por exemplo, **Métricas > Áreas temáticas**). Clique em qualquer link do percurso de navegação para ir a um nível superior.
 
-- [Visão Geral das Métricas](index.md)
-- [Gerenciando Valores de Métricas – Casos](cases.md)
-- [Gerenciando Valores de Métricas – Localizações](locations.md)
-- [Gerenciando Valores de Métricas – Organizações](organizations.md)
-- [Gerenciando Valores de Métricas – Projetos](projects.md)
-- [Usuários e Grupos](../administration/users.md)
+## Páginas relacionadas
+
+- [Visão geral de Métricas](index.md)
+- [Gerenciando valores de métricas – Casos](cases.md)
+- [Gerenciando valores de métricas – Posições](locations.md)
+- [Gerenciando valores de métricas – Organizações](organizations.md)
+- [Gerenciando valores de métricas – Projetos](projects.md)
+- [Usuários e grupos](../administration/users.md)

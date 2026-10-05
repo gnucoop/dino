@@ -1,64 +1,72 @@
 ---
-title: Lista de Utilizadores
-description: Visualize, edite e faça a gestão das contas de utilizador na sua organização Dino.
+title: Lista de usuários
+description: Visualize, edite e gerencie contas de usuário na sua organização Dino.
 ---
 
-# Lista de Utilizadores
+# Lista de usuários
 
-A página Lista de Utilizadores apresenta uma lista completa de todas as contas de utilizador na sua organização Dino. A partir daqui, pode consultar os detalhes dos utilizadores, editar contas e criar novos utilizadores.
+A página Lista de usuários fornece uma lista completa de todas as contas de usuário na sua organização Dino. A partir daqui, você pode visualizar detalhes dos usuários, editar contas e criar novos usuários.
 
-![Vista principal da página Lista de Utilizadores](../imgs/administration/users-list.png)
+![Visualização principal da página Lista de usuários](../imgs/administration/users-list.png)
 
-## Compreender a Lista de Utilizadores
+## Entendendo a Lista de usuários
 
-A lista principal apresenta informações essenciais de cada utilizador:
+A lista principal exibe informações importantes de cada usuário:
 
-*   **Email:** O endereço de email de início de sessão do utilizador.
-*   **Nome Completo:** O nome associado à conta.
-*   **Desativado:** Um interruptor que indica se a conta está ativa ou desativada. Pode clicar neste interruptor diretamente na lista para alterar o estado.
+*   **Email:** O endereço de email de login do usuário.
+*   **Nome completo:** O nome associado à conta.
+*   **Desativado:** Um botão de alternância que indica se a conta está ativa ou desativada. Você pode clicar nesse botão diretamente na lista para alterar o status.
 
-Pode ordenar a lista pela coluna **Data de Criação**. A coluna **ID** está oculta por predefinição.
+Você pode ordenar a lista pelas colunas **Email**, **Nome completo** ou **Data de criação**. As colunas **ID** e **Data de criação** ficam ocultas por padrão. Para mostrar ou ocultar colunas, clique no botão **Colunas** acima da lista, à direita, e selecione as que deseja exibir.
 
-## Trabalhar com a Lista
+## Trabalhando com a Lista
 
-### Pesquisa e Filtragem
+### Pesquisa e filtro
 
-Utilize a barra de pesquisa no topo da página para encontrar utilizadores pelo seu email ou nome completo.
+Use a barra de pesquisa na parte superior da página para encontrar usuários pelo email ou nome completo.
 
 Para aplicar filtros mais específicos:
 
-1.  Clique no ícone de filtro na barra de pesquisa.
-2.  Na secção **Grupos de Permissões de Utilizador**, pode selecionar um ou mais grupos de utilizadores para filtrar a lista de modo a mostrar apenas os membros desses grupos.
+1.  Clique no botão **Filtros** na barra de pesquisa.
+2.  Defina uma **Data inicial** e uma **Até à data** para filtrar por data de criação, e selecione um ou mais grupos de usuários para restringir a lista aos membros desses grupos.
+3.  Clique em **Pesquisar** para aplicar os filtros, ou em **Repor os filtros** para limpá-los.
 
-### Ações do Utilizador
+Os filtros aplicados aparecem como chips abaixo da barra de pesquisa. Clique no ícone **cancelar** em um chip para remover esse filtro.
 
-Cada linha de utilizador tem um menu de ações (três pontos verticais) do lado direito. Clique nele para aceder às seguintes opções:
+### Ações do usuário
 
-*   **Editar:** Abre o editor de utilizador para modificar os detalhes da conta.
-*   **Eliminar:** Remove permanentemente a conta de utilizador. Ser-lhe-á pedido que confirme esta ação.
-*   **Ver:** Abre uma vista só de leitura dos detalhes do utilizador.
+Passe o mouse sobre a linha de um usuário para mostrar os ícones **Editar** e **Ver**. Clique em qualquer lugar da linha para selecioná-la: a barra de ações acima da lista então mostra todas as ações que você pode executar no usuário selecionado:
 
-Também pode clicar em qualquer parte da linha de um utilizador para a selecionar, ou clicar no ícone de expansão para ver um resumo das informações do utilizador diretamente na lista.
+*   **Editar:** Abrir o editor de usuário para modificar os detalhes da conta.
+*   **Ver:** Abrir uma visualização somente leitura dos detalhes do usuário.
+*   **Excluir:** Remover permanentemente a conta do usuário. Será solicitado que você confirme esta ação.
 
-## Criar um Novo Utilizador
+## Criando um novo usuário
 
-Para adicionar um novo utilizador à sua organização:
+Para adicionar um novo usuário à sua organização:
 
-1.  Clique no botão flutuante azul **+** no canto inferior direito do ecrã.
-2.  Será aberto um formulário. Introduza os dados do novo utilizador, incluindo email, nome, e atribua-o aos grupos de utilizadores adequados. Para mais informações sobre grupos, consulte [Lista de Grupos](groups-list.md).
-3.  Clique em **Guardar** para criar a conta. O novo utilizador receberá um email com instruções para definir a sua palavra-passe.
+1.  Clique no botão **Adicionar novo usuário** na barra de ferramentas acima da lista.
+2.  Um formulário será aberto. Insira o **Nome completo** e o **Email** do novo usuário, e atribua-o aos grupos apropriados em **Grupos de permissão do usuário**. Para mais informações sobre grupos, consulte [Lista de grupos](groups-list.md).
+    Dependendo de como o seu Dino autentica os usuários, o formulário também pode solicitar uma **Senha** e **Confirme sua senha**, com pelo menos 9 caracteres.
+3.  Clique em **Salvar** para criar a conta.
 
-!!! warning "Restrição Offline"
-    O botão **+** será desativado (mostrando um ícone de Wi-Fi desligado) se não estiver ligado à internet. Não é possível criar novas contas de utilizador em modo offline. Ainda pode visualizar e editar utilizadores existentes offline.
+O botão **Salvar** permanece indisponível até que todos os campos obrigatórios sejam preenchidos corretamente.
 
-## Editar um Utilizador
+!!! tip "Modos de visualização e edição"
+    O mesmo formulário é usado para criar, editar e visualizar usuários. No modo **Ver**, todos os campos são somente leitura e apenas o botão **Fechar** é exibido.
 
-Para modificar as informações de um utilizador existente:
+## Editando um usuário
 
-1.  Clique no menu de ações (três pontos) na linha do utilizador.
-2.  Selecione **Editar**.
-3.  No editor, atualize quaisquer detalhes do utilizador ou atribuições de grupos.
-4.  Clique em **Guardar** para aplicar as alterações.
+Para modificar as informações de um usuário existente:
 
-!!! tip "Desativação Rápida"
-    Pode ativar ou desativar rapidamente a capacidade de início de sessão de um utilizador clicando no interruptor **Desativado** diretamente na lista, sem abrir o editor completo.
+1.  Passe o mouse sobre a linha do usuário e clique no ícone **Editar**, ou selecione a linha e clique em **Editar** na barra de ações.
+2.  No editor, atualize o nome completo do usuário ou as atribuições de grupo. O endereço de email não pode ser alterado aqui.
+3.  Clique em **Salvar** para aplicar as alterações.
+
+!!! tip "Desativação rápida"
+    Você pode ativar ou desativar rapidamente a capacidade de um usuário fazer login clicando no botão **Desativado** diretamente na lista, sem abrir o editor completo.
+
+## Páginas relacionadas
+
+*   [Usuários](users.md)
+*   [Lista de grupos](groups-list.md)

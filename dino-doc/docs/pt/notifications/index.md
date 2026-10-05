@@ -1,73 +1,76 @@
 ---
 title: Notificações
-description: Como visualizar, pesquisar e abrir as suas notificações na aplicação Dino.
+description: Como ver, pesquisar e abrir as tuas notificações na aplicação Dino.
 ---
 
 # Notificações
 
-A página Notificações mostra todas as mensagens enviadas para si pelo sistema ou pelo seu administrador. Aqui pode explorar, pesquisar e abrir notificações individuais, incluindo as que ligam diretamente a uma área relevante da aplicação.
+A página Notificações mostra todas as mensagens que te foram enviadas pelo sistema ou pelo teu administrador. A partir daqui podes explorar, pesquisar e abrir notificações individuais, incluindo as que ligam diretamente a uma área relevante da aplicação.
 
 ![Vista principal da página Notificações](../imgs/notifications/index.png)
 
 ---
 
-## Ler as Suas Notificações
+## Ler as tuas notificações
 
-A lista apresenta todas as notificações que recebeu, mostrando o **texto da mensagem** e a **data em que foi criada**.
+A lista mostra todas as notificações que recebeste, apresentando o **texto da mensagem** e a **data em que foi criada**.
 
-As notificações que ainda não abriu aparecem **destacadas** na lista, para que as possa identificar rapidamente. Um pequeno ícone de ligação junto ao texto da mensagem indica que a notificação o levará a algum lugar quando clicada.
+Um pequeno ícone de ligação junto ao texto da mensagem indica que a notificação te levará a algum sítio quando clicada.
 
-O número total de notificações que correspondem à sua pesquisa atual é apresentado no topo da página.
+As notificações que ainda não leste estão **destacadas** com um fundo colorido, para que as possas distinguir das que já leste.
+
+O número total de notificações correspondentes à tua pesquisa atual é apresentado no topo da página.
 
 ---
 
-## Pesquisar e Filtrar
+## Pesquisar e filtrar
 
-Utilize a barra de filtros acima da lista para restringir o que é apresentado.
+Usa a barra de filtros acima da lista para restringir o que é apresentado.
 
-### Pesquisar por palavra-chave
+### Pesquisa por palavra-chave
 
-1. Clique dentro do campo **pesquisar por palavra-chave** no topo da lista.
-2. Comece a escrever qualquer palavra ou frase do texto da notificação.
-3. A lista é atualizada automaticamente à medida que escreve.
-4. Para limpar a pesquisa, clique no ícone **×** que aparece dentro do campo.
+1. Clica dentro do campo **pesquisa por palavra-chave** no topo da lista.
+2. Começa a escrever qualquer palavra ou frase do texto da notificação.
+3. A lista atualiza-se automaticamente à medida que escreves.
+4. Para limpar a pesquisa, clica no ícone **×** que aparece dentro do campo.
 
 ### Filtrar por data
 
-1. Clique no campo **Data de início** e selecione uma data de início no calendário.
-2. Clique no campo **Data de fim** e selecione uma data de fim.
-3. A lista mostrará apenas as notificações criadas dentro desse intervalo de datas.
-4. Para remover um filtro de data, clique no ícone **×** junto ao campo correspondente.
+1. Clica em **Filtros** na barra de ferramentas.
+2. Escolhe uma **Data inicial** e uma **Até à data** nos calendários.
+3. Clica em **Pesquisar**: a lista mostra apenas as notificações criadas dentro desse intervalo de datas. **Repor os filtros** limpa-os.
+
+Os filtros aplicados aparecem como etiquetas abaixo da barra de filtros. Clica no **×** de uma etiqueta para remover esse filtro.
 
 ---
 
-## Navegar na Lista
+## Navegar na lista
 
-Se houver mais notificações do que as que cabem numa página, utilize os **controlos de paginação** no topo da lista para navegar entre páginas. Pode saltar para a primeira ou a última página, ou avançar e recuar uma página de cada vez.
+Se houver mais notificações do que as que cabem numa página, usa os **controlos de paginação** no topo da lista para te moveres entre páginas. Podes saltar para a primeira ou a última página, ou avançar e retroceder uma página de cada vez.
 
----
-
-## Abrir uma Notificação
-
-Clique em qualquer linha para abrir essa notificação.
-
-- Se a notificação contiver uma **ligação** (indicada pelo ícone de ligação junto à mensagem), clicar nela marcará a notificação como lida e levará diretamente à página relevante na aplicação.
-- Se a notificação não contiver uma ligação, clicar nela expandirá a linha para mostrar o seu conteúdo completo no local.
-
-Para recolher uma notificação expandida, clique novamente na sua linha.
-
-Para expandir ou recolher todas as linhas de uma vez, utilize o **botão de dobrar/desdobrar** acima da lista.
+O número de notificações encontradas para a tua pesquisa atual é apresentado junto aos controlos de paginação.
 
 ---
 
-## Personalizar as Colunas
+## Abrir uma notificação
 
-Pode alterar quais colunas são visíveis na lista.
+Clica na linha de uma notificação para a marcar como lida: o seu destaque desaparece.
 
-1. Clique no **botão de seleção de colunas** (ícone de grelha) no canto superior direito do cabeçalho da tabela.
-2. Abrir-se-á um painel a mostrar todas as colunas disponíveis.
-3. Ative ou desative as colunas que pretende mostrar ou ocultar.
-4. Feche o painel quando terminar — a sua seleção é aplicada imediatamente.
+Se a notificação contiver uma **ligação** (indicada pelo ícone de ligação junto à mensagem), o Dino também te leva diretamente para a página relevante da aplicação. Uma notificação sem ligação não tem mais nada para abrir: a sua mensagem é o texto apresentado na lista.
 
-!!! tip "Marcar como lida"
-    Quando clica numa notificação que tem uma ligação, esta é automaticamente marcada como lida. As notificações sem ligação não são automaticamente marcadas como lidas quando as expande.
+---
+
+## Personalizar as colunas
+
+Podes alterar quais as colunas visíveis na lista.
+
+1. Clica no botão **Colunas** acima da tabela, à direita.
+2. Abre-se um painel que mostra todas as colunas disponíveis.
+3. Ativa ou desativa as colunas que queres mostrar ou ocultar.
+4. Fecha o painel quando terminares — a tua seleção é aplicada imediatamente.
+
+!!! tip "Marcar como lido"
+    Clicar numa notificação marca-a como lida, tenha ela uma ligação ou não. Também podes marcar notificações como lidas a partir do sino de notificações na barra lateral, incluindo todas de uma só vez com **Marca tudo como lido**.
+
+!!! warning "Abrir uma ligação sai da página"
+    Seguir uma ligação de uma notificação afasta-te da página Notificações para a área ligada do Dino. Usa o botão de retroceder do teu navegador para voltares à lista.

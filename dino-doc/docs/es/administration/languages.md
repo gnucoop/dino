@@ -1,105 +1,94 @@
 ---
 title: Gestión de idiomas
-description: Cómo gestionar las traducciones de la aplicación, incluida la adición de idiomas, la edición de texto y la exportación de archivos.
+description: "Cómo gestionar las traducciones de Dino: encontrar una clave, traducirla en todos los idiomas, añadir o renombrar claves e importar o exportar un archivo de idioma."
 ---
 
 # Gestión de idiomas
 
-La página **Idiomas** permite a los administradores gestionar todo el texto traducido que se utiliza en Dino. Desde aquí puedes consultar, editar y añadir traducciones, gestionar qué idiomas están disponibles y exportar archivos de traducción para respaldarlos o editarlos.
+La página **Idiomas** permite a los administradores gestionar todos los textos traducidos que se usan en Dino. Cada texto tiene una **Clave de traducción** — normalmente el propio texto en inglés — y un valor para cada idioma disponible. Desde aquí puedes encontrar una clave, traducirla, añadir claves nuevas e importar o exportar todo el diccionario de un idioma.
 
 ![Vista principal de la página Idiomas](../imgs/administration/languages.png)
 
+El encabezado de la página muestra un resumen de la cobertura de traducción: el número total de claves de traducción y el porcentaje completado. Debajo del encabezado, la página se divide en dos áreas: la lista de claves de traducción a la izquierda y el detalle de la clave seleccionada a la derecha.
+
 !!! warning "Solo para administradores"
-    Esta área solo es visible para los usuarios con el rol de Administrador. Si no la ves en la navegación, ponte en contacto con el administrador del sistema.
+    Esta área solo es visible para los usuarios con el rol de Administrador. Si no la ves en la navegación, ponte en contacto con el administrador de tu sistema.
 
 ---
 
-## Consultar las traducciones
+## Explorar las claves de traducción
 
-La vista principal muestra una lista con todas las entradas de traducción. Cada entrada muestra su **clave** —el identificador interno que utiliza la aplicación— y, cuando se ha seleccionado un idioma, el texto traducido correspondiente.
+Cada fila de la lista muestra una clave y, en un anillo a su izquierda, el porcentaje de idiomas que ya la traducen. Si el texto contiene marcadores dinámicos, como `{{language}}`, aparecen listados bajo la clave.
 
-Mientras se cargan los datos de traducción se muestra un indicador de carga.
+### Buscar y filtrar la lista
 
-### Filtrar la lista
+- Escribe en el campo **Buscar clave o texto…** para encontrar una clave. La búsqueda examina tanto las claves como sus traducciones.
+- Usa los dos botones junto al campo de búsqueda para elegir qué se muestra:
+    - **Todas** — todas las claves de traducción.
+    - **Por traducir** — solo las claves que aún faltan en al menos un idioma.
 
-Dos controles situados en la parte superior de la página te permiten acotar las entradas que se muestran:
-
-- **Búsqueda por palabra clave** — escribe cualquier palabra para filtrar las entradas cuya clave o traducción contenga ese texto. La lista se actualiza a medida que escribes.
-- **Selector de idioma** — una fila de botones muestra **Clave** y un botón por cada idioma disponible. Haz clic en el nombre de un idioma para mostrar sus traducciones junto a cada clave. Las entradas que no tengan traducción para el idioma seleccionado se muestran como *(Sin traducción)*.
-
----
-
-## Editar una entrada de traducción
-
-1. Haz clic en cualquier entrada de la lista para abrir el cuadro de diálogo **Editar traducción**.
-2. El cuadro de diálogo muestra la **clave** y un campo de texto por cada idioma disponible.
-3. Actualiza las traducciones según sea necesario.
-4. Haz clic en **Guardar** para aplicar los cambios, o en **Deshacer** para cerrar sin guardar.
-
-También puedes eliminar permanentemente una entrada individual desde este cuadro de diálogo haciendo clic en el botón **Eliminar**. Esto borra la clave de traducción y todas sus traducciones asociadas.
-
-!!! warning
-    Eliminar una entrada de traducción es permanente. Se borrarán la clave y todos sus valores de idioma.
+La búsqueda y el filtro funcionan juntos: con **Por traducir** seleccionado, la búsqueda solo examina las claves que aún quedan por traducir.
 
 ---
 
-## Añadir una nueva entrada de traducción
+## Traducir una clave
 
-Utiliza esta opción cuando necesites añadir una clave de traducción que aún no existe en el sistema.
+1. Haz clic en una clave de la lista. Su detalle se abre a la derecha.
+2. El detalle muestra una tarjeta por idioma, marcada como **Traducido** o **Falta**, con un cuadro de texto que contiene su valor.
+3. Escribe la traducción en el cuadro de cada idioma que quieras completar.
 
-1. Haz clic en el botón **+ Traducción** de la barra de herramientas.
-2. Se abrirá el cuadro de diálogo **Añadir traducción**. Contiene un campo de texto por cada idioma activo en ese momento.
-3. Introduce el texto de la traducción para cada idioma según sea necesario.
-4. Haz clic en **Guardar** para añadir la nueva entrada, o en **Deshacer** para cancelar.
+No hay botón de guardado: cada cambio se guarda automáticamente un momento después de que dejes de escribir. El encabezado del detalle muestra **Guardando…** mientras se almacena y **Guardado** cuando ha terminado; si algo va mal, muestra **Error al guardar**. Una barra de progreso junto a él indica en cuántos idiomas está traducida la clave.
 
-Tras guardar la entrada aparecerá brevemente un mensaje de confirmación.
+!!! tip "Marcadores"
+    Mantén los marcadores de la clave, como `{{language}}`, sin cambios en todas las traducciones: Dino los sustituye por el valor real cuando muestra el texto. Aparecen resaltados en la clave que se muestra en la parte superior del detalle.
 
----
+### Renombrar o eliminar una clave
 
-## Gestionar los idiomas
+En la parte superior del detalle, junto a la clave:
 
-Utiliza esta opción para añadir un nuevo idioma, actualizar las traducciones de un idioma existente o eliminar un conjunto de traducciones personalizado.
+- **Renombrar clave** (icono de lápiz) — convierte la clave en un campo editable. Escribe la nueva clave y pulsa **Enter**, o haz clic fuera del campo, para aplicarla; pulsa **Esc** para cancelar.
+- **Eliminar** (icono de papelera) — borra la clave y todas sus traducciones, tras confirmar con **Sí**.
 
-1. Haz clic en el botón **Idioma** de la barra de herramientas.
-2. Se abrirá el cuadro de diálogo **Configuración de idiomas**. Muestra una lista de los idiomas disponibles y ofrece las siguientes acciones:
-   - **Botón +** para añadir un nuevo idioma.
-   - Haz clic en el nombre de un idioma de la lista para seleccionarlo y ver una vista previa de sus traducciones.
-   - **Actualizar traducción** (con un idioma seleccionado) para subir un nuevo archivo JSON.
-   - **Eliminar traducción personalizada** para borrar los datos de traducción personalizada del idioma seleccionado.
-
-### Añadir un nuevo idioma
-
-1. Haz clic en el **botón +** situado en la parte superior del cuadro de diálogo.
-2. Aparecerá un formulario que solicita una **etiqueta de idioma** (el nombre que aparecerá en la interfaz, por ejemplo "Francés" o "fr").
-3. Opcionalmente, sube un **archivo de traducción JSON** haciendo clic en **Añadir JSON** y seleccionando un archivo de tu dispositivo. El contenido del archivo se mostrará en una vista previa antes de guardarlo.
-4. Haz clic en **Guardar** para añadir el idioma, o en **Deshacer** para cancelar.
-
-### Ver un idioma existente
-
-Haz clic en el botón con el nombre de un idioma para seleccionarlo. El cuadro de diálogo mostrará una vista previa de todas las claves y valores de traducción almacenados actualmente para ese idioma.
-
-### Actualizar las traducciones de un idioma
-
-Con un idioma seleccionado, haz clic en **Actualizar traducción** para subir un nuevo archivo JSON. El cuadro de diálogo mostrará una vista previa de los cambios —claves añadidas y claves modificadas— antes de que guardes.
-
-1. Haz clic en **Actualizar traducción** y selecciona un archivo JSON de tu dispositivo.
-2. Revisa la vista previa con las filas añadidas y modificadas.
-3. Haz clic en **Guardar** para aplicar la actualización, o en **Deshacer** para cancelar.
-
-### Eliminar una traducción personalizada
-
-Con un idioma seleccionado, haz clic en **Eliminar traducción personalizada** para borrar los datos de traducción personalizada de ese idioma.
-
-!!! warning
-    Esto elimina las traducciones personalizadas del idioma seleccionado. Es posible que el idioma permanezca en el sistema, pero su contenido personalizado se perderá.
+!!! warning "La aplicación usa las claves"
+    Dino busca los textos por su clave. Si renombras o eliminas una clave que usa la aplicación, ese texto aparecerá sin traducir, así que cambia las claves solo cuando sepas dónde se usan.
 
 ---
 
-## Exportar traducciones
+## Añadir una nueva clave de traducción
 
-Puedes descargar los datos de traducción de cualquier idioma como archivo JSON.
+1. Haz clic en **Traducción** (icono de más) en el encabezado de la página. Se abre el diálogo **Nueva traducción**.
+2. Escribe la **Clave**. Es obligatoria. Usa `{{` y `}}` alrededor de un nombre, como `{{name}}`, para los marcadores dinámicos.
+3. Opcionalmente, rellena las traducciones: el diálogo lista todos los idiomas disponibles y un contador muestra cuántos has rellenado. Los idiomas que dejes vacíos permanecen marcados como faltantes y podrás completarlos más tarde desde el detalle.
+4. Haz clic en **Guardar traducción**, o en **Deshacer** para cerrar el diálogo sin añadir la clave.
 
-1. Haz clic en el botón **Exportar** (icono de descarga) de la barra de herramientas.
-2. Se abrirá el cuadro de diálogo **Exportar** con una lista de los idiomas disponibles.
-3. Haz clic en el nombre del idioma que quieras exportar. A la derecha aparecerá una vista previa de sus datos de traducción.
-4. Haz clic en **Descargar** para guardar el archivo en tu dispositivo.
+---
+
+## Trabajar con un idioma completo
+
+Haz clic en **Todos los idiomas** en el encabezado de la página para abrir el diálogo que muestra el diccionario completo de cada idioma.
+
+1. A la izquierda, elige un idioma en **Idiomas**. Usa **Buscar idioma…** para encontrarlo en una lista larga. Un punto de color junto a cada idioma indica lo completo que está; pasa el cursor sobre un idioma para ver cuántos valores tiene.
+2. A la derecha, el diálogo muestra una vista previa de solo lectura del idioma seleccionado: cada clave con su valor, o *Falta*. Usa **Buscar en el archivo…** para buscar una clave o un valor. Las traducciones individuales se editan desde la página principal, no aquí.
+3. El pie de página muestra cuántos valores hay del total.
+
+### Exportar un idioma
+
+Haz clic en **Exportar** seguido del código del idioma (por ejemplo **Exportar ITA**). Dino descarga un archivo JSON con el nombre del idioma, como `ita.json`, con las claves que ese idioma traduce. Las claves que aún faltan se omiten.
+
+### Importar un archivo de idioma
+
+1. Selecciona el idioma que quieras actualizar.
+2. Haz clic en **Importar archivo** y elige un archivo `.json`. El diálogo lo comprueba y muestra **JSON válido** o **JSON no válido**; un archivo válido se muestra en la vista previa con su nombre y número de filas.
+3. Haz clic en **Guardar** para almacenarlo. **Guardar** solo se activa después de haber importado un archivo.
+
+Los valores del archivo sustituyen a los valores existentes con la misma clave; las claves que no están en el archivo conservan sus valores actuales. No se almacena nada hasta que hagas clic en **Guardar**: **Cerrar** descarta el archivo importado.
+
+!!! tip "Traducir fuera de Dino"
+    Para que alguien sin acceso a Dino traduzca un idioma, expórtalo, haz que completen el archivo JSON y vuelve a importarlo en el mismo idioma.
+
+---
+
+## Páginas relacionadas
+
+- [Interfaz](../interface/index.md) — cómo cambiar el idioma en el que usas Dino.
+- [Lista de usuarios](users-list.md) — gestiona los usuarios que pueden acceder a esta página.

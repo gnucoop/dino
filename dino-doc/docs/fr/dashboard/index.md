@@ -1,57 +1,58 @@
 ---
 title: Tableau de bord
-description: Le tableau de bord Dino est votre écran d'accueil ; il vous donne un accès rapide aux formulaires, aux rapports et aux autres fonctionnalités.
+description: Le Tableau de bord de Dino est votre écran d'accueil, offrant un accès rapide aux formulaires, aux rapports et à d'autres fonctionnalités.
 ---
 
 # Tableau de bord
 
-Le tableau de bord est le premier écran que vous voyez après vous être connecté à Dino. Il constitue votre point central de navigation dans l'application. Selon la configuration de votre système, votre tableau de bord s'affiche dans l'une de deux mises en page : un **tableau de bord Menu** ou un **tableau de bord Rapport**.
+Le Tableau de bord est le premier écran que vous voyez après vous être connecté à Dino. Il sert de hub central pour naviguer dans l'application. Selon la configuration de votre système, votre Tableau de bord s'affichera selon l'une des deux dispositions suivantes : un **Tableau de bord à menu** ou un **Tableau de bord à rapport**.
 
 ![Vue principale de la page Tableau de bord](../imgs/dashboard/index.png)
 
 ---
 
-## Tableau de bord Menu
+## Tableau de bord à menu
 
-Dans cette mise en page, le tableau de bord présente une grille de cartes de navigation. Chaque carte donne un accès rapide à un domaine majeur de l'application que vous êtes autorisé à utiliser.
+Dans cette disposition, le Tableau de bord présente une grille de cartes de navigation. Chaque carte donne un accès rapide à un domaine majeur de l'application que vous êtes autorisé à utiliser.
 
 Vous verrez généralement les cartes suivantes :
 
-*   **Formulaires** : accédez à l'espace [Formulaires](../forms/index.md) pour créer des schémas de formulaire, collecter des données et consulter les soumissions.
-*   **Rapports** : accédez à l'espace [Rapports](../reports/index.md) pour créer, consulter et gérer des rapports à partir de vos données collectées.
-*   **Métriques** : accédez à l'espace [Métriques](../metrics/index.md) pour gérer les données de référence telles que les projets, les emplacements et les organisations.
+*   **Formulaires** : accédez à l'espace [Formulaires](../forms/index.md) pour créer des form schemas, collecter des données et consulter les données reçues.
+*   **Rapports** : accédez à l'espace [Rapports](../reports/index.md) pour créer, consulter et gérer des rapports basés sur les données que vous avez collectées.
+*   **Métriques** : accédez à l'espace [Métriques](../metrics/index.md) pour gérer les données de référence telles que les projets, les posizioni et les organisations.
     !!! warning "Visibilité"
-        La carte Métriques est masquée si votre compte utilisateur dispose uniquement d'autorisations d'invité.
-*   **Utilisateurs** : accédez à l'espace [Gérer les utilisateurs](../administration/users-list.md) pour gérer les comptes utilisateurs et les groupes.
+        La carte Métriques est masquée si votre compte utilisateur ne dispose que d'autorisations invité.
+*   **Utilisateurs** : accédez à l'espace [Liste des utilisateurs](../administration/users-list.md) pour gérer les comptes utilisateurs et les groupes.
     !!! tip "Accès administrateur"
         La carte Utilisateurs n'est visible que pour les utilisateurs disposant de privilèges d'administrateur.
 
-Pour naviguer, il vous suffit de cliquer sur la carte de l'espace auquel vous souhaitez accéder.
+Pour naviguer, cliquez simplement sur la carte de l'espace auquel vous souhaitez accéder.
 
 ---
 
-## Tableau de bord Rapport
+## Tableau de bord à rapport
 
-Dans cette mise en page, votre tableau de bord est personnalisé pour afficher un seul rapport que vous avez marqué comme favori. Cela vous permet de consulter immédiatement, dès la connexion, les visualisations de données essentielles.
+Dans cette disposition, votre Tableau de bord est personnalisé pour afficher un seul rapport que vous avez marqué comme favori. Cela vous permet de consulter immédiatement, dès la connexion, des visualisations de données clés.
 
-Si vous n'avez pas encore sélectionné de rapport favori, un message de bienvenue vous invite à en ajouter un.
+Si vous n'avez pas encore sélectionné de rapport favori, un message de bienvenue vous invitera à en ajouter un.
 
 ### Définir un rapport favori
 
 1.  Rendez-vous dans l'espace [Rapports](../reports/index.md).
-2.  Ouvrez le rapport que vous souhaitez voir sur votre tableau de bord.
-3.  Dans la liste des rapports ou dans la vue du rapport, recherchez et cliquez sur l'action **Ajouter aux favoris** (généralement représentée par une icône en forme de cœur).
-4.  Actualisez la page ou revenez à votre tableau de bord. Le rapport sélectionné s'affiche désormais.
+2.  Ouvrez le rapport que vous souhaitez voir sur votre Tableau de bord.
+3.  Dans la liste du rapport, cliquez sur la ligne du rapport pour le sélectionner, puis cliquez sur le bouton en forme de cœur (**Ajouter aux favoris**) dans la barre d'actions. Cette option n'est disponible que si les favoris sont activés pour votre instance Dino.
+4.  Actualisez votre Tableau de bord ou revenez-y. Le rapport sélectionné s'affichera désormais.
 
 ### Modifier ou supprimer un favori
 
-Pour modifier votre rapport favori, ajoutez simplement un autre rapport à vos favoris. Le nouveau rapport remplacera l'ancien sur votre tableau de bord. Pour vider le tableau de bord, vous pouvez supprimer le réglage du rapport favori du stockage local de votre navigateur, ou contacter votre administrateur système.
+Pour modifier votre rapport favori, ajoutez simplement un autre rapport à vos favoris. Le nouveau rapport remplacera l'ancien sur votre Tableau de bord. Pour vider le Tableau de bord, sélectionnez le rapport favori dans la liste et cliquez sur le bouton en forme de cœur rempli pour le retirer de vos favoris.
 
-<!-- ---
+!!! tip "Utiliser le rapport affiché"
+    Le rapport affiché sur votre Tableau de bord est le même que celui que vous ouvrez depuis l'espace [Rapports](../reports/index.md). S'il contient des widgets de filtro, vous pouvez également les utiliser ici pour restreindre les données affichées.
 
 ## Visite guidée
 
-La première fois que vous accédez à Dino, une visite guidée peut démarrer automatiquement depuis le tableau de bord pour vous présenter les principales fonctionnalités de l'application.
+La première fois que vous accédez à Dino, une visite guidée peut démarrer automatiquement depuis le Tableau de bord pour vous présenter les principaux espaces de l'application.
 
-*   Vous pouvez suivre les instructions affichées à l'écran pour découvrir la navigation et les actions clés.
-*   Si vous ignorez ou terminez la visite, vous pouvez la redémarrer à tout moment depuis le menu d'aide de l'[Espace utilisateur](../interface/index.md#user-area). -->
+*   Suivez les instructions à l'écran pour découvrir la navigation et les actions clés.
+*   Si vous ignorez ou terminez la visite, vous pouvez la relancer à tout moment avec **Démarrer Dino Tour** dans l'onglet **Tutoriels** de l'[Espace utilisateur](../user-area/index.md). Cet onglet n'est affiché que lorsque la visite guidée est configurée pour votre instance Dino.

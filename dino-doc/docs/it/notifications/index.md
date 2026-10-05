@@ -5,7 +5,7 @@ description: Come visualizzare, cercare e aprire le notifiche in-app in Dino.
 
 # Notifiche
 
-La pagina Notifiche mostra tutti i messaggi che ti sono stati inviati dal sistema o dal tuo amministratore. Da qui puoi sfogliare, cercare e aprire le singole notifiche, comprese quelle che rimandano direttamente a un'area pertinente dell'applicazione.
+La pagina Notifiche mostra tutti i messaggi inviati dal sistema o dal tuo amministratore. Da qui puoi sfogliare, cercare e aprire le singole notifiche, comprese quelle che rimandano direttamente a un'area pertinente dell'applicazione.
 
 ![Vista principale della pagina Notifiche](../imgs/notifications/index.png)
 
@@ -13,61 +13,64 @@ La pagina Notifiche mostra tutti i messaggi che ti sono stati inviati dal sistem
 
 ## Leggere le notifiche
 
-La lista mostra tutte le notifiche che hai ricevuto, indicando il **testo del messaggio** e la **data di creazione**.
+La lista mostra tutte le notifiche ricevute, con il relativo **testo del messaggio** e la **data di creazione**.
 
-Le notifiche che non hai ancora aperto appaiono **evidenziate** nella lista, così puoi individuarle a colpo d'occhio. Una piccola icona di link accanto al testo del messaggio indica che, facendo clic, la notifica ti porterà da qualche parte.
+Una piccola icona a forma di link accanto al testo del messaggio indica che la notifica, se cliccata, ti porterà da qualche parte.
+
+Le notifiche non ancora lette sono **evidenziate** con uno sfondo colorato, così puoi distinguerle da quelle già lette.
 
 Il numero totale di notifiche corrispondenti alla ricerca corrente è mostrato in cima alla pagina.
 
 ---
 
-## Ricerca e filtro
+## Cercare e filtrare
 
-Usa la barra del filtro sopra la lista per restringere ciò che viene mostrato.
+Usa la barra dei filtri sopra la lista per restringere ciò che viene mostrato.
 
-### Ricerca per parola chiave
+### Cerca per parola chiave
 
-1. Fai clic all'interno del campo **ricerca per parola chiave** in cima alla lista.
-2. Inizia a digitare una parola o una frase presente nel testo della notifica.
+1. Clicca all'interno del campo **cerca per parola chiave** in cima alla lista.
+2. Inizia a digitare qualsiasi parola o frase presente nel testo della notifica.
 3. La lista si aggiorna automaticamente mentre digiti.
-4. Per cancellare la ricerca, fai clic sull'icona **×** che appare all'interno del campo.
+4. Per cancellare la ricerca, clicca sull'icona **×** che appare all'interno del campo.
 
-### Filtro per data
+### Filtrare per data
 
-1. Fai clic sul campo **Data da** e seleziona una data di inizio dal calendario.
-2. Fai clic sul campo **Data a** e seleziona una data di fine.
-3. La lista mostrerà solo le notifiche create all'interno di tale intervallo di date.
-4. Per rimuovere un filtro per data, fai clic sull'icona **×** accanto al campo corrispondente.
+1. Clicca su **Filtri** nella barra degli strumenti.
+2. Scegli una **Data di partenza** e una **Fino ad oggi** dai calendari.
+3. Clicca su **Cerca**: la lista mostra solo le notifiche create in quell'intervallo di date. **Azzera filtri** li cancella.
+
+I filtri applicati appaiono come chip sotto la barra dei filtri. Clicca sulla **×** di un chip per rimuovere quel filtro.
 
 ---
 
 ## Navigare nella lista
 
-Se le notifiche sono più di quante ne stiano in una pagina, usa i **controlli di paginazione** in cima alla lista per spostarti tra le pagine. Puoi saltare alla prima o all'ultima pagina, oppure avanzare e indietreggiare di una pagina alla volta.
+Se ci sono più notifiche di quante ne entrino in una pagina, usa i **controlli di paginazione** in cima alla lista per spostarti tra le pagine. Puoi saltare alla prima o all'ultima pagina, oppure avanzare e indietreggiare di una pagina alla volta.
+
+Il numero di notifiche trovate per la ricerca corrente è visualizzato accanto ai controlli di paginazione.
 
 ---
 
 ## Aprire una notifica
 
-Fai clic su una riga qualsiasi per aprire la notifica corrispondente.
+Clicca sulla riga di una notifica per marcarla come letta: la sua evidenziazione scompare.
 
-- Se la notifica contiene un **link** (indicato dall'icona di link accanto al messaggio), facendo clic verrà contrassegnata come letta e ti porterà direttamente alla pagina pertinente dell'applicazione.
-- Se la notifica non contiene un link, facendo clic la riga si espanderà mostrando il contenuto completo sul posto.
-
-Per richiudere una notifica espansa, fai nuovamente clic sulla sua riga.
-
-Per espandere o richiudere tutte le righe contemporaneamente, usa il **pulsante piega/espandi** sopra la lista.
+Se la notifica contiene un **link** (indicato dall'icona a forma di link accanto al messaggio), Dino ti porta anche direttamente alla pagina pertinente dell'applicazione. Una notifica senza link non ha altro da aprire: il suo messaggio è il testo mostrato nella lista.
 
 ---
 
 ## Personalizzare le colonne
 
-Puoi modificare quali colonne sono visibili nella lista.
+Puoi cambiare quali colonne sono visibili nella lista.
 
-1. Fai clic sul **pulsante di selezione delle colonne** (icona a griglia) nell'angolo in alto a destra dell'intestazione della tabella.
-2. Si aprirà un pannello che mostra tutte le colonne disponibili.
+1. Clicca sul pulsante **Colonne** sopra la tabella, a destra.
+2. Si apre un pannello che mostra tutte le colonne disponibili.
 3. Attiva o disattiva le colonne che vuoi mostrare o nascondere.
-4. Chiudi il pannello al termine: la tua selezione viene applicata immediatamente.
+4. Chiudi il pannello quando hai finito — la tua selezione viene applicata immediatamente.
 
-!!! tip "Contrassegnare come letto"
-    Quando fai clic su una notifica che contiene un link, questa viene automaticamente contrassegnata come letta. Le notifiche senza link non vengono contrassegnate automaticamente come lette quando le espandi.
+!!! tip "Segnare come letto"
+    Cliccare su una notifica la segna come letta, indipendentemente dalla presenza di un link. Puoi anche segnare le notifiche come lette dalla campanella delle notifiche nella barra laterale, comprese tutte contemporaneamente con **Segna tutto come letto**.
+
+!!! warning "Aprire un link lascia la pagina"
+    Seguire il link di una notifica ti allontana dalla pagina Notifiche verso l'area collegata di Dino. Usa il pulsante indietro del browser per tornare alla lista.

@@ -1,57 +1,56 @@
 ---
-title: Editar report schema
-description: Crea o modifica un report schema para definir la estructura, el diseño y las fuentes de datos de los report en Dino.
+title: Editar esquema del informe
+description: Crea o modifica un esquema de informe importando un archivo XLSReport y, a continuación, compruébalo en la vista previa antes de guardarlo.
 ---
 
-# Editar report schema
+# Editar esquema del informe
 
-La página **Editar report schema** te permite crear un nuevo report schema o modificar uno existente. Un report schema define la estructura, el diseño y las fuentes de datos de un report en Dino.
+La página **Editar esquema del informe** te permite crear un nuevo esquema de informe o modificar uno existente. Un esquema de informe define la estructura, el diseño y las fuentes de datos de un informe en Dino. Su contenido proviene de un archivo [XLSReport](xlsreport.md) que importas en esta página.
 
-![Vista principal de la página Editar report schema](../imgs/reports/edit-report-schema.png)
+![Vista principal de la página Editar esquema del informe](../imgs/reports/edit-report-schema.png)
 
-En esta página, configuras el nombre del report, su descripción y los campos de datos específicos que aparecerán en el report a partir de tus datos de form.
+## Campos de la página
 
-## Crear un nuevo report schema
+| Campo | Descripción |
+|-------|-------------|
+| **Nombre de informe** | Obligatorio. Debe ser único: si ya está en uso, la página muestra *Este nombre ya se utiliza.* |
+| **Etiqueta del informe** | Obligatorio. El nombre que se muestra en las listas y las tarjetas. |
+| **Conjunto de iconos** | **Por defecto** o **Humanitarian**. |
+| **Icono del formulario** | Elige un icono de la lista de autocompletado. La vista previa se actualiza en tiempo real. |
+| **Métricas requeridas** | Las métricas que deben elegirse cuando se genera un informe a partir de este esquema. |
 
-Para crear un nuevo report schema:
+Debajo de los campos, la página muestra:
 
-1. Ve a la sección **Reports** en el menú principal.
-2. Haz clic en **Create Report Schema**.
-3. Se te llevará a la página Editar report schema.
-4. Introduce un **Name** descriptivo para tu report.
-5. (Opcional) Proporciona una **Description** para explicar el propósito del report.
-6. Importa un archivo XLSReport
-7. Haz clic en **Save** para crear el schema.
+- **Esquemas de formulario asociados** – los form schema que utiliza el informe, solo lectura. Se toman del archivo XLSReport importado cuando guardas.
+- **Vista previa del informe** – el informe generado a partir del esquema importado o guardado.
 
-## Editar un report schema existente
+Las fuentes de datos, las columnas y los filtros se definen todos en el archivo XLSReport: la página no tiene controles para elegirlos.
 
-Para modificar un report schema que ya has creado:
+## Crear un nuevo esquema de informe
 
-1. Ve a la sección **Reports**.
-2. Busca en la lista el report schema que deseas editar y haz clic en él.
-3. Haz clic en el botón **Edit** (a menudo representado por un icono de lápiz).
-4. Se te llevará a la página Editar report schema con la configuración actual cargada.
-5. Realiza los cambios que desees en el nombre, la descripción o la configuración de datos.
-6. Haz clic en **Save** para actualizar el schema.
+1. Abre la sección **Informes** en el menú principal.
+2. Haz clic en el botón **+** (*Add new Reports schema*) en la esquina inferior derecha.
+3. Introduce el **Nombre de informe** y la **Etiqueta del informe** y, opcionalmente, el icono y las **Métricas requeridas**.
+4. Haz clic en **Importar** y luego en **Escoge un archivo** y selecciona tu archivo XLSReport (.xls o .xlsx).
+5. Haz clic en **Aplicar**: el archivo se carga en la página y se muestra en la **Vista previa del informe**.
+6. Haz clic en **Guardar** para almacenar el esquema. **Guardar** permanece deshabilitado hasta que los campos obligatorios sean válidos.
 
-!!! tip "Guardar tu trabajo"
-    Recuerda siempre hacer clic en **Save** después de realizar cambios. Tus modificaciones no se aplican hasta que guardes el schema.
+!!! warning "Importa antes de guardar"
+    Un nuevo esquema de informe no se puede guardar sin un archivo importado: guardarlo vacío muestra *Oops! Something went wrong saving the Report*. **Aplicar** solo carga el archivo en la página; no se almacena nada hasta que hagas clic en **Guardar**.
 
-## Configurar los datos del report
+## Editar un esquema de informe existente
 
-El núcleo del report schema es definir qué datos de tus datos de form aparecerán en el report. Normalmente puedes:
+1. Abre la sección **Informes**.
+2. En la tarjeta del esquema de informe, haz clic en el icono del lápiz (*Editar esquema del informe*).
+3. Cambia los campos o importa un nuevo archivo XLSReport para reemplazar el contenido del informe.
+4. Haz clic en **Guardar** para actualizar el esquema.
 
-* **Seleccionar la fuente de datos:** Elige el form schema que contiene los datos sobre los que quieres generar el report.
-* **Seleccionar campos de datos:** Elige campos específicos de tus form schema conectados para incluirlos como columnas en el report.
-* **Establecer nombres para mostrar:** Personaliza el encabezado de columna que se muestra en el report para cada campo seleccionado.
-* **Definir filtros:** Establece condiciones para incluir solo los datos específicos que cumplan tus criterios (por ejemplo, datos de un rango de fechas determinado).
-
-!!! warning "Fuente de datos"
-    Un report schema debe estar conectado al menos a un form schema para tener datos que mostrar. Asegúrate de que el form correspondiente existe antes de crear tu report.
+Para eliminar un esquema de informe, haz clic en el icono de la papelera (*Borrar esquema del informe*) en su tarjeta. Un esquema que todavía tiene informes no se puede eliminar: elimina primero sus informes.
 
 ## Próximos pasos
 
-Después de guardar tu report schema, puedes:
+Después de guardar tu esquema de informe, puedes:
 
-* Ir a la página [Reports](index.md) para ver y ejecutar tu nuevo report.
-* Volver a esta página para realizar más ajustes según sea necesario.
+* Ir a la página [Informes](index.md) para ver y ejecutar tu nuevo informe.
+* Usar [Editar informe](edit-report.md) para trabajar con el propio informe una vez que el esquema esté listo.
+* Volver a esta página para hacer más ajustes según sea necesario.

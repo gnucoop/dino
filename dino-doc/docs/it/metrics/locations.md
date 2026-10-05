@@ -5,72 +5,75 @@ description: Gestisci le posizioni geografiche utilizzate nelle metriche e nei f
 
 # Posizioni
 
-La pagina **Posizioni** ti permette di gestire le posizioni geografiche a cui fanno riferimento i tuoi form, i casi e le altre metriche. Puoi aggiungere nuove posizioni, modificare quelle esistenti, importare dati in blocco ed esportare la lista corrente.
+La pagina **Posizioni** ti permette di gestire le posizioni geografiche a cui fanno riferimento i tuoi form, i casi e altre metriche. Puoi aggiungere nuove posizioni, modificare quelle esistenti, importare dati in blocco ed esportare la lista attuale.
 
-![Vista principale della pagina Posizioni](../imgs/metrics/locations.png)
+![Visualizzazione principale della pagina Posizioni](../imgs/metrics/locations.png)
 
-## Cosa trovi nella pagina
+## Cosa vedi
 
-- **Percorso di navigazione** – mostra la tua posizione attuale all'interno della navigazione.
-- **Ricerca e filtri** – ricerca per parola chiave, selettore di intervallo di date e filtri avanzati configurabili (ad esempio per metrica, stato, utente). Puoi anche salvare e caricare preset di filtri.
-- **Tabella** – mostra per impostazione predefinita Nome posizione e Posizione padre. Le colonne nascoste (ID, Data di creazione, Coordinate, Attributi aggiuntivi) possono essere visualizzate tramite il pulsante **Personalizza le colonne** (in basso a destra nell'intestazione della tabella).
-- **Impaginazione** – controlli per navigare tra le pagine.
-- **Azioni multiple** – seleziona le righe con le caselle di controllo per eliminare o modificare più posizioni in una sola volta.
-- **Pulsanti di azione flottanti** – **Aggiungi nuovo** (icona con il più) e **Importa** (icona di caricamento su cloud) restano disponibili mentre scorri la pagina.
+- **Percorso di navigazione** – mostra la tua posizione attuale nella navigazione.
+- **Ricerca e Filtri** – un campo di ricerca per parole chiave e il pulsante **Filtri** per filtrare per data di creazione (**Data di partenza** / **Fino ad oggi**).
+- **Contatore elementi trovati** – mostra quante posizioni corrispondono ai filtri attuali.
+- **tabella** – mostra per impostazione predefinita Nome posizione e Posizione padre. Le colonne nascoste (ID, Data di creazione, Coordinate, Attributi aggiuntivi) possono essere visualizzate tramite il pulsante **Colonne**, sopra la tabella a destra.
+- **Paginazione** – controlli per navigare tra le pagine.
+- **Azioni in blocco** – seleziona le righe usando le caselle di controllo per eliminare più posizioni contemporaneamente.
+- **Pulsanti della barra degli strumenti** – **Add new LOCATION** (icona più) e **Import LOCATION** (icona di caricamento cloud) si trovano sopra la tabella.
 
 ## Azioni sulle righe
 
-Ogni riga dispone di tre azioni rapide (visibili quando passi il mouse sulla riga):
+Passa il mouse su una riga per mostrare le icone **Modifica** e **Vedi**. Clicca sulla riga per selezionarla ed evidenziarla: la barra delle azioni sopra la tabella mostrerà quindi tutte le azioni:
 
-- **Modifica** – apre la finestra di dialogo della posizione per modificarne i dettagli.
-- **Elimina** – rimuove la posizione dopo la conferma.
-- **Visualizza** – apre una finestra di sola lettura che mostra tutti i campi.
-
-Facendo clic su una riga questa viene selezionata (evidenziata) e, se la lista è espandibile, viene mostrato un pannello di dettaglio con dati aggiuntivi.
+- **Modifica** – apre la finestra della posizione per modificarne i dettagli.
+- **Elimina** – rimuove la posizione dopo conferma.
+- **Vedi** – apre una finestra di sola lettura che mostra tutti i campi.
 
 ## Lavorare con le posizioni
 
 ### Aggiungere una nuova posizione
 
-1. Fai clic sul pulsante flottante **Aggiungi nuovo** (in basso a destra).
-2. Nella finestra di dialogo, compila i campi obbligatori (ad esempio Nome posizione).
+1. Clicca il pulsante **Add new LOCATION** sopra la tabella.
+2. Nella finestra, compila i campi obbligatori (ad esempio, Nome posizione). I campi opzionali sono contrassegnati con *(opzionale)*.
 3. Facoltativamente, imposta una Posizione padre, le Coordinate e gli Attributi aggiuntivi.
-4. Fai clic su **Salva**.
+4. Clicca **Salva**.
 
 ### Modificare una posizione
 
-1. Fai clic sull'icona **Modifica** (matita) sulla riga desiderata.
-2. Aggiorna i campi nella finestra di dialogo.
-3. Fai clic su **Salva**.
+1. Passa il mouse sulla riga e clicca l'icona **Modifica** (matita), oppure seleziona la riga e clicca **Modifica** nella barra delle azioni.
+2. Aggiorna i campi nella finestra.
+3. Clicca **Salva**.
 
 ### Eliminare una posizione
 
-1. Fai clic sull'icona **Elimina** (cestino) sulla riga.
-2. Conferma l'eliminazione nella finestra di richiesta.
+1. Clicca sulla riga per selezionarla, poi clicca **Elimina** nella barra delle azioni sopra la tabella.
+2. Conferma l'eliminazione nella richiesta.
+
+Una posizione utilizzata da form, o che ha posizioni figlie, non può essere eliminata; vedi [Metriche](index.md).
 
 ### Importare posizioni da un file
 
-1. Fai clic sul pulsante flottante **Importa** (icona di caricamento su cloud).
-2. Seleziona un file CSV o Excel conforme al formato previsto.
-3. Se necessario, associa le colonne ai campi della posizione.
-4. Fai clic su **Importa**.
+1. Clicca il pulsante **Import LOCATION** sopra la tabella.
+2. Carica un file `.xls`, `.xlsx` o `.csv`.
+3. Mappa le colonne del file ai campi della posizione.
+4. Clicca **Applica importazione** e controlla il risultato.
 
-!!! tip "Modifica multipla"
-    Seleziona più righe con le caselle di controllo, quindi fai clic sul pulsante **Modifica** (icona edit_note) che compare sopra la tabella per aggiornare più posizioni in una sola volta.
+Le posizioni il cui nome esiste già vengono riutilizzate, non aggiornate.
 
 ### Esportare la lista delle posizioni
 
-1. Fai clic sul pulsante **Esporta** (icona di download dal cloud) nella barra dei filtri.
-2. Scegli il formato di esportazione (CSV o Excel).
-3. Il file viene scaricato automaticamente.
+1. Clicca **Esporta** nella barra degli strumenti.
+2. Scegli cosa esportare: *Elementi nella pagina* (impostazione predefinita), gli elementi che corrispondono ai tuoi filtri, oppure *Tutti gli elementi*.
+3. Scegli il formato: *csv*, *xlsx* o *splitted xlsx*, poi clicca **Esporta**.
+
+!!! tip "Eliminazione in blocco"
+    Seleziona più righe usando le caselle di controllo, poi clicca **Elimina** nella barra delle azioni sopra la tabella per eliminare più posizioni contemporaneamente.
 
 ### Coordinate della posizione
 
-Se imposti l'attributo "coordinates" di uno specifico valore di posizione, l'informazione verrà usata per visualizzare i dati del tuo form su una [mappa](../forms/forms-map.md).
+Se imposti l'attributo **Coordinate** per una posizione, tale informazione viene utilizzata per visualizzare i dati dei tuoi form su una [mappa](../forms/forms-map.md).
 
 ## Pagine correlate
 
 - [Panoramica delle metriche](index.md) – torna alla home delle metriche.
 - [Casi](cases.md) – gestisci i casi che fanno riferimento alle posizioni.
-- [Organizzazioni](organizations.md) – gestisci le organizzazioni collegate alle posizioni.
-- [Progetti](projects.md) – consulta i progetti associati alle posizioni.
+- [Organizzazioni](organizations.md) – gestisci le organizzazioni legate alle posizioni.
+- [Progetti](projects.md) – visualizza i progetti associati alle posizioni.

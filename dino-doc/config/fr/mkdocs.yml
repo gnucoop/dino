@@ -41,3 +41,4 @@ nav:
     - Gérer les Langues: administration/languages.md
     - Liste des Utilisateurs: administration/users-list.md
     - Liste des groupes: administration/groups-list.md
+  - Espace utilisateur: user-area/index.md

@@ -41,3 +41,4 @@ nav:
     - Керування Мовами: administration/languages.md
     - Список Користувачів: administration/users-list.md
     - Список груп: administration/groups-list.md
+  - Область користувача: user-area/index.md

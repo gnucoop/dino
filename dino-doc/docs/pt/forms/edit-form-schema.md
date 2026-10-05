@@ -1,64 +1,83 @@
 ---
-title: Editar Form Schema
-description: Crie e modifique form schemas — defina nome, ícone, status, métricas, visibilidade e defina relacionamentos.
+title: Editar form schema
+description: Construa e modifique form schemas — defina nome, ícone, visibilidade, status, métricas, relacionamentos e a própria estrutura do form.
 ---
 
-# Editar Form Schema
+# Editar form schema
 
-A página Editar Form Schema permite criar um novo form schema ou modificar um existente. Aqui você define os atributos básicos do form, gerencia seus status e métricas, controla a visibilidade e vincula o schema a outros forms por meio de relacionamentos.
+A página Editar form schema permite criar um novo form schema ou modificar um existente. Aqui você define os atributos gerais do form, gerencia seus status e métricas, controla a visibilidade, conecta-o a outros form schemas e constrói as perguntas que seus usuários responderão.
 
 Você pode acessar esta página:
 
-- Clicando em **Criar** na [visão geral de Forms](index.md) para criar um novo schema.
-- Selecionando **Editar** no cartão de um schema existente ou em sua visualização de detalhes.
+- Clicando no botão **+** (*Adicionar novo form schema*) no canto inferior direito da [visão geral de Forms](index.md) para construir um novo schema.
+- Selecionando **Editar** no card de um schema existente ou na sua visualização de detalhes.
 
-O caminho de navegação no topo mostra sua posição atual (por exemplo, **Forms > Minha Pesquisa > Editar**).
+O caminho de navegação no topo mostra sua posição atual (por exemplo, **Forms / Schema / Meu questionário / Editar**).
 
-![Visão principal da página Editar Form Schema](../imgs/forms/edit-form-schema.png)
+![Visualização principal da página Editar form schema](../imgs/forms/edit-form-schema.png)
 
-## Atributos do Form
+O editor está organizado em abas — **Configurações**, **Métricas**, **Status**, **Construir** e **Relacionamentos**. Os botões **Salvar** e **Importar XLSForm** permanecem visíveis na linha de abas, para que você possa salvar seu trabalho de qualquer aba.
 
-Preencha ou ajuste os seguintes campos:
+## Aba Configurações
+
+A aba **Configurações** contém os metadados e a configuração geral do questionário.
 
 | Campo | Descrição |
 |-------|-------------|
-| **Nome do Form** | Um identificador único do sistema (por exemplo, `survey_2025`). O Dino avisa se o nome já estiver em uso. |
-| **Rótulo do Form** | O nome legível exibido em listas e reports. |
-| **Conjunto de Ícones** | Escolha **Padrão** (ícones material) ou **Humanitário** (ícones SVG personalizados). |
-| **Identificador do Ícone** | Escolha um ícone na lista de preenchimento automático. A pré-visualização é atualizada em tempo real. |
-| **Status do Form** | Um ou mais rótulos que descrevem o estado de um dado (por exemplo, Rascunho, Aprovado, Rejeitado). Selecione status existentes ou **Criar novo Status** para adicionar um na hora. É possível associar um nível a cada status, para estabelecer uma ordem entre os status. Quando um novo dado de form é criado, ele é criado com o status correspondente ao nível mais baixo.|
-| **Métricas do Form** | Métricas a serem coletadas para cada dado. Selecione uma ou mais na lista. |
-| **Visibilidade** | **Privado** – o form schema só pode aceitar dados de usuários do DINO, desde que tenham permissão para enviar dados para esse form schema específico. Por outro lado, se um form estiver definido como **Público** – qualquer pessoa com o link pode enviar. Consulte a página sobre [forms públicos](../public-forms/index.md) para mais detalhes.|
-| **Comportamento do Conjunto de Métricas** | **Padrão** – cada valor de métrica pode aparecer várias vezes nos dados. **Único** – um valor de métrica (por exemplo, o nome de um distrito) pode ser usado apenas uma vez por form. |
-| **Gerar Report** | Quando **Sim**, o Dino gera um report automaticamente. Esta opção fica oculta se um auto-report já estiver presente. Consulte a seção [auto report](../reports/autoreports.md) para mais detalhes. |
+| **Nome do formulário** | Um identificador único do sistema (por exemplo, `survey_2025`). O Dino avisa se o nome já estiver em uso. |
+| **Etiqueta do formulário** | O nome legível exibido em listas e reports. |
+| **Conjunto de ícones** | Escolha **Padrão** (ícones material) ou **Humanitarian** (ícones SVG personalizados). |
+| **Ícone do formulário** | Escolha um ícone na lista de preenchimento automático. A pré-visualização ao lado do campo é atualizada em tempo real. |
+| **Visibilidade** | **Privado** — apenas usuários do Dino com permissão para enviar podem mandar dados para este form schema. **Público** — qualquer pessoa com o link pode enviar. Consulte [forms públicos](../public-forms/index.md) para mais detalhes. |
+| **Gerar relatório** | Quando **Sim**, o Dino gera automaticamente um report para o form. Se um report já existir, esta opção fica travada em **Sim**; para desativá-la, exclua primeiro o schema e os dados do report. Consulte [Reports automáticos](../reports/autoreports.md) para mais detalhes. |
 
-!!! warning "Comportamento do Conjunto de Métricas Único"
-    Use **Único** com cuidado — depois que um valor é usado para uma métrica, ele não pode ser reutilizado em outro dado do mesmo form schema.
+!!! tip "Vá direto para as perguntas"
+    Clique em **Ir para a construção** na parte inferior da aba Configurações para abrir a aba **Construir** imediatamente.
 
-## Gerenciando Status do Form
+## Aba Métricas
 
-1. Clique no campo **Status do Form** para expandir a lista.
-2. Para adicionar um status existente, marque sua caixa de seleção.
-3. Para criar um novo status, clique em **Criar novo Status**. Uma caixa de diálogo é aberta, onde você pode inserir um rótulo, escolher uma cor e salvar.
-4. Para editar um status existente, clique no ícone **editar** (lápis) ao lado dele.
-5. Clique fora do menu suspenso para fechá-lo.
+Na aba **Métricas** você escolhe quais métricas se aplicam a este questionário e como elas se comportam.
 
-## Definindo Relacionamentos
+- **Métricas de formulário** — as métricas a coletar para cada dado. Selecione uma ou mais na lista.
+- **Comportamento do conjunto de métricas** — **Padrão** permite que cada valor de métrica apareça várias vezes entre os dados. **Único** permite que um valor de métrica (por exemplo, o nome de um distrito) seja usado apenas uma vez por form.
+- **Métricas a incluir no formulário** — selecione as métricas cujos dados devem ser incluídos no form.
+- **Métricas incluídas como opções de escolha** — adicione uma linha por métrica que você deseja expor como origem de escolha. Para cada linha, escolha a métrica, liste opcionalmente atributos adicionais a serem levados para a escolha e adicione uma condição de filtro se quiser restringir as opções disponíveis. A nova origem de escolha é chamada `$metricName_metric_choice`.
 
-Os relacionamentos permitem vincular campos entre diferentes form schemas (por exemplo, um sub-form que depende de uma escolha no form principal).
+!!! warning "Comportamento do conjunto de métricas Único"
+    Use **Único** com cuidado — uma vez que um valor é usado para uma métrica, ele não pode ser reutilizado em outro dado do mesmo form schema.
 
-1. Clique no botão **Relacionamentos**.
-2. Na caixa de diálogo, adicione, edite ou remova conexões entre schemas.
+## Aba Status
 
-![Caixa de diálogo do editor de relacionamentos (dependências) do form](../imgs/forms/edit-form-schema-relationships.png)
+Na aba **Status** você define os status que um dado deste questionário pode ter (por exemplo, Rascunho, Aprovado, Rejeitado).
 
-!!! tip "Os relacionamentos estão disponíveis apenas ao editar um schema existente, não durante a criação inicial."
+1. Clique no campo **Estado dos formulários** para expandir a lista.
+2. Para adicionar um status existente, selecione-o na lista.
+3. Para criar um novo status, clique em **Crie novo status**. Uma caixa de diálogo é aberta, onde você pode inserir uma etiqueta, escolher uma cor e salvar.
+4. Para editar um status existente, clique no ícone **Editar** (lápis) ao lado dele.
+5. Clique fora da lista suspensa para fechá-la.
 
-## Salvando e Importando
+Você também pode associar um nível a cada status para estabelecer uma ordem. Quando novos dados de form são criados, eles recebem o status com o nível mais baixo.
 
-- **Salvar** – armazena todas as alterações. O botão fica desabilitado se o form for inválido ou ainda estiver sendo salvo.
-- **Importar** – abre um seletor de arquivos para carregar um form schema a partir de um arquivo JSON ou CSV. Use isto para reutilizar a estrutura de um schema de outro projeto.
+## Aba Construir
 
-## O Form Builder
+A aba **Construir** contém o construtor de forms, onde você arrasta, solta e configura campos, slides e seções individuais. As alterações são refletidas imediatamente na pré-visualização. Use esta aba para definir as perguntas que os usuários realmente responderão.
 
-Abaixo dos atributos, a área **Form Builder** permite arrastar, soltar e configurar campos individuais (perguntas, seções, etc.). As alterações são refletidas imediatamente na pré-visualização no lado direito do builder.
+## Aba Relacionamentos
+
+Os relacionamentos trazem valores de campos ou escolhas de outros form schemas para este — por exemplo, um subform que depende de uma escolha feita no form principal.
+
+1. Abra a aba **Relacionamentos**.
+2. Clique em **Adicionar relação com outros formulários**.
+3. Na nova linha, escolha o **Formulários** de onde trazer os dados e selecione os **Campos** a trazer para este form.
+4. Opcionalmente, escolha um ou mais valores de **Métrica** para filtrar o relacionamento.
+5. Para usar um único campo como opção de escolha, ative **Campo como opção** e escolha o **Campo de rótulo** e, se necessário, um **Campo adicional**.
+
+![Aba Relacionamentos do editor de form schema](../imgs/forms/edit-form-schema-relationships.png)
+
+!!! tip "Salve primeiro"
+    A aba Relacionamentos e as seções de dados de métricas precisam de um form schema salvo. Enquanto você ainda estiver criando um schema, elas permanecem bloqueadas com o aviso *Salve o form primeiro para adicionar relacionamentos*.
+
+## Salvando e importando
+
+- **Salvar** — armazena todas as alterações. O botão fica desativado enquanto o form é inválido ou já está sendo salvo.
+- **Importar XLSForm** — abre uma caixa de diálogo onde você arrasta um arquivo XLSForm ou clica em **Escolha um arquivo** (`.xls` ou `.xlsx`; o arquivo precisa das planilhas *survey*, *choices* e *settings*) e depois clica em **Aplicar** para carregá-lo no editor. Use isto para reutilizar a estrutura de um schema de outro projeto. Nada é armazenado até você clicar em **Salvar**.

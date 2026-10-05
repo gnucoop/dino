@@ -1,81 +1,80 @@
 ---
-title: Gestion des valeurs de métrique – Zones thématiques
-description: Apprenez à afficher, ajouter, modifier, supprimer et rechercher des zones thématiques dans la section de gestion des métriques de Dino.
+title: Gestion des valeurs métriques – Domaines thématiques
+description: Apprenez à afficher, ajouter, modifier, supprimer et rechercher des domaines thématiques dans la section de gestion des métriques de Dino.
 ---
 
-# Gestion des valeurs de métrique – Zones thématiques
+# Gestion des valeurs métriques – Domaines thématiques
 
-La page **Zones thématiques** (accessible depuis la section Métriques) vous permet d'organiser vos données de métrique par catégories hiérarchiques. Vous pouvez y afficher, créer, modifier et supprimer des zones thématiques, ainsi que filtrer et exporter la liste.
+La page **Domaines thématiques** (accessible depuis la section Metrics) vous permet d'organiser vos données métriques par catégories hiérarchiques. Vous pouvez y afficher, créer, modifier et supprimer des domaines thématiques, ainsi que filtrer et exporter la liste.
 
-![Vue principale de la page Zones thématiques](../imgs/metrics/areas.png)
+![Vue principale de la page Domaines thématiques](../imgs/metrics/areas.png)
 
 ## Ce que vous voyez
 
-- Le **fil d'Ariane** en haut de la page indique votre position actuelle dans l'application (par ex. **Métriques > Zones thématiques**).
-- Le tableau principal répertorie toutes les zones thématiques et affiche des colonnes telles que **Nom de la zone**, **Zone parente** et, si configuré, d'autres attributs. Vous pouvez personnaliser les colonnes visibles en cliquant sur l'icône **Personnalisez les colonnes** dans l'en-tête.
-- Une **barre de recherche** et un **panneau de filtres** vous permettent de retrouver des zones par mot-clé, plage de dates ou autres métadonnées.
-- Le bouton **Export** (cloud_download) vous permet de télécharger la liste actuelle sous forme de fichier.
-- Deux boutons d'action flottants sont disponibles :
-    - **+ (Ajouter)** – crée une nouvelle zone thématique.
-    - **cloud_upload** – importe des zones à partir d'un fichier externe.
+- Le **percorso di navigazione** en haut indique votre position actuelle dans l'application (par exemple, **Metrics > Domaines thématiques**).
+- Le tableau principal répertorie tous les domaines thématiques, en affichant des colonnes telles que **Area Name**, **Domaine parent** et (si configuré) d'autres attributs. Vous pouvez personnaliser les colonnes visibles en cliquant sur le bouton **Colonnes** au-dessus du tableau.
+- Un champ de **recherche par mot-clé** et le bouton **Filtres** vous permettent de trouver des domaines par nom ou par date de création.
+- Le bouton **Exportation** (cloud_download) vous permet de télécharger la liste actuelle sous forme de fichier.
+- Deux boutons de barre d'outils sont disponibles :
+    - **Add new AREA** – crée un nouveau domaine thématique.
+    - **Import AREA** – ouvre la page d'importation, où vous téléchargez un fichier `.xls`, `.xlsx` ou `.csv`, mappez ses colonnes et vérifiez le résultat. Les domaines dont le nom existe déjà sont réutilisés, et non mis à jour.
 
-## Travailler avec les zones thématiques
+## Travailler avec les domaines thématiques
 
-### Ajouter une nouvelle zone thématique
+### Ajouter un nouveau domaine thématique
 
-1. Cliquez sur le bouton flottant **+**.
-2. Dans la boîte de dialogue qui s'ouvre, renseignez les champs obligatoires (par ex. **Nom de la zone**, **Zone parente**).
-3. Cliquez sur **Créer** pour enregistrer la nouvelle zone.
+1. Cliquez sur le bouton **Add new AREA** dans la barre d'outils.
+2. Dans la boîte de dialogue qui s'ouvre, renseignez le champ **Area Name** et, si nécessaire, le **Domaine parent** ainsi que tout attribut supplémentaire. Les champs facultatifs sont marqués *(optional)*.
+3. Cliquez sur **Enregistrer** pour créer le nouveau domaine.
 
-!!! tip "Zone parente"
-    Pour créer une sous-zone, sélectionnez une **Zone parente** dans la liste déroulante. Si vous laissez ce champ vide, la nouvelle zone devient une entrée de premier niveau.
+!!! tip "Domaine parent"
+    Pour créer un sous-domaine, commencez à taper dans le champ **Domaine parent** et choisissez le parent parmi les suggestions. Si vous le laissez vide, le nouveau domaine devient une entrée de premier niveau.
 
-### Modifier une zone existante
+### Modifier un domaine existant
 
-1. Trouvez dans le tableau la zone que vous souhaitez modifier.
-2. Cliquez sur l'icône **modifier** (crayon) dans la colonne d'actions de la ligne.
-3. Modifiez les champs dans la boîte de dialogue, puis cliquez sur **Enregistrer**.
+1. Trouvez le domaine que vous souhaitez modifier dans le tableau.
+2. Survolez sa ligne et cliquez sur l'icône **Modifier** (crayon), ou cliquez sur la ligne pour la sélectionner puis cliquez sur **Modifier** dans la barre d'actions au-dessus du tableau.
+3. Modifiez les champs dans la boîte de dialogue et cliquez sur **Enregistrer**.
 
-### Afficher les détails
+![Boîte de dialogue de modification d'une valeur métrique](../imgs/metrics/areas-edit.png)
 
-- Cliquez sur l'icône **visibilité** pour ouvrir une boîte de dialogue en lecture seule présentant tous les champs de la zone.
-- Vous pouvez également **cliquer sur une ligne** pour la déplier et faire apparaître les zones enfants (si la hiérarchie est configurée).
+### Consulter les détails
 
-### Supprimer une zone
+- Survolez une ligne et cliquez sur l'icône **Visibilité** (œil), ou sélectionnez la ligne et cliquez sur **Voir** dans la barre d'actions, pour ouvrir une boîte de dialogue en lecture seule affichant tous les champs du domaine.
 
-1. Cliquez sur l'icône **supprimer** (corbeille) dans la colonne d'actions de la ligne.
-2. Confirmez la suppression dans la boîte de dialogue qui s'affiche.
+### Supprimer un domaine
 
-!!! warning "À prendre en compte avant de supprimer"
-    La suppression d'une zone parente peut avoir des répercussions sur les zones enfants. Dino vous avertira si des éléments y sont associés. Procédez avec prudence.
+1. Cliquez sur la ligne du domaine pour la sélectionner, puis cliquez sur **Supprimer** dans la barre d'actions au-dessus du tableau.
+2. Confirmez la suppression dans la boîte de dialogue qui apparaît.
+
+!!! warning "Considérations sur la suppression"
+    Un domaine utilisé par des form, ou qui possède des domaines enfants, ne peut pas être supprimé. Si seuls des report l'utilisent, Dino vous avertit et vous permet de confirmer. Les groupes d'utilisateurs qui accordent le domaine ne sont pas vérifiés : retirez-le d'abord de ceux-ci. Voir [Metrics](index.md).
 
 ## Recherche et filtrage
 
-- Utilisez le champ de **recherche par mot-clé** en haut de la liste pour filtrer les zones par nom.
-- Ouvrez le panneau de filtres en cliquant sur la flèche **développer**. Vous pouvez définir :
-    - **Date de début / Date de fin** – filtrer par date de création.
-    - **Filtres supplémentaires** (par ex. des champs propres à la métrique) – si votre instance dispose d'attributs personnalisés.
-- Appliquez un **préréglage de filtre** (si disponible) pour charger rapidement des combinaisons de filtres enregistrées.
+- Utilisez le champ de **recherche par mot-clé** au-dessus de la liste pour filtrer les domaines par nom.
+- Cliquez sur **Filtres** pour définir une **De date** et une **À ce jour**, qui filtrent par date de création, puis cliquez sur **Chercher**.
+- Les filtres appliqués apparaissent sous forme de puces sous la barre d'outils ; cliquez sur l'icône **annuler** d'une puce pour la retirer.
 
 ## Exporter la liste
 
-1. Cliquez sur le bouton **cloud_download** dans la barre d'outils.
-2. Choisissez le format d'export (par ex. CSV, Excel).
-3. Le fichier sera généré à partir de l'ensemble des zones actuellement visibles (filtrées).
+1. Cliquez sur le bouton **Exportation** dans la barre d'outils.
+2. Choisissez ce qu'il faut exporter : *Éléments de la page* (par défaut), les éléments correspondant à vos filtres, ou *Tous les éléments*.
+3. Choisissez le format : *csv*, *xlsx* ou *splitted xlsx*, puis cliquez sur **Exportation**.
 
 ## Actions groupées
 
-Pour effectuer des actions sur plusieurs zones à la fois (par ex. en supprimer plusieurs), cochez les cases situées à côté des lignes. Les boutons d'action groupée apparaissent alors dans l'en-tête de colonne. Actuellement, l'écran Zones thématiques prend en charge la **suppression groupée**.
+Pour effectuer des actions sur plusieurs domaines à la fois, cochez les cases situées à côté des lignes. Lorsqu'une ligne est sélectionnée, ses actions individuelles apparaissent dans la barre d'actions au-dessus du tableau ; lorsque plusieurs lignes sont sélectionnées, la barre propose les actions groupées. L'écran Domaines thématiques ne prend actuellement en charge que la **suppression groupée**.
 
-## Naviguer grâce au fil d'Ariane
+## Naviguer avec le percorso di navigazione
 
-Le fil d'Ariane indique votre position actuelle (par ex. **Métriques > Zones thématiques**). Cliquez sur n'importe quel lien du fil d'Ariane pour remonter à un niveau supérieur.
+Le percorso di navigazione indique votre position actuelle (par exemple, **Metrics > Domaines thématiques**). Cliquez sur n'importe quel lien du percorso di navigazione pour remonter d'un niveau.
 
 ## Pages associées
 
-- [Vue d'ensemble des métriques](index.md)
-- [Gestion des valeurs de métrique – Cas](cases.md)
-- [Gestion des valeurs de métrique – Emplacements](locations.md)
-- [Gestion des valeurs de métrique – Organisations](organizations.md)
-- [Gestion des valeurs de métrique – Projets](projects.md)
-- [Utilisateurs et groupes](../administration/users.md)
+- [Metrics Overview](index.md)
+- [Gestion des valeurs métriques – Cases](cases.md)
+- [Gestion des valeurs métriques – Locations](locations.md)
+- [Gestion des valeurs métriques – Organizations](organizations.md)
+- [Gestion des valeurs métriques – Projects](projects.md)
+- [Users and Groups](../administration/users.md)

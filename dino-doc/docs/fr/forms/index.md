@@ -1,88 +1,112 @@
 ---
 title: Formulaires
-description: Gérez les schémas de formulaire et collectez des soumissions de données structurées dans Dino.
+description: Gérez les schémas de formulaire et collectez des données structurées dans Dino.
 ---
 
 # Formulaires
 
-La page **Formulaires** est votre point de départ pour la collecte de données structurées dans Dino. Vous pouvez y parcourir, créer et gérer des schémas de formulaire, puis consulter et traiter les soumissions recueillies via chaque formulaire.
+La page **Formulaires** est votre point de départ pour la collecte de données structurées dans Dino. Vous pouvez y parcourir, créer et gérer des schémas de formulaire, puis consulter et traiter les données recueillies via chaque formulaire.
 
 ![Vue principale de la page Formulaires](../imgs/forms/index.png)
 
-La vue principale affiche une **grille de vignettes de schémas de formulaire**. Chaque vignette présente le libellé et l'icône du formulaire. Le survol d'une vignette fait apparaître des boutons d'action :
+La vue principale affiche une **grille de vignettes de schémas de formulaire**. Chaque vignette indique le libellé et l'icône du formulaire. Une vignette marquée d'une icône d'empreinte digitale est unique : une seule soumission avec cet ensemble exact de métriques peut exister. Au survol d'une vignette, des boutons d'action apparaissent :
 
-- **Modifier le schéma** – Modifiez la structure du formulaire (champs, validation, mesures).
-- **Supprimer le schéma** – Supprimez le schéma de formulaire (ainsi que toutes ses soumissions).
-- **Partager l'URL** – Obtenez un lien public pour autoriser les soumissions externes.
-- **Voir la carte** – Ouvrez la vue cartographique des soumissions contenant des données de localisation.
-- **Discuter avec vos données** – Utilisez la fonctionnalité [DataChat](datachat.md) pour poser des questions sur les soumissions en langage naturel.
+- **Modifier le schéma du formulaire** – Modifiez la structure du formulaire (champs, validation, métriques).
+- **Supprimer le schéma du formulaire** – Supprimez le schéma. Dino refuse si le schéma contient encore des données ou si un report l'utilise, et demande une confirmation si d'autres formulaires ou groupes d'utilisateurs y font référence.
+- **Partager l'url publique** – Obtenez un lien public permettant des soumissions externes.
+- **Afficher la carte** – Ouvrez la vue cartographique des données comportant des informations de localisation.
+- **Discuter avec vos données** – Posez des questions sur vos données en langage naturel grâce à [DataChat](datachat.md).
 
 !!! tip
-    Les actions disponibles sur une vignette dépendent de vos autorisations. Il est possible que certains boutons ne s'affichent pas.
+    Les actions disponibles sur une vignette dépendent de vos autorisations. Il est possible que tous les boutons ne soient pas visibles.
 
-Pour créer un nouveau schéma de formulaire, cliquez sur le bouton flottant **+** en bas à droite. Vous serez redirigé vers la page [Modifier le schéma de formulaire](edit-form-schema.md) pour concevoir votre formulaire.
+Si aucun schéma de formulaire n'existe encore, la page affiche un message vous invitant à en ajouter un. Lorsque l'instance l'active, un champ **Filtre** au-dessus des vignettes permet de les filtrer par nom.
 
-## Travailler avec les soumissions
+## Créer un schéma de formulaire
 
-Cliquez sur une vignette de schéma de formulaire pour accéder à sa **liste de soumissions**. Ce tableau présente toutes les entrées de données collectées pour ce schéma.
+1. Cliquez sur le bouton flottant **+** en bas à droite de la page.
+2. Concevez votre formulaire sur la page [Modifier le schéma du formulaire](edit-form-schema.md).
 
-![Liste des soumissions (tableau de données) d'un schéma de formulaire](../imgs/forms/index-list.png)
+## Travailler avec les données
 
-La liste comporte une **barre de filtres** qui vous permet de rechercher par mot-clé, plage de dates, mesures, statut, utilisateur, et plus encore. Vous pouvez également enregistrer des préréglages de filtres pour les réutiliser rapidement.
+Cliquez sur une vignette de schéma de formulaire pour ouvrir sa **liste de form**. Ce tableau affiche toutes les données recueillies pour ce schéma.
 
-### Export
+![Liste de form (tableau de données) d'un schéma de formulaire](../imgs/forms/index-list.png)
 
-Utilisez le bouton **export** pour télécharger les soumissions au format CSV ou XLSX.
+Au-dessus du tableau, vous pouvez voir combien d'éléments ont été trouvés et naviguer entre les pages. La barre d'outils propose :
 
-![Boîte de dialogue d'export pour télécharger les soumissions de formulaire](../imgs/forms/index-export.png)
+- **Ajouter un nouveau formulaire** – Créez une nouvelle soumission.
+- **Importer des formulaires** – Importez des données depuis un fichier. Voir [Import Data](import.md).
+- **Filtres** – Affinez la liste par plage de dates, statut, utilisateur, métriques, etc. Basculez entre les filtres *Simple* et *Avancé*, ou enregistrez un préréglage de filtre à réutiliser plus tard.
+- **Exportation** – Téléchargez les données dans un fichier. Voir [Exportation](#exportation).
 
-La boîte de dialogue d'export permet de définir plusieurs paramètres importants pour l'export :
+À gauche de la barre d'outils, le sélecteur **Données** / **Carte** / **IA** change de vue ; voir [Vues supplémentaires](#vues-supplémentaires).
 
-1) Combien de formulaires exporter.   
-   1) *Formulaires de la page*. Exporte uniquement les formulaires affichés sur la page précédente, éventuellement filtrés et répartis en pages.   
-   2) *Ajouter des filtres* ou *Tous les éléments/1filtres*. Si vous avez déjà appliqué un filtre à votre liste de formulaires, seuls les formulaires filtrés peuvent être exportés (deuxième option). Si vous n'avez encore appliqué aucun filtre, la première option s'affiche et vous permet d'ajouter d'autres filtres.   
-   3) *Tous les formulaires*. Tous les formulaires, sans filtrage ni pagination.   
-2) Format.   
-    1) *CSV*. Les données seront exportées dans un fichier CSV. Chaque formulaire extrait constituera une ligne du fichier, les champs correspondant aux colonnes.   
-    2) *XLSX*. Export au format Excel.  
-    3) *XLSX séparé*. Export au format Excel où chaque page correspond à une feuille différente.   
-3) Options des champs  
-    1) *Sélectionner tous les champs du formulaire*. Permet d'exporter tous les champs du formulaire.  
-    2) *Valeurs des libellés*. Pour les champs dont les valeurs sont préfixées (champs à sélection unique ou multiple), la valeur exportée est la valeur affichée, et non le code interne utilisé pour représenter cette valeur.   
-    3) *Format d'analyse de données*. Les formulaires contenant des pages répétitives et des choix multiples sont exportés sur plusieurs lignes, chaque ligne ne contenant qu'une seule page répétitive et un seul choix multiple, les autres champs restant identiques. Une colonne supplémentaire, appelée *conta*, est ajoutée. Cette colonne prend la valeur 1 uniquement dans la première ligne du groupe de répétition, et 0 dans les autres.  
-    4) *Colonnes séparées*. Les choix multiples sont exportés sous forme de plusieurs colonnes. 
-4) *Sélection de la page*. Permet d'afficher la liste des champs de chaque page, si vous souhaitez n'exporter que certains champs et non la totalité.   
-5) *Sélection des champs*. Vous pouvez sélectionner/désélectionner chaque champ individuellement.   
+Une ligne dont les données sont potentiellement incomplètes affiche une icône d'avertissement. Les lignes contenant des fichiers en attente de synchronisation affichent une icône de téléversement dans le cloud.
 
-Certaines colonnes du fichier exporté ne peuvent pas être désélectionnées. Il s'agit de :
+### Exportation
+
+Utilisez le bouton **Exportation** dans la barre d'outils pour télécharger les données.
+
+![Boîte de dialogue d'exportation pour télécharger les données d'un formulaire](../imgs/forms/index-export.png)
+
+La boîte de dialogue **Exporter les données** vous permet de choisir :
+
+1) Les formulaires à exporter.
+    1) *Éléments de la page*. Uniquement les formulaires affichés sur la page courante de la liste (par défaut).
+    2) *Avec les filtres actifs (N)*. Tous les formulaires correspondant aux filtres que vous avez appliqués. Lorsqu'aucun filtre n'est actif, cette option affiche *Ajouter des filtres* : elle ferme la boîte de dialogue pour vous permettre d'en définir.
+    3) *Tous les éléments*. Tous les formulaires, sans filtre ni pagination. Sur un formulaire volumineux, cela peut ralentir l'appareil.
+2) Le format.
+    1) *csv*. Chaque formulaire exporté correspond à une ligne, et chaque champ à une colonne.
+    2) *xlsx*. Idem, au format Excel.
+    3) *splitted xlsx*. Format Excel, avec une feuille par slide.
+3) Dans le menu **Champs et formats** :
+    1) *Sélectionner tous les champs du formulaire*. Exporte tous les champs du formulaire.
+    2) *Libellés des valeurs*. Pour les champs à valeurs prédéfinies (choix unique ou multiple), exporte le libellé affiché plutôt que le code interne.
+    3) *Format des valeurs*, parmi :
+
+        - *Par défaut*.
+        - *Format d'analyse de données*. Les slides répétitives et les champs à choix multiple sont exportés sur plusieurs lignes, une répétition et un choix par ligne ; les autres champs sont répétés sur chaque ligne. Une colonne supplémentaire, *conta*, vaut 1 sur la première ligne de chaque formulaire et 0 sur les lignes supplémentaires générées pour le même formulaire, de sorte que la somme de *conta* compte les formulaires.
+        - *Colonnes séparées*. Chaque option d'un champ à choix multiple dispose de sa propre colonne, avec 1 ou 0.
+4) Les champs à exporter. La liste **Sections** à gauche affiche chaque section avec ses champs sélectionnés et son total. Pour la section active, vous pouvez rechercher un champ, utiliser **Tout sélectionner** / **Désélectionner**, ou cocher des champs individuellement. Le pied de page indique combien de champs sont sélectionnés ; cliquez sur **Exportation** pour télécharger.
+
+Certaines colonnes sont toujours exportées et ne peuvent pas être désélectionnées :
 
 - Form ID
-- Date de création
-- Date de mise à jour
-- Données utilisateur DINO (nom et ID)
-- Données de mesures (id, nom, etc...)
+- Creation date
+- Update date
+- DINO user data (ID and full name)
+- Metrics data (id, name, etc...)
+- Form status (id, name, label, level, color), when the form has statuses
 - Dinoinvalid
 
 ### Actions sur les lignes
 
-Cliquez sur une ligne pour développer ses détails, ou utilisez les actions de ligne (consulter, modifier, supprimer, imprimer en PDF, télécharger au format DOCX, imprimer un badge). Les actions disponibles dépendent de vos autorisations et de la configuration du formulaire.
+Survolez une ligne pour faire apparaître les icônes **Voir** et **Modifier**. Cliquez sur une ligne pour la sélectionner : la barre d'actions au-dessus du tableau affiche alors toutes les actions disponibles (voir, modifier, supprimer, imprimer en PDF, télécharger en DOCX, imprimer un badge). Les actions disponibles dépendent de vos autorisations et de la configuration du formulaire.
 
 ### Créer une nouvelle soumission
 
-Cliquez sur le bouton flottant **+** de la page de liste pour ouvrir un formulaire vierge et saisir des données.
+1. Ouvrez la liste de form du schéma de formulaire souhaité.
+2. Cliquez sur **Ajouter un nouveau formulaire** dans la barre d'outils.
+3. Remplissez le formulaire vierge et enregistrez-le. Voir [Edit Form](edit-form.md).
 
-![Formulaire vierge ouvert pour soumettre une nouvelle entrée de données](../imgs/forms/index-create.png)
+![Formulaire vierge ouvert pour soumettre une nouvelle entrée](../imgs/forms/index-create.png)
 
-Remplissez les champs et validez. La nouvelle soumission apparaîtra dans la liste.
+La nouvelle soumission apparaît dans la liste.
 
 ### Opérations groupées
 
-Sélectionnez plusieurs soumissions à l'aide des cases à cocher pour effectuer une **suppression** ou une **modification** groupée (modifier la même valeur de champ dans toutes les entrées sélectionnées).
-
-## Autres vues
-
-- **Carte** – Consultez les soumissions comportant des coordonnées géographiques sur une carte interactive. Pour en savoir plus, voir [Carte des formulaires](forms-map.md).
-- **DataChat** – Interrogez les données de vos formulaires en langage naturel. Voir [DataChat](datachat.md) pour plus de détails.
+Sélectionnez une ou plusieurs soumissions à l'aide des cases à cocher pour faire apparaître les actions groupées. Vous pouvez **supprimer** les soumissions sélectionnées ou les **Modifier** ensemble, en appliquant la même valeur de champ à toutes.
 
 !!! warning
-    La fonctionnalité DataChat peut consommer des crédits. Vérifiez le solde de crédits de votre compte avant de l'utiliser.
+    La suppression d'un schéma de formulaire ou de ses données est irréversible. Soyez prudent lorsque vous utilisez les actions de suppression.
+
+## Vues supplémentaires
+
+Changez de vue avec les boutons **Données** / **Carte** / **IA** à gauche de la barre d'outils de la liste de form, ou depuis les boutons d'une vignette de schéma de formulaire. Les filtres que vous avez appliqués sont conservés.
+
+- **Carte** – Consultez les données comportant des coordonnées géographiques sur une carte interactive. Elle n'est disponible que lorsque le schéma collecte des localisations. Pour en savoir plus, voir [Forms Map](forms-map.md).
+- **DataChat** (la vue **IA**) – Interrogez les données de votre formulaire en langage naturel. Voir [DataChat](datachat.md) pour plus de détails.
+
+!!! warning
+    DataChat peut consommer des crédits. Vérifiez le solde de crédits de votre compte avant de l'utiliser.

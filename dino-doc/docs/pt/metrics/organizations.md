@@ -1,79 +1,86 @@
 ---
 title: Organizações
-description: Gerencie organizações no Dino – visualize, adicione, edite, exclua e importe organizações.
+description: Gerencie organizações no Dino – visualize, adicione, edite, delete e importe organizações.
 ---
 
 # Organizações
 
-A página **Organizações** lista todos os valores possíveis da métrica organização. As organizações podem ser os parceiros do seu projeto, ou qualquer entidade envolvida nas suas atividades. Use esta tela para visualizar, adicionar, editar, excluir e importar organizações, bem como para gerenciar a hierarquia organizacional.
+A página **Organizações** lista todos os valores possíveis da métrica de organização. As organizações podem ser os parceiros do seu projeto ou qualquer entidade envolvida nas suas atividades. Use este ecrã para visualizar, adicionar, editar, deletar e importar organizações, e para gerir a hierarquia organizacional.
 
-![Visualização principal da página Organizações](../imgs/metrics/organizations.png)
+![Vista principal da página Organizações](../imgs/metrics/organizations.png)
 
-## Colunas da Tabela
+## Colunas da tabela
 
-Por padrão, a tabela mostra as seguintes colunas:
+Por predefinição, a tabela mostra as seguintes colunas:
 
-- **Nome da Organização** – o nome da organização. Esta coluna é ordenável.
-- **Organização Superior** – o nome da organização superior, se houver.
+- **Organization Name** – o nome da organização. Esta coluna é ordenável.
+- **Organização principal** – o nome da organização principal, se existir.
 
-Colunas adicionais (ID, Data de Criação, Caminho do Logo, URL do Site, Atributos Adicionais) ficam ocultas, mas estão disponíveis quando você personaliza a exibição das colunas usando o ícone **Personalize as colunas** (canto inferior direito do cabeçalho da tabela).
+Colunas adicionais (ID, Creation Date, Logo path, Website url, Additional Attributes) estão ocultas por predefinição. Use o botão **Colunas**, acima da tabela à direita, para as mostrar ou ocultar.
 
-## Ações da Linha
+## Ações de linha
 
-Cada linha tem três ações acessíveis ao clicar no botão **Mais** (três pontos) ao lado da linha:
+Passe o cursor sobre uma linha para mostrar os ícones **Ver** e **Editar**. Clique na linha para a selecionar: a barra de ações acima da tabela passa então a mostrar todas as ações:
 
-- **Visualizar** (ícone de visibilidade) – abre uma caixa de diálogo somente leitura com os detalhes da organização.
-- **Editar** (ícone de lápis) – abre uma caixa de diálogo para modificar os detalhes da organização.
-- **Excluir** (ícone de lixeira) – exclui permanentemente a organização. Uma caixa de diálogo de confirmação aparece antes da exclusão.
+- **Ver** (ícone de visibilidade) – abre uma caixa de diálogo de leitura com os detalhes da organização.
+- **Editar** (ícone de lápis) – abre uma caixa de diálogo para alterar os detalhes da organização.
+- **Deletar** (ícone de caixote do lixo) – deleta permanentemente a organização. Aparece primeiro uma caixa de diálogo de confirmação.
 
-!!! warning "Exclua organizações com cuidado"
-    A exclusão de uma organização não pode ser desfeita. Certifique-se de que nenhum caso ou formulário ativo dependa dela antes de removê-la.
+!!! warning "Delete organizações com cuidado"
+    Deletar uma organização não pode ser revertido. Uma organização que é usada por forms, ou que tem organizações filhas, não pode ser deletada; consulte [Métricas](index.md).
 
-Você também pode clicar diretamente em uma linha para **selecioná-la** (para ações em massa) ou **expandí-la** para ver detalhes adicionais na própria linha.
+## Ações em massa
 
-## Ações em Massa e Filtros
+Selecione uma ou mais linhas usando as caixas de seleção na primeira coluna. Aparece uma barra de ferramentas acima da tabela com as ações que pode aplicar:
 
-Selecione várias linhas usando as caixas de seleção na primeira coluna e, em seguida, use os botões de exclusão em massa ou edição em massa que aparecem na barra de ferramentas.
+- Com uma linha selecionada, pode visualizar, editar ou deletar essa organização.
+- Com várias linhas selecionadas, pode deletá-las todas de uma vez.
 
-### Pesquisa e Filtros
+## Pesquisa e Filtros
 
-A barra de filtros na parte superior da página oferece:
+A barra de filtros no topo da página oferece:
 
-- **Pesquisa por palavra-chave** – filtra organizações por qualquer texto.
-- **Intervalo de datas** – filtra por intervalo de data de criação.
-- **Gerenciador de predefinições** – salva e carrega predefinições de filtros de pesquisa.
-- **Exportar** – baixa a lista filtrada como um arquivo.
+- **Pesquisa por palavra-chave** – filtre organizações por qualquer texto.
+- **Filtros** – abra a caixa de diálogo de filtros para restringir a lista por data de criação (**Data inicial** / **Até à data**).
+- **Exportar** – descarregue a lista como ficheiro.
 
-Clique no botão **Filtrar** para abrir filtros avançados e obter um controle mais granular.
+Os filtros aplicados aparecem como etiquetas abaixo da barra de filtros. Clique no ícone de cancelar numa etiqueta para remover esse filtro.
 
-## Adicionar e Importar Organizações
+## Adicionar e importar organizações
 
-Dois botões de ação flutuantes estão sempre visíveis no canto inferior direito:
+Dois botões estão disponíveis na barra de ferramentas acima da tabela:
 
-- **Adicionar Novo** (ícone de mais) – abre uma caixa de diálogo para criar uma nova organização. Você será solicitado a inserir o nome da organização, a organização superior, a URL do site e outros detalhes.
-- **Importar** (ícone de upload na nuvem) – permite fazer upload de um arquivo (CSV, JSON ou XML) para importar organizações em massa. Siga as instruções na tela para mapear os campos.
+- **Add new ORGANIZATION** (ícone de mais) – abre uma caixa de diálogo para criar uma nova organização.
+- **Import ORGANIZATION** (ícone de carregamento para a nuvem) – carregue um ficheiro para importar organizações em massa.
 
-!!! tip "Internacionalização"
-    Os nomes e rótulos das organizações podem ser traduzidos se a sua instância do Dino for compatível com vários idiomas. Consulte [Idiomas](../administration/languages.md) para obter detalhes.
+!!! tip "Hierarquia organizacional"
+    Defina uma **Organização principal** ao criar uma organização para construir uma hierarquia de entidades relacionadas.
 
-## Passos: Criar uma Nova Organização
+## Passos: criar uma nova organização
 
-1. Clique no botão flutuante **Adicionar Novo**.
-2. Na caixa de diálogo que abrir, preencha os campos obrigatórios (Nome da Organização e pelo menos um atributo).
-3. Opcionalmente, defina uma **Organização Superior** para criar uma hierarquia.
-4. Clique em **Salvar**. A nova organização aparece imediatamente na lista.
+1. Clique no botão **Add new ORGANIZATION** na barra de ferramentas.
+2. Na caixa de diálogo que se abre, preencha os campos obrigatórios, começando pelo Organization Name. Os campos opcionais estão marcados com *(optional)*.
+3. Opcionalmente, defina uma **Organização principal** para colocar a nova organização numa hierarquia.
+4. Opcionalmente, adicione um caminho de logótipo, URL do website e quaisquer atributos adicionais.
+5. Clique em **Salvar**. A nova organização aparece imediatamente na lista.
 
-## Passos: Exportar Organizações
+## Passos: importar organizações
 
-1. Aplique os filtros necessários na barra de pesquisa.
-2. Clique no botão **Exportar** (ícone de download na nuvem) na barra de filtros.
-3. Escolha o formato de exportação (CSV, Excel, etc.) e confirme.
-4. O arquivo é baixado para o seu dispositivo.
+1. Clique no botão **Import ORGANIZATION** na barra de ferramentas.
+2. Carregue um ficheiro `.xls`, `.xlsx` ou `.csv` e mapeie as suas colunas para os atributos da organização.
+3. Clique em **Aplicar importação** e reveja o resultado. As organizações cujo nome já existe são reutilizadas, não atualizadas.
 
-## Páginas Relacionadas
+## Passos: exportar organizações
 
-- [Visão Geral das Métricas](index.md) – todas as páginas de gerenciamento de métricas.
-- [Áreas Temáticas](areas.md) – gerencie áreas temáticas para organizações.
-- [Casos](cases.md) – associe casos a organizações.
-- [Localizações](locations.md) – vincule localizações a organizações.
-- [Projetos](projects.md) – conecte organizações a projetos.
+1. Aplique os filtros de que necessita.
+2. Clique no botão **Exportar** na barra de ferramentas.
+3. Escolha o que exportar: *Itens na página* (a predefinição), os itens correspondentes aos seus filtros, ou *Todos os itens*.
+4. Escolha o formato: *csv*, *xlsx* ou *splitted xlsx* e clique em **Exportar**.
+
+## Páginas relacionadas
+
+- [Visão geral das métricas](index.md) – todas as páginas de gestão de métricas.
+- [Áreas temáticas](areas.md) – gerir áreas temáticas para organizações.
+- [Casos](cases.md) – associar casos a organizações.
+- [Posições](locations.md) – ligar posições a organizações.
+- [Projetos](projects.md) – ligar organizações a projetos.

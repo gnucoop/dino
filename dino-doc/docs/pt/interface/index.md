@@ -1,145 +1,118 @@
 ---
 title: Navegação e Interface
-description: Uma visão geral da estrutura do aplicativo Dino — a barra de ferramentas, a navegação lateral, as notificações, a sincronização de dados e a área do usuário.
+description: Uma visão geral da estrutura da aplicação Dino — a barra lateral, a sincronização de dados, as notificações, o menu do utilizador e o encerramento de sessão.
 ---
 
 # Navegação e Interface
 
-A interface do Dino é composta por uma barra de ferramentas superior e um menu de navegação lateral que estão presentes em todas as páginas após o login.
+Depois de iniciar sessão, todas as páginas do Dino são enquadradas por uma **barra lateral** à esquerda. Esta contém a navegação entre as áreas da aplicação e, na parte inferior, a sincronização de dados, as notificações e o cartão do utilizador.
 
-![Visão principal da página de Navegação Principal](../imgs/interface/index.png)
-
----
-
-## Navegação Lateral
-
-O menu lateral permite navegar entre as principais áreas do aplicativo.
-
-**Seções padrão** (visíveis para todos os usuários autenticados):
-
-| Seção | Descrição |
-|---|---|
-| Painel | A tela inicial. |
-| Formulários | Formulários de coleta de dados e envios. |
-| Relatórios | Relatórios gerados. |
-| Agregação | Visão unificada dos envios de vários formulários. |
-| Métricas | Dados de referência (projetos, locais, organizações, etc.). *(Oculto para usuários somente convidados.)* |
-| IA | Assistente de IA (DinoGPT). |
-
-**Seções de administração** (visíveis apenas para administradores, exibidas abaixo de um separador):
-
-| Seção | Descrição |
-|---|---|
-| Usuários | Contas de usuário e grupos de permissão. |
-| Idiomas | Gerenciamento de tradução da interface. |
-
-Em telas grandes, o menu está sempre visível à esquerda. Em telas menores, ele é recolhido e pode ser aberto com o **botão de menu** (ícone de hambúrguer) na barra de ferramentas superior. Independentemente do tamanho da tela, clique no botão de menu para expandir os rótulos do menu ou recolhê-los para exibir apenas os ícones.
+![Vista principal da página de Navegação Principal](../imgs/interface/index.png)
 
 ---
 
-## Barra de Ferramentas Superior
+## A Barra Lateral
 
-A barra de ferramentas na parte superior da tela contém os seguintes controles, da esquerda para a direita:
+No topo da barra lateral encontram-se o logótipo e o **botão de menu**, que expande a barra lateral para mostrar os nomes das secções ou a recolhe, deixando apenas os ícones.
 
-- **Alternador do menu** — abre ou recolhe o menu lateral.
-- **Logotipo** — exibe o logotipo da sua organização ou do Dino.
-- **Indicador de nova versão** — um ícone de download aparece quando uma nova versão do Dino está disponível. Clique nele para recarregar o aplicativo e aplicar a atualização.
-- **Créditos DINO-AI** — mostra o saldo restante de créditos de IA como um selo. Clique para abrir a [Área do Usuário](#área-do-usuário) no painel de Créditos. *(Visível apenas se uma chave de API DINO-AI tiver sido configurada.)*
-- **Alternador de modo escuro / claro** — um ícone de sol, um controle deslizante e um ícone de lua. Use o controle deslizante para alternar entre os temas claro e escuro. *(Oculto no celular — use a Área do Usuário em vez disso.)*
-- **Ícone de informação** — passe o mouse para ver informações de versão desta instalação.
-- **Ícone de ajuda** — abre a lista de reprodução do tutorial do Dino em uma nova aba.
-- **Ícone de configurações** — abre a [Área do Usuário](#área-do-usuário).
-- **Ícone de sincronização** — mostra o status atual da sincronização de dados. Clique para acionar uma sincronização manual.
-- **Sino de notificações** — mostra o número de notificações não lidas como um selo. O sino toca quando novas notificações chegam. Consulte [Notificações](#notificações) abaixo.
-- **Seletor de idioma** — altera o idioma da interface.
-- **Nome do usuário** — clique para abrir a [Área do Usuário](#área-do-usuário).
-- **Ícone de sair** — clique para sair. O ícone fica esmaecido enquanto uma sincronização está em andamento ou quando o dispositivo está offline; sair não está disponível nesses estados.
+!!! tip "Menu recolhido"
+    Quando a barra lateral está recolhida, mostrando apenas os ícones, passe o cursor sobre um ícone para ver o nome da respetiva secção numa dica.
+
+Num telemóvel ou num ecrã pequeno, a barra lateral fica oculta. Uma barra estreita no topo da página mostra então o botão de menu, que abre a barra lateral sobre a página, o logótipo e o botão de sincronização.
+
+### Secções
+
+A navegação lista as áreas do Dino que pode utilizar. Quais aparecem depende da configuração da sua instância do Dino e das suas permissões.
+
+**Secções do utilizador**, sob o cabeçalho **Utilizador**:
+
+| Secção | Descrição |
+|---|---|
+| Dashboard | O ecrã inicial. Ver [Dashboard](../dashboard/index.md). |
+| Forms | Formulários de recolha de dados e dados submetidos. Ver [Forms](../forms/index.md). |
+| Reports | Relatórios gerados. Ver [Reports](../reports/index.md). |
+| Aggregation | Vista unificada dos dados submetidos em todos os formulários. Ver [Aggregation](../aggregation/index.md). |
+| AI | O assistente DinoAi, quando ativado na sua instância. |
+| Metrics | Dados de referência (projetos, posições, organizações, etc.). Ver [Metrics](../metrics/index.md). *(Oculto para utilizadores apenas convidados.)* |
+
+**Secções de administração**, sob o cabeçalho **Administração**, visíveis apenas para administradores:
+
+| Secção | Descrição |
+|---|---|
+| Users | Contas de utilizador e grupos de permissões. Ver [Users](../administration/users.md). |
+| Languages | Gestão da tradução da interface. Ver [Managing Languages](../administration/languages.md). |
+
+A sua instância pode mover algumas secções, como Metrics, Reports ou Aggregation, para as secções de administração. Quando a barra lateral está recolhida, os dois grupos são separados por uma linha em vez dos respetivos cabeçalhos.
 
 ---
 
 ## Sincronização de Dados
 
-O Dino sincroniza seus dados com o servidor em segundo plano. O **ícone de sincronização** na barra de ferramentas mostra o estado atual:
+O Dino mantém os seus dados no dispositivo e sincroniza-os com o servidor em segundo plano. O botão **Sincronizar** na parte inferior da barra lateral mostra o estado atual e, quando a barra lateral está expandida, a hora da última sincronização concluída (ou *Nunca sincronizado*). Clique nele para iniciar uma sincronização.
 
-| Ícone | Significado |
+| Botão | Significado |
 |---|---|
-| `sync` (estático) | Todos os dados estão atualizados. |
-| `sync_problem` (pulsando) | Você tem alterações locais que ainda não foram sincronizadas. Clique para acionar uma sincronização. |
-| `sync` (girando) | Uma sincronização está em andamento. |
-| `sync_disabled` | O dispositivo está offline; a sincronização não está disponível. |
-| `sync` com selo `!` | Um problema de sincronização foi encontrado. Verifique suas notificações para mais detalhes. |
+| ícone `sync` | Todos os dados estão atualizados. |
+| ícone `sync`, a rodar | Está em curso uma sincronização. |
+| ícone `sync_problem` num botão colorido | Tem alterações locais que ainda não foram sincronizadas. Clique para as sincronizar. |
+| distintivo `!` no ícone | Ocorreu um problema durante a última sincronização. Consulte as suas notificações para mais detalhes. |
+| ícone `sync_disabled`, *Offline* | O dispositivo está offline; a sincronização não está disponível até a ligação ser restabelecida. |
 
-Quando uma sincronização é concluída, uma notificação aparece brevemente na parte inferior da tela:
+Quando uma sincronização termina, aparece brevemente uma mensagem na parte inferior do ecrã:
 
-- *"Sincronização concluída"* — todos os dados foram sincronizados com sucesso.
-- *"Sincronização concluída com erros. Não foi possível sincronizar: [itens]. Verifique suas notificações."* — uma ou mais coletas de dados não puderam ser sincronizadas. Uma notificação também é criada na sua lista de notificações.
+- *"Sincronização concluída"* — todos os dados foram sincronizados com êxito.
+- *"Sincronização concluída com erros. Não foi possível sincronizar: [itens]. Consulte as suas notificações."* — uma ou mais coleções de dados não puderam ser sincronizadas. É também criada uma notificação na sua lista de notificações.
+
+!!! warning "Sessão expirada"
+    Se a sua sessão tiver expirado, a sincronização para e o botão de sincronização mostra `sync_problem`. Os seus dados permanecem neste dispositivo. Clique no botão: o Dino tenta renovar a sessão e, se não conseguir, oferece **Ir para a página de acesso**, mantendo os dados neste dispositivo, ou **Mais tarde**. Inicie sessão novamente com a mesma conta para sincronizar os dados.
+
+---
+
+## Botões Utilitários
+
+Abaixo do botão de sincronização, uma linha de pequenos botões dá acesso a:
+
+- **Nova versão** — aparece um ícone de transferência quando está disponível uma nova versão do Dino. Clique nele para recarregar a aplicação e aplicar a atualização.
+- **Notificações** — o sino, com um distintivo que conta as suas notificações não lidas. Ver [Notificações](#notificações) abaixo.
+- **Modo claro / escuro** — um botão de sol e um de lua. São apresentados quando a barra lateral está expandida e em ecrãs pequenos; também pode alternar o modo a partir da [Área do utilizador](../user-area/index.md).
+- **DINO-AI Credits** — um distintivo com os seus créditos de IA restantes, apresentado apenas quando o DINO-AI está configurado para a sua conta. Clique nele para abrir o separador de IA da Área do utilizador.
 
 ---
 
 ## Notificações
 
-Clique no **ícone de sino** na barra de ferramentas para abrir o menu suspenso de notificações. O selo no sino mostra o número de mensagens não lidas.
+Clique no **sino** para abrir o painel de notificações. O cabeçalho mostra quantas notificações estão por ler. As notificações são agrupadas por dia, cada uma com a sua idade, e as mensagens repetidas são condensadas numa única linha com um contador (por exemplo ×3).
 
-![Menu suspenso de notificações aberto](../imgs/interface/index-notifications.png)
+![Menu pendente de notificações aberto](../imgs/interface/index-notifications.png)
 
-No menu suspenso, você pode:
+A partir do painel, pode:
 
-1.  **Clicar em uma notificação** para marcá-la como lida.
-2.  **Clicar no botão de seta** de uma notificação (se presente) para navegar diretamente até a área relevante do aplicativo.
-3.  **Marcar todas como lidas** — marca todas as notificações atuais como lidas.
-4.  **Ver todas as notificações** — navega até a página completa de [Notificações](../notifications/index.md).
+1.  **Clicar numa notificação** para a marcar como lida. Se esta tiver uma ligação para algum ponto do Dino, indicada por uma seta à direita, o clique também o leva até lá.
+2.  **Marca tudo como lido** — apresentado quando existem notificações não lidas.
+3.  **Ver todas as notificações** — abre a página completa de [Notificações](../notifications/index.md).
 
 ---
 
-## Área do Usuário
+## Cartão de Utilizador e Menu
 
-Clique no **ícone de configurações**, no seu **nome de usuário** ou no **contador de Créditos DINO-AI** para abrir a caixa de diálogo da Área do Usuário. Ela mostra seu nome completo e endereço de e-mail na parte superior.
+Na base da barra lateral, o cartão de utilizador mostra as suas iniciais, o seu nome e uma linha com a sua função, o idioma da interface ativo e a versão do Dino. Clique no cartão para abrir o menu do utilizador:
 
-![Caixa de diálogo da área do usuário aberta](../imgs/interface/index-user-area.png)
+- **Área do utilizador** — a página da sua conta, para alterar a palavra-passe, consultar a sua chave e créditos DINO-AI, personalizar o tema e muito mais. Ver [Área do utilizador](../user-area/index.md).
+- **Linguagem** — escolha o idioma da interface.
+- **Ajuda** — uma ligação para as diretrizes configuradas na sua instância, quando existem.
+- As informações de compilação da instalação.
 
-### Alterar Senha
+---
 
-1.  Insira sua **Senha Atual**.
-2.  Insira uma **Nova Senha**.
-3.  **Confirme a Nova Senha**.
-4.  Clique no botão de seta para salvar.
+## Encerrar a Sessão
 
-Uma mensagem de erro aparecerá se a senha atual estiver incorreta ou se as novas senhas não coincidirem.
+Clique no botão **Sair** junto ao seu cartão de utilizador. O Dino pergunta sempre o que fazer com os dados neste dispositivo:
 
-### Chaves de API
+- **Sair e apagar os dados** — encerra a sessão e elimina todos os dados locais deste dispositivo.
+- **Encerrar a sessão e manter os dados** — encerra a sessão e leva-o à página de acesso, mantendo os dados neste dispositivo para o seu próximo início de sessão.
+- **Cancelar** — mantém a sessão iniciada.
 
-Visualize ou defina sua **Chave de API DINO-AI**. Uma vez que uma chave válida seja armazenada, ela é exibida em modo somente leitura. Use o ícone de olho para mostrar ou ocultar a chave, e o ícone de cópia para copiá-la para a área de transferência.
+O botão Sair fica desativado e não pode ser utilizado enquanto está em curso uma sincronização ou quando o dispositivo está offline.
 
-### Créditos
-
-Mostra seu **saldo atual de créditos DINO-AI**. Se uma integração de pagamento estiver configurada, um botão **Adicionar mais** estará disponível para comprar créditos adicionais.
-
-!!! tip "Visibilidade"
-    Esta seção só é visível quando uma chave de API DINO-AI tiver sido configurada.
-
-### Tema do DINO
-
-Personalize o esquema de cores do aplicativo:
-
-- **Cor primária**, **Cor de destaque**, **Cor de aviso** — clique nos campos de cor para abrir um seletor de cores.
-- **Nome do predefinido** — digite ou selecione um nome para salvar ou carregar uma predefinição de cores.
-- Clique em **Salvar** para salvar as cores atuais como uma predefinição nomeada, ou em **Carregar** para aplicar uma predefinição salva.
-
-No celular, um **alternador de modo escuro / claro** também aparece aqui.
-
-### Tutoriais
-
-Clique em **Iniciar Tour do Dino** para reiniciar o tour guiado do aplicativo desde o início.
-
-!!! tip "Disponibilidade"
-    Esta seção só é exibida se o tour guiado estiver configurado na sua instalação.
-
-### Backup e Restauração
-
-*(Apenas administradores, se habilitado.)*
-
-- **Fazer Backup dos Dados** — baixa uma exportação completa do banco de dados do aplicativo como um arquivo JSON.
-- **Restaurar Dados** — faz upload de um arquivo JSON exportado anteriormente para restaurar o banco de dados.
-
-!!! warning "Cuidado ao Restaurar"
-    Restaurar dados substituirá o banco de dados atual. Esta ação não pode ser desfeita.
+!!! warning "Dados ainda não sincronizados"
+    Os dados que ainda não sincronizou existem apenas neste dispositivo: eliminá-los ao terminar a sessão faz com que se percam definitivamente. Se tiver dúvidas, sincronize primeiro ou escolha **Encerrar a sessão e manter os dados**. Iniciar sessão mais tarde com uma conta diferente também os elimina — ver [Iniciar sessão](../getting-started/login.md).

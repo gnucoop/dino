@@ -1,46 +1,71 @@
 ---
-title: Reportes
-description: "Una visión general del área de Reportes en Dino: cómo encontrar esquemas de reportes y navegar a tus reportes."
+title: Informes
+description: "Una visión general del área de Informes en Dino: cómo encontrar esquemas de informes y navegar a tus informes."
 ---
 
-# Reportes
+# Informes
 
-El área de Reportes es tu centro para acceder a todos los esquemas de reportes disponibles. Un esquema de reporte define la estructura y el contenido de un reporte que se puede generar a partir de los datos que has recopilado. Desde aquí, puedes explorar los esquemas y acceder a los reportes que ya se han creado.
+El área de Informes es tu centro para acceder a todos los esquemas de informes disponibles. Un esquema de informe define la estructura y el contenido de un informe que se puede generar a partir de los datos recopilados. Desde aquí, puedes explorar los esquemas y acceder a los informes que ya se han creado para cada uno.
 
-![Vista principal de la página de Reportes](../imgs/reports/index.png)
+![Vista principal de la página de Informes](../imgs/reports/index.png)
 
-Los reportes solo se pueden crear utilizando un tipo de formulario basado en Excel llamado [XLSReport](xlsreport.md). Para crear un nuevo reporte, primero debes crear un archivo XLSReport y luego importarlo en Dino siguiendo el procedimiento que se describe a continuación.
+Los esquemas de informes se crean a partir de un formato basado en Excel llamado [XLSReport](xlsreport.md), o se generan automáticamente a partir de un esquema de formulario (consulta [Informes automáticos](autoreports.md)). Para crear uno a partir de un archivo, primero preparas un archivo XLSReport y luego lo importas en Dino. Para conocer el procedimiento completo, consulta [Editar esquema de informe](edit-report-schema.md).
 
 ---
 
-## Explorar esquemas de reportes
+## Explorar esquemas de informes
 
-Cuando abres la página de Reportes, ves una lista de todos los esquemas de reportes a los que tienes permiso de acceso. La lista está ordenada alfabéticamente por la etiqueta del esquema.
+Cuando abres la página de Informes, ves una tarjeta por cada esquema de informe al que tienes permiso de acceso. Las tarjetas se ordenan alfabéticamente por la etiqueta del esquema.
 
 Para encontrar un esquema específico:
 
-1. Usa la barra de búsqueda en la parte superior de la página.
+1. Usa el campo **Filtrar** en la parte superior de la página.
 2. Escribe cualquier parte del nombre o la etiqueta del esquema.
-3. La lista se filtrará en tiempo real para mostrar solo los esquemas coincidentes.
+3. La lista se filtra mientras escribes, mostrando solo los esquemas que coinciden.
 
-Para ver los reportes de un esquema específico, haz clic en su tarjeta en la lista.
+Para abrir los informes de un esquema, haz clic en cualquier parte de su tarjeta.
 
-!!! tip "Primeros pasos"
-    Si ves el mensaje "There are no reports", significa que aún no se ha creado ningún esquema de reporte ni se ha compartido contigo. Ponte en contacto con tu administrador de Dino para comenzar.
+En cada tarjeta que puedas editar, los íconos de la esquina superior derecha te permiten gestionar el esquema directamente:
+
+- **Editar** (ícono de lápiz) — abre el esquema para editarlo. Consulta [Editar esquema de informe](edit-report-schema.md).
+- **Eliminar** (ícono de papelera) — elimina el esquema después de que confirmes. Un esquema que todavía tiene informes no se puede eliminar: elimina primero sus informes.
+
+Un ícono de huella digital en una tarjeta significa que el esquema de informe es *único*: solo puede producir un informe para un conjunto exacto de métricas determinado. Si intentas crear un informe que ya existe para esas métricas, Dino no creará un duplicado.
+
+!!! tip "¿Aún no hay esquemas?"
+    Si ves el mensaje "There are not any Reports currently available", todavía no se ha creado ningún esquema de informe ni se ha compartido contigo. Pídele a tu administrador de Dino que cree uno, o agrega uno tú mismo si tienes permiso.
 
 ---
 
-## Crear un nuevo esquema de reporte
+## Agregar un nuevo esquema de informe
 
-Puedes iniciar el proceso de generar un nuevo esquema de reporte directamente desde la página principal de Reportes. Haz clic en el botón **+** (más) ubicado en la esquina inferior derecha de la pantalla.
+Puedes empezar a crear un nuevo esquema de informe desde la página principal de Informes.
 
-Para conocer los pasos detallados, consulta la guía sobre [Edit Report](edit-report.md).
+1. Haz clic en el botón **+** (*Add new Reports schema*) en la esquina inferior derecha de la pantalla. Solo se muestra si tienes permitido crear esquemas de informes.
+2. Sigue los pasos descritos en [Editar esquema de informe](edit-report-schema.md).
 
 ---
 
-## Qué puedes hacer
+## Abrir los informes de un esquema
 
-Desde la página principal de Reportes, puedes navegar para realizar estas acciones clave:
+Al hacer clic en la tarjeta de un esquema, accedes a la lista de informes generados a partir de ese esquema. Desde allí puedes:
 
-* **[Edit Report](edit-report.md)** — Genera un nuevo documento de reporte seleccionando un esquema, eligiendo tus métricas y estableciendo un rango de fechas.
-* **[Edit Report Schema](edit-report-schema.md)** — Crea nuevos esquemas de reportes o edita los existentes para definir qué datos aparecen en los reportes. Esto normalmente requiere permisos de administrador.
+1. Explorar los informes existentes en una tabla, con detalles como el usuario que creó el informe, el nombre del informe y el rango de fechas recopiladas.
+2. Filtrar y buscar en la lista para acotar los informes que necesitas. Usa la búsqueda por palabra clave, los campos de rango de fechas y el botón **Filtros** para condiciones más avanzadas. También puedes guardar un conjunto de filtros como preajuste y aplicarlo de nuevo más tarde.
+3. Abrir un informe para revisarlo: pasa el cursor sobre su fila y haz clic en el ícono **Ver** (ojo), o selecciona la fila y haz clic en **Ver** en la barra de acciones encima de la tabla. Consulta [Editar informe](edit-report.md).
+4. Eliminar un informe que ya no necesitas: selecciona su fila y luego haz clic en **Eliminar** en la barra de acciones.
+
+Para crear un nuevo informe a partir del esquema seleccionado, haz clic en **Agregar nuevo informe** encima de la tabla. Los informes que usan prompts de IA consumen DINO-AI Tokens. La cantidad de tokens que usará el informe se muestra junto al botón, así siempre sabes el costo antes de empezar.
+
+!!! warning "Tokens insuficientes"
+    Si no tienes suficientes DINO-AI Tokens en tu cuenta, Dino no iniciará el informe y mostrará un mensaje pidiéndote que agregues más tokens. Agrega tokens a tu cuenta e inténtalo de nuevo.
+
+---
+
+## Qué puedes hacer después
+
+Desde el área de Informes, puedes continuar con estas tareas:
+
+* **[Editar informe](edit-report.md)** — Revisa un informe y expórtalo.
+* **[Editar esquema de informe](edit-report-schema.md)** — Crea nuevos esquemas de informes o edita los existentes para definir qué aparece en tus informes. Esto normalmente requiere permisos de administrador.
+* **[Agregación](../aggregation/index.md)** — Explora los datos de todos tus esquemas de formulario en una sola lista.
