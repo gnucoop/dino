@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Crea y modifica form schemas — define nombre, icono, estados, métricas, visibilidad y establece relaciones.">
+        <meta name="description" content="Crea y modifica esquemas de formulario: define el nombre, el icono, la visibilidad, los estados, las métricas, las relaciones y la estructura del formulario en sí.">
       
       
       
@@ -41,7 +41,7 @@
     
     
       
-        <title>Editar form schema - Documentación Dinoapp</title>
+        <title>Editar esquema de formulario - Documentación Dinoapp</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#editar-form-schema" class="md-skip">
+        <a href="#editar-esquema-de-formulario" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Editar form schema
+              Editar esquema de formulario
             
           </span>
         </div>
@@ -598,10 +598,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#atributos-del-form" class="md-nav__link">
+  <a href="#pestaña-configuración" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Atributos del form
+        Pestaña Configuración
       
     </span>
   </a>
@@ -609,10 +609,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gestionar-los-form-statuses" class="md-nav__link">
+  <a href="#pestaña-métricas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Gestionar los Form Statuses
+        Pestaña Métricas
       
     </span>
   </a>
@@ -620,10 +620,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#definir-relaciones" class="md-nav__link">
+  <a href="#pestaña-estado" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Definir relaciones
+        Pestaña Estado
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pestaña-construir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pestaña Construir
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pestaña-relaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pestaña Relaciones
       
     </span>
   </a>
@@ -635,17 +657,6 @@
     <span class="md-ellipsis">
       
         Guardar e importar
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#el-form-builder" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        El Form Builder
       
     </span>
   </a>
@@ -1443,6 +1454,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área de usuario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1470,10 +1508,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#atributos-del-form" class="md-nav__link">
+  <a href="#pestaña-configuración" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Atributos del form
+        Pestaña Configuración
       
     </span>
   </a>
@@ -1481,10 +1519,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gestionar-los-form-statuses" class="md-nav__link">
+  <a href="#pestaña-métricas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Gestionar los Form Statuses
+        Pestaña Métricas
       
     </span>
   </a>
@@ -1492,10 +1530,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#definir-relaciones" class="md-nav__link">
+  <a href="#pestaña-estado" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Definir relaciones
+        Pestaña Estado
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pestaña-construir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pestaña Construir
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pestaña-relaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pestaña Relaciones
       
     </span>
   </a>
@@ -1507,17 +1567,6 @@
     <span class="md-ellipsis">
       
         Guardar e importar
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#el-form-builder" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        El Form Builder
       
     </span>
   </a>
@@ -1541,17 +1590,18 @@
 
 
 
-<h1 id="editar-form-schema">Editar form schema</h1>
-<p>La página Editar form schema te permite crear un nuevo form schema o modificar uno existente. Aquí defines los atributos básicos del form, gestionas sus estados y métricas, controlas la visibilidad y vinculas el schema a otros forms mediante relaciones.</p>
-<p>Puedes acceder a esta página de las siguientes maneras:</p>
+<h1 id="editar-esquema-de-formulario">Editar esquema de formulario</h1>
+<p>La página Editar esquema de formulario te permite crear un nuevo esquema de formulario o modificar uno existente. Aquí defines los atributos generales del formulario, gestionas sus estados y métricas, controlas la visibilidad, lo conectas con otros esquemas de formulario y construyes las preguntas que tus usuarios responderán.</p>
+<p>Puedes llegar a esta página de las siguientes formas:</p>
 <ul>
-<li>Haciendo clic en <strong>Create</strong> en la <a href="../">Forms overview</a> para crear un nuevo schema.</li>
-<li>Seleccionando <strong>Edit</strong> en la tarjeta de un schema existente o desde su vista de detalle.</li>
+<li>Haciendo clic en el botón <strong>+</strong> (<em>Add New Forms Schema</em>) en la esquina inferior derecha de la <a href="../">vista general de formularios</a> para construir un nuevo esquema.</li>
+<li>Seleccionando <strong>Editar</strong> en la tarjeta de un esquema existente o desde su vista de detalle.</li>
 </ul>
-<p>El percorso di navigazione en la parte superior muestra tu posición actual (p. ej., <strong>Forms &gt; My Survey &gt; Edit</strong>).</p>
-<p><img alt="Vista principal de la página Editar form schema" src="../../imgs/forms/edit-form-schema.png" /></p>
-<h2 id="atributos-del-form">Atributos del form</h2>
-<p>Completa o ajusta los siguientes campos:</p>
+<p>El percorso di navigazione en la parte superior muestra tu posición actual (p. ej., <strong>Forms / Schema / My Survey / Edit</strong>).</p>
+<p><img alt="Vista principal de la página Editar esquema de formulario" src="../../imgs/forms/edit-form-schema.png" /></p>
+<p>El editor está organizado en pestañas: <strong>Configuración</strong>, <strong>Métricas</strong>, <strong>Estado</strong>, <strong>Construir</strong> y <strong>Relaciones</strong>. Los botones <strong>Guardar</strong> e <strong>Importar XLSForm</strong> permanecen visibles en la fila de pestañas, por lo que puedes guardar tu trabajo desde cualquier pestaña.</p>
+<h2 id="pestaña-configuración">Pestaña Configuración</h2>
+<p>La pestaña <strong>Configuración</strong> contiene los metadatos y la configuración general del cuestionario.</p>
 <table>
 <thead>
 <tr>
@@ -1561,72 +1611,78 @@
 </thead>
 <tbody>
 <tr>
-<td><strong>Form Name</strong></td>
-<td>Un identificador único del sistema (p. ej., <code>survey_2025</code>). Dino avisa si el nombre ya está en uso.</td>
+<td><strong>Nombre del formulario</strong></td>
+<td>Un identificador único del sistema (p. ej., <code>survey_2025</code>). Dino te avisa si el nombre ya está en uso.</td>
 </tr>
 <tr>
-<td><strong>Form Label</strong></td>
-<td>El nombre legible para las personas que se muestra en las listas y los report.</td>
+<td><strong>Etiqueta del formulario</strong></td>
+<td>El nombre legible que se muestra en las listas y los report.</td>
 </tr>
 <tr>
-<td><strong>Icon Set</strong></td>
-<td>Elige <strong>Default</strong> (iconos material) o <strong>Humanitarian</strong> (iconos SVG personalizados).</td>
+<td><strong>Conjunto de iconos</strong></td>
+<td>Elige <strong>Por defecto</strong> (iconos material) o <strong>Humanitarian</strong> (iconos SVG personalizados).</td>
 </tr>
 <tr>
-<td><strong>Icon Identifier</strong></td>
-<td>Selecciona un icono de la lista de autocompletado. La vista previa se actualiza en tiempo real.</td>
+<td><strong>Icono del formulario</strong></td>
+<td>Selecciona un icono de la lista de autocompletado. La vista previa junto al campo se actualiza en tiempo real.</td>
 </tr>
 <tr>
-<td><strong>Form Statuses</strong></td>
-<td>Una o más etiquetas que describen el estado de unos datos (p. ej., Borrador, Aprobado, Rechazado). Selecciona estados existentes o <strong>Create new Status</strong> para añadir uno sobre la marcha. Es posible asociar un nivel a cada estado, para establecer un orden entre los estados. Cuando se crean nuevos datos de un form, los datos se crean con el estado correspondiente al nivel más bajo.</td>
+<td><strong>Visibilidad</strong></td>
+<td><strong>Privado</strong>: solo los usuarios de Dino con permiso para enviar pueden mandar datos a este esquema de formulario. <strong>Público</strong>: cualquiera con el enlace puede enviar. Consulta <a href="../../public-forms/">public forms</a> para más detalles.</td>
 </tr>
 <tr>
-<td><strong>Form Metrics</strong></td>
-<td>Métricas que se recopilan para cada conjunto de datos. Selecciona una o más de la lista.</td>
-</tr>
-<tr>
-<td><strong>Visibility</strong></td>
-<td><strong>Private</strong> – el form schema solo puede aceptar datos de usuarios de DINO, siempre que tengan permiso para enviar datos a ese form schema en particular. Por otro lado, si un form está configurado como <strong>Public</strong> – cualquiera con el enlace puede enviar. Consulta la página sobre <a href="../../public-forms/">public forms</a> para más detalles.</td>
-</tr>
-<tr>
-<td><strong>Metrics Set Behavior</strong></td>
-<td><strong>Default</strong> – cada valor de métrica puede aparecer varias veces en los datos. <strong>Unique</strong> – un valor de métrica (p. ej., el nombre de un distrito) solo puede usarse una vez por form.</td>
-</tr>
-<tr>
-<td><strong>Generate Report</strong></td>
-<td>Cuando está en <strong>Yes</strong>, Dino genera un report automáticamente. Esta opción se oculta si ya existe un auto‑report. Consulta la sección <a href="../../reports/autoreports/">auto report</a> para más detalles.</td>
+<td><strong>Generar informe</strong></td>
+<td>Cuando está en <strong>Sí</strong>, Dino genera automáticamente un report para el formulario. Si ya existe un report, esta opción queda bloqueada en <strong>Sí</strong>; para desactivarla, primero debes eliminar el esquema y los datos del report. Consulta <a href="../../reports/autoreports/">Auto reports</a> para más detalles.</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition warning">
-<p class="admonition-title">Unique Metrics Set Behavior</p>
-<p>Usa <strong>Unique</strong> con cuidado — una vez que un valor se usa para una métrica, no puede reutilizarse en otros datos del mismo form schema.</p>
+<div class="admonition tip">
+<p class="admonition-title">Ve directamente a las preguntas</p>
+<p>Haz clic en <strong>Ir a la construcción</strong> en la parte inferior de la pestaña Configuración para abrir la pestaña <strong>Construir</strong> de inmediato.</p>
 </div>
-<h2 id="gestionar-los-form-statuses">Gestionar los Form Statuses</h2>
+<h2 id="pestaña-métricas">Pestaña Métricas</h2>
+<p>En la pestaña <strong>Métricas</strong> eliges qué métricas se aplican a este cuestionario y cómo se comportan.</p>
+<ul>
+<li><strong>Métricas de formulario</strong>: las métricas que se recogen en cada dato. Selecciona una o varias de la lista.</li>
+<li><strong>Comportamiento del conjunto de métricas</strong>: <strong>Por defecto</strong> permite que cada valor de métrica aparezca varias veces en los datos. <strong>Único</strong> permite que un valor de métrica (p. ej., el nombre de un distrito) se use solo una vez por formulario.</li>
+<li><strong>Métricas para incluir en el formulario</strong>: selecciona las métricas cuyos datos deben incluirse en el formulario.</li>
+<li><strong>Métricas incluidas como opciones de elección</strong>: agrega una fila por cada métrica que quieras exponer como origen de elección. En cada fila, elige la métrica, opcionalmente indica atributos adicionales que se trasladen a la opción de elección y agrega una condición de filtro si quieres acotar las opciones disponibles. El nuevo origen de elección se llama <code>$metricName_metric_choice</code>.</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Comportamiento del conjunto de métricas Único</p>
+<p>Usa <strong>Único</strong> con cuidado: una vez que un valor se usa para una métrica, no puede reutilizarse en otro dato del mismo esquema de formulario.</p>
+</div>
+<h2 id="pestaña-estado">Pestaña Estado</h2>
+<p>En la pestaña <strong>Estado</strong> defines los estados que puede tener un dato de este cuestionario (por ejemplo, Borrador, Aprobado, Rechazado).</p>
 <ol>
-<li>Haz clic en el campo <strong>Form Statuses</strong> para expandir la lista.</li>
-<li>Para añadir un estado existente, marca su casilla.</li>
-<li>Para crear un nuevo estado, haz clic en <strong>Create new Status</strong>. Se abre un diálogo donde puedes introducir una etiqueta, elegir un color y guardar.</li>
-<li>Para editar un estado existente, haz clic en el icono <strong>edit</strong> (lápiz) junto a él.</li>
+<li>Haz clic en el campo <strong>Estados de los formularios</strong> para desplegar la lista.</li>
+<li>Para agregar un estado existente, selecciónalo en la lista.</li>
+<li>Para crear un nuevo estado, haz clic en <strong>Crear un nuevo estado</strong>. Se abre un diálogo donde puedes introducir una etiqueta, elegir un color y guardar.</li>
+<li>Para editar un estado existente, haz clic en el icono <strong>Editar</strong> (lápiz) que aparece junto a él.</li>
 <li>Haz clic fuera del desplegable para cerrarlo.</li>
 </ol>
-<h2 id="definir-relaciones">Definir relaciones</h2>
-<p>Las relaciones te permiten vincular campos entre distintos form schemas (p. ej., un sub‑form que depende de una elección en el form principal).</p>
+<p>También puedes asociar un nivel a cada estado para establecer un orden. Cuando se crean nuevos datos de formulario, reciben el estado con el nivel más bajo.</p>
+<h2 id="pestaña-construir">Pestaña Construir</h2>
+<p>La pestaña <strong>Construir</strong> contiene el creador de formularios, donde arrastras, sueltas y configuras campos, diapositivas y secciones individuales. Los cambios se reflejan de inmediato en la vista previa. Usa esta pestaña para definir las preguntas que los usuarios responderán realmente.</p>
+<h2 id="pestaña-relaciones">Pestaña Relaciones</h2>
+<p>Las relaciones toman valores de campos u opciones de elección de otros esquemas de formulario y los traen a este; por ejemplo, un subformulario que depende de una elección hecha en el formulario principal.</p>
 <ol>
-<li>Haz clic en el botón <strong>Relationships</strong>.</li>
-<li>En el diálogo, añade, edita o elimina conexiones entre schemas.</li>
+<li>Abre la pestaña <strong>Relaciones</strong>.</li>
+<li>Haz clic en <strong>Agregar relación con otros formularios</strong>.</li>
+<li>En la nueva fila, elige el <strong>Formulario</strong> del que tomar los datos y luego selecciona los <strong>Campos</strong> que quieres traer a este formulario.</li>
+<li>Opcionalmente, elige uno o varios valores de <strong>Métrica</strong> para filtrar la relación.</li>
+<li>Para usar un solo campo como opción de elección, activa <strong>Campo como opción</strong> y luego elige el <strong>Campo de etiqueta</strong> y, si es necesario, un <strong>Campo adicional</strong>.</li>
 </ol>
-<p><img alt="Diálogo del editor de relaciones (dependencias) del form" src="../../imgs/forms/edit-form-schema-relationships.png" /></p>
+<p><img alt="Pestaña Relaciones del editor de esquemas de formulario" src="../../imgs/forms/edit-form-schema-relationships.png" /></p>
 <div class="admonition tip">
-<p class="admonition-title">Las relaciones solo están disponibles al editar un schema existente, no durante la creación inicial.</p>
+<p class="admonition-title">Guarda primero</p>
+<p>La pestaña Relaciones y las secciones de datos de métricas necesitan un esquema de formulario guardado. Mientras todavía estás creando un esquema, permanecen bloqueadas con el recordatorio <em>Guarda primero el formulario para añadir relaciones</em>.</p>
 </div>
 <h2 id="guardar-e-importar">Guardar e importar</h2>
 <ul>
-<li><strong>Save</strong> – guarda todos los cambios. El botón se desactiva si el form no es válido o si todavía se está guardando.</li>
-<li><strong>Import</strong> – abre un selector de archivos para cargar un form schema desde un archivo JSON o CSV. Úsalo para reutilizar la estructura de un schema de otro proyecto.</li>
+<li><strong>Guardar</strong>: almacena todos los cambios. El botón está deshabilitado mientras el formulario no es válido o ya se está guardando.</li>
+<li><strong>Importar XLSForm</strong>: abre un diálogo donde puedes arrastrar un archivo XLSForm o hacer clic en <strong>Escoge un archivo</strong> (<code>.xls</code> o <code>.xlsx</code>; el archivo necesita las hojas <em>survey</em>, <em>choices</em> y <em>settings</em>), y luego hacer clic en <strong>Aplicar</strong> para cargarlo en el editor. Úsalo para reutilizar la estructura de un esquema de otro proyecto. No se almacena nada hasta que hagas clic en <strong>Guardar</strong>.</li>
 </ul>
-<h2 id="el-form-builder">El Form Builder</h2>
-<p>Debajo de los atributos, el área <strong>Form Builder</strong> te permite arrastrar, soltar y configurar campos individuales (preguntas, secciones, etc.). Los cambios se reflejan inmediatamente en la vista previa situada a la derecha del builder.</p>
 
 
 

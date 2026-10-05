@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Una panoramica dell'area Report di Dino — come trovare i report schema e accedere ai tuoi report.">
+        <meta name="description" content="Una panoramica dell'area Report in Dino — come trovare i report schema e navigare tra i tuoi report.">
       
       
       
@@ -792,10 +792,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#consultare-i-report-schema" class="md-nav__link">
+  <a href="#sfogliare-i-report-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Consultare i report schema
+        Sfogliare i report schema
       
     </span>
   </a>
@@ -803,10 +803,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#creare-un-nuovo-report-schema" class="md-nav__link">
+  <a href="#aggiungere-un-nuovo-report-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creare un nuovo report schema
+        Aggiungere un nuovo report schema
       
     </span>
   </a>
@@ -814,10 +814,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cosa-puoi-fare" class="md-nav__link">
+  <a href="#aprire-i-report-di-uno-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cosa puoi fare
+        Aprire i report di uno schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cosa-puoi-fare-dopo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cosa puoi fare dopo
       
     </span>
   </a>
@@ -1421,6 +1432,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Area utente
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1448,10 +1486,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#consultare-i-report-schema" class="md-nav__link">
+  <a href="#sfogliare-i-report-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Consultare i report schema
+        Sfogliare i report schema
       
     </span>
   </a>
@@ -1459,10 +1497,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#creare-un-nuovo-report-schema" class="md-nav__link">
+  <a href="#aggiungere-un-nuovo-report-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creare un nuovo report schema
+        Aggiungere un nuovo report schema
       
     </span>
   </a>
@@ -1470,10 +1508,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cosa-puoi-fare" class="md-nav__link">
+  <a href="#aprire-i-report-di-uno-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cosa puoi fare
+        Aprire i report di uno schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cosa-puoi-fare-dopo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cosa puoi fare dopo
       
     </span>
   </a>
@@ -1498,33 +1547,57 @@
 
 
 <h1 id="report">Report</h1>
-<p>L'area Report è il tuo punto di accesso a tutti i report schema disponibili. Un report schema definisce la struttura e il contenuto di un report che può essere generato a partire dai dati raccolti. Da qui puoi consultare gli schemi e accedere ai report già creati.</p>
+<p>L'area Report è il tuo punto di accesso a tutti i report schema disponibili. Un report schema definisce la struttura e il contenuto di un report che può essere generato dai dati raccolti. Da qui puoi sfogliare gli schemi e accedere ai report già creati per ciascuno di essi.</p>
 <p><img alt="Vista principale della pagina Report" src="../imgs/reports/index.png" /></p>
-<p>I report possono essere creati solo utilizzando un formato basato su Excel chiamato <a href="xlsreport/">XLSReport</a>. Per creare un nuovo report devi prima creare un file XLSReport, quindi importarlo in Dino seguendo la procedura descritta di seguito.</p>
+<p>I report schema vengono creati da un formato basato su Excel chiamato <a href="xlsreport/">XLSReport</a>, oppure generati automaticamente da un form schema (vedi <a href="autoreports/">Report automatici</a>). Per crearne uno da un file, devi prima preparare un file XLSReport e poi importarlo in Dino. Per la procedura completa, vedi <a href="edit-report-schema/">Modifica report schema</a>.</p>
 <hr />
-<h2 id="consultare-i-report-schema">Consultare i report schema</h2>
-<p>Quando apri la pagina Report, visualizzi un elenco di tutti i report schema a cui hai i permessi di accesso. L'elenco è ordinato alfabeticamente in base all'etichetta dello schema.</p>
+<h2 id="sfogliare-i-report-schema">Sfogliare i report schema</h2>
+<p>Quando apri la pagina Report, vedi una scheda per ogni report schema a cui hai il permesso di accedere. Le schede sono ordinate alfabeticamente in base all'etichetta dello schema.</p>
 <p>Per trovare uno schema specifico:</p>
 <ol>
-<li>Usa la barra di ricerca nella parte superiore della pagina.</li>
+<li>Usa il campo <strong>Filtra</strong> nella parte superiore della pagina.</li>
 <li>Digita una qualsiasi parte del nome o dell'etichetta dello schema.</li>
-<li>L'elenco verrà filtrato in tempo reale per mostrare solo gli schemi corrispondenti.</li>
+<li>L'elenco si filtra mentre digiti, mostrando solo gli schemi corrispondenti.</li>
 </ol>
-<p>Per visualizzare i report di uno schema specifico, fai clic sulla sua scheda nell'elenco.</p>
+<p>Per aprire i report di uno schema, clicca in un punto qualsiasi della sua scheda.</p>
+<p>Su ogni scheda che puoi modificare, le icone nell'angolo in alto a destra ti permettono di gestire direttamente lo schema:</p>
+<ul>
+<li><strong>Modifica</strong> (icona a matita) — apre lo schema per la modifica. Vedi <a href="edit-report-schema/">Modifica report schema</a>.</li>
+<li><strong>Elimina</strong> (icona a cestino) — rimuove lo schema dopo la conferma. Uno schema che ha ancora dei report non può essere eliminato: elimina prima i suoi report.</li>
+</ul>
+<p>Un'icona a impronta digitale su una scheda indica che il report schema è <em>univoco</em>: può produrre un solo report per un insieme esatto di metriche. Se provi a creare un report che esiste già per quelle metriche, Dino non creerà un duplicato.</p>
 <div class="admonition tip">
-<p class="admonition-title">Per iniziare</p>
-<p>Se vedi il messaggio "Non ci sono report", significa che non è ancora stato creato alcun report schema né ne è stato condiviso nessuno con te. Contatta l'amministratore di Dino per iniziare.</p>
+<p class="admonition-title">Nessuno schema ancora?</p>
+<p>Se vedi il messaggio "There are not any Reports currently available", non è ancora stato creato né condiviso con te alcun report schema. Chiedi al tuo amministratore Dino di crearne uno, oppure aggiungine uno tu stesso se hai i permessi.</p>
 </div>
 <hr />
-<h2 id="creare-un-nuovo-report-schema">Creare un nuovo report schema</h2>
-<p>Puoi avviare il processo di creazione di un nuovo report schema direttamente dalla pagina principale dei Report. Fai clic sul pulsante <strong>+</strong> (più) situato nell'angolo in basso a destra dello schermo.</p>
-<p>Per i passaggi dettagliati, consulta la guida su <a href="edit-report/">Modifica report</a>.</p>
+<h2 id="aggiungere-un-nuovo-report-schema">Aggiungere un nuovo report schema</h2>
+<p>Puoi iniziare a creare un nuovo report schema dalla pagina principale Report.</p>
+<ol>
+<li>Clicca il pulsante <strong>+</strong> (<em>Add new Reports schema</em>) nell'angolo in basso a destra dello schermo. Viene mostrato solo se hai il permesso di creare report schema.</li>
+<li>Segui i passaggi descritti in <a href="edit-report-schema/">Modifica report schema</a>.</li>
+</ol>
 <hr />
-<h2 id="cosa-puoi-fare">Cosa puoi fare</h2>
-<p>Dalla pagina principale dei Report puoi accedere alle seguenti azioni principali:</p>
+<h2 id="aprire-i-report-di-uno-schema">Aprire i report di uno schema</h2>
+<p>Cliccando sulla scheda di uno schema accedi all'elenco dei report generati da quello schema. Da qui puoi:</p>
+<ol>
+<li>Sfogliare i report esistenti in una tabella, con dettagli come l'utente che ha creato il report, il nome del report e l'intervallo di date raccolte.</li>
+<li>Filtrare e cercare nell'elenco per restringere i report che ti servono. Usa la ricerca per parola chiave, i campi dell'intervallo di date e il pulsante <strong>Filtri</strong> per condizioni più avanzate. Puoi anche salvare un insieme di filtri come preset e applicarlo di nuovo in seguito.</li>
+<li>Aprire un report per esaminarlo: passa il mouse sulla sua riga e clicca l'icona <strong>Vedi</strong> (occhio), oppure seleziona la riga e clicca <strong>Vedi</strong> nella barra delle azioni sopra la tabella. Vedi <a href="edit-report/">Modifica report</a>.</li>
+<li>Eliminare un report che non ti serve più: seleziona la sua riga, poi clicca <strong>Elimina</strong> nella barra delle azioni.</li>
+</ol>
+<p>Per creare un nuovo report dallo schema selezionato, clicca <strong>Aggiungi nuovo report</strong> sopra la tabella. I report che usano prompt AI consumano DINO-AI Token. Il numero di token che il report utilizzerà è mostrato accanto al pulsante, così conosci sempre il costo prima di iniziare.</p>
+<div class="admonition warning">
+<p class="admonition-title">Token insufficienti</p>
+<p>Se non hai abbastanza DINO-AI Token nel tuo account, Dino non avvierà il report e mostrerà un messaggio che ti chiede di aggiungere altri token. Aggiungi token al tuo account e riprova.</p>
+</div>
+<hr />
+<h2 id="cosa-puoi-fare-dopo">Cosa puoi fare dopo</h2>
+<p>Dall'area Report puoi passare a queste attività:</p>
 <ul>
-<li><strong><a href="edit-report/">Modifica report</a></strong> — Genera un nuovo documento report selezionando uno schema, scegliendo le metriche e impostando un intervallo di date.</li>
-<li><strong><a href="edit-report-schema/">Modifica report schema</a></strong> — Crea nuovi report schema o modifica quelli esistenti per definire quali dati compaiono nei report. In genere richiede i permessi di amministratore.</li>
+<li><strong><a href="edit-report/">Modifica report</a></strong> — Esamina un report ed esportalo.</li>
+<li><strong><a href="edit-report-schema/">Modifica report schema</a></strong> — Crea nuovi report schema o modifica quelli esistenti per definire cosa appare nei tuoi report. Di solito richiede permessi di amministratore.</li>
+<li><strong><a href="../aggregation/">Aggregazione</a></strong> — Sfoglia i dati di tutti i tuoi form schema in un unico elenco.</li>
 </ul>
 
 

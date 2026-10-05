@@ -1246,22 +1246,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dépannage" class="md-nav__link">
+  <a href="#résolution-des-problèmes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dépannage
+        Résolution des problèmes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Dépannage">
+    <nav class="md-nav" aria-label="Résolution des problèmes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#le-bouton-denvoi-est-désactivé" class="md-nav__link">
+  <a href="#le-bouton-suivant-ou-envoyer-est-désactivé" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Le bouton d'envoi est désactivé.
+        Le bouton Suivant ou Envoyer est désactivé.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-ce-formulaire-ne-peut-pas-être-ouvert-car-des-informations-requises-manquent-dans-le-lien-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        « Ce formulaire ne peut pas être ouvert car des informations requises manquent dans le lien. »
       
     </span>
   </a>
@@ -1283,7 +1294,7 @@
   <a href="#-oups--nous-navons-pas-pu-trouver-ce-form-schema-" class="md-nav__link">
     <span class="md-ellipsis">
       
-        « Oups ! Nous n'avons pas pu trouver ce form schema. »
+        « Oups ! Nous n'avons pas pu trouver ce Form Schema. »
       
     </span>
   </a>
@@ -1303,6 +1314,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pages-associées" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pages associées
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1480,6 +1502,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Espace utilisateur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1540,22 +1589,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dépannage" class="md-nav__link">
+  <a href="#résolution-des-problèmes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dépannage
+        Résolution des problèmes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Dépannage">
+    <nav class="md-nav" aria-label="Résolution des problèmes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#le-bouton-denvoi-est-désactivé" class="md-nav__link">
+  <a href="#le-bouton-suivant-ou-envoyer-est-désactivé" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Le bouton d'envoi est désactivé.
+        Le bouton Suivant ou Envoyer est désactivé.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-ce-formulaire-ne-peut-pas-être-ouvert-car-des-informations-requises-manquent-dans-le-lien-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        « Ce formulaire ne peut pas être ouvert car des informations requises manquent dans le lien. »
       
     </span>
   </a>
@@ -1577,7 +1637,7 @@
   <a href="#-oups--nous-navons-pas-pu-trouver-ce-form-schema-" class="md-nav__link">
     <span class="md-ellipsis">
       
-        « Oups ! Nous n'avons pas pu trouver ce form schema. »
+        « Oups ! Nous n'avons pas pu trouver ce Form Schema. »
       
     </span>
   </a>
@@ -1600,6 +1660,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#pages-associées" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pages associées
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1618,68 +1689,79 @@
 
 
 <h1 id="formulaires-publics">Formulaires publics</h1>
-<p>Les formulaires publics permettent à toute personne disposant d'un lien d'envoyer des données à Dino sans avoir à se connecter ni à posséder un compte. Ils sont couramment utilisés pour des sondages, des inscriptions ou la collecte de retours. Si vous avez reçu un lien public vers un formulaire, cette page vous explique comment le remplir.</p>
-<p>Les adresses des formulaires publics suivent le modèle <code>/f/</code> suivi d'un identifiant unique (par exemple <code>https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a</code>). Cet identifiant correspond à l'ID du form schema. Si une valeur de métrique doit être ajoutée aux données du formulaire, elle peut être incluse dans l'URL à l'aide de la syntaxe suivante (ici, dans le cas d'une métrique) : <code>https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a?case=a6408e72-c60c-4d54-ad2f-44fd4a90cdb2</code>
-où l'ID de la valeur de métrique est là encore l'ID de la métrique attribué par Dino.</p>
+<p>Les formulaires publics permettent à toute personne disposant d'un lien de soumettre des données à Dino sans avoir à se connecter ni à créer un compte. Ils sont couramment utilisés pour des enquêtes, des inscriptions ou la collecte de retours. Si vous avez reçu un lien public vers un formulaire, vous pouvez utiliser cette page pour le remplir.</p>
+<p>Les adresses des formulaires publics suivent le modèle <code>/f/</code> suivi d'un identifiant unique (par exemple, <code>https://votre-instance-dino.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a</code>). L'identifiant correspond à l'ID du form schema. Si une valeur de métrique doit être ajoutée aux données du formulaire, elle peut être incluse dans l'URL à l'aide de la syntaxe suivante (par exemple, pour le cas d'une métrique) : <code>https://votre-instance-dino.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a?case=a6408e72-c60c-4d54-ad2f-44fd4a90cdb2</code>
+où l'ID de la valeur de métrique correspond à nouveau à l'ID de la métrique attribué par Dino.</p>
 <p>Il n'est pas nécessaire de mémoriser cette syntaxe, car le lien est généré automatiquement par Dino dès que vous cliquez sur l'icône de partage du form schema. Une fois généré, le lien peut être partagé par e-mail, WhatsApp ou tout autre moyen.</p>
 <hr />
 <h2 id="accéder-à-un-formulaire-public">Accéder à un formulaire public</h2>
 <ol>
-<li>Cliquez sur le lien du formulaire public que vous avez reçu (par e-mail ou dans un message partagé, par exemple). Le lien vous dirigera vers <code>/f/...</code> sur votre instance Dino.</li>
+<li>Cliquez sur le lien du formulaire public que vous avez reçu (par exemple, par e-mail ou dans un message partagé). Le lien vous dirigera vers <code>/f/...</code> sur votre instance Dino.</li>
 <li>Le formulaire s'ouvre directement dans votre navigateur web. Vous n'avez pas besoin de vous connecter.</li>
-<li>Vérifiez le titre du formulaire ainsi que l'éventuel texte d'introduction pour confirmer qu'il s'agit du bon formulaire.</li>
+<li>Vérifiez le titre du formulaire et tout texte d'introduction pour confirmer qu'il s'agit du bon formulaire.</li>
 </ol>
+<p>Un sélecteur de langue dans la barre supérieure de l'écran vous permet de choisir la langue du formulaire. Utilisez-le pour basculer le formulaire dans la langue de votre choix avant de commencer à le remplir.</p>
+<p>Si le formulaire comporte plusieurs sections, une barre de progression s'affiche sous le titre pour vous indiquer où vous en êtes.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Les liens des formulaires publics contiennent un identifiant long (comme <code>/f/abc123def</code>). Si la page ne se charge pas, assurez-vous que le lien a été copié dans son intégralité.</p>
+<p>Les liens des formulaires publics contiennent un identifiant long (comme <code>/f/abc123def</code>). Si la page ne se charge pas, vérifiez que le lien complet a bien été copié.</p>
 </div>
 <hr />
 <h2 id="remplir-et-envoyer">Remplir et envoyer</h2>
 <ol>
-<li>Remplissez tous les champs du formulaire. Les champs marqués d'un astérisque (<em>) sont </em><em>obligatoires</em>*.</li>
-<li>Si le formulaire comporte plusieurs sections, utilisez les onglets ou les boutons de navigation situés en haut du formulaire pour passer de l'une à l'autre.</li>
-<li>Au fur et à mesure que vous remplissez les champs, le formulaire valide vos saisies. Les entrées invalides sont généralement mises en évidence.</li>
-<li>Une fois que tous les champs obligatoires sont valides, le bouton d'envoi principal (généralement un bouton circulaire avec une icône d'envoi) devient actif.</li>
-<li>Cliquez sur le bouton d'envoi pour transmettre vos données.</li>
+<li>Remplissez tous les champs du formulaire. Les champs marqués d'un astérisque (<em>) sont </em><em>requis</em>*.</li>
+<li>Si le formulaire comporte plusieurs sections, utilisez les boutons <strong>Suivant</strong> et <strong>Précédent</strong> en bas du formulaire pour passer de l'une à l'autre. Le titre de la section s'affiche en haut de chaque étape.</li>
+<li>Au fur et à mesure que vous remplissez les champs, le formulaire valide votre saisie. Les entrées non valides sont généralement mises en évidence.</li>
+<li>Une fois que tous les champs requis sont valides, le bouton <strong>Envoyer</strong> devient actif.</li>
+<li>Cliquez sur <strong>Envoyer</strong> pour soumettre vos données.</li>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Le bouton d'envoi reste désactivé (grisé) si un champ obligatoire est vide ou contient des données invalides. Parcourez le formulaire pour repérer et corriger les problèmes signalés.</p>
+<p>Le bouton <strong>Suivant</strong> reste désactivé si la section actuelle n'est pas encore valide, et le bouton <strong>Envoyer</strong> reste désactivé (grisé) si un champ requis est vide ou contient des données non valides. Vérifiez la section actuelle ou revenez aux sections précédentes pour repérer et corriger les problèmes signalés.</p>
 </div>
 <hr />
 <h2 id="après-lenvoi">Après l'envoi</h2>
-<p>Une fois l'envoi réussi, un écran de confirmation s'affiche avec une coche et le message : <strong>« Le formulaire a bien été envoyé. »</strong></p>
-<p>Une notification apparaît également en bas de votre écran. Depuis cette notification, vous pouvez :</p>
-<ul>
-<li><strong>Remplir un autre formulaire</strong> : cliquez ici pour recharger la page avec une copie vierge du même formulaire et effectuer un nouvel envoi.</li>
-<li><strong>Fermer</strong> : fermer la notification.</li>
-</ul>
+<p>Une fois l'envoi réussi, un écran de confirmation s'affiche avec une coche et le message : <strong>« Le formulaire a été envoyé avec succès. »</strong></p>
+<p>Une notification apparaît également en bas de votre écran pendant quelques secondes. Cliquez sur <strong>Remplir un autre formulaire</strong> pour recharger la page avec une copie vierge du même formulaire, ce qui vous permet de faire un nouvel envoi.</p>
 <hr />
-<h2 id="dépannage">Dépannage</h2>
-<h3 id="le-bouton-denvoi-est-désactivé">Le bouton d'envoi est désactivé.</h3>
-<p>Cela signifie que le formulaire n'est pas encore valide. Vérifiez les points suivants :</p>
+<h2 id="résolution-des-problèmes">Résolution des problèmes</h2>
+<h3 id="le-bouton-suivant-ou-envoyer-est-désactivé">Le bouton Suivant ou Envoyer est désactivé.</h3>
+<p>Cela signifie que la section actuelle ou le formulaire dans son ensemble n'est pas encore valide. Vérifiez les points suivants :</p>
 <ul>
-<li><strong>Champs obligatoires vides</strong> : assurez-vous que tous les champs marqués d'un astérisque (*) sont remplis.</li>
-<li><strong>Données invalides</strong> : recherchez les champs mis en évidence en rouge et corrigez les informations (par exemple, un format d'e-mail invalide).</li>
+<li><strong>Champs requis vides</strong> : assurez-vous que tous les champs marqués d'un astérisque (*) sont remplis.</li>
+<li><strong>Données non valides</strong> : recherchez les champs mis en évidence en rouge et corrigez les informations (par exemple, un format d'e-mail non valide).</li>
+</ul>
+<h3 id="-ce-formulaire-ne-peut-pas-être-ouvert-car-des-informations-requises-manquent-dans-le-lien-">« Ce formulaire ne peut pas être ouvert car des informations requises manquent dans le lien. »</h3>
+<p>Le lien que vous avez utilisé est incomplet. Certains formulaires nécessitent des informations de métrique (comme un cas, une posizione ou une organisation) à inclure dans l'adresse.</p>
+<ul>
+<li>Contactez la personne qui vous a envoyé le lien du formulaire et demandez-lui de partager le lien complet.</li>
 </ul>
 <h3 id="-impossible-denregistrer-le-formulaire-">« Impossible d'enregistrer le formulaire. »</h3>
 <p>Votre envoi a rencontré une erreur temporaire, souvent liée à votre connexion internet.</p>
 <ol>
-<li>Cliquez sur <strong>« Réessayer »</strong> dans la notification en bas de l'écran.</li>
-<li>Si l'erreur persiste, vérifiez votre connexion internet et essayez d'actualiser la page.</li>
+<li>Vérifiez votre connexion internet.</li>
+<li>Cliquez sur <strong>« Réessayer »</strong> dans la notification en bas de l'écran. Dino renvoie le formulaire avec les réponses que vous avez saisies : vous n'avez pas besoin de le remplir à nouveau.</li>
 <li>Si le problème persiste, contactez la personne qui vous a envoyé le lien du formulaire.</li>
 </ol>
-<h3 id="-oups--nous-navons-pas-pu-trouver-ce-form-schema-">« Oups ! Nous n'avons pas pu trouver ce form schema. »</h3>
+<h3 id="-oups--nous-navons-pas-pu-trouver-ce-form-schema-">« Oups ! Nous n'avons pas pu trouver ce Form Schema. »</h3>
 <p>Le lien que vous utilisez est incorrect ou le formulaire a été supprimé.</p>
 <ul>
-<li>Vérifiez que l'URL est complète et correcte.</li>
-<li>Contactez la personne qui vous a partagé le lien pour en obtenir une version à jour.</li>
+<li>Vérifiez que vous disposez de l'URL complète et correcte.</li>
+<li>Contactez la personne qui vous a partagé le lien pour en obtenir un à jour.</li>
 </ul>
 <h3 id="le-formulaire-ne-se-charge-pas-page-blanche">Le formulaire ne se charge pas (page blanche).</h3>
 <ul>
 <li>Actualisez la page de votre navigateur.</li>
 <li>Assurez-vous que votre connexion internet est stable.</li>
-<li>Vérifiez que le lien est complet et n'a pas été tronqué.</li>
+<li>Confirmez que le lien est complet et n'a pas été tronqué.</li>
+</ul>
+<hr />
+<h2 id="pages-associées">Pages associées</h2>
+<ul>
+<li><a href="../forms/">Forms</a></li>
+<li><a href="../forms/edit-form-schema/">Edit Form Schema</a></li>
+<li><a href="../administration/languages/">Languages</a></li>
+<li><a href="../metrics/">Metrics</a></li>
 </ul>
 
 

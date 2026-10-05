@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Створіть або змініть report schema, щоб визначити структуру, макет і джерела даних для report у Dino.">
+        <meta name="description" content="Створіть або змініть схему звіту, імпортувавши файл XLSReport, а потім перегляньте його в режимі попереднього перегляду перед збереженням.">
       
       
       
@@ -41,7 +41,7 @@
     
     
       
-        <title>Редагування report schema - Документація Dinoapp</title>
+        <title>Редагувати схему звіту - Документація Dinoapp</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#редагування-report-schema" class="md-skip">
+        <a href="#редагувати-схему-звіту" class="md-skip">
           Перейти до змісту
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Редагування report schema
+              Редагувати схему звіту
             
           </span>
         </div>
@@ -820,10 +820,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#створення-нового-report-schema" class="md-nav__link">
+  <a href="#поля-сторінки" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Створення нового report schema
+        Поля сторінки
       
     </span>
   </a>
@@ -831,10 +831,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#редагування-наявного-report-schema" class="md-nav__link">
+  <a href="#створення-нової-схеми-звіту" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Редагування наявного report schema
+        Створення нової схеми звіту
       
     </span>
   </a>
@@ -842,10 +842,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#налаштування-даних-report" class="md-nav__link">
+  <a href="#редагування-наявної-схеми-звіту" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Налаштування даних report
+        Редагування наявної схеми звіту
       
     </span>
   </a>
@@ -1432,6 +1432,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Область користувача
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1459,10 +1486,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#створення-нового-report-schema" class="md-nav__link">
+  <a href="#поля-сторінки" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Створення нового report schema
+        Поля сторінки
       
     </span>
   </a>
@@ -1470,10 +1497,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#редагування-наявного-report-schema" class="md-nav__link">
+  <a href="#створення-нової-схеми-звіту" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Редагування наявного report schema
+        Створення нової схеми звіту
       
     </span>
   </a>
@@ -1481,10 +1508,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#налаштування-даних-report" class="md-nav__link">
+  <a href="#редагування-наявної-схеми-звіту" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Налаштування даних report
+        Редагування наявної схеми звіту
       
     </span>
   </a>
@@ -1519,52 +1546,73 @@
 
 
 
-<h1 id="редагування-report-schema">Редагування report schema</h1>
-<p>Сторінка <strong>Редагування report schema</strong> дає змогу створити новий report schema або змінити наявний. Report schema визначає структуру, макет і джерела даних для report у Dino.</p>
-<p><img alt="Головний вигляд сторінки Редагування report schema" src="../../imgs/reports/edit-report-schema.png" /></p>
-<p>На цій сторінці ви налаштовуєте назву report, опис і конкретні поля даних, які відображатимуться в report з ваших даних форми.</p>
-<h2 id="створення-нового-report-schema">Створення нового report schema</h2>
-<p>Щоб створити новий report schema:</p>
-<ol>
-<li>Перейдіть до розділу <strong>Reports</strong> у головному меню.</li>
-<li>Натисніть <strong>Створити report schema</strong>.</li>
-<li>Ви потрапите на сторінку Редагування report schema.</li>
-<li>Введіть описову <strong>Назву</strong> для вашого report.</li>
-<li>(Необов'язково) Додайте <strong>Опис</strong>, щоб пояснити призначення report.</li>
-<li>Імпортуйте файл XLSReport</li>
-<li>Натисніть <strong>Зберегти</strong>, щоб створити schema.</li>
-</ol>
-<h2 id="редагування-наявного-report-schema">Редагування наявного report schema</h2>
-<p>Щоб змінити report schema, який ви вже створили:</p>
-<ol>
-<li>Перейдіть до розділу <strong>Reports</strong>.</li>
-<li>Знайдіть у списку report schema, який бажаєте відредагувати, і натисніть на нього.</li>
-<li>Натисніть кнопку <strong>Редагувати</strong> (часто позначена значком олівця).</li>
-<li>Ви потрапите на сторінку Редагування report schema із завантаженою поточною конфігурацією.</li>
-<li>Внесіть бажані зміни до назви, опису або конфігурації даних.</li>
-<li>Натисніть <strong>Зберегти</strong>, щоб оновити schema.</li>
-</ol>
-<div class="admonition tip">
-<p class="admonition-title">Збереження вашої роботи</p>
-<p>Завжди пам'ятайте про необхідність натиснути <strong>Зберегти</strong> після внесення змін. Ваші зміни не застосовуються, доки ви не збережете schema.</p>
-</div>
-<h2 id="налаштування-даних-report">Налаштування даних report</h2>
-<p>Основою report schema є визначення того, які дані з ваших даних форми відображатимуться в report. Зазвичай ви можете:</p>
+<h1 id="редагувати-схему-звіту">Редагувати схему звіту</h1>
+<p>Сторінка <strong>Редагувати схему звіту</strong> дає змогу створити нову схему звіту або змінити наявну. Схема звіту визначає структуру, макет і джерела даних для звіту в Dino. Її вміст походить із файлу <a href="../xlsreport/">XLSReport</a>, який ви імпортуєте на цій сторінці.</p>
+<p><img alt="Головний вигляд сторінки Редагувати схему звіту" src="../../imgs/reports/edit-report-schema.png" /></p>
+<h2 id="поля-сторінки">Поля сторінки</h2>
+<table>
+<thead>
+<tr>
+<th>Поле</th>
+<th>Опис</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Назва звіту</strong></td>
+<td>Обов'язкове. Має бути унікальним: якщо воно вже використовується, сторінка показує <em>Ця назва вже використовується.</em></td>
+</tr>
+<tr>
+<td><strong>Report Label</strong></td>
+<td>Обов'язкове. Назва, що відображається в списках і картках.</td>
+</tr>
+<tr>
+<td><strong>Набір іконок</strong></td>
+<td><strong>За замовчуванням</strong> або <strong>Humanitarian</strong>.</td>
+</tr>
+<tr>
+<td><strong>Ідентифікатор іконки</strong></td>
+<td>Виберіть іконку зі списку автодоповнення. Попередній перегляд оновлюється в реальному часі.</td>
+</tr>
+<tr>
+<td><strong>Обов'язкові метрики</strong></td>
+<td>Метрики, які потрібно вибрати, коли звіт створюється на основі цієї схеми.</td>
+</tr>
+</tbody>
+</table>
+<p>Під полями сторінка показує:</p>
 <ul>
-<li><strong>Вибрати джерело даних:</strong> Виберіть form schema, який містить потрібні вам дані для report.</li>
-<li><strong>Вибрати поля даних:</strong> Виберіть конкретні поля з підключених form schema, щоб включити їх як стовпці в report.</li>
-<li><strong>Задати відображувані назви:</strong> Налаштуйте заголовок стовпця, який відображається в report для кожного вибраного поля.</li>
-<li><strong>Визначити фільтри:</strong> Задайте умови, щоб включити лише конкретні дані, які відповідають вашим критеріям (наприклад, дані за певний діапазон дат).</li>
+<li><strong>Associated Form Schemas</strong> – form schema, які використовує звіт, лише для читання. Вони беруться з імпортованого файлу XLSReport під час збереження.</li>
+<li><strong>Report Preview</strong> – звіт, відтворений із імпортованої або збереженої схеми.</li>
 </ul>
+<p>Джерела даних, стовпці та фільтри визначаються у файлі XLSReport: на сторінці немає елементів керування для їх вибору.</p>
+<h2 id="створення-нової-схеми-звіту">Створення нової схеми звіту</h2>
+<ol>
+<li>Відкрийте розділ <strong>Звіти</strong> в головному меню.</li>
+<li>Натисніть кнопку <strong>+</strong> (<em>Add new Reports schema</em>) у правому нижньому куті.</li>
+<li>Введіть <strong>Назва звіту</strong> та <strong>Report Label</strong>, а також за бажанням іконку та <strong>Обов'язкові метрики</strong>.</li>
+<li>Натисніть <strong>Імпорт</strong>, потім <strong>Виберіть файл</strong> і виберіть свій файл XLSReport (.xls або .xlsx).</li>
+<li>Натисніть <strong>Застосувати</strong>: файл завантажується на сторінку та відображається в <strong>Report Preview</strong>.</li>
+<li>Натисніть <strong>Зберегти</strong>, щоб зберегти схему. <strong>Зберегти</strong> залишається недоступною, доки обов'язкові поля не стануть дійсними.</li>
+</ol>
 <div class="admonition warning">
-<p class="admonition-title">Джерело даних</p>
-<p>Report schema має бути підключений принаймні до одного form schema, щоб мати дані для відображення. Переконайтеся, що відповідний form існує, перш ніж створювати report.</p>
+<p class="admonition-title">Імпорт перед збереженням</p>
+<p>Нову схему звіту не можна зберегти без імпортованого файлу: спроба зберегти її порожньою показує <em>Oops! Something went wrong saving the Report</em>. <strong>Застосувати</strong> лише завантажує файл на сторінку; нічого не зберігається, доки ви не натиснете <strong>Зберегти</strong>.</p>
 </div>
+<h2 id="редагування-наявної-схеми-звіту">Редагування наявної схеми звіту</h2>
+<ol>
+<li>Відкрийте розділ <strong>Звіти</strong>.</li>
+<li>На картці схеми звіту натисніть іконку олівця (<em>Редагувати схему звіту</em>).</li>
+<li>Змініть поля або імпортуйте новий файл XLSReport, щоб замінити вміст звіту.</li>
+<li>Натисніть <strong>Зберегти</strong>, щоб оновити схему.</li>
+</ol>
+<p>Щоб видалити схему звіту, натисніть іконку кошика (<em>Видалити схему звіту</em>) на її картці. Схему, яка все ще має звіти, видалити не можна: спершу видаліть її звіти.</p>
 <h2 id="наступні-кроки">Наступні кроки</h2>
-<p>Після збереження вашого report schema ви можете:</p>
+<p>Після збереження схеми звіту ви можете:</p>
 <ul>
-<li>Перейти на сторінку <a href="../">Reports</a>, щоб переглянути та запустити ваш новий report.</li>
-<li>Повернутися на цю сторінку, щоб за потреби внести подальші коригування.</li>
+<li>Перейти на сторінку <a href="../">Звіти</a>, щоб переглянути та запустити свій новий звіт.</li>
+<li>Скористатися <a href="../edit-report/">Edit Report</a>, щоб працювати з самим звітом, коли схема вже на місці.</li>
+<li>Повернутися на цю сторінку, щоб за потреби внести подальші зміни.</li>
 </ul>
 
 

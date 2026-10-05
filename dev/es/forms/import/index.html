@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Aprende a importar datos estructurados de forma masiva en cualquier form schema utilizando un archivo CSV o Excel. El asistente de dos pasos te permite subir un archivo y luego asignar sus columnas a los campos del form.">
+        <meta name="description" content="Aprende a importar datos estructurados de forma masiva en cualquier form schema usando un archivo CSV o Excel. El asistente te permite subir un archivo, asignar sus columnas a los campos del form y revisar el resultado de la importación.">
       
       
       
@@ -677,10 +677,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#formatear-el-archivo-de-importación" class="md-nav__link">
+  <a href="#dar-formato-al-archivo-de-importación" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Formatear el archivo de importación
+        Dar formato al archivo de importación
       
     </span>
   </a>
@@ -754,10 +754,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#aplicar-la-importación" class="md-nav__link">
+  <a href="#paso-3--resultado" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Aplicar la importación
+        Paso 3 — Resultado
       
     </span>
   </a>
@@ -1549,6 +1549,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área de usuario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1599,10 +1626,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#formatear-el-archivo-de-importación" class="md-nav__link">
+  <a href="#dar-formato-al-archivo-de-importación" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Formatear el archivo de importación
+        Dar formato al archivo de importación
       
     </span>
   </a>
@@ -1676,10 +1703,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#aplicar-la-importación" class="md-nav__link">
+  <a href="#paso-3--resultado" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Aplicar la importación
+        Paso 3 — Resultado
       
     </span>
   </a>
@@ -1754,76 +1781,83 @@
 
 
 <h1 id="importar-datos">Importar datos</h1>
-<p>La página <strong>Importar datos</strong> te permite subir datos de forma masiva a un form schema desde un archivo <code>.xls</code>, <code>.xlsx</code> o <code>.csv</code>. Un asistente de dos pasos te guía a través de la carga del archivo y la asignación de las columnas del archivo a los campos del form.</p>
+<p>La página <strong>Importar datos</strong> te permite subir datos de forma masiva en un form schema desde un archivo <code>.xls</code>, <code>.xlsx</code> o <code>.csv</code>. Un asistente de tres pasos — <strong>Subir archivo</strong>, <strong>Asignar campos</strong>, <strong>Resultado</strong> — te guía a través de la carga del archivo, la asignación de sus columnas a los campos del form y la revisión del resultado.</p>
 <p><img alt="Vista principal de la página Importar datos" src="../../imgs/forms/import.png" /></p>
 <h2 id="acceder-a-la-página-de-importación">Acceder a la página de importación</h2>
 <ol>
-<li>Navega a la lista <strong>Forms</strong> y selecciona un form schema.</li>
-<li>Desde la visualización de datos del form, haz clic en <strong>Importar</strong> (el botón de la barra de herramientas).</li>
+<li>Ve a la lista <strong>Formularios</strong> y selecciona un form schema.</li>
+<li>Desde la vista de datos del form, haz clic en <strong>Importar formularios</strong> en la barra de herramientas.</li>
 </ol>
 <h2 id="paso-1--subir-archivo">Paso 1 — Subir archivo</h2>
 <p>El primer paso muestra una zona de arrastrar y soltar o un selector de archivos.</p>
 <ul>
 <li><strong>Formatos aceptados:</strong> <code>.xls</code>, <code>.xlsx</code>, <code>.csv</code></li>
-<li><strong>Tamaño máximo de archivo:</strong> 20 MB</li>
+<li><strong>Tamaño máximo del archivo:</strong> 20 MB</li>
 </ul>
 <p>Para subir un archivo:</p>
 <ol>
+<li>(Opcional) Deja marcada la opción <strong>Reutilizar métricas existentes con el mismo nombre</strong> (valor predeterminado) para que cualquier métrica del archivo cuyo nombre coincida con una métrica ya existente en el sistema se vincule a esa métrica existente en lugar de crear un duplicado. Desmárcala para crear siempre métricas nuevas.</li>
 <li>Arrastra un archivo a la zona punteada <strong>o</strong> haz clic en <strong>Elegir un archivo</strong> para buscarlo.</li>
-<li>Tras la selección, el nombre del archivo aparece en una etiqueta junto con el número de columnas detectadas.</li>
-<li>(Opcional) Deja marcada la opción <strong>Reutilizar métricas existentes con el mismo nombre</strong> (predeterminada) para que cualquier métrica del archivo cuyo nombre coincida con una métrica ya presente en el sistema se vincule a esa métrica existente en lugar de crear un duplicado. Desmárcala para crear siempre métricas nuevas.</li>
-<li>Haz clic en <strong>Siguiente</strong> (o en la etiqueta del paso "2 · Asignar campos") para continuar.</li>
+<li>Una vez leído el archivo, el asistente pasa por sí solo a <strong>Asignar campos</strong>.</li>
 </ol>
-<h3 id="formatear-el-archivo-de-importación">Formatear el archivo de importación</h3>
+<h3 id="dar-formato-al-archivo-de-importación">Dar formato al archivo de importación</h3>
 <p>Consulta la descripción en la sección <a href="#formato-del-archivo">más abajo</a></p>
 <div class="admonition tip">
 <p class="admonition-title">Formatos de archivo sencillos</p>
-<p>Dino acepta el mismo archivo obtenido durante la <a href="../#exportar">exportación</a>. Por lo tanto, la forma más sencilla de obtener un archivo correctamente formateado para la importación es exportar primero algunos datos de un form del mismo schema y luego eliminar las filas que contienen los datos exportados, conservando solo los encabezados de columna. En cualquier caso, asegúrate de que los encabezados de columna sean claros: se usarán como sugerencias durante la asignación.</p>
+<p>Dino acepta el mismo archivo que se obtiene durante la <a href="../#exportar">exportación</a>. Por lo tanto, la forma más sencilla de obtener un archivo con el formato adecuado para la importación es exportar primero algunos datos del mismo esquema y luego eliminar las filas que contienen los datos exportados, conservando solo los encabezados de columna. En cualquier caso, asegúrate de que los encabezados de columna sean claros: se usarán como sugerencias durante la asignación.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Métricas identificadas por ID</p>
-<p>Si una columna de métrica en tu archivo proporciona el <strong>ID</strong> (UUID) de la métrica, esa fila se vincula a la métrica existente con ese ID y no se crea ninguna métrica nueva. El ID tiene prioridad sobre el nombre de la métrica, por lo que esto ocurre independientemente de la opción <strong>Reutilizar métricas existentes con el mismo nombre</strong> (que solo se aplica a la coincidencia por nombre).</p>
+<p>Si una columna de métrica de tu archivo proporciona el <strong>ID</strong> (UUID) de la métrica, esa fila se vincula a la métrica existente con ese ID y no se crea ninguna métrica nueva. El ID tiene prioridad sobre el nombre de la métrica, por lo que esto ocurre independientemente de la opción <strong>Reutilizar métricas existentes con el mismo nombre</strong> (que solo se aplica a la coincidencia por nombre).</p>
 </div>
 <h2 id="paso-2--asignar-campos">Paso 2 — Asignar campos</h2>
-<p>Tras la carga, verás una tabla que lista todas las columnas de tu archivo. Cada fila tiene tres columnas:</p>
+<p>Tras la carga, verás una tabla con todas las columnas de tu archivo. Cada fila tiene tres columnas:</p>
 <ul>
 <li><strong>Columna del archivo</strong> – el encabezado original de tu archivo.</li>
-<li><strong>Campo del form</strong> – un menú desplegable donde seleccionas el campo del form correspondiente.</li>
+<li><strong>Campo</strong> – un menú desplegable donde seleccionas el campo del form correspondiente.</li>
 <li><strong>Estado</strong> – muestra si la columna está asignada, ignorada o tiene un error.</li>
 </ul>
 <h3 id="acciones-de-asignación">Acciones de asignación</h3>
 <ul>
 <li><strong>Seleccionar un campo del form</strong> – abre el menú desplegable de una columna y elige el campo correcto. Puedes buscar dentro del menú desplegable.</li>
-<li><strong>Ignorar una columna</strong> – selecciona la opción <strong>— Ignorar esta columna —</strong> en el menú desplegable, o haz clic en el botón <strong>Ignorar</strong> en la columna de estado. Las columnas ignoradas aparecen atenuadas.</li>
-<li><strong>Restaurar una columna ignorada</strong> – haz clic en el botón <strong>Restaurar</strong> en la columna de estado.</li>
+<li><strong>Ignorar una columna</strong> – selecciona la opción <strong>— Ignorar esta columna —</strong> en el menú desplegable, o haz clic en el botón <strong>Ignorar</strong> de la columna de estado. Las columnas ignoradas aparecen atenuadas.</li>
+<li><strong>Restaurar una columna ignorada</strong> – haz clic en el botón <strong>Restaurar</strong> de la columna de estado.</li>
 </ul>
 <h3 id="coincidencia-automática">Coincidencia automática</h3>
-<p>Haz clic en <strong>Coincidencia automática</strong> para que Dino empareje automáticamente las columnas con los campos del form según la similitud de nombres. Es un buen punto de partida: revisa y ajusta las asignaciones según sea necesario.</p>
+<p>Cuando se lee el archivo, Dino asigna cada columna cuyo encabezado sea exactamente el nombre de un campo del form, o el nombre de un campo repetible seguido de <code>__N</code> (consulta <a href="#diapositivas-repetibles">Diapositivas repetibles</a>). Las demás columnas quedan pendientes de que las asignes tú.</p>
+<p>Haz clic en <strong>Reasociar todo</strong> para restablecer todas las columnas y dejar que Dino las asocie de nuevo, esta vez emparejando también las columnas con campos cuyos nombres o etiquetas sean similares. Revisa el resultado y ajusta las asignaciones según sea necesario.</p>
 <div class="admonition tip">
-<p class="admonition-title">La coincidencia automática funciona mejor con encabezados que coinciden exactamente con las etiquetas de los campos o que contienen palabras clave similares.</p>
+<p class="admonition-title">La coincidencia funciona mejor con encabezados que son los nombres de los campos, como en un archivo exportado.</p>
 </div>
 <h3 id="repetición">Repetición</h3>
-<p>Si un campo del form seleccionado es un campo repetible (por ejemplo, varios números de teléfono), aparece una entrada de <strong>Repetición</strong> debajo del menú desplegable. Introduce el índice de repetición (0, 1, 2, …) para asignar esta columna del archivo a una ocurrencia del grupo repetible.</p>
+<p>Si el campo del form seleccionado es un campo repetible (por ejemplo, varios números de teléfono), aparece un campo <strong>Repetición</strong> debajo del menú desplegable. Introduce el índice de repetición (0, 1, 2, …) para asignar esta columna del archivo a una ocurrencia del grupo repetible.</p>
 <h3 id="resumen-de-la-barra-de-herramientas">Resumen de la barra de herramientas</h3>
-<p>En la parte superior del área de asignación, puedes ver tres etiquetas:</p>
+<p>En la parte superior del área de asignación puedes ver tres indicadores:</p>
 <ul>
-<li><strong>Columnas totales</strong> – número de columnas del archivo.</li>
-<li><strong>Asignadas</strong> – columnas que se han asignado a un campo del form.</li>
-<li><strong>Ignoradas</strong> – columnas que decidiste ignorar.</li>
+<li><strong>Total de columnas</strong> – número de columnas del archivo.</li>
+<li><strong>Asignado</strong> – columnas que se han asignado a un campo del form.</li>
+<li><strong>Ignorado</strong> – columnas que decidiste ignorar.</li>
 </ul>
-<p>Usa la entrada <strong>Buscar columnas</strong> para filtrar la tabla por el nombre de la columna del archivo.</p>
-<h2 id="aplicar-la-importación">Aplicar la importación</h2>
-<p>Cuando todas las columnas deseadas estén asignadas y no existan errores, el botón <strong>Aplicar importación</strong> se activa. Haz clic en él para iniciar la importación. Mientras se procesa, aparece un indicador de carga. Puedes hacer clic en <strong>Atrás</strong> para volver al paso 1 o cancelar la importación.</p>
-<p>Tras una importación exitosa, vuelves a la lista de datos del form, donde aparecen los nuevos datos.</p>
+<p>Usa el campo <strong>Buscar columnas…</strong> para filtrar la tabla por el nombre de la columna del archivo.</p>
+<p>Haz clic en <strong>Atrás</strong> para volver al paso de carga: el archivo y las asignaciones se descartan, y debes elegir el archivo de nuevo.</p>
+<p>Cuando todas las columnas deseadas estén asignadas y no existan errores, el botón <strong>Aplicar importación</strong> se activa. Haz clic en él para iniciar la importación. Mientras se procesa, aparece un indicador de carga.</p>
 <div class="admonition warning">
 <p class="admonition-title">Asignación duplicada</p>
-<p>Si asignas el mismo campo del form a más de una columna del archivo, se muestra un error de validación y el botón <strong>Aplicar importación</strong> permanece desactivado hasta que se corrija.</p>
+<p>Si asignas el mismo campo del form a más de una columna del archivo, se muestra un error de validación (<em>Campo asignado a más de una columna</em>) y el botón <strong>Aplicar importación</strong> permanece deshabilitado hasta que se corrija.</p>
 </div>
+<h2 id="paso-3--resultado">Paso 3 — Resultado</h2>
+<p>El último paso informa de lo que ha ocurrido:</p>
+<ul>
+<li>Un aviso te indica si la importación fue <strong>correcta</strong>, <strong>parcial</strong> (algunas filas fueron rechazadas) o terminó con un <strong>ERROR</strong> (no se importó nada).</li>
+<li>Los contadores muestran <strong>Filas importadas</strong>, <strong>Filas rechazadas</strong>, <strong>Filas del archivo</strong> y <strong>Métricas creadas</strong>.</li>
+<li>Las listas de incidencias muestran las filas del archivo afectadas y el motivo. Usa <strong>Buscar por fila o error</strong> para filtrar listas largas.</li>
+</ul>
+<p>Haz clic en <strong>Cerrar</strong> para volver a la lista de datos del form, donde aparecen los nuevos datos. Tras un error, <strong>Atrás</strong> te lleva de nuevo al paso de asignación para corregir los problemas.</p>
 <h2 id="formato-del-archivo">Formato del archivo</h2>
-<p>Describimos el procedimiento para importar datos de forma masiva utilizando un archivo Excel generado desde Google Sheets. El mismo procedimiento es válido para archivos CSV o si trabajas directamente con Excel.</p>
+<p>Describimos el procedimiento para importar datos de forma masiva usando un archivo Excel generado a partir de una hoja de Google. El mismo procedimiento sirve para archivos CSV o si trabajas directamente con Excel.</p>
 <p>Supongamos que quieres importar datos en un form llamado Projects que tiene 2 diapositivas, una de las cuales es una diapositiva repetible:</p>
 <p><img alt="El form Projects, con dos diapositivas, una de las cuales es repetible" src="../../imgs/forms/import-repeating-slide.png" /></p>
-<p>El form Projects se creó utilizando el siguiente XLSForm. La hoja "survey" es</p>
+<p>El form Projects se creó con el siguiente XLSForm. La hoja "survey" es</p>
 <table>
 <thead>
 <tr>
@@ -1900,7 +1934,7 @@
 </tr>
 </tbody>
 </table>
-<p>y la hoja "choices" es</p>
+<p>y la de "choices" es</p>
 <table>
 <thead>
 <tr>
@@ -1986,11 +2020,11 @@
 <li><strong><em>indic</em></strong> (*)  </li>
 <li><strong><em>value_indic</em></strong> (*)</li>
 </ol>
-<p>ten en cuenta que los campos que están dentro de diapositivas repetibles deben tratarse de forma diferente (por eso pusimos un asterisco). Consulta la sección específica más abajo.</p>
+<p>ten en cuenta que los campos que están dentro de diapositivas repetibles deben tratarse de forma diferente (por eso hemos puesto un asterisco). Consulta la sección específica más abajo.</p>
 <p>Los campos específicos de DINO pueden ser:</p>
 <ol>
-<li><strong>created_at</strong>. La fecha de creación del form. Especifica esto solo si quieres que tus forms tengan una fecha de creación diferente a la fecha de importación;  </li>
-<li><strong>user_data_ref_id</strong>. El ID del usuario que se asociará al form (por defecto es el ID del usuario que importa los forms);  </li>
+<li><strong>created_at</strong>. La fecha de creación del form. Especifica esto solo si quieres que tus forms tengan una fecha de creación distinta a la fecha de importación;  </li>
+<li><strong>user_data_ref_id</strong>. El ID del usuario que se asociará al form. Solo se aplica cuando importa un administrador; para los demás usuarios el valor se ignora y los forms se asignan al usuario que los está importando;  </li>
 <li><strong>area_id</strong>. El ID de la métrica AREA que se asociará al form;  </li>
 <li>[area_name]  </li>
 <li><strong>case_id</strong>. El ID de la métrica CASE que se asociará al form;  </li>
@@ -2001,16 +2035,18 @@
 <li><strong>location_id</strong>. El ID de la métrica LOCATION que se asociará al form;  </li>
 <li>[location_name]  </li>
 <li><strong>organization_id</strong>. El ID de la métrica ORGANISATION que se asociará al form;  </li>
+<li>[organization_name]  </li>
+<li><strong>form_status_name</strong>. El nombre de uno de los estados del form schema. Las filas sin este valor reciben el primer estado del esquema. Si algún valor no coincide con un nombre de estado existente, el archivo no se importa (<em>Estado del form no válido</em>);  </li>
 <li>
-<p>[organization_name]</p>
+<p><strong>dinoinvalid</strong>. Marca el form como no válido. Usa <code>true</code>, <code>1</code>, <code>yes</code>, <code>y</code> o <code>x</code>; cualquier otro valor o una celda vacía deja el form como válido.</p>
 </li>
 <li>
-<p>cada fila corresponderá a un nuevo form diferente. Así, si creamos un archivo con un encabezado + digamos, 5 filas de datos, si la carga es exitosa, crearemos 5 nuevos forms en DINO.   </p>
+<p>cada fila corresponderá a un form nuevo diferente. Así, si creamos un archivo con un encabezado más, digamos, 5 filas de datos, si la carga se realiza correctamente, crearemos 5 forms nuevos en DINO.   </p>
 </li>
-<li>No es necesario tener una columna para cada campo del form; no es necesario rellenar todas las filas de una columna dada, pero si un campo está vacío en todas las filas, se puede omitir.   </li>
-<li>Los campos de fecha deben estar formateados YYYY-MM-DD como texto (ten cuidado).   </li>
-<li>Los campos de selección única deben contener una de las opciones aceptadas tal como se especifica en "choices" (consulta el constructor de forms o el archivo XLSForm).   </li>
-<li>Los campos de selección múltiple deben formatearse según el siguiente patrón: [opt1, opt2] (es decir, una lista de opciones entre corchetes).</li>
+<li>No es necesario tener una columna para cada campo del form; no es necesario rellenar todas las filas de una columna determinada, pero si un campo está vacío en todas las filas, se puede omitir.   </li>
+<li>Los campos de fecha deben tener el formato AAAA-MM-DD como texto (ten cuidado).   </li>
+<li>Los campos de opción única deben contener una de las opciones aceptadas según lo especificado en "choices" (consulta el form builder o el archivo XLSForm).   </li>
+<li>Los campos de opción múltiple deben tener el siguiente formato: [opt1, opt2] (es decir, una lista de opciones entre corchetes).</li>
 </ol>
 <p>Por ejemplo, un archivo válido podría ser el siguiente:</p>
 <table>
@@ -2046,77 +2082,79 @@
 </tr>
 </tbody>
 </table>
-<p>En este caso estamos importando 2 forms; para ambos seleccionamos solo la métrica AREA. Además, observa que no proporcionamos todos los campos del form para todos los forms, pero para los campos donde proporcionamos un valor, seguimos estrictamente las indicaciones descritas anteriormente.</p>
+<p>En este caso estamos importando 2 forms; para ambos seleccionamos solo la métrica AREA. Además, fíjate en que no proporcionamos todos los campos del form para todos los forms, pero para los campos en los que sí proporcionamos un valor, seguimos estrictamente las indicaciones descritas arriba.</p>
 <h3 id="gestionar-las-métricas-durante-la-importación">Gestionar las métricas durante la importación</h3>
-<p>Durante la importación de algunos datos, en lo que respecta a las métricas, es posible que quieras:</p>
+<p>Durante la importación de datos de un form, en lo que a métricas se refiere, puede que quieras:</p>
 <ul>
-<li>crear nuevas métricas durante la importación  </li>
+<li>crear métricas nuevas durante la importación  </li>
 <li>reutilizar métricas ya creadas</li>
 </ul>
-<p>Las reglas a seguir para gestionar correctamente las métricas son las siguientes:</p>
+<p>Las reglas que hay que seguir para gestionar correctamente las métricas son las siguientes:</p>
 <table>
 <thead>
 <tr>
 <th>MÉTRICA</th>
-<th>CREACIÓN DESDE LA UI</th>
-<th>CREACIÓN DESDE IMPORTACIÓN</th>
-<th>CREACIÓN + ASIGNACIÓN DESDE IMPORTACIÓN</th>
-<th>USO DESDE IMPORTACIÓN</th>
-<th>CREACIÓN + ASIGNACIÓN DESDE IMPORTACIÓN (parent)</th>
-<th>USO COMO PARENT</th>
+<th>CREAR DESDE LA UI</th>
+<th>CREAR DESDE LA IMPORTACIÓN</th>
+<th>CREAR + ASIGNAR DESDE LA IMPORTACIÓN</th>
+<th>USAR DESDE LA IMPORTACIÓN</th>
+<th>CREAR + ASIGNAR DESDE LA IMPORTACIÓN (padre)</th>
+<th>USAR COMO PADRE</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Case</strong></td>
+<td><strong>Caso</strong></td>
 <td>name</td>
 <td>name</td>
 <td>name</td>
-<td>id, o name (con la opción reuse), o ambos</td>
-<td>name</td>
-<td>id, o name (con la opción reuse), o ambos</td>
+<td>id, o name (con la opción de reutilización), o ambos</td>
+<td>name, en otra fila del mismo archivo</td>
+<td>id o name</td>
 </tr>
 <tr>
-<td><strong>Organization</strong></td>
+<td><strong>Organización</strong></td>
 <td>name</td>
 <td>name</td>
 <td>name</td>
-<td>id, o name (con la opción reuse), o ambos</td>
-<td>name</td>
-<td>id, o name (con la opción reuse), o ambos</td>
+<td>id, o name (con la opción de reutilización), o ambos</td>
+<td>name, en otra fila del mismo archivo</td>
+<td>id o name</td>
 </tr>
 <tr>
-<td><strong>Location</strong></td>
+<td><strong>Ubicación</strong></td>
 <td>name</td>
 <td>name</td>
 <td>name</td>
-<td>id, o name (con la opción reuse), o ambos</td>
-<td>name</td>
-<td>id, o name (con la opción reuse), o ambos</td>
+<td>id, o name (con la opción de reutilización), o ambos</td>
+<td>name, en otra fila del mismo archivo</td>
+<td>id o name</td>
 </tr>
 <tr>
-<td><strong>Area</strong></td>
+<td><strong>Área</strong></td>
 <td>name</td>
 <td>name</td>
 <td>name</td>
-<td>id, o name (con la opción reuse), o ambos</td>
-<td>name</td>
-<td>id, o name (con la opción reuse), o ambos</td>
+<td>id, o name (con la opción de reutilización), o ambos</td>
+<td>name, en otra fila del mismo archivo</td>
+<td>id o name</td>
 </tr>
 <tr>
-<td><strong>Project</strong></td>
+<td><strong>Proyecto</strong></td>
 <td>name, code</td>
 <td>name, code</td>
 <td>name, code</td>
-<td>id</td>
-<td>name, code</td>
-<td>id</td>
+<td>id, o name (con la opción de reutilización), o ambos</td>
+<td>name y code, en otra fila del mismo archivo</td>
+<td>id o name</td>
 </tr>
 </tbody>
 </table>
+<p>Cuando una fila tiene tanto el id como el name de una métrica, prevalece el id y el name se ignora. Solo se crea una métrica nueva cuando se indica el name y el id está vacío.</p>
+<p>Los padres se establecen con las columnas <code>&lt;metric&gt;_parent_id</code> y <code>&lt;metric&gt;_parent_name</code> (por ejemplo <code>location_parent_name</code>), y solo se aplican a las métricas creadas por la importación. El padre debe ser del mismo tipo de métrica, y debe existir ya o ser creado por otra fila del mismo archivo, en cualquier orden. Un padre que no coincide con nada no se crea: esa métrica se informa como <em>métrica con padre no válido</em>.</p>
 <h2 id="diapositivas-repetibles">Diapositivas repetibles</h2>
-<p>Si tienes campos en diapositivas repetibles, deben nombrarse de forma diferente. Cada campo en la diapositiva repetible debe llamarse \&lt;field_name&gt;__X donde X es el número de repetición, desde 0 (correspondiente a una repetición) hasta N-1, donde N es el número total de repeticiones de la diapositiva en ese form. <br />
-Por ejemplo, supongamos que tienes solo 1 repetición de la diapositiva repetible y quieres añadir ambos campos "Indicator description" y "Value reached". Tendrías que añadir estas dos columnas a tu archivo de importación:</p>
+<p>Si tienes campos en diapositivas repetibles, deben nombrarse de forma diferente. Cada campo de la diapositiva repetible debe llamarse \&lt;field_name&gt;__X, donde X es el número de repetición, de 0 (correspondiente a una repetición) a N-1, donde N es el número total de repeticiones de la diapositiva en ese form. <br />
+Por ejemplo, supongamos que tienes solo 1 repetición de la diapositiva repetible y quieres añadir los campos "Indicator description" y "Value reached". Tendrías que añadir estas dos columnas a tu archivo de importación:</p>
 <table>
 <thead>
 <tr>
@@ -2175,7 +2213,11 @@ Por ejemplo, supongamos que tienes solo 1 repetición de la diapositiva repetibl
 </tbody>
 </table>
 <h2 id="errores">Errores</h2>
-<p>Comprueba los ID de tu archivo antes de importar. Si una columna hace referencia a una entidad mediante su ID (una métrica o un usuario) y en Dino no existe ninguna entidad con ese ID, los formularios importados no podrán sincronizarse con el servidor.</p>
+<ul>
+<li><strong>IDs desconocidos</strong> – si una columna hace referencia a un usuario o a una métrica mediante un ID que no existe en Dino, el archivo completo no se importa (<em>¡Archivo no importado!</em>), y el resultado muestra los <em>IDs de usuario no válidos</em> o los <em>IDs de métrica no válidos</em>. Comprueba los IDs de tu archivo antes de importar.</li>
+<li><strong>Estado del form desconocido</strong> – un <code>form_status_name</code> que no coincide con ningún estado del esquema también detiene la importación (<em>Estado del form no válido</em>).</li>
+<li><strong>Métricas que no se pueden vincular</strong> – una fila que nombra una métrica que Dino no puede crear o encontrar se rechaza, y el resultado muestra el motivo; las demás filas se importan.</li>
+</ul>
 
 
 

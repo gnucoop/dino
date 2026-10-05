@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Consulta y gestiona los datos de formularios agregados en Dino.">
+        <meta name="description" content="Ver, filtrar y gestionar todos los datos de los formularios de tus form schemas desde una sola página.">
       
       
       
@@ -1159,10 +1159,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#consultar-la-lista-de-agregación" class="md-nav__link">
+  <a href="#ver-la-lista-de-agregación" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Consultar la lista de agregación
+        Ver la lista de agregación
       
     </span>
   </a>
@@ -1207,6 +1207,17 @@
     <span class="md-ellipsis">
       
         Imprimir un PDF
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#páginas-relacionadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Páginas relacionadas
       
     </span>
   </a>
@@ -1441,6 +1452,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área de usuario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1468,10 +1506,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#consultar-la-lista-de-agregación" class="md-nav__link">
+  <a href="#ver-la-lista-de-agregación" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Consultar la lista de agregación
+        Ver la lista de agregación
       
     </span>
   </a>
@@ -1522,6 +1560,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#páginas-relacionadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Páginas relacionadas
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1540,83 +1589,85 @@
 
 
 <h1 id="agregación">Agregación</h1>
-<p>La página Agregación te ofrece una vista centralizada de todos los datos de formularios de tus form schemas. Puedes explorar, filtrar y realizar acciones sobre los datos de formularios sin necesidad de abrir cada formulario individualmente.</p>
+<p>La página Agregación te ofrece una vista centralizada de todos los datos de los formularios de tus form schemas. En lugar de abrir cada formulario individualmente, puedes consultar todos los datos en una sola tabla, acotarlos con filtros y realizar acciones como ver, editar, imprimir o eliminar.</p>
 <p><img alt="Vista principal de la página Agregación" src="../imgs/aggregation/index.png" /></p>
-<h2 id="consultar-la-lista-de-agregación">Consultar la lista de agregación</h2>
-<p>La tabla principal muestra una fila por cada dato. De forma predeterminada verás las columnas <strong>Form Schema</strong> y <strong>Status</strong>, pero puedes personalizar qué columnas aparecen usando el icono <strong>Personaliza las columnas</strong> en el encabezado de la tabla.</p>
+<h2 id="ver-la-lista-de-agregación">Ver la lista de agregación</h2>
+<p>La tabla muestra una fila por cada dato. De forma predeterminada se muestran las columnas <strong>Formulario</strong> y <strong>Estado</strong>; usa el botón <strong>Columnas</strong> situado encima de la tabla, a la derecha, para elegir qué columnas se muestran.</p>
 <ul>
-<li>Cada fila muestra un icono de estado y, si el formulario tiene problemas de validación, un icono de advertencia.</li>
-<li>Pasa el cursor sobre una fila para ver un resaltado; haz clic en cualquier parte de una fila para seleccionarla y mostrar las acciones disponibles.</li>
+<li>Cada fila muestra un icono de estado. Si un dato tiene problemas de validación, aparece un icono de advertencia en la fila.</li>
+<li>Pasa el cursor sobre una fila para mostrar los iconos <strong>Ver</strong> y <strong>Editar</strong>; haz clic en cualquier parte de una fila para seleccionarla y ver todas las acciones disponibles.</li>
+<li>El contador <strong>Elementos encontrados</strong> y el paginador de la parte superior de la página te indican cuántos datos existen y te permiten moverte entre páginas.</li>
 </ul>
-<p>En la parte superior de la lista, el contador <strong>Items found</strong> y el paginador te indican cuántos datos existen y te permiten navegar entre páginas.</p>
-<p>Si no aplicas ningún filtro a la lista en la página Agregación, verás el número total de formularios enviados a tu Dino que tienes permitido ver, según los permisos de tu usuario.</p>
+<p>Si no aplicas ningún filtro, la lista muestra todos los datos que tienes permiso para ver, en función de tus permisos de usuario.</p>
 <h2 id="filtro-y-búsqueda">Filtro y búsqueda</h2>
-<p>Hay una barra de búsqueda y un panel de filtros disponibles para acotar la lista.</p>
 <ol>
-<li>Haz clic en el <strong>icono de búsqueda</strong> en la barra superior para expandir el panel de filtros.</li>
-<li>Usa el campo <strong>keyword</strong> para buscar en todos los campos.</li>
-<li>Usa los selectores de <strong>rango de fechas</strong> para filtrar por fecha de creación.</li>
-<li>Aparecen filtros adicionales para <strong>Area</strong>, <strong>Case</strong>, <strong>Location</strong>, <strong>Organization</strong>, <strong>Project</strong>, <strong>Form Status</strong> y <strong>User</strong>. Estos son dinámicos y respetan las definiciones de métricas de tu formulario.</li>
-<li>Los filtros activos se muestran como chips debajo de la barra de filtros: haz clic en el <strong>icono de cancelar</strong> de un chip para eliminarlo.</li>
+<li>Escribe en el campo <strong>buscar por palabra clave</strong> de la barra de herramientas para buscar entre los datos.</li>
+<li>Haz clic en <strong>Filtros</strong> en la barra de herramientas para abrir el panel de filtros.</li>
+<li>Elige una <strong>Desde fecha</strong> y una <strong>Hasta la fecha</strong> para filtrar por fecha de creación.</li>
+<li>Rellena cualquiera de los filtros adicionales: <strong>Área</strong>, <strong>Caso</strong>, <strong>Código de caso</strong>, <strong>Ubicación</strong>, <strong>Organización</strong>, <strong>Proyecto</strong>, <strong>Estado del formulario</strong> y <strong>Usuario</strong>. Los valores disponibles dependen de las métricas configuradas en tu Dino.</li>
+<li>Haz clic en <strong>Buscar</strong> para aplicar los filtros, o en <strong>Restablecer los filtros</strong> para borrarlos.</li>
 </ol>
+<p>Los filtros activos aparecen como chips debajo de la barra de herramientas. Haz clic en el icono <strong>cancelar</strong> de un chip para eliminar ese filtro.</p>
 <div class="admonition tip">
-<p class="admonition-title">Filtros preestablecidos</p>
-<p>La página Agregación no admite filtros preestablecidos guardados. Puedes combinar filtros cada vez que necesites una visualización personalizada.</p>
+<p class="admonition-title">Sin preajustes guardados</p>
+<p>La página Agregación no admite preajustes de filtros guardados ni condiciones de filtro avanzadas. Debes combinar los filtros cada vez que necesites una vista personalizada; eliminar un chip es la forma más rápida de relajar una búsqueda existente.</p>
 </div>
 <h2 id="acciones-de-fila">Acciones de fila</h2>
-<p>Después de seleccionar una fila, los iconos de acción aparecen en la columna <strong>Actions</strong> en el lado derecho de la tabla.</p>
+<p>Pasa el cursor sobre una fila para mostrar los iconos <strong>Ver</strong> (ojo) y <strong>Editar</strong> (lápiz). Para ver todas las acciones, haz clic en la fila para seleccionarla: la barra de acciones situada encima de la tabla mostrará entonces un botón por cada acción que tengas permitida.</p>
 <table>
 <thead>
 <tr>
-<th>Icono</th>
 <th>Acción</th>
 <th>Descripción</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>view</code></td>
-<td>View</td>
-<td>Abrir el dato en modo de solo lectura.</td>
+<td><strong>Ver</strong></td>
+<td>Abre el dato en modo de solo lectura.</td>
 </tr>
 <tr>
-<td><code>edit</code></td>
-<td>Edit</td>
-<td>Modificar los datos del formulario.</td>
+<td><strong>Editar</strong></td>
+<td>Modifica los datos del dato.</td>
 </tr>
 <tr>
-<td><code>print</code></td>
-<td>Print</td>
-<td>Generar un PDF del dato.</td>
+<td><strong>Imprimir</strong></td>
+<td>Genera un PDF del dato.</td>
 </tr>
 <tr>
-<td><code>delete</code></td>
-<td>Delete</td>
-<td>Eliminar el dato tras la confirmación.</td>
+<td><strong>Eliminar</strong></td>
+<td>Elimina el dato.</td>
 </tr>
 </tbody>
 </table>
-<p>Haz clic en <strong>More Horiz</strong> (tres puntos) para ver acciones adicionales para esa fila. Las acciones <strong>Print</strong> y <strong>Delete</strong> piden confirmación antes de ejecutarse.</p>
+<p><strong>Imprimir</strong> y <strong>Eliminar</strong> piden confirmación (<em>¿Quieres imprimir los elementos seleccionados?</em>, <strong>Sí</strong> / <strong>No</strong>) antes de ejecutarse.</p>
 <h2 id="crear-un-nuevo-dato">Crear un nuevo dato</h2>
-<p>El botón flotante <strong>+</strong> en la esquina inferior derecha de la pantalla te permite iniciar un nuevo dato.</p>
+<p>El botón <strong>Agregar nuevo formulario</strong> de la barra de herramientas te permite iniciar un nuevo dato. Solo se muestra si la creación de datos desde la página Agregación está habilitada en tu instancia de Dino.</p>
 <p><img alt="Diálogo para elegir un form schema e iniciar un nuevo dato" src="../imgs/aggregation/index-new.png" /></p>
 <ol>
-<li>Haz clic en el botón <strong>+</strong>. Se abre un diálogo que muestra los form schemas disponibles.</li>
-<li>Selecciona o busca el form schema que quieras usar.</li>
-<li>Tras la selección, accederás directamente a la página <a href="../forms/edit-form/">Edit Form</a> para rellenar los datos.</li>
+<li>Haz clic en <strong>Agregar nuevo formulario</strong>. Se abre el diálogo <strong>Crear formulario</strong>, con la lista de form schemas disponibles.</li>
+<li>Selecciona el form schema que quieras usar.</li>
+<li>Haz clic en <strong>Crear formulario</strong>. Se te redirige a la página <a href="../forms/edit-form/">Editar formulario</a>, donde rellenas y guardas los datos.</li>
 </ol>
 <h2 id="imprimir-un-pdf">Imprimir un PDF</h2>
-<p>Puedes generar un PDF de cualquier dato que incluya la etiqueta del form schema, los nombres de las métricas activas y los datos rellenados.</p>
+<p>Puedes generar un PDF de cualquier dato. El PDF incluye la etiqueta del form schema, los nombres de las métricas activas y los datos que se rellenaron.</p>
 <ol>
-<li>En la fila que quieras imprimir, haz clic en el icono <strong>Printer</strong> (o usa el menú <strong>More Horiz</strong> si está disponible).</li>
-<li>Confirma la acción cuando se te solicite.</li>
+<li>Haz clic en la fila que quieras imprimir para seleccionarla y, a continuación, haz clic en <strong>Imprimir</strong> en la barra de acciones.</li>
+<li>Confirma con <strong>Sí</strong>.</li>
 <li>El PDF se abre en una nueva pestaña del navegador o se descarga automáticamente.</li>
 </ol>
-<p>El encabezado del PDF incluye el título del form schema y todos los nombres de las métricas actualmente activas en el sistema.</p>
+<p>La cabecera del PDF incluye el título del form schema y todos los nombres de las métricas actualmente activas en el sistema.</p>
 <div class="admonition warning">
-<p class="admonition-title">Disponibilidad de métricas</p>
-<p>El PDF impreso incluye solo las métricas que están activas en el momento en que activas la impresión. Si se añadió una métrica después de crear el dato, no aparecerá.</p>
+<p class="admonition-title">Disponibilidad de las métricas</p>
+<p>El PDF incluye únicamente las métricas que estén activas en el momento de lanzar la impresión. Una métrica añadida después de crear el dato no aparecerá.</p>
 </div>
+<h2 id="páginas-relacionadas">Páginas relacionadas</h2>
+<ul>
+<li><a href="../forms/">Formularios</a>: gestiona los form schemas que hay detrás de tus datos.</li>
+<li><a href="../forms/edit-form/">Editar formulario</a>: rellena y actualiza los datos.</li>
+<li><a href="../forms/import/">Importar datos</a>: trae datos a Dino de forma masiva.</li>
+<li><a href="../metrics/">Métricas</a>: configura las métricas que determinan los filtros y la salida impresa.</li>
+</ul>
 
 
 

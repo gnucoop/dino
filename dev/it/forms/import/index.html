@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Scopri come importare in blocco dati strutturati in qualsiasi form schema usando un file CSV o Excel. La procedura guidata in due passaggi ti permette di caricare un file e poi mappare le sue colonne ai campi del form.">
+        <meta name="description" content="Scopri come importare in blocco dati strutturati in qualsiasi form schema usando un file CSV o Excel. La procedura guidata ti permette di caricare un file, associare le sue colonne ai campi del form e rivedere l'esito dell'importazione.">
       
       
       
@@ -654,10 +654,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#accedi-alla-pagina-di-importazione" class="md-nav__link">
+  <a href="#accedere-alla-pagina-di-importazione" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Accedi alla pagina di importazione
+        Accedere alla pagina di importazione
       
     </span>
   </a>
@@ -693,22 +693,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#passaggio-2--mappa-campi" class="md-nav__link">
+  <a href="#passaggio-2--associa-campi" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Passaggio 2 — Mappa campi
+        Passaggio 2 — Associa campi
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Passaggio 2 — Mappa campi">
+    <nav class="md-nav" aria-label="Passaggio 2 — Associa campi">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#azioni-di-mappatura" class="md-nav__link">
+  <a href="#azioni-di-associazione" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Azioni di mappatura
+        Azioni di associazione
       
     </span>
   </a>
@@ -754,10 +754,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#applica-importazione" class="md-nav__link">
+  <a href="#passaggio-3--esito" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Applica importazione
+        Passaggio 3 — Esito
       
     </span>
   </a>
@@ -1549,6 +1549,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Area utente
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1576,10 +1603,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#accedi-alla-pagina-di-importazione" class="md-nav__link">
+  <a href="#accedere-alla-pagina-di-importazione" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Accedi alla pagina di importazione
+        Accedere alla pagina di importazione
       
     </span>
   </a>
@@ -1615,22 +1642,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#passaggio-2--mappa-campi" class="md-nav__link">
+  <a href="#passaggio-2--associa-campi" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Passaggio 2 — Mappa campi
+        Passaggio 2 — Associa campi
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Passaggio 2 — Mappa campi">
+    <nav class="md-nav" aria-label="Passaggio 2 — Associa campi">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#azioni-di-mappatura" class="md-nav__link">
+  <a href="#azioni-di-associazione" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Azioni di mappatura
+        Azioni di associazione
       
     </span>
   </a>
@@ -1676,10 +1703,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#applica-importazione" class="md-nav__link">
+  <a href="#passaggio-3--esito" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Applica importazione
+        Passaggio 3 — Esito
       
     </span>
   </a>
@@ -1754,76 +1781,83 @@
 
 
 <h1 id="importa-dati">Importa dati</h1>
-<p>La pagina <strong>Importa dati</strong> ti permette di caricare in blocco dei dati in un form schema da un file <code>.xls</code>, <code>.xlsx</code> o <code>.csv</code>. Una procedura guidata in due passaggi ti accompagna nel caricamento del file e nella mappatura delle colonne del file ai campi del form.</p>
-<p><img alt="Visualizzazione principale della pagina Importa dati" src="../../imgs/forms/import.png" /></p>
-<h2 id="accedi-alla-pagina-di-importazione">Accedi alla pagina di importazione</h2>
+<p>La pagina <strong>Importa dati</strong> ti permette di caricare in blocco dei dati in un form schema da un file <code>.xls</code>, <code>.xlsx</code> o <code>.csv</code>. Una procedura guidata in tre passaggi — <strong>Carica file</strong>, <strong>Associa campi</strong>, <strong>Esito</strong> — ti guida nel caricamento del file, nell'associazione delle sue colonne ai campi del form e nella revisione del risultato.</p>
+<p><img alt="Vista principale della pagina Importa dati" src="../../imgs/forms/import.png" /></p>
+<h2 id="accedere-alla-pagina-di-importazione">Accedere alla pagina di importazione</h2>
 <ol>
-<li>Vai alla lista <strong>Forms</strong> e seleziona un form schema.</li>
-<li>Dalla visualizzazione dei dati del form, clicca su <strong>Importa</strong> (il pulsante nella barra degli strumenti).</li>
+<li>Vai alla lista <strong>Form</strong> e seleziona un form schema.</li>
+<li>Dalla visualizzazione dei dati del form, clicca <strong>Importa form</strong> nella barra degli strumenti.</li>
 </ol>
 <h2 id="passaggio-1--carica-file">Passaggio 1 — Carica file</h2>
-<p>Il primo passaggio mostra un'area drag‑and‑drop o un selettore di file.</p>
+<p>Il primo passaggio mostra un'area di trascinamento o un selettore di file.</p>
 <ul>
 <li><strong>Formati accettati:</strong> <code>.xls</code>, <code>.xlsx</code>, <code>.csv</code></li>
 <li><strong>Dimensione massima del file:</strong> 20 MB</li>
 </ul>
 <p>Per caricare:</p>
 <ol>
-<li>Trascina un file sull'area tratteggiata <strong>oppure</strong> clicca su <strong>Scegli un file</strong> per sfogliare.</li>
-<li>Dopo la selezione, il nome del file appare in un chip insieme al numero di colonne rilevate.</li>
-<li>(Facoltativo) Lascia selezionata l'opzione <strong>Riutilizza le metriche esistenti con lo stesso nome</strong> (impostazione predefinita) in modo che qualsiasi metrica nel file il cui nome corrisponde a una metrica già presente nel sistema venga collegata a quella metrica esistente invece di creare un duplicato. Deselezionala per creare sempre nuove metriche.</li>
-<li>Clicca su <strong>Avanti</strong> (o sull'etichetta dello stepper "2 · Mappa campi") per procedere.</li>
+<li>(Opzionale) Lascia selezionata l'opzione <strong>Riutilizza le metriche esistenti con lo stesso nome</strong> (impostazione predefinita) in modo che ogni metrica nel file il cui nome corrisponde a una metrica già presente nel sistema venga collegata a quella metrica esistente invece di crearne un duplicato. Deselezionala per creare sempre nuove metriche.</li>
+<li>Trascina un file sull'area tratteggiata <strong>oppure</strong> clicca <strong>Scegli un file</strong> per sfogliare.</li>
+<li>Una volta letto il file, la procedura guidata passa da sola a <strong>Associa campi</strong>.</li>
 </ol>
 <h3 id="formattare-il-file-di-importazione">Formattare il file di importazione</h3>
 <p>Vedi la descrizione nella sezione <a href="#formato-del-file">sottostante</a></p>
 <div class="admonition tip">
 <p class="admonition-title">Formati di file semplici</p>
-<p>Dino accetta lo stesso file ottenuto durante l'<a href="../#esportazione">esportazione</a>. Quindi, il modo più semplice per ottenere un file formattato correttamente per l'importazione è esportare prima alcuni dati del form dallo stesso schema e poi eliminare le righe contenenti i dati esportati, mantenendo solo le intestazioni delle colonne. In ogni caso, assicurati che le intestazioni delle colonne siano chiare – verranno usate come suggerimenti durante la mappatura.</p>
+<p>Dino accetta lo stesso file ottenuto durante l'<a href="../#esporta">esportazione</a>. Quindi, il modo più semplice per ottenere un file formattato correttamente per l'importazione è esportare prima alcuni dati del form dallo stesso schema e poi eliminare le righe contenenti i dati esportati, mantenendo solo le intestazioni delle colonne. In ogni caso, assicurati che le intestazioni delle colonne siano chiare – verranno usate come suggerimenti durante l'associazione.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Metriche identificate tramite ID</p>
-<p>Se una colonna metrica nel tuo file fornisce l'<strong>ID</strong> (UUID) della metrica, quella riga viene collegata alla metrica esistente con quell'ID e non viene creata alcuna nuova metrica. L'ID ha la precedenza sul nome della metrica, quindi questo avviene indipendentemente dall'opzione <strong>Riutilizza le metriche esistenti con lo stesso nome</strong> (che si applica solo alla corrispondenza per nome).</p>
+<p>Se una colonna di metrica nel tuo file fornisce l'<strong>ID</strong> (UUID) della metrica, quella riga viene collegata alla metrica esistente con quell'ID e non viene creata alcuna nuova metrica. L'ID ha la precedenza sul nome della metrica, quindi questo avviene indipendentemente dall'opzione <strong>Riutilizza le metriche esistenti con lo stesso nome</strong> (che si applica solo alla corrispondenza per nome).</p>
 </div>
-<h2 id="passaggio-2--mappa-campi">Passaggio 2 — Mappa campi</h2>
+<h2 id="passaggio-2--associa-campi">Passaggio 2 — Associa campi</h2>
 <p>Dopo il caricamento, vedi una tabella che elenca tutte le colonne del tuo file. Ogni riga ha tre colonne:</p>
 <ul>
-<li><strong>Colonna file</strong> – l'intestazione originale del tuo file.</li>
-<li><strong>Campo del form</strong> – un menu a tendina dove selezioni il campo del form corrispondente.</li>
-<li><strong>Stato</strong> – mostra se la colonna è mappata, ignorata o presenta un errore.</li>
+<li><strong>Colonna del file</strong> – l'intestazione originale del tuo file.</li>
+<li><strong>Campo</strong> – un menu a tendina in cui selezioni il campo del form corrispondente.</li>
+<li><strong>Stato</strong> – mostra se la colonna è associata, ignorata o presenta un errore.</li>
 </ul>
-<h3 id="azioni-di-mappatura">Azioni di mappatura</h3>
+<h3 id="azioni-di-associazione">Azioni di associazione</h3>
 <ul>
-<li><strong>Seleziona un campo del form</strong> – apri il menu a tendina di una colonna e scegli il campo corretto. Puoi cercare all'interno del menu a tendina.</li>
-<li><strong>Ignora una colonna</strong> – seleziona l'opzione <strong>— Ignora questa colonna —</strong> nel menu a tendina, oppure clicca sul pulsante <strong>Ignora</strong> nella colonna dello stato. Le colonne ignorate sono in grigio.</li>
-<li><strong>Ripristina una colonna ignorata</strong> – clicca sul pulsante <strong>Ripristina</strong> nella colonna dello stato.</li>
+<li><strong>Selezionare un campo del form</strong> – apri il menu a tendina di una colonna e scegli il campo corretto. Puoi cercare all'interno del menu a tendina.</li>
+<li><strong>Ignorare una colonna</strong> – seleziona l'opzione <strong>— Ignora questa colonna —</strong> nel menu a tendina, oppure clicca il pulsante <strong>Ignora</strong> nella colonna dello stato. Le colonne ignorate sono in grigio.</li>
+<li><strong>Ripristinare una colonna ignorata</strong> – clicca il pulsante <strong>Ripristina</strong> nella colonna dello stato.</li>
 </ul>
 <h3 id="corrispondenza-automatica">Corrispondenza automatica</h3>
-<p>Clicca su <strong>Corrispondenza automatica</strong> per lasciare che Dino associ automaticamente le colonne ai campi del form in base alla somiglianza dei nomi. Questo è un buon punto di partenza – rivedi e regola le mappature secondo necessità.</p>
+<p>Quando il file viene letto, Dino associa ogni colonna la cui intestazione è esattamente il nome di un campo del form, o il nome di un campo ripetuto seguito da <code>__N</code> (vedi <a href="#slide-ripetute">Slide ripetute</a>). Le altre colonne restano da associare a te.</p>
+<p>Clicca <strong>Riassocia tutto</strong> per reimpostare ogni colonna e lasciare che Dino le associ di nuovo, questa volta abbinando le colonne anche ai campi con nomi o etichette simili. Rivedi il risultato e correggi le associazioni come necessario.</p>
 <div class="admonition tip">
-<p class="admonition-title">La corrispondenza automatica funziona al meglio con intestazioni che corrispondono esattamente alle etichette dei campi o che contengono parole chiave simili.</p>
+<p class="admonition-title">L'abbinamento funziona meglio con intestazioni che sono i nomi dei campi, come in un file esportato.</p>
 </div>
 <h3 id="ripetizione">Ripetizione</h3>
-<p>Se un campo del form selezionato è un campo ripetuto (ad esempio, più numeri di telefono), sotto il menu a tendina appare un input <strong>Ripetizione</strong>. Inserisci l'indice di ripetizione (0, 1, 2, …) per assegnare questa colonna del file a una occorrenza del gruppo ripetuto.</p>
+<p>Se un campo del form selezionato è un campo ripetuto (ad esempio, più numeri di telefono), sotto il menu a tendina compare un input <strong>Ripetizione</strong>. Inserisci l'indice di ripetizione (0, 1, 2, …) per assegnare questa colonna del file a una occorrenza del gruppo ripetuto.</p>
 <h3 id="riepilogo-della-barra-degli-strumenti">Riepilogo della barra degli strumenti</h3>
-<p>Nella parte superiore dell'area di mappatura, puoi vedere tre chip:</p>
+<p>In cima all'area di associazione, puoi vedere tre indicatori:</p>
 <ul>
 <li><strong>Colonne totali</strong> – numero di colonne del file.</li>
-<li><strong>Mappate</strong> – colonne che sono state assegnate a un campo del form.</li>
-<li><strong>Ignorate</strong> – colonne che hai scelto di ignorare.</li>
+<li><strong>Associato</strong> – colonne che sono state assegnate a un campo del form.</li>
+<li><strong>Ignorato</strong> – colonne che hai scelto di ignorare.</li>
 </ul>
-<p>Usa l'input <strong>Cerca colonne</strong> per filtrare la tabella in base al nome della colonna del file.</p>
-<h2 id="applica-importazione">Applica importazione</h2>
-<p>Quando tutte le colonne desiderate sono mappate e non ci sono errori, il pulsante <strong>Applica importazione</strong> diventa attivo. Cliccalo per avviare l'importazione. Durante l'elaborazione, appare uno spinner. Puoi cliccare su <strong>Indietro</strong> per tornare al passaggio 1 o annullare l'importazione.</p>
-<p>Dopo un'importazione riuscita, vieni riportato alla lista di form del form, dove appaiono i nuovi dati.</p>
+<p>Usa l'input <strong>Cerca colonne…</strong> per filtrare la tabella per nome della colonna del file.</p>
+<p>Clicca <strong>Indietro</strong> per tornare al passaggio di caricamento: il file e le associazioni vengono scartati e scegli di nuovo il file.</p>
+<p>Quando tutte le colonne desiderate sono associate e non ci sono errori, il pulsante <strong>Applica importazione</strong> diventa attivo. Cliccalo per avviare l'importazione. Durante l'elaborazione compare un indicatore di caricamento.</p>
 <div class="admonition warning">
-<p class="admonition-title">Mappatura duplicata</p>
-<p>Se mappi lo stesso campo del form a più di una colonna del file, viene mostrato un errore di validazione e il pulsante <strong>Applica importazione</strong> rimane disattivato finché non viene corretto.</p>
+<p class="admonition-title">Associazione duplicata</p>
+<p>Se associ lo stesso campo del form a più di una colonna del file, viene mostrato un errore di convalida (<em>Campo associato a più di una colonna</em>) e il pulsante <strong>Applica importazione</strong> resta disattivato finché non viene corretto.</p>
 </div>
+<h2 id="passaggio-3--esito">Passaggio 3 — Esito</h2>
+<p>L'ultimo passaggio riporta cosa è successo:</p>
+<ul>
+<li>Un banner ti indica se l'importazione è <strong>riuscita</strong>, <strong>parziale</strong> (alcune righe sono state scartate) o si è conclusa con un <strong>ERRORE</strong> (non è stato importato nulla).</li>
+<li>I contatori mostrano <strong>Righe importate</strong>, <strong>Righe scartate</strong>, <strong>Righe nel file</strong> e <strong>Metriche create</strong>.</li>
+<li>Gli elenchi dei problemi mostrano le righe del file interessate e il motivo. Usa <strong>Cerca per riga o errore</strong> per filtrare elenchi lunghi.</li>
+</ul>
+<p>Clicca <strong>Chiudi</strong> per tornare alla lista di form, dove compaiono i nuovi dati. Dopo un errore, <strong>Indietro</strong> ti riporta al passaggio di associazione per correggere i problemi.</p>
 <h2 id="formato-del-file">Formato del file</h2>
-<p>Descriviamo la procedura per importare alcuni dati in blocco usando un file Excel generato da un Google Sheet. La stessa procedura vale per i file CSV o se si lavora direttamente con Excel. </p>
-<p>Supponiamo che tu voglia importare dati in un form chiamato Progetti che ha 2 slide, una delle quali è una slide ripetuta:</p>
-<p><img alt="Il form Progetti, con due slide una delle quali è una slide ripetuta" src="../../imgs/forms/import-repeating-slide.png" /></p>
-<p>Il form Progetti è stato creato usando il seguente XLSForm. Il foglio "survey" è </p>
+<p>Descriviamo la procedura per importare alcuni dati in blocco usando un file Excel generato da un Google Sheet. La stessa procedura vale per i file CSV o se lavori direttamente con Excel. </p>
+<p>Supponiamo che tu voglia importare dati in un form chiamato Projects che ha 2 slide, una delle quali è una slide ripetuta:</p>
+<p><img alt="Il form Projects, con due slide una delle quali è una slide ripetuta" src="../../imgs/forms/import-repeating-slide.png" /></p>
+<p>Il form Projects è stato creato usando il seguente XLSForm. Il foglio "survey" è </p>
 <table>
 <thead>
 <tr>
@@ -1975,7 +2009,7 @@
 <p>Segui questi passaggi:</p>
 <ol>
 <li>Crea un file vuoto con un solo foglio (i nomi del file e del foglio non hanno importanza).   </li>
-<li>Nella prima riga devi inserire i nomi dei campi del form e dei campi del form specifici di DINO. In questo esempio, i campi del form possono essere:  </li>
+<li>Nella prima riga devi inserire i nomi dei campi del form e dei campi specifici di DINO. In questo esempio, i campi del form possono essere:  </li>
 <li><strong>country</strong>  </li>
 <li><strong>country_other</strong>  </li>
 <li><strong>title</strong>  </li>
@@ -1986,11 +2020,11 @@
 <li><strong><em>indic</em></strong> (*)  </li>
 <li><strong><em>value_indic</em></strong> (*)</li>
 </ol>
-<p>fai attenzione che i campi che si trovano all'interno di slide ripetute devono essere trattati diversamente (è per questo che abbiamo messo un asterisco). Fai riferimento alla sezione specifica qui sotto. </p>
+<p>attenzione che i campi che si trovano all'interno di slide ripetute devono essere trattati diversamente (ecco perché abbiamo messo un asterisco). Fai riferimento alla sezione specifica qui sotto. </p>
 <p>I campi specifici di DINO possono essere:</p>
 <ol>
-<li><strong>created_at</strong>. La data di creazione del form. Specifica questo valore solo se vuoi che i tuoi form abbiano una data di creazione diversa da quella di importazione;  </li>
-<li><strong>user_data_ref_id</strong>. L'ID dell'utente che sarà associato al form (il valore predefinito è l'ID dell'utente che sta importando i form);  </li>
+<li><strong>created_at</strong>. La data di creazione del form. Specifica questo valore solo se vuoi che i tuoi form abbiano una data di creazione diversa da quella dell'importazione;  </li>
+<li><strong>user_data_ref_id</strong>. L'ID dell'utente che sarà associato al form. Si applica solo quando importa un amministratore; per gli altri utenti il valore viene ignorato e i form sono assegnati all'utente che li sta importando;  </li>
 <li><strong>area_id</strong>. L'ID della metrica AREA da associare al form;  </li>
 <li>[area_name]  </li>
 <li><strong>case_id</strong>. L'ID della metrica CASE da associare al form;  </li>
@@ -2001,16 +2035,18 @@
 <li><strong>location_id</strong>. L'ID della metrica LOCATION da associare al form;  </li>
 <li>[location_name]  </li>
 <li><strong>organization_id</strong>. L'ID della metrica ORGANISATION da associare al form;  </li>
+<li>[organization_name]  </li>
+<li><strong>form_status_name</strong>. Il nome di uno degli stati del form schema. Le righe che non lo contengono ricevono il primo stato dello schema. Se un valore non corrisponde al nome di uno stato esistente, il file non viene importato (<em>Stati non validi</em>);  </li>
 <li>
-<p>[organization_name]</p>
+<p><strong>dinoinvalid</strong>. Contrassegna il form come non valido. Usa <code>true</code>, <code>1</code>, <code>yes</code>, <code>y</code> o <code>x</code>; qualsiasi altro valore o una cella vuota lascia il form valido.</p>
 </li>
 <li>
-<p>ogni riga corrisponderà a un nuovo form diverso. Quindi, se creiamo un file con un'intestazione + diciamo 5 righe di dati, se il caricamento ha successo, creeremo 5 nuovi form in DINO.   </p>
+<p>ogni riga corrisponderà a un diverso nuovo form. Quindi, se creiamo un file con una intestazione + diciamo 5 righe di dati, se il caricamento ha successo, creeremo 5 nuovi form in DINO.   </p>
 </li>
-<li>Non è necessario avere una colonna per ogni campo del form; non è necessario riempire tutte le righe di una data colonna, ma se un campo è vuoto per tutte le righe, può essere omesso,   </li>
-<li>I campi data devono essere formattati come testo nel formato YYYY-MM-DD (fai attenzione).   </li>
+<li>Non è necessario avere una colonna per ogni campo del form; non è necessario riempire tutte le righe di una determinata colonna, ma se un campo è vuoto per tutte le righe, può essere omesso,   </li>
+<li>I campi data devono essere formattati YYYY-MM-DD come testo (attenzione).   </li>
 <li>I campi a scelta singola devono contenere una delle opzioni accettate come specificato nel foglio "choices" (vedi il form builder o il file XLSForm).   </li>
-<li>I campi a scelta multipla devono essere formattati secondo il seguente schema: [opt1, opt2] (cioè una lista di opzioni tra parentesi quadre). </li>
+<li>I campi a scelta multipla devono essere formattati secondo il seguente schema: [opt1, opt2] (cioè un elenco di opzioni tra parentesi quadre). </li>
 </ol>
 <p>Ad esempio, un file valido potrebbe essere il seguente:</p>
 <table>
@@ -2046,9 +2082,9 @@
 </tr>
 </tbody>
 </table>
-<p>In questo caso stiamo importando 2 form; per entrambi selezioniamo solo la metrica AREA. Inoltre, nota che non forniamo tutti i campi del form per tutti i form, ma per i campi dove forniamo un valore, seguiamo rigorosamente le indicazioni descritte sopra. </p>
+<p>In questo caso stiamo importando 2 form, per entrambi selezioniamo solo la metrica AREA. Inoltre, nota che non forniamo tutti i campi del form per tutti i form, ma per i campi in cui forniamo un valore, seguiamo rigorosamente le indicazioni descritte sopra. </p>
 <h3 id="gestire-le-metriche-durante-limportazione">Gestire le metriche durante l'importazione</h3>
-<p>Durante l'importazione di alcuni dati del form, per quanto riguarda le metriche, potresti voler:</p>
+<p>Durante l'importazione di alcuni dati di un form, per quanto riguarda le metriche, potresti voler:</p>
 <ul>
 <li>creare nuove metriche durante l'importazione  </li>
 <li>riutilizzare metriche già create</li>
@@ -2058,64 +2094,66 @@
 <thead>
 <tr>
 <th>METRICA</th>
-<th>CREAZIONE DA UI</th>
-<th>CREAZIONE DA IMPORT</th>
-<th>CREAZIONE + ASSEGNAZIONE DA IMPORT</th>
-<th>UTILIZZO DA IMPORT</th>
-<th>CREAZIONE + ASSEGNAZIONE DA IMPORT (parent)</th>
-<th>UTILIZZO PARENT</th>
+<th>CREA DALL'INTERFACCIA</th>
+<th>CREA DALL'IMPORTAZIONE</th>
+<th>CREA + ASSEGNA DALL'IMPORTAZIONE</th>
+<th>USA DALL'IMPORTAZIONE</th>
+<th>CREA + ASSEGNA DALL'IMPORTAZIONE (genitore)</th>
+<th>USA COME GENITORE</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Case</strong></td>
-<td>name</td>
-<td>name</td>
-<td>name</td>
-<td>id oppure name (con opzione reuse), oppure entrambi</td>
-<td>name</td>
-<td>id oppure name (con opzione reuse), oppure entrambi</td>
+<td><strong>Caso</strong></td>
+<td>nome</td>
+<td>nome</td>
+<td>nome</td>
+<td>id, oppure nome (con l'opzione di riutilizzo), oppure entrambi</td>
+<td>nome, in un'altra riga dello stesso file</td>
+<td>id oppure nome</td>
 </tr>
 <tr>
-<td><strong>Organization</strong></td>
-<td>name</td>
-<td>name</td>
-<td>name</td>
-<td>id oppure name (con opzione reuse), oppure entrambi</td>
-<td>name</td>
-<td>id oppure name (con opzione reuse), oppure entrambi</td>
+<td><strong>Organizzazione</strong></td>
+<td>nome</td>
+<td>nome</td>
+<td>nome</td>
+<td>id, oppure nome (con l'opzione di riutilizzo), oppure entrambi</td>
+<td>nome, in un'altra riga dello stesso file</td>
+<td>id oppure nome</td>
 </tr>
 <tr>
-<td><strong>Location</strong></td>
-<td>name</td>
-<td>name</td>
-<td>name</td>
-<td>id oppure name (con opzione reuse), oppure entrambi</td>
-<td>name</td>
-<td>id oppure name (con opzione reuse), oppure entrambi</td>
+<td><strong>Posizione</strong></td>
+<td>nome</td>
+<td>nome</td>
+<td>nome</td>
+<td>id, oppure nome (con l'opzione di riutilizzo), oppure entrambi</td>
+<td>nome, in un'altra riga dello stesso file</td>
+<td>id oppure nome</td>
 </tr>
 <tr>
 <td><strong>Area</strong></td>
-<td>name</td>
-<td>name</td>
-<td>name</td>
-<td>id oppure name (con opzione reuse), oppure entrambi</td>
-<td>name</td>
-<td>id oppure name (con opzione reuse), oppure entrambi</td>
+<td>nome</td>
+<td>nome</td>
+<td>nome</td>
+<td>id, oppure nome (con l'opzione di riutilizzo), oppure entrambi</td>
+<td>nome, in un'altra riga dello stesso file</td>
+<td>id oppure nome</td>
 </tr>
 <tr>
-<td><strong>Project</strong></td>
-<td>name, code</td>
-<td>name, code</td>
-<td>name, code</td>
-<td>id</td>
-<td>name, code</td>
-<td>id</td>
+<td><strong>Progetto</strong></td>
+<td>nome, codice</td>
+<td>nome, codice</td>
+<td>nome, codice</td>
+<td>id, oppure nome (con l'opzione di riutilizzo), oppure entrambi</td>
+<td>nome e codice, in un'altra riga dello stesso file</td>
+<td>id oppure nome</td>
 </tr>
 </tbody>
 </table>
+<p>Quando una riga contiene sia l'id che il nome di una metrica, vince l'id e il nome viene ignorato. Una nuova metrica viene creata solo quando viene fornito il nome e l'id è vuoto.</p>
+<p>I genitori si impostano con le colonne <code>&lt;metric&gt;_parent_id</code> e <code>&lt;metric&gt;_parent_name</code> (ad esempio <code>location_parent_name</code>), e si applicano solo alle metriche create dall'importazione. Il genitore deve essere dello stesso tipo di metrica e deve già esistere oppure essere creato da un'altra riga dello stesso file, in qualsiasi ordine. Un genitore che non corrisponde a nulla non viene creato: quella metrica viene segnalata come <em>metrica con parent non valido</em>.</p>
 <h2 id="slide-ripetute">Slide ripetute</h2>
-<p>Se hai campi nelle slide ripetute, devono essere denominati diversamente. Ogni campo nella slide ripetuta deve essere chiamato \&lt;field_name&gt;__X dove X è il numero di ripetizione, da 0 (corrispondente a una ripetizione) a N-1 dove N è il numero totale di ripetizioni della slide in quel form. <br />
+<p>Se hai un campo in slide ripetute, deve essere denominato diversamente. Ogni campo nella slide ripetuta deve essere chiamato \&lt;field_name&gt;__X dove X è il numero di ripetizione, da 0 (corrispondente a una ripetizione) a N-1 dove N è il numero totale di ripetizioni della slide in quel form. <br />
 Ad esempio, supponi di avere solo 1 ripetizione della slide ripetuta e di voler aggiungere entrambi i campi "Indicator description" e "Value reached". Dovresti aggiungere queste due colonne al tuo file di importazione:</p>
 <table>
 <thead>
@@ -2175,7 +2213,11 @@ Ad esempio, supponi di avere solo 1 ripetizione della slide ripetuta e di voler 
 </tbody>
 </table>
 <h2 id="errori">Errori</h2>
-<p>Controlla gli ID nel tuo file prima dell'importazione. Se una colonna fa riferimento a un'entità tramite il suo ID (una metrica o un utente) e in Dino non esiste nessuna entità con quell'ID, i form importati non potranno essere sincronizzati con il server.</p>
+<ul>
+<li><strong>ID sconosciuti</strong> – se una colonna fa riferimento a un utente o a una metrica tramite un ID che non esiste in Dino, l'intero file non viene importato (<em>File non importato!</em>), e il risultato elenca gli <em>Id utente non validi</em> o gli <em>Id metrica non validi</em>. Controlla gli ID nel tuo file prima di importare.</li>
+<li><strong>Stato del form sconosciuto</strong> – un <code>form_status_name</code> che non corrisponde a nessuno stato dello schema blocca anch'esso l'importazione (<em>Stati non validi</em>).</li>
+<li><strong>Metriche che non possono essere collegate</strong> – una riga che indica una metrica che Dino non riesce a creare o trovare viene scartata, e il risultato mostra il motivo; le altre righe vengono importate.</li>
+</ul>
 
 
 

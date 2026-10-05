@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visualiza los datos de los formularios en un mapa interactivo con opciones de filtrado.">
+        <meta name="description" content="Visualice los datos de los formularios en un mapa interactivo con opciones de filtrado.">
       
       
       
@@ -727,10 +727,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-aplicar-los-filtros" class="md-nav__link">
+  <a href="#3-usar-filtros-avanzados" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Aplicar los filtros
+        3. Usar filtros avanzados
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-guardar-y-reutilizar-filtros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Guardar y reutilizar filtros
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-exportar-los-resultados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Exportar los resultados
       
     </span>
   </a>
@@ -739,6 +761,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#páginas-relacionadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Páginas relacionadas
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1449,6 +1482,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área de usuario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1521,10 +1581,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-aplicar-los-filtros" class="md-nav__link">
+  <a href="#3-usar-filtros-avanzados" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Aplicar los filtros
+        3. Usar filtros avanzados
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-guardar-y-reutilizar-filtros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Guardar y reutilizar filtros
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-exportar-los-resultados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Exportar los resultados
       
     </span>
   </a>
@@ -1533,6 +1615,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#páginas-relacionadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Páginas relacionadas
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1554,46 +1647,79 @@
 
 
 <h1 id="mapa-de-formularios">Mapa de formularios</h1>
-<p>La página Mapa de formularios muestra los datos de tus formularios en un mapa interactivo, lo que te permite visualizar la información geográficamente. Puedes filtrar los datos por fecha y por campos de datos específicos para centrarte en la información que necesitas.</p>
-<p>Esto solo está disponible si la métrica de ubicación está activa en este form schema. Además, para cada ubicación se debe rellenar el atributo de coordenadas.</p>
+<p>La página Mapa de formularios muestra los datos de sus formularios en un mapa interactivo, lo que le permite visualizar la información geográficamente. Puede filtrar los datos por fecha y por campos de datos específicos para centrarse en la información que necesita.</p>
+<p>Esta página solo está disponible si la métrica de posiciones está activa en el form schema. Además, cada posición debe tener sus coordenadas rellenadas.</p>
 <p><img alt="Vista principal de la página Mapa de formularios" src="../../imgs/forms/forms-map.png" /></p>
 <p>La página consta de dos áreas principales:</p>
 <ul>
-<li><strong>El mapa</strong>: un mapa interactivo que muestra marcadores agrupados para cada dato. Cada marcador se coloca según los datos de ubicación del dato.</li>
-<li><strong>El panel de filtros</strong>: un conjunto de controles en el lateral para filtrar los datos mostrados en el mapa.</li>
+<li><strong>El Mapa</strong>: Un mapa interactivo que muestra marcadores agrupados para cada dato. Cada marcador se coloca según los datos de la posición en el dato.</li>
+<li><strong>La barra de Filtros</strong>: Un conjunto de controles en la parte superior de la página para filtrar los datos que se muestran en el mapa.</li>
 </ul>
+<p>En la parte superior de la página, un contador muestra cuántos marcadores se están representando actualmente y cuántos elementos han encontrado los filtros activos.</p>
+<div class="admonition tip">
+<p class="admonition-title">Cambiar de visualización</p>
+<p>Utilice los botones <strong>Datos</strong>, <strong>Mapa</strong> e <strong>IA</strong> de la barra de herramientas para moverse entre la tabla, el mapa y Datachat para el mismo form schema. El botón <strong>Mapa</strong> solo está habilitado cuando la métrica de posiciones está activa.</p>
+</div>
 <h2 id="ver-los-detalles-de-los-datos">Ver los detalles de los datos</h2>
-<p>Cada marcador del mapa representa uno o varios datos en una ubicación específica.</p>
+<p>Cada marcador del mapa representa uno o varios datos en una posición específica.</p>
 <ol>
-<li>Haz clic en un marcador para abrir su ventana emergente.</li>
-<li>La ventana emergente muestra el nombre de la ubicación y los valores de los campos de datos clave de ese dato.</li>
+<li>Haga clic en un marcador para abrir su ventana emergente.</li>
+<li>La ventana emergente muestra el nombre de la posición seguido de los valores de las columnas de datos que ha mostrado para este form.</li>
+<li>Cuando varios datos comparten la misma posición, los marcadores se agrupan en un clúster. Haga clic en el clúster para ampliar hasta que aparezcan los marcadores individuales.</li>
 </ol>
 <h2 id="filtrar-los-datos-en-el-mapa">Filtrar los datos en el mapa</h2>
-<p>Utiliza los filtros para acotar qué datos aparecen en el mapa.</p>
+<p>Utilice los filtros para acotar qué datos aparecen en el mapa. La mayoría están en el cuadro de diálogo <strong>Filtros</strong>: haga clic en <strong>Filtros</strong> en la barra de herramientas para abrirlo, establezca los filtros en la pestaña <strong>Simple</strong> y, a continuación, haga clic en <strong>Buscar</strong> para aplicarlos.</p>
 <h3 id="1-filtrar-por-rango-de-fechas">1. Filtrar por rango de fechas</h3>
 <ol>
-<li>En el campo <strong>Rango de fechas</strong>, haz clic en el icono del calendario.</li>
-<li>Selecciona una fecha de inicio y una fecha de fin en el selector de fechas.</li>
+<li>En el cuadro de diálogo <strong>Filtros</strong>, haga clic en el icono del calendario del campo <strong>Desde fecha</strong>.</li>
+<li>Seleccione una fecha de inicio.</li>
+<li>Repita el proceso para el campo <strong>Hasta la fecha</strong> para establecer el final del rango.</li>
 </ol>
 <h3 id="2-filtrar-por-campos-de-datos">2. Filtrar por campos de datos</h3>
-<p>Debajo del selector de fechas verás varios campos de texto. Cada campo corresponde a una columna de datos de tu formulario (p. ej., "Punto de atención", "Nacionalidad").</p>
+<p>Debajo de los campos de fecha, la pestaña <strong>Simple</strong> muestra varios campos de entrada. Cada campo corresponde a una columna de datos de su form (por ejemplo, "Punto de atención" o "Nacionalidad"), y también puede incluir campos de estado, usuario, posición, área, caso, organización o proyecto.</p>
 <ol>
-<li>Haz clic en cualquier campo (p. ej., "Nacionalidad").</li>
-<li>Empieza a escribir. Aparecerá una lista desplegable con los valores coincidentes de tus datos existentes.</li>
-<li>Puedes seleccionar un valor de la lista o escribir tu propio texto para filtrar los datos que contengan ese texto.</li>
-<li>Para borrar un filtro, haz clic en el icono <strong>X</strong> que aparece dentro del campo.</li>
+<li>Haga clic en cualquier campo (por ejemplo, "Nacionalidad").</li>
+<li>Empiece a escribir. Una lista desplegable muestra los valores coincidentes de sus datos existentes.</li>
+<li>Seleccione un valor de la lista, o escriba su propio texto para filtrar los datos que contengan ese texto.</li>
+<li>Para borrar un filtro, haga clic en el icono <strong>X</strong> que aparece dentro del campo.</li>
 </ol>
+<p>Para los campos que aceptan más de un valor, puede marcar varias opciones en la lista desplegable antes de cerrarla.</p>
 <div class="admonition tip">
-<p class="admonition-title">Uso de varios filtros</p>
-<p>Puedes aplicar filtros en varios campos a la vez. El mapa solo mostrará los datos que cumplan <strong>todos</strong> los criterios de filtro activos.</p>
+<p class="admonition-title">Usar varios filtros</p>
+<p>Puede aplicar filtros en varios campos al mismo tiempo. El mapa solo muestra los datos que coinciden con <strong>todos</strong> los criterios de filtro activos.</p>
 </div>
-<h3 id="3-aplicar-los-filtros">3. Aplicar los filtros</h3>
-<p>Después de establecer el rango de fechas y los filtros de campos, haz clic en el botón <strong>Aplicar filtros</strong>.</p>
-<p>El mapa se actualizará y mostrará solo los marcadores de los datos que cumplan todos los criterios seleccionados. La vista del mapa también hará zoom automáticamente para ajustarse a los marcadores filtrados.</p>
+<h3 id="3-usar-filtros-avanzados">3. Usar filtros avanzados</h3>
+<ol>
+<li>Haga clic en <strong>Filtros</strong> en la barra de herramientas para abrir el cuadro de diálogo de filtros.</li>
+<li>Cambie a la pestaña <strong>Avanzado</strong> para crear condiciones precisas, eligiendo el campo, el operador y el valor, y luego haga clic en <strong>Crear Filtro</strong>.</li>
+<li>Utilice <strong>Todos</strong> o <strong>Cualquier</strong> para decidir si los datos deben coincidir con todas las condiciones o con al menos una.</li>
+<li>Haga clic en <strong>Buscar</strong> para aplicar sus condiciones, o en <strong>Restablecer los filtros</strong> para empezar de nuevo.</li>
+</ol>
+<p>Los filtros aplicados aparecen como chips debajo de la barra de herramientas. Haga clic en el icono <strong>cancelar</strong> de un chip para eliminar ese filtro concreto.</p>
+<h3 id="4-guardar-y-reutilizar-filtros">4. Guardar y reutilizar filtros</h3>
+<p>Si filtra este form con frecuencia, puede guardar su configuración como ajuste preestablecido desde el cuadro de diálogo <strong>Filtros</strong>. Los controles de ajustes preestablecidos no se muestran en pantallas pequeñas.</p>
+<ol>
+<li>Escriba un nombre en el campo <strong>Elija un nombre preestablecido</strong>.</li>
+<li>Haga clic en <strong>Guardar</strong> para almacenar la selección actual de filtros.</li>
+<li>Más adelante, elija el ajuste preestablecido de la lista y haga clic en <strong>Aplicar</strong> para restaurarlo.</li>
+</ol>
+<h3 id="5-exportar-los-resultados">5. Exportar los resultados</h3>
+<ol>
+<li>Haga clic en <strong>Exportar</strong> en la barra de herramientas.</li>
+<li>Elija el formato de exportación y las columnas que desea incluir.</li>
+<li>Confirme para descargar un archivo que contenga los datos filtrados actualmente.</li>
+</ol>
 <div class="admonition warning">
-<p class="admonition-title">Se requieren datos de ubicación</p>
-<p>Los datos solo pueden aparecer en el mapa si tienen coordenadas geográficas válidas asociadas a su ubicación. Los datos sin esta información no se mostrarán.</p>
+<p class="admonition-title">Se necesitan datos de posición</p>
+<p>Los datos solo pueden aparecer en el mapa si tienen coordenadas geográficas válidas asociadas a su posición. Los datos que no tengan estos datos no se muestran, y no se cuentan entre los marcadores representados.</p>
 </div>
+<h2 id="páginas-relacionadas">Páginas relacionadas</h2>
+<ul>
+<li><a href="../">Forms</a></li>
+<li><a href="../edit-form-schema/">Editar form schema</a></li>
+<li><a href="../../metrics/locations/">Posiciones</a></li>
+<li><a href="../import/">Importar datos</a></li>
+</ul>
 
 
 

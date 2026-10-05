@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Crea e modifica i form schema — imposta nome, icona, stati, metriche, visibilità e definisci le relazioni.">
+        <meta name="description" content="Costruisci e modifica form schema — imposta nome, icona, visibilità, stati, metriche, relazioni e la struttura del form stesso.">
       
       
       
@@ -41,7 +41,7 @@
     
     
       
-        <title>Modifica form schema - Documentazione Dinoapp</title>
+        <title>Modifica Form Schema - Documentazione Dinoapp</title>
       
     
     
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Modifica form schema
+              Modifica Form Schema
             
           </span>
         </div>
@@ -598,10 +598,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#attributi-del-form" class="md-nav__link">
+  <a href="#scheda-impostazioni" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Attributi del form
+        Scheda Impostazioni
       
     </span>
   </a>
@@ -609,10 +609,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gestire-gli-stati-del-form" class="md-nav__link">
+  <a href="#scheda-metriche" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Gestire gli stati del form
+        Scheda Metriche
       
     </span>
   </a>
@@ -620,10 +620,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#definire-le-relazioni" class="md-nav__link">
+  <a href="#scheda-stato" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Definire le relazioni
+        Scheda Stato
       
     </span>
   </a>
@@ -631,10 +631,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#salvare-e-importare" class="md-nav__link">
+  <a href="#scheda-costruisci" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Salvare e importare
+        Scheda Costruisci
       
     </span>
   </a>
@@ -642,10 +642,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#il-builder-del-form" class="md-nav__link">
+  <a href="#scheda-relazioni" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Il builder del form
+        Scheda Relazioni
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#salvataggio-e-importazione" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Salvataggio e importazione
       
     </span>
   </a>
@@ -1443,6 +1454,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Area utente
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1470,10 +1508,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#attributi-del-form" class="md-nav__link">
+  <a href="#scheda-impostazioni" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Attributi del form
+        Scheda Impostazioni
       
     </span>
   </a>
@@ -1481,10 +1519,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gestire-gli-stati-del-form" class="md-nav__link">
+  <a href="#scheda-metriche" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Gestire gli stati del form
+        Scheda Metriche
       
     </span>
   </a>
@@ -1492,10 +1530,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#definire-le-relazioni" class="md-nav__link">
+  <a href="#scheda-stato" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Definire le relazioni
+        Scheda Stato
       
     </span>
   </a>
@@ -1503,10 +1541,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#salvare-e-importare" class="md-nav__link">
+  <a href="#scheda-costruisci" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Salvare e importare
+        Scheda Costruisci
       
     </span>
   </a>
@@ -1514,10 +1552,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#il-builder-del-form" class="md-nav__link">
+  <a href="#scheda-relazioni" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Il builder del form
+        Scheda Relazioni
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#salvataggio-e-importazione" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Salvataggio e importazione
       
     </span>
   </a>
@@ -1541,17 +1590,18 @@
 
 
 
-<h1 id="modifica-form-schema">Modifica form schema</h1>
-<p>La pagina Modifica form schema ti consente di creare un nuovo form schema o di modificarne uno esistente. Qui definisci gli attributi di base del form, ne gestisci stati e metriche, controlli la visibilità e colleghi lo schema ad altri form tramite le relazioni.</p>
+<h1 id="modifica-form-schema">Modifica Form Schema</h1>
+<p>La pagina Modifica Form Schema ti permette di creare un nuovo form schema o modificarne uno esistente. Qui definisci gli attributi generali del form, gestisci i suoi stati e le sue metriche, controlli la visibilità, lo colleghi ad altri form schema e costruisci le domande effettive a cui i tuoi utenti risponderanno.</p>
 <p>Puoi raggiungere questa pagina:</p>
 <ul>
-<li>Cliccando su <strong>Crea</strong> nella <a href="../">panoramica dei form</a> per creare un nuovo schema.</li>
-<li>Selezionando <strong>Modifica</strong> sulla scheda di uno schema esistente o dalla sua visualizzazione di dettaglio.</li>
+<li>Cliccando il pulsante <strong>+</strong> (<em>Add New Forms Schema</em>) in basso a destra nella <a href="../">panoramica dei form</a> per costruire un nuovo schema.</li>
+<li>Selezionando <strong>Modifica</strong> sulla card di uno schema esistente o dalla sua visualizzazione di dettaglio.</li>
 </ul>
-<p>Il percorso di navigazione in alto mostra la tua posizione attuale (ad es. <strong>Form &gt; My Survey &gt; Modifica</strong>).</p>
-<p><img alt="Main view of the Edit Form Schema page" src="../../imgs/forms/edit-form-schema.png" /></p>
-<h2 id="attributi-del-form">Attributi del form</h2>
-<p>Compila o modifica i seguenti campi:</p>
+<p>Il percorso di navigazione in alto mostra la tua posizione attuale (ad esempio, <strong>Forms / Schema / My Survey / Modifica</strong>).</p>
+<p><img alt="Vista principale della pagina Modifica Form Schema" src="../../imgs/forms/edit-form-schema.png" /></p>
+<p>L'editor è organizzato in schede — <strong>Impostazioni</strong>, <strong>Metriche</strong>, <strong>Stato</strong>, <strong>Costruisci</strong> e <strong>Relazioni</strong>. I pulsanti <strong>Salva</strong> e <strong>Importa XLSForm</strong> restano visibili sulla riga delle schede, così puoi salvare il tuo lavoro da qualsiasi scheda.</p>
+<h2 id="scheda-impostazioni">Scheda Impostazioni</h2>
+<p>La scheda <strong>Impostazioni</strong> contiene i metadati e la configurazione generale del questionario.</p>
 <table>
 <thead>
 <tr>
@@ -1561,72 +1611,78 @@
 </thead>
 <tbody>
 <tr>
-<td><strong>Nome del form</strong></td>
-<td>Un identificatore di sistema univoco (ad es. <code>survey_2025</code>). Dino avvisa se il nome è già utilizzato.</td>
+<td><strong>Nome del Form</strong></td>
+<td>Un identificatore di sistema univoco (ad esempio, <code>survey_2025</code>). Dino ti avvisa se il nome è già in uso.</td>
 </tr>
 <tr>
-<td><strong>Etichetta del form</strong></td>
-<td>Il nome leggibile mostrato negli elenchi e nei report.</td>
+<td><strong>Etichetta del Form</strong></td>
+<td>Il nome leggibile visualizzato negli elenchi e nei report.</td>
 </tr>
 <tr>
 <td><strong>Set di icone</strong></td>
-<td>Scegli <strong>Default</strong> (icone material) oppure <strong>Humanitarian</strong> (icone SVG personalizzate).</td>
+<td>Scegli <strong>Predefinito</strong> (icone material) o <strong>Humanitarian</strong> (icone SVG personalizzate).</td>
 </tr>
 <tr>
-<td><strong>Identificatore dell'icona</strong></td>
-<td>Scegli un'icona dall'elenco con completamento automatico. L'anteprima si aggiorna in tempo reale.</td>
-</tr>
-<tr>
-<td><strong>Stati del form</strong></td>
-<td>Una o più etichette che descrivono lo stato di un dato (ad es. Bozza, Approvato, Rifiutato). Seleziona stati esistenti oppure <strong>Crea nuovo stato</strong> per aggiungerne uno al momento. È possibile associare un livello a ciascuno stato, per stabilire un ordine tra gli stati. Quando viene creato un nuovo dato del form, il dato viene creato con lo stato corrispondente al livello più basso.</td>
-</tr>
-<tr>
-<td><strong>Metriche del form</strong></td>
-<td>Le metriche da raccogliere per ogni dato. Selezionane una o più dall'elenco.</td>
+<td><strong>Icona del Form</strong></td>
+<td>Scegli un'icona dall'elenco con completamento automatico. L'anteprima accanto al campo si aggiorna in tempo reale.</td>
 </tr>
 <tr>
 <td><strong>Visibilità</strong></td>
-<td><strong>Private</strong> – il form schema può accettare dati solo dagli utenti DINO, purché abbiano il permesso di inviare dati per quello specifico form schema. Se invece un form è impostato su <strong>Public</strong> – chiunque abbia il link può inviare dati. Per maggiori dettagli, consulta la pagina sui <a href="../../public-forms/">form pubblici</a>.</td>
+<td><strong>Privato</strong> — solo gli utenti Dino con il permesso di inviare dati possono inviare dati a questo form schema. <strong>Pubblico</strong> — chiunque abbia il link può inviare dati. Vedi <a href="../../public-forms/">form pubblici</a> per i dettagli.</td>
 </tr>
 <tr>
-<td><strong>Comportamento del set di metriche</strong></td>
-<td><strong>Default</strong> – il valore di ogni metrica può comparire più volte nei dati. <strong>Unique</strong> – il valore di una metrica (ad es. il nome di un distretto) può essere usato una sola volta per form.</td>
-</tr>
-<tr>
-<td><strong>Genera report</strong></td>
-<td>Se impostato su <strong>Sì</strong>, Dino genera automaticamente un report. Questa opzione è nascosta se è già presente un report automatico. Per maggiori dettagli, consulta la sezione sui <a href="../../reports/autoreports/">report automatici</a>.</td>
+<td><strong>Generare report</strong></td>
+<td>Se impostato su <strong>Si</strong>, Dino genera automaticamente un report per il form. Se un report esiste già, questa opzione è bloccata su <strong>Si</strong>; per disattivarla, elimina prima lo schema e i dati del report. Vedi <a href="../../reports/autoreports/">Report automatici</a> per maggiori dettagli.</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition warning">
-<p class="admonition-title">Comportamento Unique del set di metriche</p>
-<p>Usa <strong>Unique</strong> con attenzione — una volta che un valore è stato usato per una metrica, non può essere riutilizzato in un altro dato dello stesso form schema.</p>
+<div class="admonition tip">
+<p class="admonition-title">Vai direttamente alle domande</p>
+<p>Clicca <strong>Vai alla costruzione</strong> in fondo alla scheda Impostazioni per aprire subito la scheda <strong>Costruisci</strong>.</p>
 </div>
-<h2 id="gestire-gli-stati-del-form">Gestire gli stati del form</h2>
+<h2 id="scheda-metriche">Scheda Metriche</h2>
+<p>Nella scheda <strong>Metriche</strong> scegli quali metriche si applicano a questo questionario e come si comportano.</p>
+<ul>
+<li><strong>Metriche dei Form</strong> — le metriche da raccogliere per ogni dato. Selezionane una o più dall'elenco.</li>
+<li><strong>Modalità Set di Metriche</strong> — <strong>Predefinito</strong> consente a ciascun valore di metrica di comparire più volte nei dati. <strong>Unico</strong> permette a un valore di metrica (ad esempio, il nome di un distretto) di essere utilizzato una sola volta per form.</li>
+<li><strong>Metriche da includere nel form</strong> — seleziona le metriche i cui dati devono essere inclusi nel form.</li>
+<li><strong>Metriche incluse come opzioni di scelta</strong> — aggiungi una riga per ogni metrica che vuoi esporre come origine di scelta. Per ogni riga, scegli la metrica, elenca facoltativamente attributi aggiuntivi da trasferire nella scelta e aggiungi una condizione di filtro se vuoi restringere le opzioni disponibili. La nuova origine di scelta è denominata <code>$metricName_metric_choice</code>.</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Modalità Set di Metriche Unico</p>
+<p>Usa <strong>Unico</strong> con attenzione — una volta che un valore è utilizzato per una metrica, non può essere riutilizzato in un altro dato dello stesso form schema.</p>
+</div>
+<h2 id="scheda-stato">Scheda Stato</h2>
+<p>Nella scheda <strong>Stato</strong> definisci gli stati che un dato di questo questionario può avere (ad esempio Bozza, Approvato, Rifiutato).</p>
 <ol>
-<li>Clicca sul campo <strong>Stati del form</strong> per espandere l'elenco.</li>
-<li>Per aggiungere uno stato esistente, seleziona la relativa casella di controllo.</li>
-<li>Per creare un nuovo stato, clicca su <strong>Crea nuovo stato</strong>. Si apre una finestra di dialogo in cui puoi inserire un'etichetta, scegliere un colore e salvare.</li>
-<li>Per modificare uno stato esistente, clicca sull'icona <strong>modifica</strong> (matita) accanto ad esso.</li>
+<li>Clicca il campo <strong>Stati del Form</strong> per espandere l'elenco.</li>
+<li>Per aggiungere uno stato esistente, selezionalo nell'elenco.</li>
+<li>Per creare un nuovo stato, clicca <strong>Crea nuovo stato</strong>. Si apre una finestra di dialogo dove puoi inserire un'etichetta, scegliere un colore e salvare.</li>
+<li>Per modificare uno stato esistente, clicca l'icona <strong>Modifica</strong> (matita) accanto ad esso.</li>
 <li>Clicca fuori dal menu a tendina per chiuderlo.</li>
 </ol>
-<h2 id="definire-le-relazioni">Definire le relazioni</h2>
-<p>Le relazioni ti permettono di collegare i campi tra form schema diversi (ad es. un sotto-form che dipende da una scelta effettuata nel form principale).</p>
+<p>Puoi anche associare un livello a ciascuno stato per stabilire un ordine. Quando vengono creati nuovi dati del form, ricevono lo stato con il livello più basso.</p>
+<h2 id="scheda-costruisci">Scheda Costruisci</h2>
+<p>La scheda <strong>Costruisci</strong> contiene il costruttore di form, dove puoi trascinare, rilasciare e configurare singoli campi, slide e sezioni. Le modifiche si riflettono immediatamente nell'anteprima. Usa questa scheda per definire le domande a cui gli utenti risponderanno effettivamente.</p>
+<h2 id="scheda-relazioni">Scheda Relazioni</h2>
+<p>Le relazioni richiamano valori di campo o scelte da altri form schema in questo — ad esempio, un sotto-form che dipende da una scelta effettuata nel form principale.</p>
 <ol>
-<li>Clicca sul pulsante <strong>Relazioni</strong>.</li>
-<li>Nella finestra di dialogo puoi aggiungere, modificare o rimuovere le connessioni tra gli schemi.</li>
+<li>Apri la scheda <strong>Relazioni</strong>.</li>
+<li>Clicca <strong>Aggiungi una relazione con altri form</strong>.</li>
+<li>Nella nuova riga, scegli il <strong>Form Schema</strong> da cui richiamare i dati, poi seleziona i <strong>Campi</strong> da portare in questo form.</li>
+<li>Facoltativamente scegli uno o più valori di <strong>Metrica</strong> per filtrare la relazione.</li>
+<li>Per usare un singolo campo come opzione di scelta, attiva <strong>Campo come opzione</strong>, poi scegli il <strong>Campo etichetta</strong> e, se necessario, un <strong>Campi addizionali</strong>.</li>
 </ol>
-<p><img alt="Form relationships (dependencies) editor dialog" src="../../imgs/forms/edit-form-schema-relationships.png" /></p>
+<p><img alt="Scheda Relazioni dell'editor del form schema" src="../../imgs/forms/edit-form-schema-relationships.png" /></p>
 <div class="admonition tip">
-<p class="admonition-title">Le relazioni sono disponibili solo quando si modifica uno schema esistente, non durante la creazione iniziale.</p>
+<p class="admonition-title">Salva prima</p>
+<p>La scheda Relazioni e le sezioni dei dati delle metriche richiedono un form schema salvato. Mentre stai ancora creando uno schema, restano bloccate con il promemoria <em>Salva prima il form per aggiungere relazioni</em>.</p>
 </div>
-<h2 id="salvare-e-importare">Salvare e importare</h2>
+<h2 id="salvataggio-e-importazione">Salvataggio e importazione</h2>
 <ul>
-<li><strong>Salva</strong> – memorizza tutte le modifiche. Il pulsante è disabilitato se il form non è valido o se il salvataggio è ancora in corso.</li>
-<li><strong>Importa</strong> – apre una finestra di selezione dei file per caricare un form schema da un file JSON o CSV. Usala per riutilizzare la struttura di uno schema proveniente da un altro progetto.</li>
+<li><strong>Salva</strong> — memorizza tutte le modifiche. Il pulsante è disabilitato mentre il form non è valido o è già in fase di salvataggio.</li>
+<li><strong>Importa XLSForm</strong> — apre una finestra di dialogo dove puoi trascinare un file XLSForm o cliccare <strong>Seleziona un file</strong> (<code>.xls</code> o <code>.xlsx</code>; il file deve contenere i fogli <em>survey</em>, <em>choices</em> e <em>settings</em>), poi clicca <strong>Applica</strong> per caricarlo nell'editor. Usalo per riutilizzare la struttura di uno schema da un altro progetto. Nulla viene memorizzato finché non clicchi <strong>Salva</strong>.</li>
 </ul>
-<h2 id="il-builder-del-form">Il builder del form</h2>
-<p>Sotto gli attributi, l'area <strong>Builder del form</strong> ti permette di trascinare, rilasciare e configurare i singoli campi (domande, sezioni, ecc.). Le modifiche si riflettono immediatamente nell'anteprima a destra del builder.</p>
 
 
 

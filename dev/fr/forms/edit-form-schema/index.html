@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Créer et modifier des schémas de formulaire — définir le nom, l’icône, les statuts, les métriques, la visibilité et définir les relations.">
+        <meta name="description" content="Construisez et modifiez des schémas de formulaire — définissez le nom, l'icône, la visibilité, les statuts, les métriques, les relations et la structure du formulaire elle-même.">
       
       
       
@@ -598,10 +598,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#attributs-du-formulaire" class="md-nav__link">
+  <a href="#onglet-paramètres" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Attributs du formulaire
+        Onglet Paramètres
       
     </span>
   </a>
@@ -609,10 +609,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gestion-des-statuts-du-formulaire" class="md-nav__link">
+  <a href="#onglet-métriques" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Gestion des statuts du formulaire
+        Onglet Métriques
       
     </span>
   </a>
@@ -620,10 +620,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#définition-des-relations" class="md-nav__link">
+  <a href="#onglet-statut" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Définition des relations
+        Onglet Statut
       
     </span>
   </a>
@@ -631,10 +631,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#enregistrement-et-importation" class="md-nav__link">
+  <a href="#onglet-construire" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Enregistrement et importation
+        Onglet Construire
       
     </span>
   </a>
@@ -642,10 +642,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#le-constructeur-de-formulaire" class="md-nav__link">
+  <a href="#onglet-relations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Le constructeur de formulaire
+        Onglet Relations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enregistrer-et-importer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enregistrer et importer
       
     </span>
   </a>
@@ -1443,6 +1454,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Espace utilisateur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1470,10 +1508,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#attributs-du-formulaire" class="md-nav__link">
+  <a href="#onglet-paramètres" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Attributs du formulaire
+        Onglet Paramètres
       
     </span>
   </a>
@@ -1481,10 +1519,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gestion-des-statuts-du-formulaire" class="md-nav__link">
+  <a href="#onglet-métriques" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Gestion des statuts du formulaire
+        Onglet Métriques
       
     </span>
   </a>
@@ -1492,10 +1530,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#définition-des-relations" class="md-nav__link">
+  <a href="#onglet-statut" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Définition des relations
+        Onglet Statut
       
     </span>
   </a>
@@ -1503,10 +1541,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#enregistrement-et-importation" class="md-nav__link">
+  <a href="#onglet-construire" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Enregistrement et importation
+        Onglet Construire
       
     </span>
   </a>
@@ -1514,10 +1552,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#le-constructeur-de-formulaire" class="md-nav__link">
+  <a href="#onglet-relations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Le constructeur de formulaire
+        Onglet Relations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#enregistrer-et-importer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enregistrer et importer
       
     </span>
   </a>
@@ -1542,16 +1591,17 @@
 
 
 <h1 id="modifier-le-schéma-de-formulaire">Modifier le schéma de formulaire</h1>
-<p>La page Modifier le schéma de formulaire vous permet de créer un nouveau schéma de formulaire ou de modifier un schéma existant. Vous y définissez les attributs de base du formulaire, gérez ses statuts et ses métriques, contrôlez la visibilité et liez le schéma à d’autres formulaires via des relations.</p>
+<p>La page Modifier le schéma de formulaire vous permet de créer un nouveau schéma de formulaire ou de modifier un schéma existant. Vous y définissez les attributs généraux du formulaire, gérez ses statuts et ses métriques, contrôlez sa visibilité, le reliez à d'autres schémas de formulaire et construisez les questions auxquelles vos utilisateurs répondront.</p>
 <p>Vous pouvez accéder à cette page en :</p>
 <ul>
-<li>Cliquant sur <strong>Créer</strong> dans la <a href="../">Vue d’ensemble des formulaires</a> pour créer un nouveau schéma.</li>
-<li>Sélectionnant <strong>Modifier</strong> sur la carte d’un schéma existant ou depuis sa vue détaillée.</li>
+<li>Cliquant sur le bouton <strong>+</strong> (<em>Ajouter un nouveau schéma de formulaire</em>) en bas à droite de la <a href="../">vue d'ensemble des formulaires</a> pour construire un nouveau schéma.</li>
+<li>Sélectionnant <strong>Modifier</strong> sur la carte d'un schéma existant ou depuis sa vue détaillée.</li>
 </ul>
-<p>Le fil d’Ariane en haut indique votre position actuelle (par exemple, <strong>Formulaires &gt; Mon enquête &gt; Modifier</strong>).</p>
-<p><img alt="Main view of the Edit Form Schema page" src="../../imgs/forms/edit-form-schema.png" /></p>
-<h2 id="attributs-du-formulaire">Attributs du formulaire</h2>
-<p>Remplissez ou ajustez les champs suivants :</p>
+<p>Le fil d'Ariane en haut indique votre position actuelle (par exemple, <strong>Formulaires / Schéma / Mon enquête / Modifier</strong>).</p>
+<p><img alt="Vue principale de la page Modifier le schéma de formulaire" src="../../imgs/forms/edit-form-schema.png" /></p>
+<p>L'éditeur est organisé en onglets — <strong>Paramètres</strong>, <strong>Métriques</strong>, <strong>Statut</strong>, <strong>Construire</strong> et <strong>Relations</strong>. Les boutons <strong>Enregistrer</strong> et <strong>Importer XLSForm</strong> restent visibles sur la ligne d'onglets, ce qui vous permet d'enregistrer votre travail depuis n'importe quel onglet.</p>
+<h2 id="onglet-paramètres">Onglet Paramètres</h2>
+<p>L'onglet <strong>Paramètres</strong> contient les métadonnées et la configuration générale du questionnaire.</p>
 <table>
 <thead>
 <tr>
@@ -1562,71 +1612,77 @@
 <tbody>
 <tr>
 <td><strong>Nom du formulaire</strong></td>
-<td>Un identifiant système unique (par exemple, <code>survey_2025</code>). Dino avertit si le nom est déjà utilisé.</td>
+<td>Un identifiant système unique (par exemple, <code>survey_2025</code>). Dino vous avertit si le nom est déjà utilisé.</td>
 </tr>
 <tr>
-<td><strong>Libellé du formulaire</strong></td>
-<td>Le nom lisible par l’humain affiché dans les listes et les rapports.</td>
+<td><strong>Étiquette du formulaire</strong></td>
+<td>Le nom lisible par l'utilisateur affiché dans les listes et les rapports.</td>
 </tr>
 <tr>
-<td><strong>Jeu d’icônes</strong></td>
-<td>Choisissez <strong>Par défaut</strong> (icônes Material) ou <strong>Humanitaire</strong> (icônes SVG personnalisées).</td>
+<td><strong>Ensemble d'icônes</strong></td>
+<td>Choisissez <strong>Défaut</strong> (icônes material) ou <strong>Humanitarian</strong> (icônes SVG personnalisées).</td>
 </tr>
 <tr>
-<td><strong>Identifiant de l’icône</strong></td>
-<td>Choisissez une icône dans la liste de saisie semi-automatique. L’aperçu se met à jour en direct.</td>
-</tr>
-<tr>
-<td><strong>Statuts du formulaire</strong></td>
-<td>Une ou plusieurs étiquettes décrivant l’état d’une soumission (par exemple, Brouillon, Approuvé, Rejeté). Sélectionnez des statuts existants ou <strong>Créer un nouveau statut</strong> pour en ajouter un à la volée. Il est possible d’associer un niveau à chaque statut, afin d’établir un ordre entre les statuts. Lorsqu’une nouvelle donnée de formulaire est créée, elle est créée avec le statut correspondant au niveau le plus bas.</td>
-</tr>
-<tr>
-<td><strong>Métriques du formulaire</strong></td>
-<td>Métriques à collecter pour chaque soumission. Sélectionnez-en une ou plusieurs dans la liste.</td>
+<td><strong>Icône de formulaire</strong></td>
+<td>Sélectionnez une icône dans la liste de saisie semi-automatique. L'aperçu à côté du champ se met à jour en direct.</td>
 </tr>
 <tr>
 <td><strong>Visibilité</strong></td>
-<td><strong>Privé</strong> – le schéma de formulaire ne peut accepter de soumissions que de la part des utilisateurs DINO, à condition qu’ils aient l’autorisation de soumettre des données pour ce schéma de formulaire particulier. D’un autre côté, si un formulaire est défini sur <strong>Public</strong>, toute personne disposant du lien peut soumettre. Consultez la page sur les <a href="../../public-forms/">formulaires publics</a> pour plus de détails.</td>
-</tr>
-<tr>
-<td><strong>Comportement du jeu de métriques</strong></td>
-<td><strong>Par défaut</strong> – chaque valeur de métrique peut apparaître plusieurs fois dans les soumissions. <strong>Unique</strong> – une valeur de métrique (par exemple, un nom de district) ne peut être utilisée qu’une seule fois par formulaire.</td>
+<td><strong>Privé</strong> — seuls les utilisateurs Dino autorisés à soumettre peuvent envoyer des données à ce schéma de formulaire. <strong>Public</strong> — toute personne disposant du lien peut soumettre. Voir <a href="../../public-forms/">formulaires publics</a> pour plus de détails.</td>
 </tr>
 <tr>
 <td><strong>Générer un rapport</strong></td>
-<td>Lorsque <strong>Oui</strong>, Dino génère automatiquement un rapport. Cette option est masquée si un rapport automatique est déjà présent. Consultez la section <a href="../../reports/autoreports/">rapport automatique</a> pour plus de détails.</td>
+<td>Lorsque cette option est sur <strong>Oui</strong>, Dino génère automatiquement un rapport pour le formulaire. Si un rapport existe déjà, cette option est verrouillée sur <strong>Oui</strong> ; pour la désactiver, supprimez d'abord le schéma et les données du rapport. Voir <a href="../../reports/autoreports/">Rapports automatiques</a> pour plus de détails.</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition warning">
-<p class="admonition-title">Comportement du jeu de métriques uniques</p>
-<p>Utilisez <strong>Unique</strong> avec précaution — une fois qu’une valeur est utilisée pour une métrique, elle ne peut pas être réutilisée dans une autre soumission du même schéma de formulaire.</p>
+<div class="admonition tip">
+<p class="admonition-title">Accédez directement aux questions</p>
+<p>Cliquez sur <strong>Aller à la construction</strong> en bas de l'onglet Paramètres pour ouvrir immédiatement l'onglet <strong>Construire</strong>.</p>
 </div>
-<h2 id="gestion-des-statuts-du-formulaire">Gestion des statuts du formulaire</h2>
+<h2 id="onglet-métriques">Onglet Métriques</h2>
+<p>Dans l'onglet <strong>Métriques</strong>, vous choisissez quelles métriques s'appliquent à ce questionnaire et comment elles se comportent.</p>
+<ul>
+<li><strong>Formez des métriques</strong> — les métriques à collecter pour chaque donnée. Sélectionnez-en une ou plusieurs dans la liste.</li>
+<li><strong>Comportement du jeu de métriques</strong> — <strong>Défaut</strong> permet à chaque valeur de métrique d'apparaître plusieurs fois dans les données. <strong>Unique</strong> permet à une valeur de métrique (par exemple, le nom d'un district) d'être utilisée une seule fois par formulaire.</li>
+<li><strong>Métriques à inclure dans le formulaire</strong> — sélectionnez les métriques dont les données doivent être incluses dans le formulaire.</li>
+<li><strong>Métriques incluses comme options de choix</strong> — ajoutez une ligne par métrique que vous souhaitez exposer comme origine de choix. Pour chaque ligne, choisissez la métrique, listez éventuellement des attributs supplémentaires à reporter dans le choix, et ajoutez une condition de filtre si vous souhaitez restreindre les options disponibles. La nouvelle origine de choix est nommée <code>$metricName_metric_choice</code>.</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Comportement du jeu de métriques Unique</p>
+<p>Utilisez <strong>Unique</strong> avec prudence — une fois qu'une valeur est utilisée pour une métrique, elle ne peut plus être réutilisée dans une autre donnée du même schéma de formulaire.</p>
+</div>
+<h2 id="onglet-statut">Onglet Statut</h2>
+<p>Dans l'onglet <strong>Statut</strong>, vous définissez les statuts qu'une donnée de ce questionnaire peut avoir (par exemple Brouillon, Approuvé, Rejeté).</p>
 <ol>
-<li>Cliquez sur le champ <strong>Statuts du formulaire</strong> pour développer la liste.</li>
-<li>Pour ajouter un statut existant, cochez sa case.</li>
-<li>Pour créer un nouveau statut, cliquez sur <strong>Créer un nouveau statut</strong>. Une boîte de dialogue s’ouvre, dans laquelle vous pouvez saisir un libellé, choisir une couleur et enregistrer.</li>
-<li>Pour modifier un statut existant, cliquez sur l’icône <strong>modifier</strong> (crayon) à côté de celui-ci.</li>
+<li>Cliquez sur le champ <strong>Statuts des formulaires</strong> pour développer la liste.</li>
+<li>Pour ajouter un statut existant, sélectionnez-le dans la liste.</li>
+<li>Pour créer un nouveau statut, cliquez sur <strong>Créer un nouveau statut</strong>. Une boîte de dialogue s'ouvre où vous pouvez saisir une étiquette, choisir une couleur et enregistrer.</li>
+<li>Pour modifier un statut existant, cliquez sur l'icône <strong>Modifier</strong> (crayon) à côté de celui-ci.</li>
 <li>Cliquez en dehors de la liste déroulante pour la fermer.</li>
 </ol>
-<h2 id="définition-des-relations">Définition des relations</h2>
-<p>Les relations vous permettent de lier des champs entre différents schémas de formulaire (par exemple, un sous-formulaire qui dépend d’un choix dans le formulaire principal).</p>
+<p>Vous pouvez également associer un niveau à chaque statut afin d'établir un ordre. Lorsqu'une nouvelle donnée de formulaire est créée, elle reçoit le statut dont le niveau est le plus bas.</p>
+<h2 id="onglet-construire">Onglet Construire</h2>
+<p>L'onglet <strong>Construire</strong> contient le constructeur de formulaire, où vous faites glisser, déposez et configurez les champs, les diapositives et les sections individuels. Les modifications sont immédiatement reflétées dans l'aperçu. Utilisez cet onglet pour définir les questions auxquelles les utilisateurs répondront réellement.</p>
+<h2 id="onglet-relations">Onglet Relations</h2>
+<p>Les relations extraient des valeurs de champ ou des choix d'autres schémas de formulaire vers celui-ci — par exemple, un sous-formulaire qui dépend d'un choix effectué dans le formulaire principal.</p>
 <ol>
-<li>Cliquez sur le bouton <strong>Relations</strong>.</li>
-<li>Dans la boîte de dialogue, ajoutez, modifiez ou supprimez des connexions entre les schémas.</li>
+<li>Ouvrez l'onglet <strong>Relations</strong>.</li>
+<li>Cliquez sur <strong>Ajouter une relation avec d'autres formulaires</strong>.</li>
+<li>Dans la nouvelle ligne, choisissez le <strong>Formulaires</strong> à partir duquel extraire, puis sélectionnez les <strong>Champs</strong> à importer dans ce formulaire.</li>
+<li>Choisissez éventuellement une ou plusieurs valeurs de <strong>Métrique</strong> pour filtrer la relation.</li>
+<li>Pour utiliser un seul champ comme option de choix, activez <strong>Champ comme option</strong>, puis choisissez le <strong>Champ libellé</strong> et, si nécessaire, un <strong>Champ supplémentaire</strong>.</li>
 </ol>
-<p><img alt="Form relationships (dependencies) editor dialog" src="../../imgs/forms/edit-form-schema-relationships.png" /></p>
+<p><img alt="Onglet Relations de l'éditeur de schéma de formulaire" src="../../imgs/forms/edit-form-schema-relationships.png" /></p>
 <div class="admonition tip">
-<p class="admonition-title">Les relations ne sont disponibles que lors de la modification d’un schéma existant, et non lors de la création initiale.</p>
+<p class="admonition-title">Enregistrez d'abord</p>
+<p>L'onglet Relations et les sections de données de métriques nécessitent un schéma de formulaire enregistré. Tant que vous créez encore un schéma, ils restent verrouillés avec le rappel <em>Enregistrez d'abord le formulaire pour ajouter des relations</em>.</p>
 </div>
-<h2 id="enregistrement-et-importation">Enregistrement et importation</h2>
+<h2 id="enregistrer-et-importer">Enregistrer et importer</h2>
 <ul>
-<li><strong>Enregistrer</strong> – stocke toutes les modifications. Le bouton est désactivé si le formulaire est invalide ou en cours d’enregistrement.</li>
-<li><strong>Importer</strong> – ouvre un sélecteur de fichier pour charger un schéma de formulaire à partir d’un fichier JSON ou CSV. Utilisez cette option pour réutiliser une structure de schéma d’un autre projet.</li>
+<li><strong>Enregistrer</strong> — conserve toutes les modifications. Le bouton est désactivé tant que le formulaire est invalide ou en cours d'enregistrement.</li>
+<li><strong>Importer XLSForm</strong> — ouvre une boîte de dialogue où vous faites glisser un fichier XLSForm ou cliquez sur <strong>Choisir un fichier</strong> (<code>.xls</code> ou <code>.xlsx</code> ; le fichier doit contenir les feuilles <em>survey</em>, <em>choices</em> et <em>settings</em>), puis cliquez sur <strong>Appliquer</strong> pour le charger dans l'éditeur. Utilisez cette option pour réutiliser la structure d'un schéma provenant d'un autre projet. Rien n'est stocké tant que vous n'avez pas cliqué sur <strong>Enregistrer</strong>.</li>
 </ul>
-<h2 id="le-constructeur-de-formulaire">Le constructeur de formulaire</h2>
-<p>Sous les attributs, la zone <strong>Constructeur de formulaire</strong> vous permet de faire glisser, déposer et configurer des champs individuels (questions, sections, etc.). Les modifications sont immédiatement reflétées dans l’aperçu à droite du constructeur.</p>
 
 
 

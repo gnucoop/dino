@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Gestiona esquemas de formularios y recopila envíos de datos estructurados en Dino.">
+        <meta name="description" content="Gestiona esquemas de formulario y recopila datos estructurados en Dino.">
       
       
       
@@ -570,15 +570,26 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#trabajar-con-envíos" class="md-nav__link">
+  <a href="#crear-un-esquema-de-formulario" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Trabajar con envíos
+        Crear un esquema de formulario
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Trabajar con envíos">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trabajar-con-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trabajar con datos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Trabajar con datos">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -604,10 +615,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#crear-un-nuevo-envío" class="md-nav__link">
+  <a href="#crear-un-nuevo-dato" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Crear un nuevo envío
+        Crear un nuevo dato
       
     </span>
   </a>
@@ -1460,6 +1471,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área de usuario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1487,15 +1525,26 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#trabajar-con-envíos" class="md-nav__link">
+  <a href="#crear-un-esquema-de-formulario" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Trabajar con envíos
+        Crear un esquema de formulario
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Trabajar con envíos">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trabajar-con-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trabajar con datos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Trabajar con datos">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1521,10 +1570,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#crear-un-nuevo-envío" class="md-nav__link">
+  <a href="#crear-un-nuevo-dato" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Crear un nuevo envío
+        Crear un nuevo dato
       
     </span>
   </a>
@@ -1576,69 +1625,94 @@
 
 
 <h1 id="formularios">Formularios</h1>
-<p>La página <strong>Formularios</strong> es tu punto de partida para la recopilación de datos estructurados en Dino. Desde aquí puedes explorar, crear y gestionar esquemas de formularios, y luego ver y trabajar con los envíos recopilados a través de cada formulario.</p>
+<p>La página <strong>Formularios</strong> es tu punto de partida para la recopilación de datos estructurados en Dino. Desde aquí puedes explorar, crear y gestionar esquemas de formulario, y luego ver y trabajar con los datos recopilados a través de cada formulario.</p>
 <p><img alt="Vista principal de la página Formularios" src="../imgs/forms/index.png" /></p>
-<p>La vista principal muestra una <strong>cuadrícula de tarjetas de esquemas de formularios</strong>. Cada tarjeta muestra la etiqueta y el ícono del formulario. Al pasar el cursor sobre una tarjeta, aparecen botones de acción:</p>
+<p>La vista principal muestra una <strong>cuadrícula de tarjetas de esquemas de formulario</strong>. Cada tarjeta muestra la etiqueta y el icono del formulario. Una tarjeta marcada con un icono de huella dactilar es única: solo puede existir un dato con ese conjunto exacto de métricas. Al pasar el cursor sobre una tarjeta, aparecen botones de acción:</p>
 <ul>
-<li><strong>Editar esquema</strong>: modifica la estructura del formulario (campos, validación, métricas).</li>
-<li><strong>Eliminar esquema</strong>: elimina el esquema de formulario (y todos sus envíos).</li>
-<li><strong>Compartir URL</strong>: obtén un enlace público para permitir envíos externos.</li>
-<li><strong>Ver mapa</strong>: abre la vista de mapa para los envíos con datos de ubicación.</li>
-<li><strong>Chatear con tus datos</strong>: usa la función <a href="datachat/">DataChat</a> para hacer preguntas sobre los envíos en lenguaje natural.</li>
+<li><strong>Editar esquema de formulario</strong> – Modifica la estructura del formulario (campos, validación, métricas).</li>
+<li><strong>Borrar esquema de formulario</strong> – Elimina el esquema. Dino se niega si el esquema todavía tiene datos o si un report lo utiliza, y pide confirmación si otros formularios o grupos de usuarios hacen referencia a él.</li>
+<li><strong>Compartir url pública</strong> – Obtén un enlace público que permite recibir datos externos.</li>
+<li><strong>Ver mapa</strong> – Abre la vista de mapa para los datos con información de posiciones.</li>
+<li><strong>Chatea con tus datos</strong> – Haz preguntas sobre tus datos en lenguaje natural usando <a href="datachat/">DataChat</a>.</li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Las acciones disponibles en una tarjeta dependen de tus permisos. Es posible que no veas todos los botones.</p>
 </div>
-<p>Para crear un nuevo esquema de formulario, haz clic en el botón flotante <strong>+</strong> en la esquina inferior derecha. Se te llevará a la página <a href="edit-form-schema/">Editar esquema de formulario</a> para diseñar tu formulario.</p>
-<h2 id="trabajar-con-envíos">Trabajar con envíos</h2>
-<p>Haz clic en una tarjeta de esquema de formulario para entrar en su <strong>lista de envíos</strong>. Esta tabla muestra todas las entradas de datos recopiladas para ese esquema.</p>
-<p><img alt="Lista de envíos (tabla de datos) de un esquema de formulario" src="../imgs/forms/index-list.png" /></p>
-<p>La lista incluye una <strong>barra de filtros</strong> que te permite buscar por palabra clave, rango de fechas, métricas, estado, usuario y más. También puedes guardar filtros preestablecidos para reutilizarlos rápidamente.</p>
+<p>Si todavía no existe ningún esquema de formulario, la página muestra un mensaje que te invita a agregar uno. Cuando la instancia lo habilita, un campo <strong>Filtrar</strong> sobre las tarjetas las filtra por nombre.</p>
+<h2 id="crear-un-esquema-de-formulario">Crear un esquema de formulario</h2>
+<ol>
+<li>Haz clic en el botón flotante <strong>+</strong> en la esquina inferior derecha de la página.</li>
+<li>Diseña tu formulario en la página <a href="edit-form-schema/">Editar esquema de formulario</a>.</li>
+</ol>
+<h2 id="trabajar-con-datos">Trabajar con datos</h2>
+<p>Haz clic en la tarjeta de un esquema de formulario para abrir su <strong>lista de form</strong>. Esta tabla muestra todos los datos recopilados para ese esquema.</p>
+<p><img alt="Lista de form (tabla de datos) de un esquema de formulario" src="../imgs/forms/index-list.png" /></p>
+<p>Sobre la tabla puedes ver cuántos elementos se encontraron y puedes moverte entre páginas. La barra de herramientas ofrece:</p>
+<ul>
+<li><strong>Agregar nuevo formulario</strong> – Crea un nuevo dato.</li>
+<li><strong>Importar formularios</strong> – Incorpora datos desde un archivo. Consulta <a href="import/">Importar datos</a>.</li>
+<li><strong>Filtros</strong> – Filtra la lista por rango de fechas, estado, usuario, métricas y más. Cambia entre filtros <em>Simple</em> y <em>Avanzado</em>, o guarda un filtro predefinido para reutilizarlo más tarde.</li>
+<li><strong>Exportar</strong> – Descarga los datos en un archivo. Consulta <a href="#exportar">Exportar</a>.</li>
+</ul>
+<p>A la izquierda de la barra de herramientas, el selector <strong>Datos</strong> / <strong>Mapa</strong> / <strong>IA</strong> cambia la vista; consulta <a href="#vistas-adicionales">Vistas adicionales</a>.</p>
+<p>Una fila cuyos datos puedan estar incompletos muestra un icono de advertencia. Las filas con archivos pendientes de sincronización muestran un icono de carga en la nube.</p>
 <h3 id="exportar">Exportar</h3>
-<p>Usa el botón <strong>exportar</strong> para descargar los envíos en formato CSV o XLSX.</p>
-<p><img alt="Diálogo de exportación para descargar envíos de formularios" src="../imgs/forms/index-export.png" /></p>
-<p>El diálogo de exportación te permite especificar algunos parámetros importantes para la exportación:</p>
-<p>1) Cuántos formularios exportar. <br />
-   1) <em>Formularios en la página</em>. Exporta solo los formularios que se mostraban en la página anterior, potencialmente filtrados y divididos en páginas. <br />
-   2) <em>Agregar filtros</em> o <em>Todos los elementos/1 filtro</em>. Si ya has aplicado un filtro a tu lista de formularios, solo se puede exportar el formulario filtrado (segunda opción). Si aún no has aplicado ningún filtro, se muestra la primera opción y te permite agregar más filtros. <br />
-   3) <em>Todos los formularios</em>. Todos los formularios, sin filtrado ni paginación. <br />
-2) Formato. <br />
-    1) <em>CSV</em>. Los datos se exportarán a un archivo CSV. Cada formulario extraído será una fila en un archivo donde los campos serán las columnas. <br />
-    2) <em>XLSX</em>. Exportación en formato Excel.<br />
-    3) <em>XLSX dividido</em>. Exportación a formato Excel donde cada diapositiva es una hoja diferente. <br />
-3) Opciones de campos<br />
-    1) <em>Seleccionar todos los campos del formulario</em>. Te permite exportar todos los campos del formulario.<br />
-    2) <em>Valores de etiquetas</em>. Para los campos que tienen valores predefinidos (campos de selección única o múltiple), el valor exportado es el valor mostrado, no el código interno utilizado para representar ese valor. <br />
-    3) <em>Formato de análisis de datos</em>. Los formularios que contienen diapositivas repetitivas y opción múltiple se exportan en varias filas, donde cada fila contiene solo una diapositiva repetitiva y solo una opción múltiple; los demás campos permanecen iguales. Se agrega una columna adicional llamada <em>conta</em>. Esta columna toma el valor 1 solo en la primera fila del grupo de repetición, y 0 en las demás.<br />
-    4) <em>Columnas separadas</em>. Las opciones múltiples se exportan como varias columnas 
-4) <em>Diapositiva de selección</em>. Te permite ver la lista de campos en cada diapositiva, si deseas exportar solo algunos de los campos y no todos. <br />
-5) <em>Selección de campos</em>. Puedes seleccionar/deseleccionar campos individuales.   </p>
-<p>Algunas columnas del archivo exportado no se pueden deseleccionar. Estas son:</p>
+<p>Usa el botón <strong>Exportar</strong> de la barra de herramientas para descargar los datos.</p>
+<p><img alt="Diálogo de exportación para descargar datos de formularios" src="../imgs/forms/index-export.png" /></p>
+<p>El diálogo <strong>Exportar datos</strong> te permite elegir:</p>
+<p>1) Qué formularios exportar.
+    1) <em>Elementos de la página</em>. Solo los formularios que aparecen en la página actual de la lista (opción predeterminada).
+    2) <em>Con filtros activos (N)</em>. Todos los formularios que coinciden con los filtros que has aplicado. Cuando no hay ningún filtro activo, esta opción dice <em>Agregar filtros</em>: cierra el diálogo para que puedas configurar algunos.
+    3) <em>Todos los elementos</em>. Todos los formularios, sin filtro ni paginación. En un formulario grande, esto puede ralentizar el dispositivo.
+2) El formato.
+    1) <em>csv</em>. Cada formulario exportado es una fila y cada campo una columna.
+    2) <em>xlsx</em>. Lo mismo, en formato Excel.
+    3) <em>splitted xlsx</em>. Formato Excel, con una hoja por diapositiva.
+3) En el menú <strong>Campos y formatos</strong>:
+    1) <em>Seleccionar todo Form fields</em>. Exporta todos los campos del formulario.
+    2) <em>Valores de etiqueta</em>. Para los campos con valores predefinidos (opción única o múltiple), exporta la etiqueta mostrada en lugar del código interno.
+    3) <em>Formato de valores</em>, una de estas opciones:</p>
+<pre><code>    - *Por defecto*.
+    - *Formato Data Analysis*. Las diapositivas repetidas y los campos de opción múltiple se exportan en varias filas, una repetición y una opción por fila; los demás campos se repiten en cada fila. Una columna adicional, *conta*, vale 1 en la primera fila de cada formulario y 0 en las filas adicionales generadas para el mismo formulario, de modo que sumar *conta* cuenta los formularios.
+    - *Columnas separadas*. Cada opción de un campo de opción múltiple obtiene su propia columna, con 1 o 0.
+</code></pre>
+<p>4) Los campos que exportar. La lista <strong>Secciones</strong> de la izquierda muestra cada sección con sus campos seleccionados y totales. Para la sección activa puedes buscar un campo, usar <strong>Seleccionar todo</strong> / <strong>Deseleccionar</strong>, o marcar campos individuales. El pie de página muestra cuántos campos están seleccionados; haz clic en <strong>Exportar</strong> para descargar.</p>
+<p>Algunas columnas siempre se exportan y no se pueden deseleccionar:</p>
 <ul>
 <li>ID del formulario</li>
 <li>Fecha de creación</li>
 <li>Fecha de actualización</li>
-<li>Datos del usuario DINO (nombre e ID)</li>
+<li>Datos del usuario DINO (ID y nombre completo)</li>
 <li>Datos de métricas (id, nombre, etc...)</li>
+<li>Estado del formulario (id, nombre, etiqueta, nivel, color), cuando el formulario tiene estados</li>
 <li>Dinoinvalid</li>
 </ul>
 <h3 id="acciones-de-fila">Acciones de fila</h3>
-<p>Haz clic en una fila para expandir sus detalles, o usa las acciones de fila (ver, editar, eliminar, imprimir como PDF, descargar como DOCX, imprimir credencial). Las acciones disponibles dependen de tus permisos y de la configuración del formulario.</p>
-<h3 id="crear-un-nuevo-envío">Crear un nuevo envío</h3>
-<p>Haz clic en el botón flotante <strong>+</strong> en la página de la lista para abrir un formulario en blanco para la entrada de datos.</p>
-<p><img alt="Formulario en blanco abierto para enviar una nueva entrada de datos" src="../imgs/forms/index-create.png" /></p>
-<p>Completa los campos y envía. El nuevo envío aparecerá en la lista.</p>
+<p>Pasa el cursor sobre una fila para mostrar los iconos <strong>Ver</strong> y <strong>Editar</strong>. Haz clic en una fila para seleccionarla: la barra de acciones sobre la tabla muestra entonces todas las acciones que puedes usar sobre ella (ver, editar, eliminar, imprimir como PDF, descargar como DOCX, imprimir credencial). Las acciones disponibles dependen de tus permisos y de la configuración del formulario.</p>
+<h3 id="crear-un-nuevo-dato">Crear un nuevo dato</h3>
+<ol>
+<li>Abre la lista de form del esquema de formulario que quieras.</li>
+<li>Haz clic en <strong>Agregar nuevo formulario</strong> en la barra de herramientas.</li>
+<li>Rellena el formulario en blanco y guárdalo. Consulta <a href="edit-form/">Editar formulario</a>.</li>
+</ol>
+<p><img alt="Formulario en blanco abierto para enviar un nuevo dato" src="../imgs/forms/index-create.png" /></p>
+<p>El nuevo dato aparece en la lista.</p>
 <h3 id="operaciones-masivas">Operaciones masivas</h3>
-<p>Selecciona varios envíos usando las casillas de verificación para realizar <strong>eliminaciones</strong> o <strong>ediciones</strong> masivas (cambiar el mismo valor de campo en todas las entradas seleccionadas).</p>
+<p>Selecciona uno o varios datos con las casillas para mostrar las acciones masivas. Puedes <strong>eliminar</strong> los datos seleccionados o <strong>Editar</strong>los juntos, aplicando el mismo valor de campo a todos ellos.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Eliminar un esquema de formulario o sus datos no se puede deshacer. Ten cuidado al usar las acciones de eliminación.</p>
+</div>
 <h2 id="vistas-adicionales">Vistas adicionales</h2>
+<p>Cambia de vista con los botones <strong>Datos</strong> / <strong>Mapa</strong> / <strong>IA</strong> a la izquierda de la barra de herramientas de la lista de form, o desde los botones de la tarjeta de un esquema de formulario. Los filtros que hayas aplicado se conservan.</p>
 <ul>
-<li><strong>Mapa</strong>: visualiza los envíos con coordenadas geográficas en un mapa interactivo. Obtén más información en <a href="forms-map/">Mapa de formularios</a>.</li>
-<li><strong>DataChat</strong>: consulta los datos de tu formulario usando lenguaje natural. Consulta <a href="datachat/">DataChat</a> para más detalles.</li>
+<li><strong>Mapa</strong> – Consulta los datos con coordenadas geográficas en un mapa interactivo. Solo está disponible cuando el esquema recopila posiciones. Más información en <a href="forms-map/">Mapa de formularios</a>.</li>
+<li><strong>DataChat</strong> (la vista <strong>IA</strong>) – Consulta los datos de tus formularios en lenguaje natural. Consulta <a href="datachat/">DataChat</a> para más detalles.</li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>La función DataChat puede consumir créditos. Verifica el saldo de créditos de tu cuenta antes de usarla.</p>
+<p>DataChat puede consumir créditos. Comprueba el saldo de créditos de tu cuenta antes de usarlo.</p>
 </div>
 
 

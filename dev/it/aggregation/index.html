@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visualizza e gestisci i dati aggregati dei form in Dino.">
+        <meta name="description" content="Visualizza, filtra e gestisci tutti i dati dei form di tutti i tuoi form schema da un'unica pagina.">
       
       
       
@@ -1159,10 +1159,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#visualizzazione-della-lista-di-aggregazione" class="md-nav__link">
+  <a href="#visualizzare-la-lista-di-aggregazione" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Visualizzazione della lista di aggregazione
+        Visualizzare la lista di aggregazione
       
     </span>
   </a>
@@ -1192,10 +1192,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#creazione-di-nuovi-dati" class="md-nav__link">
+  <a href="#creare-nuovi-dati" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creazione di nuovi dati
+        Creare nuovi dati
       
     </span>
   </a>
@@ -1203,10 +1203,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#stampa-di-un-pdf" class="md-nav__link">
+  <a href="#stampare-un-pdf" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stampa di un PDF
+        Stampare un PDF
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pagine-correlate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pagine correlate
       
     </span>
   </a>
@@ -1441,6 +1452,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Area utente
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1468,10 +1506,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#visualizzazione-della-lista-di-aggregazione" class="md-nav__link">
+  <a href="#visualizzare-la-lista-di-aggregazione" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Visualizzazione della lista di aggregazione
+        Visualizzare la lista di aggregazione
       
     </span>
   </a>
@@ -1501,10 +1539,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#creazione-di-nuovi-dati" class="md-nav__link">
+  <a href="#creare-nuovi-dati" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creazione di nuovi dati
+        Creare nuovi dati
       
     </span>
   </a>
@@ -1512,10 +1550,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#stampa-di-un-pdf" class="md-nav__link">
+  <a href="#stampare-un-pdf" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stampa di un PDF
+        Stampare un PDF
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pagine-correlate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pagine correlate
       
     </span>
   </a>
@@ -1540,83 +1589,85 @@
 
 
 <h1 id="aggregazione">Aggregazione</h1>
-<p>La pagina Aggregazione offre una visualizzazione centralizzata di tutti i dati dei form inviati attraverso i tuoi form schema. Puoi sfogliare, filtrare ed eseguire azioni sui dati dei form senza dover aprire ogni form singolarmente.</p>
-<p><img alt="Main view of the Aggregation page" src="../imgs/aggregation/index.png" /></p>
-<h2 id="visualizzazione-della-lista-di-aggregazione">Visualizzazione della lista di aggregazione</h2>
-<p>La tabella principale mostra una riga per ogni dato. Per impostazione predefinita vedi le colonne <strong>Form Schema</strong> e <strong>Stato</strong>, ma puoi personalizzare quali colonne visualizzare usando l'icona <strong>Personalizza le colonne</strong> nell'intestazione della tabella.</p>
+<p>La pagina Aggregazione offre una visualizzazione centralizzata di tutti i dati dei form di tutti i tuoi form schema. Invece di aprire ogni form singolarmente, puoi sfogliare tutti i dati in un'unica tabella, restringerli con i filtri ed eseguire azioni come visualizzare, modificare, stampare o eliminare.</p>
+<p><img alt="Visualizzazione principale della pagina Aggregazione" src="../imgs/aggregation/index.png" /></p>
+<h2 id="visualizzare-la-lista-di-aggregazione">Visualizzare la lista di aggregazione</h2>
+<p>La tabella mostra una riga per ogni insieme di dati. Per impostazione predefinita vedi le colonne <strong>Form Schema</strong> e <strong>Stato</strong>; usa il pulsante <strong>Colonne</strong> sopra la tabella, a destra, per scegliere quali colonne visualizzare.</p>
 <ul>
-<li>Ogni riga mostra un'icona di stato e, se il form presenta problemi di validazione, un'icona di avviso.</li>
-<li>Passa il mouse su una riga per evidenziarla; fai clic in un punto qualsiasi della riga per selezionarla e mostrare le azioni disponibili.</li>
+<li>Ogni riga mostra un'icona di stato. Se dei dati presentano problemi di validazione, sulla riga compare un'icona di avviso.</li>
+<li>Passa il mouse su una riga per mostrare le icone <strong>Vedi</strong> e <strong>Modifica</strong>; clicca in un punto qualsiasi di una riga per selezionarla e rivelare tutte le azioni disponibili.</li>
+<li>Il contatore <strong>Elementi trovati</strong> e il paginatore in cima alla pagina ti indicano quanti dati esistono e ti permettono di spostarti tra le pagine.</li>
 </ul>
-<p>Nella parte superiore della lista, il contatore <strong>Elementi trovati</strong> e il paginatore ti indicano quanti dati sono presenti e ti permettono di navigare tra le pagine.</p>
-<p>Se non applichi alcun filtro alla lista nella pagina Aggregazione, vedrai il numero totale di form inviati al tuo Dino che ti è consentito vedere, in base ai permessi del tuo utente.</p>
+<p>Se non applichi alcun filtro, la lista mostra tutti i dati che ti è consentito vedere, in base ai tuoi permessi utente.</p>
 <h2 id="filtro-e-ricerca">Filtro e ricerca</h2>
-<p>Sono disponibili una barra di ricerca e un pannello di filtri per restringere la lista.</p>
 <ol>
-<li>Fai clic sull'<strong>icona di ricerca</strong> nella barra superiore per espandere il pannello dei filtri.</li>
-<li>Usa il campo <strong>parola chiave</strong> per cercare in tutti i campi.</li>
-<li>Usa i selettori <strong>intervallo di date</strong> per filtrare per data di creazione.</li>
-<li>Compaiono filtri aggiuntivi per <strong>Area</strong>, <strong>Caso</strong>, <strong>Posizione</strong>, <strong>Organizzazione</strong>, <strong>Progetto</strong>, <strong>Stato del form</strong> e <strong>Utente</strong>. Sono dinamici e rispettano le definizioni delle metriche del tuo form.</li>
-<li>I filtri attivi sono mostrati come chip sotto la barra dei filtri: fai clic sull'<strong>icona di annullamento</strong> su un chip per rimuoverlo.</li>
+<li>Digita nel campo <strong>cerca per parola chiave</strong> nella barra degli strumenti per cercare tra i dati.</li>
+<li>Clicca <strong>Filtri</strong> nella barra degli strumenti per aprire il pannello dei filtri.</li>
+<li>Scegli una <strong>Data di partenza</strong> e un <strong>Fino ad oggi</strong> per filtrare per data di creazione.</li>
+<li>Compila uno qualsiasi dei filtri aggiuntivi: <strong>Area</strong>, <strong>Caso</strong>, <strong>Codice caso</strong>, <strong>Posizione</strong>, <strong>Organizzazione</strong>, <strong>Progetto</strong>, <strong>Stato del Form</strong> e <strong>Utente</strong>. I valori proposti dipendono dalle metriche configurate nel tuo Dino.</li>
+<li>Clicca <strong>Cerca</strong> per applicare i filtri, oppure <strong>Azzera filtri</strong> per rimuoverli.</li>
 </ol>
+<p>I filtri attivi compaiono come chip sotto la barra degli strumenti. Clicca l'icona <strong>cancella</strong> su un chip per rimuovere quel filtro.</p>
 <div class="admonition tip">
-<p class="admonition-title">Filtri preimpostati</p>
-<p>La pagina Aggregazione non supporta filtri preimpostati salvati. Puoi combinare i filtri ogni volta che hai bisogno di una visualizzazione personalizzata.</p>
+<p class="admonition-title">Nessun preset salvato</p>
+<p>La pagina Aggregazione non supporta preset di filtri salvati né condizioni di filtro avanzate. Combini i filtri ogni volta che ti serve una visualizzazione personalizzata; rimuovere un chip è il modo più rapido per allentare una ricerca esistente.</p>
 </div>
 <h2 id="azioni-sulle-righe">Azioni sulle righe</h2>
-<p>Dopo aver selezionato una riga, le icone delle azioni compaiono nella colonna <strong>Azioni</strong> sul lato destro della tabella.</p>
+<p>Passa il mouse su una riga per mostrare le icone <strong>Vedi</strong> (occhio) e <strong>Modifica</strong> (matita). Per vedere tutte le azioni, clicca la riga per selezionarla: la barra delle azioni sopra la tabella mostra allora un pulsante per ogni azione che ti è consentito usare.</p>
 <table>
 <thead>
 <tr>
-<th>Icona</th>
 <th>Azione</th>
 <th>Descrizione</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>view</code></td>
-<td>Visualizza</td>
-<td>Apre i dati in modalità di sola lettura.</td>
+<td><strong>Vedi</strong></td>
+<td>Apri i dati in modalità sola lettura.</td>
 </tr>
 <tr>
-<td><code>edit</code></td>
-<td>Modifica</td>
+<td><strong>Modifica</strong></td>
 <td>Modifica i dati.</td>
 </tr>
 <tr>
-<td><code>print</code></td>
-<td>Stampa</td>
+<td><strong>Stampa</strong></td>
 <td>Genera un PDF dei dati.</td>
 </tr>
 <tr>
-<td><code>delete</code></td>
-<td>Elimina</td>
-<td>Rimuove i dati dopo la conferma.</td>
+<td><strong>Elimina</strong></td>
+<td>Rimuovi i dati.</td>
 </tr>
 </tbody>
 </table>
-<p>Fai clic su <strong>More Horiz</strong> (tre puntini) per vedere azioni aggiuntive per quella riga. Le azioni <strong>Stampa</strong> ed <strong>Elimina</strong> richiedono una conferma prima di essere eseguite.</p>
-<h2 id="creazione-di-nuovi-dati">Creazione di nuovi dati</h2>
-<p>Il pulsante flottante <strong>+</strong> in basso a destra dello schermo ti permette di creare nuovi dati.</p>
-<p><img alt="Dialog to choose a form schema and start a new submission" src="../imgs/aggregation/index-new.png" /></p>
+<p><strong>Stampa</strong> ed <strong>Elimina</strong> chiedono conferma (<em>Do you want to print the selected items?</em>, <strong>Si</strong> / <strong>No</strong>) prima di essere eseguite.</p>
+<h2 id="creare-nuovi-dati">Creare nuovi dati</h2>
+<p>Il pulsante <strong>Aggiungi nuovo form</strong> nella barra degli strumenti ti permette di iniziare a inserire nuovi dati. È mostrato solo se la creazione di dati dalla pagina Aggregazione è abilitata per la tua istanza Dino.</p>
+<p><img alt="Finestra di dialogo per scegliere un form schema e iniziare a inserire nuovi dati" src="../imgs/aggregation/index-new.png" /></p>
 <ol>
-<li>Fai clic sul pulsante <strong>+</strong>. Si apre una finestra di dialogo che mostra i form schema disponibili.</li>
-<li>Seleziona o cerca il form schema che vuoi usare.</li>
-<li>Dopo la selezione, vieni portato direttamente alla pagina <a href="../forms/edit-form/">Modifica form</a> per inserire i dati.</li>
+<li>Clicca <strong>Aggiungi nuovo form</strong>. Si apre la finestra di dialogo <strong>Crea Form</strong>, che elenca i form schema disponibili.</li>
+<li>Seleziona il form schema che vuoi usare.</li>
+<li>Clicca <strong>Crea Form</strong>. Vieni portato alla pagina <a href="../forms/edit-form/">Modifica Form</a>, dove compili e salvi i dati.</li>
 </ol>
-<h2 id="stampa-di-un-pdf">Stampa di un PDF</h2>
-<p>Puoi generare un PDF di qualsiasi dato, che include l'etichetta del form schema, i nomi delle metriche attive e i dati inseriti.</p>
+<h2 id="stampare-un-pdf">Stampare un PDF</h2>
+<p>Puoi generare un PDF di qualsiasi insieme di dati. Il PDF include l'etichetta del form schema, i nomi delle metriche attive e i dati che sono stati compilati.</p>
 <ol>
-<li>Sulla riga che vuoi stampare, fai clic sull'icona <strong>Stampante</strong> (oppure usa il menu <strong>More Horiz</strong>, se disponibile).</li>
-<li>Conferma l'azione quando richiesto.</li>
+<li>Clicca la riga che vuoi stampare per selezionarla, poi clicca <strong>Stampa</strong> nella barra delle azioni.</li>
+<li>Conferma con <strong>Si</strong>.</li>
 <li>Il PDF si apre in una nuova scheda del browser o viene scaricato automaticamente.</li>
 </ol>
 <p>L'intestazione del PDF include il titolo del form schema e tutti i nomi delle metriche attualmente attive nel sistema.</p>
 <div class="admonition warning">
 <p class="admonition-title">Disponibilità delle metriche</p>
-<p>Il PDF stampato include solo le metriche attive nel momento in cui avvii la stampa. Se una metrica è stata aggiunta dopo la creazione dei dati, non comparirà.</p>
+<p>Il PDF include solo le metriche attive nel momento in cui avvii la stampa. Una metrica aggiunta dopo la creazione dei dati non comparirà.</p>
 </div>
+<h2 id="pagine-correlate">Pagine correlate</h2>
+<ul>
+<li><a href="../forms/">Form</a> — gestisci i form schema alla base dei tuoi dati.</li>
+<li><a href="../forms/edit-form/">Modifica Form</a> — compila e aggiorna i dati.</li>
+<li><a href="../forms/import/">Importazione dati</a> — importa dati in Dino in blocco.</li>
+<li><a href="../metrics/">Metriche</a> — configura le metriche che alimentano i filtri e l'output stampato.</li>
+</ul>
 
 
 

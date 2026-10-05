@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Crie ou modifique um report schema para definir a estrutura, o layout e as fontes de dados dos relatórios no Dino.">
+        <meta name="description" content="Crie ou modifique um esquema de relatório importando um arquivo XLSReport e verifique-o na pré-visualização antes de salvar.">
       
       
       
@@ -41,7 +41,7 @@
     
     
       
-        <title>Editar Report Schema - Documentação Dinoapp</title>
+        <title>Editar esquema de relatório - Documentação Dinoapp</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#editar-report-schema" class="md-skip">
+        <a href="#editar-esquema-de-relatório" class="md-skip">
           Ir para o conteúdo
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Editar Report Schema
+              Editar esquema de relatório
             
           </span>
         </div>
@@ -820,10 +820,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#criar-um-novo-report-schema" class="md-nav__link">
+  <a href="#campos-da-página" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Criar um Novo Report Schema
+        Campos da página
       
     </span>
   </a>
@@ -831,10 +831,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#editar-um-report-schema-existente" class="md-nav__link">
+  <a href="#criar-um-novo-esquema-de-relatório" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Editar um Report Schema Existente
+        Criar um novo esquema de relatório
       
     </span>
   </a>
@@ -842,10 +842,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configurar-os-dados-do-relatório" class="md-nav__link">
+  <a href="#editar-um-esquema-de-relatório-existente" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configurar os Dados do Relatório
+        Editar um esquema de relatório existente
       
     </span>
   </a>
@@ -856,7 +856,7 @@
   <a href="#próximos-passos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Próximos Passos
+        Próximos passos
       
     </span>
   </a>
@@ -1432,6 +1432,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área do utilizador
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1459,10 +1486,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#criar-um-novo-report-schema" class="md-nav__link">
+  <a href="#campos-da-página" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Criar um Novo Report Schema
+        Campos da página
       
     </span>
   </a>
@@ -1470,10 +1497,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#editar-um-report-schema-existente" class="md-nav__link">
+  <a href="#criar-um-novo-esquema-de-relatório" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Editar um Report Schema Existente
+        Criar um novo esquema de relatório
       
     </span>
   </a>
@@ -1481,10 +1508,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configurar-os-dados-do-relatório" class="md-nav__link">
+  <a href="#editar-um-esquema-de-relatório-existente" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configurar os Dados do Relatório
+        Editar um esquema de relatório existente
       
     </span>
   </a>
@@ -1495,7 +1522,7 @@
   <a href="#próximos-passos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Próximos Passos
+        Próximos passos
       
     </span>
   </a>
@@ -1519,52 +1546,73 @@
 
 
 
-<h1 id="editar-report-schema">Editar Report Schema</h1>
-<p>A página <strong>Editar Report Schema</strong> permite criar um novo report schema ou modificar um existente. Um report schema define a estrutura, o layout e as fontes de dados de um relatório no Dino.</p>
-<p><img alt="Visualização principal da página Editar Report Schema" src="../../imgs/reports/edit-report-schema.png" /></p>
-<p>Nesta página, você configura o nome, a descrição e os campos de dados específicos que aparecerão no relatório a partir dos dados dos seus form.</p>
-<h2 id="criar-um-novo-report-schema">Criar um Novo Report Schema</h2>
-<p>Para criar um novo report schema:</p>
-<ol>
-<li>Acesse a seção <strong>Relatórios</strong> no menu principal.</li>
-<li>Clique em <strong>Criar Report Schema</strong>.</li>
-<li>Você será direcionado para a página Editar Report Schema.</li>
-<li>Insira um <strong>Nome</strong> descritivo para o seu relatório.</li>
-<li>(Opcional) Forneça uma <strong>Descrição</strong> para explicar a finalidade do relatório.</li>
-<li>Importe um arquivo XLSReport</li>
-<li>Clique em <strong>Salvar</strong> para criar o schema.</li>
-</ol>
-<h2 id="editar-um-report-schema-existente">Editar um Report Schema Existente</h2>
-<p>Para modificar um report schema que você já criou:</p>
-<ol>
-<li>Acesse a seção <strong>Relatórios</strong>.</li>
-<li>Encontre o report schema que deseja editar na lista e clique nele.</li>
-<li>Clique no botão <strong>Editar</strong> (geralmente representado por um ícone de lápis).</li>
-<li>Você será direcionado para a página Editar Report Schema com a configuração atual carregada.</li>
-<li>Faça as alterações desejadas no nome, na descrição ou na configuração de dados.</li>
-<li>Clique em <strong>Salvar</strong> para atualizar o schema.</li>
-</ol>
-<div class="admonition tip">
-<p class="admonition-title">Salvando Seu Trabalho</p>
-<p>Lembre-se sempre de clicar em <strong>Salvar</strong> após fazer alterações. Suas modificações não são aplicadas até que você salve o schema.</p>
-</div>
-<h2 id="configurar-os-dados-do-relatório">Configurar os Dados do Relatório</h2>
-<p>O cerne do report schema é definir quais dados dos seus enviados aparecerão no relatório. Normalmente, você pode:</p>
+<h1 id="editar-esquema-de-relatório">Editar esquema de relatório</h1>
+<p>A página <strong>Editar esquema de relatório</strong> permite criar um novo esquema de relatório ou modificar um existente. Um esquema de relatório define a estrutura, o layout e as fontes de dados de um relatório no Dino. O seu conteúdo vem de um arquivo <a href="../xlsreport/">XLSReport</a> que você importa nesta página.</p>
+<p><img alt="Vista principal da página Editar esquema de relatório" src="../../imgs/reports/edit-report-schema.png" /></p>
+<h2 id="campos-da-página">Campos da página</h2>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Nome do relatório</strong></td>
+<td>Obrigatório. Deve ser único: se já estiver em uso, a página mostra <em>Este nome já está a ser utilizado.</em></td>
+</tr>
+<tr>
+<td><strong>Rótulo do relatório</strong></td>
+<td>Obrigatório. O nome exibido em listas e cartões.</td>
+</tr>
+<tr>
+<td><strong>Conjunto de ícones</strong></td>
+<td><strong>Padrão</strong> ou <strong>Humanitarian</strong>.</td>
+</tr>
+<tr>
+<td><strong>Ícone do formulário</strong></td>
+<td>Escolha um ícone na lista de preenchimento automático. A pré-visualização é atualizada em tempo real.</td>
+</tr>
+<tr>
+<td><strong>Métricas necessárias</strong></td>
+<td>As métricas que devem ser escolhidas quando um relatório é gerado a partir deste esquema.</td>
+</tr>
+</tbody>
+</table>
+<p>Abaixo dos campos, a página mostra:</p>
 <ul>
-<li><strong>Selecionar a Fonte de Dados:</strong> Escolha o form schema que contém os dados sobre os quais deseja gerar o relatório.</li>
-<li><strong>Selecionar os Campos de Dados:</strong> Escolha campos específicos dos form schema conectados para incluir como colunas no relatório.</li>
-<li><strong>Definir os Nomes de Exibição:</strong> Personalize o cabeçalho da coluna exibido no relatório para cada campo selecionado.</li>
-<li><strong>Definir Filtros:</strong> Estabeleça condições para incluir apenas os enviados específicos que atendam aos seus critérios (por exemplo, enviados de um determinado intervalo de datas).</li>
+<li><strong>Esquemas de formulário associados</strong> – os esquemas de formulário que o relatório utiliza, somente leitura. Eles são obtidos do arquivo XLSReport importado quando você salva.</li>
+<li><strong>Pré-visualização do relatório</strong> – o relatório renderizado a partir do esquema importado ou salvo.</li>
 </ul>
+<p>As fontes de dados, colunas e filtros são todos definidos no arquivo XLSReport: a página não tem controles para escolhê-los.</p>
+<h2 id="criar-um-novo-esquema-de-relatório">Criar um novo esquema de relatório</h2>
+<ol>
+<li>Abra a seção <strong>Relatórios</strong> no menu principal.</li>
+<li>Clique no botão <strong>+</strong> (<em>Add new Reports schema</em>) no canto inferior direito.</li>
+<li>Insira o <strong>Nome do relatório</strong> e o <strong>Rótulo do relatório</strong> e, opcionalmente, o ícone e as <strong>Métricas necessárias</strong>.</li>
+<li>Clique em <strong>Importar</strong> e depois em <strong>Escolha um arquivo</strong> e selecione o seu arquivo XLSReport (.xls ou .xlsx).</li>
+<li>Clique em <strong>Aplicar</strong>: o arquivo é carregado na página e exibido na <strong>Pré-visualização do relatório</strong>.</li>
+<li>Clique em <strong>Salvar</strong> para armazenar o esquema. <strong>Salvar</strong> permanece desativado até que os campos obrigatórios sejam válidos.</li>
+</ol>
 <div class="admonition warning">
-<p class="admonition-title">Fonte de Dados</p>
-<p>Um report schema deve estar conectado a pelo menos um form schema para ter dados a exibir. Certifique-se de que o form relevante existe antes de criar seu relatório.</p>
+<p class="admonition-title">Importar antes de salvar</p>
+<p>Um novo esquema de relatório não pode ser salvo sem um arquivo importado: salvá-lo vazio mostra <em>Oops! Something went wrong saving the Report</em>. <strong>Aplicar</strong> apenas carrega o arquivo na página; nada é armazenado até que você clique em <strong>Salvar</strong>.</p>
 </div>
-<h2 id="próximos-passos">Próximos Passos</h2>
-<p>Após salvar seu report schema, você pode:</p>
+<h2 id="editar-um-esquema-de-relatório-existente">Editar um esquema de relatório existente</h2>
+<ol>
+<li>Abra a seção <strong>Relatórios</strong>.</li>
+<li>No cartão do esquema de relatório, clique no ícone de lápis (<em>Editar esquema de relatório</em>).</li>
+<li>Altere os campos ou importe um novo arquivo XLSReport para substituir o conteúdo do relatório.</li>
+<li>Clique em <strong>Salvar</strong> para atualizar o esquema.</li>
+</ol>
+<p>Para excluir um esquema de relatório, clique no ícone de lixo (<em>Eliminar esquema de relatório</em>) no seu cartão. Um esquema que ainda tem relatórios não pode ser excluído: exclua primeiro os seus relatórios.</p>
+<h2 id="próximos-passos">Próximos passos</h2>
+<p>Depois de salvar o seu esquema de relatório, você pode:</p>
 <ul>
-<li>Acessar a página <a href="../">Relatórios</a> para visualizar e executar seu novo relatório.</li>
-<li>Retornar a esta página para fazer mais ajustes conforme necessário.</li>
+<li>Navegar até a página <a href="../">Relatórios</a> para visualizar e executar o seu novo relatório.</li>
+<li>Usar <a href="../edit-report/">Editar relatório</a> para trabalhar com o próprio relatório depois que o esquema estiver pronto.</li>
+<li>Voltar a esta página para fazer mais ajustes conforme necessário.</li>
 </ul>
 
 

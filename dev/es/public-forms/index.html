@@ -1258,10 +1258,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#el-botón-de-envío-está-deshabilitado" class="md-nav__link">
+  <a href="#el-botón-siguiente-o-enviar-está-deshabilitado" class="md-nav__link">
     <span class="md-ellipsis">
       
-        El botón de envío está deshabilitado.
+        El botón Siguiente o Enviar está deshabilitado.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#this-form-cannot-be-opened-because-some-required-information-is-missing-from-the-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "This form cannot be opened because some required information is missing from the link."
       
     </span>
   </a>
@@ -1303,6 +1314,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#páginas-relacionadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Páginas relacionadas
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1480,6 +1502,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área de usuario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1552,10 +1601,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#el-botón-de-envío-está-deshabilitado" class="md-nav__link">
+  <a href="#el-botón-siguiente-o-enviar-está-deshabilitado" class="md-nav__link">
     <span class="md-ellipsis">
       
-        El botón de envío está deshabilitado.
+        El botón Siguiente o Enviar está deshabilitado.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#this-form-cannot-be-opened-because-some-required-information-is-missing-from-the-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "This form cannot be opened because some required information is missing from the link."
       
     </span>
   </a>
@@ -1600,6 +1660,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#páginas-relacionadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Páginas relacionadas
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1618,17 +1689,19 @@
 
 
 <h1 id="formularios-públicos">Formularios públicos</h1>
-<p>Los formularios públicos permiten que cualquier persona con un enlace envíe datos a Dino sin necesidad de iniciar sesión ni tener una cuenta. Se utilizan habitualmente para encuestas, inscripciones o recopilación de comentarios. Si has recibido un enlace público a un formulario, puedes usar esta página para completarlo.</p>
-<p>Las direcciones de los formularios públicos siguen el patrón <code>/f/</code> seguido de un identificador único (por ejemplo, <code>https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a</code>). El identificador es el ID del form schema. Si se debe añadir algún valor de métrica a los datos del formulario, se puede incluir en la URL utilizando la siguiente sintaxis (por ejemplo, para el caso de métrica): <code>https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a?case=a6408e72-c60c-4d54-ad2f-44fd4a90cdb2</code>
-donde el ID del valor de métrica es de nuevo el ID de la métrica asignado por Dino.</p>
-<p>No es necesario recordar esta sintaxis, ya que el enlace lo genera automáticamente Dino cuando haces clic en el icono de compartir del form schema. Una vez generado, el enlace se puede compartir por correo electrónico, WhatsApp o cualquier otro medio.</p>
+<p>Los formularios públicos permiten que cualquier persona con un enlace envíe datos a Dino sin necesidad de iniciar sesión ni tener una cuenta. Se utilizan habitualmente para encuestas, registros o recopilación de comentarios. Si has recibido un enlace público a un formulario, puedes usar esta página para completarlo.</p>
+<p>Las direcciones de los formularios públicos siguen el patrón <code>/f/</code> seguido de un identificador único (por ejemplo, <code>https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a</code>). El identificador es el ID del form schema. Si se debe añadir algún valor de métrica a los datos del formulario, se puede incluir en la URL usando la siguiente sintaxis (por ejemplo, para el caso de una métrica): <code>https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a?case=a6408e72-c60c-4d54-ad2f-44fd4a90cdb2</code>
+donde el ID del valor de la métrica es de nuevo el ID de la métrica asignado por Dino.</p>
+<p>No es necesario recordar esta sintaxis, ya que Dino genera el enlace automáticamente al hacer clic en el icono de compartir del form schema. Una vez generado, el enlace se puede compartir por correo electrónico, WhatsApp o cualquier otro medio.</p>
 <hr />
 <h2 id="acceder-a-un-formulario-público">Acceder a un formulario público</h2>
 <ol>
-<li>Haz clic en el enlace del formulario público que hayas recibido (por ejemplo, por correo electrónico o en un mensaje compartido). El enlace te dirigirá a <code>/f/...</code> en tu instancia de Dino.</li>
+<li>Haz clic en el enlace del formulario público que has recibido (por ejemplo, por correo electrónico o en un mensaje compartido). El enlace te dirigirá a <code>/f/...</code> en tu instancia de Dino.</li>
 <li>El formulario se abrirá directamente en tu navegador web. No necesitas iniciar sesión.</li>
 <li>Revisa el título del formulario y cualquier texto introductorio para confirmar que es el formulario correcto.</li>
 </ol>
+<p>Un selector de idioma en la barra superior de la pantalla te permite elegir el idioma del formulario. Úsalo para cambiar el formulario al idioma que prefieras antes de empezar a completarlo.</p>
+<p>Si el formulario incluye varias secciones, se muestra una barra de progreso debajo del título para que puedas ver cuánto te queda por completar.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Los enlaces de los formularios públicos contienen un identificador largo (como <code>/f/abc123def</code>). Si la página no carga, asegúrate de que se haya copiado el enlace completo correctamente.</p>
@@ -1636,41 +1709,42 @@ donde el ID del valor de métrica es de nuevo el ID de la métrica asignado por 
 <hr />
 <h2 id="completar-y-enviar">Completar y enviar</h2>
 <ol>
-<li>Rellena todos los campos del formulario. Los campos marcados con un asterisco (<em>) son </em><em>obligatorios</em>*.</li>
-<li>Si el formulario tiene varias secciones, utiliza las pestañas o los botones de navegación de la parte superior del formulario para moverte entre ellas.</li>
+<li>Rellena todos los campos del formulario. Los campos marcados con un asterisco (<em>) son </em><em>requerido</em>*.</li>
+<li>Si el formulario tiene varias secciones, usa los botones <strong>Siguiente</strong> y <strong>Anterior</strong> en la parte inferior del formulario para navegar entre ellas. El título de la sección se muestra en la parte superior de cada paso.</li>
 <li>A medida que rellenas los campos, el formulario valida tu información. Las entradas no válidas suelen aparecer resaltadas.</li>
-<li>Una vez que todos los campos obligatorios sean válidos, el botón principal de envío (normalmente un botón circular con un icono de enviar) se activará.</li>
-<li>Haz clic en el botón de envío para enviar tus datos.</li>
+<li>Una vez que todos los campos requeridos son válidos, el botón <strong>Enviar</strong> se activa.</li>
+<li>Haz clic en <strong>Enviar</strong> para enviar tus datos.</li>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>El botón de envío permanecerá deshabilitado (atenuado) si algún campo obligatorio está vacío o contiene datos no válidos. Recorre el formulario para localizar y corregir los problemas resaltados.</p>
+<p>El botón <strong>Siguiente</strong> permanece deshabilitado si la sección actual aún no es válida, y el botón <strong>Enviar</strong> permanece deshabilitado (en gris) si algún campo requerido está vacío o contiene datos no válidos. Revisa la sección actual, o navega hacia atrás por las secciones anteriores, para encontrar y corregir cualquier problema resaltado.</p>
 </div>
 <hr />
 <h2 id="después-del-envío">Después del envío</h2>
-<p>Tras un envío correcto, verás una pantalla de confirmación con una marca de verificación y el mensaje: <strong>"The form has been successfully submitted."</strong></p>
-<p>También aparecerá una notificación en la parte inferior de la pantalla. Desde esta notificación, puedes:</p>
-<ul>
-<li><strong>Fill out another one</strong>: Haz clic aquí para recargar la página con una copia nueva y vacía del mismo formulario, lo que te permite realizar otro envío.</li>
-<li><strong>Close</strong>: Descarta la notificación.</li>
-</ul>
+<p>Tras un envío correcto, verás una pantalla de confirmación con una marca de verificación y el mensaje: <strong>"El formulario se ha enviado correctamente."</strong></p>
+<p>También aparece una notificación en la parte inferior de la pantalla durante unos segundos. Haz clic en <strong>Rellenar otro</strong> en ella para recargar la página con una copia nueva y vacía del mismo formulario, lo que te permitirá realizar otro envío.</p>
 <hr />
 <h2 id="solución-de-problemas">Solución de problemas</h2>
-<h3 id="el-botón-de-envío-está-deshabilitado">El botón de envío está deshabilitado.</h3>
-<p>Esto significa que el formulario aún no es válido. Comprueba lo siguiente:</p>
+<h3 id="el-botón-siguiente-o-enviar-está-deshabilitado">El botón Siguiente o Enviar está deshabilitado.</h3>
+<p>Esto significa que la sección actual o el formulario en su conjunto aún no es válido. Comprueba lo siguiente:</p>
 <ul>
-<li><strong>Campos obligatorios vacíos</strong>: Asegúrate de que todos los campos marcados con un asterisco (*) estén rellenos.</li>
+<li><strong>Campos requeridos vacíos</strong>: Asegúrate de que todos los campos marcados con un asterisco (*) estén rellenos.</li>
 <li><strong>Datos no válidos</strong>: Busca los campos resaltados en rojo y corrige la información (por ejemplo, un formato de correo electrónico no válido).</li>
 </ul>
+<h3 id="this-form-cannot-be-opened-because-some-required-information-is-missing-from-the-link">"This form cannot be opened because some required information is missing from the link."</h3>
+<p>El enlace que has usado está incompleto. Algunos formularios requieren información de métricas (como un caso, una posizione o una organización) que debe incluirse en la dirección.</p>
+<ul>
+<li>Ponte en contacto con la persona que te envió el enlace del formulario y pídele que comparta el enlace completo.</li>
+</ul>
 <h3 id="unable-to-save-form">"Unable to save form."</h3>
-<p>Tu envío ha encontrado un error temporal, a menudo relacionado con tu conexión a internet.</p>
+<p>Tu envío encontró un error temporal, a menudo relacionado con tu conexión a internet.</p>
 <ol>
-<li>Haz clic en <strong>"Try again"</strong> en la notificación de la parte inferior de la pantalla.</li>
-<li>Si el error persiste, comprueba tu conexión a internet y prueba a actualizar la página.</li>
+<li>Comprueba tu conexión a internet.</li>
+<li>Haz clic en <strong>"Try again"</strong> en la notificación de la parte inferior de la pantalla. Dino envía el formulario de nuevo con las respuestas que escribiste: no necesitas rellenarlo otra vez.</li>
 <li>Si sigue fallando, ponte en contacto con la persona que te envió el enlace del formulario.</li>
 </ol>
 <h3 id="oops-we-could-not-find-this-form-schema">"Oops! We could not find this Form Schema."</h3>
-<p>El enlace que estás utilizando es incorrecto o el formulario se ha eliminado.</p>
+<p>El enlace que estás usando es incorrecto o el formulario ha sido eliminado.</p>
 <ul>
 <li>Verifica que tienes la URL completa y correcta.</li>
 <li>Ponte en contacto con la persona que compartió el enlace contigo para obtener uno actualizado.</li>
@@ -1680,6 +1754,14 @@ donde el ID del valor de métrica es de nuevo el ID de la métrica asignado por 
 <li>Actualiza la página de tu navegador.</li>
 <li>Asegúrate de que tu conexión a internet sea estable.</li>
 <li>Confirma que el enlace esté completo y no se haya truncado.</li>
+</ul>
+<hr />
+<h2 id="páginas-relacionadas">Páginas relacionadas</h2>
+<ul>
+<li><a href="../forms/">Formularios</a></li>
+<li><a href="../forms/edit-form-schema/">Editar Form Schema</a></li>
+<li><a href="../administration/languages/">Idiomas</a></li>
+<li><a href="../metrics/">Métricas</a></li>
 </ul>
 
 

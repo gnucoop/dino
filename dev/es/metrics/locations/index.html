@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Gestiona las ubicaciones geográficas utilizadas en las métricas y los formularios de Dino.">
+        <meta name="description" content="Gestiona las ubicaciones geográficas utilizadas en las métricas y los form de Dino.">
       
       
       
@@ -1070,10 +1070,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#qué-puedes-ver" class="md-nav__link">
+  <a href="#qué-ves" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Qué puedes ver
+        Qué ves
       
     </span>
   </a>
@@ -1081,10 +1081,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#acciones-por-fila" class="md-nav__link">
+  <a href="#acciones-de-fila" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Acciones por fila
+        Acciones de fila
       
     </span>
   </a>
@@ -1159,10 +1159,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#coordenadas-de-ubicación" class="md-nav__link">
+  <a href="#coordenadas-de-la-ubicación" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Coordenadas de ubicación
+        Coordenadas de la ubicación
       
     </span>
   </a>
@@ -1504,6 +1504,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área de usuario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1531,10 +1558,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#qué-puedes-ver" class="md-nav__link">
+  <a href="#qué-ves" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Qué puedes ver
+        Qué ves
       
     </span>
   </a>
@@ -1542,10 +1569,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#acciones-por-fila" class="md-nav__link">
+  <a href="#acciones-de-fila" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Acciones por fila
+        Acciones de fila
       
     </span>
   </a>
@@ -1620,10 +1647,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#coordenadas-de-ubicación" class="md-nav__link">
+  <a href="#coordenadas-de-la-ubicación" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Coordenadas de ubicación
+        Coordenadas de la ubicación
       
     </span>
   </a>
@@ -1664,69 +1691,71 @@
 
 
 <h1 id="ubicaciones">Ubicaciones</h1>
-<p>La página <strong>Ubicaciones</strong> te permite gestionar las ubicaciones geográficas a las que hacen referencia tus formularios, casos y otras métricas. Puedes añadir nuevas ubicaciones, editar las entradas existentes, importar datos de forma masiva y exportar la lista actual.</p>
+<p>La página <strong>Ubicaciones</strong> te permite gestionar las ubicaciones geográficas a las que hacen referencia tus form, casos y otras métricas. Puedes añadir nuevas ubicaciones, editar las existentes, importar datos de forma masiva y exportar la lista actual.</p>
 <p><img alt="Vista principal de la página Ubicaciones" src="../../imgs/metrics/locations.png" /></p>
-<h2 id="qué-puedes-ver">Qué puedes ver</h2>
+<h2 id="qué-ves">Qué ves</h2>
 <ul>
 <li><strong>Ruta de navegación</strong> – muestra tu posición actual en la navegación.</li>
-<li><strong>Búsqueda y filtros</strong> – búsqueda por palabra clave, selector de rango de fechas y filtros avanzados configurables (por ejemplo, por métrica, estado, usuario). También puedes guardar y cargar ajustes de filtros predefinidos.</li>
-<li><strong>Tabla</strong> – muestra el Nombre de la ubicación y la Ubicación principal de forma predeterminada. Las columnas ocultas (ID, Fecha de creación, Coordenadas, Atributos adicionales) se pueden mostrar mediante el botón <strong>Personaliza las columnas</strong> (en la esquina inferior derecha del encabezado de la tabla).</li>
+<li><strong>Búsqueda y Filtros</strong> – un campo de búsqueda por palabra clave y el botón <strong>Filtros</strong> para filtrar por fecha de creación (<strong>Desde fecha</strong> / <strong>Hasta la fecha</strong>).</li>
+<li><strong>Contador de elementos encontrados</strong> – muestra cuántas ubicaciones coinciden con los filtros actuales.</li>
+<li><strong>tabla</strong> – muestra el nombre de la ubicación y la ubicación padre de forma predeterminada. Las columnas ocultas (ID, fecha de creación, Coordenadas, atributos adicionales) se pueden mostrar mediante el botón <strong>Columnas</strong>, situado encima de la tabla a la derecha.</li>
 <li><strong>Paginación</strong> – controles para navegar entre páginas.</li>
-<li><strong>Acciones masivas</strong> – selecciona filas con las casillas para eliminar o editar varias ubicaciones a la vez.</li>
-<li><strong>Botones de acción flotantes</strong> – <strong>Añadir nuevo</strong> (icono de más) e <strong>Importar</strong> (icono de subir a la nube) permanecen disponibles mientras te desplazas.</li>
+<li><strong>Acciones masivas</strong> – selecciona filas con las casillas para eliminar varias ubicaciones a la vez.</li>
+<li><strong>Botones de la barra de herramientas</strong> – <strong>Add new LOCATION</strong> (icono de más) e <strong>Import LOCATION</strong> (icono de subida a la nube) se encuentran encima de la tabla.</li>
 </ul>
-<h2 id="acciones-por-fila">Acciones por fila</h2>
-<p>Cada fila tiene tres acciones rápidas (visibles al pasar el cursor sobre la fila):</p>
+<h2 id="acciones-de-fila">Acciones de fila</h2>
+<p>Pasa el cursor sobre una fila para mostrar los iconos <strong>Editar</strong> y <strong>Ver</strong>. Haz clic en la fila para seleccionarla y resaltarla: la barra de acciones encima de la tabla mostrará entonces todas las acciones:</p>
 <ul>
-<li><strong>Editar</strong> – abre el diálogo de ubicación para modificar los detalles.</li>
-<li><strong>Eliminar</strong> – elimina la ubicación tras la confirmación.</li>
-<li><strong>Ver</strong> – abre un diálogo de solo lectura que muestra todos los campos.</li>
+<li><strong>Editar</strong> – abre el cuadro de diálogo de la ubicación para modificar sus detalles.</li>
+<li><strong>Eliminar</strong> – elimina la ubicación tras confirmarlo.</li>
+<li><strong>Ver</strong> – abre un cuadro de diálogo de solo lectura que muestra todos los campos.</li>
 </ul>
-<p>Al hacer clic en una fila, esta se selecciona (se resalta) y, si la lista es expandible, se muestra un panel de detalle con datos adicionales.</p>
 <h2 id="trabajar-con-ubicaciones">Trabajar con ubicaciones</h2>
 <h3 id="añadir-una-nueva-ubicación">Añadir una nueva ubicación</h3>
 <ol>
-<li>Haz clic en el botón flotante <strong>Añadir nuevo</strong> (esquina inferior derecha).</li>
-<li>En el diálogo, rellena los campos obligatorios (por ejemplo, Nombre de la ubicación).</li>
-<li>Opcionalmente, establece una Ubicación principal, Coordenadas y Atributos adicionales.</li>
+<li>Haz clic en el botón <strong>Add new LOCATION</strong> situado encima de la tabla.</li>
+<li>En el cuadro de diálogo, rellena los campos obligatorios (por ejemplo, nombre de la ubicación). Los campos opcionales están marcados como <em>(optional)</em>.</li>
+<li>De forma opcional, establece una ubicación padre, Coordenadas y atributos adicionales.</li>
 <li>Haz clic en <strong>Guardar</strong>.</li>
 </ol>
 <h3 id="editar-una-ubicación">Editar una ubicación</h3>
 <ol>
-<li>Haz clic en el icono <strong>Editar</strong> (lápiz) de la fila deseada.</li>
-<li>Actualiza los campos en el diálogo.</li>
+<li>Pasa el cursor sobre la fila y haz clic en el icono <strong>Editar</strong> (lápiz), o selecciona la fila y haz clic en <strong>Editar</strong> en la barra de acciones.</li>
+<li>Actualiza los campos en el cuadro de diálogo.</li>
 <li>Haz clic en <strong>Guardar</strong>.</li>
 </ol>
 <h3 id="eliminar-una-ubicación">Eliminar una ubicación</h3>
 <ol>
-<li>Haz clic en el icono <strong>Eliminar</strong> (papelera) de la fila.</li>
+<li>Haz clic en la fila para seleccionarla y, a continuación, haz clic en <strong>Eliminar</strong> en la barra de acciones situada encima de la tabla.</li>
 <li>Confirma la eliminación en el aviso.</li>
 </ol>
+<p>Una ubicación que esté en uso por form, o que tenga ubicaciones hijas, no se puede eliminar; consulta <a href="../">Metrics</a>.</p>
 <h3 id="importar-ubicaciones-desde-un-archivo">Importar ubicaciones desde un archivo</h3>
 <ol>
-<li>Haz clic en el botón flotante <strong>Importar</strong> (icono de subir a la nube).</li>
-<li>Selecciona un archivo CSV o Excel que siga el formato esperado.</li>
-<li>Asigna las columnas a los campos de ubicación si es necesario.</li>
-<li>Haz clic en <strong>Importar</strong>.</li>
+<li>Haz clic en el botón <strong>Import LOCATION</strong> situado encima de la tabla.</li>
+<li>Sube un archivo <code>.xls</code>, <code>.xlsx</code> o <code>.csv</code>.</li>
+<li>Asigna las columnas del archivo a los campos de la ubicación.</li>
+<li>Haz clic en <strong>Aplicar importación</strong> y revisa el resultado.</li>
 </ol>
-<div class="admonition tip">
-<p class="admonition-title">Edición masiva</p>
-<p>Selecciona varias filas con las casillas y, a continuación, haz clic en el botón <strong>Editar</strong> (icono edit_note) que aparece encima de la tabla para actualizar varias ubicaciones a la vez.</p>
-</div>
+<p>Las ubicaciones cuyo nombre ya exista se reutilizan, no se actualizan.</p>
 <h3 id="exportar-la-lista-de-ubicaciones">Exportar la lista de ubicaciones</h3>
 <ol>
-<li>Haz clic en el botón <strong>Exportar</strong> (icono de descargar de la nube) en la barra de filtros.</li>
-<li>Elige el formato de exportación (CSV o Excel).</li>
-<li>El archivo se descarga automáticamente.</li>
+<li>Haz clic en <strong>Exportar</strong> en la barra de herramientas.</li>
+<li>Elige qué exportar: <em>elementos de la página</em> (opción predeterminada), los elementos que coincidan con tus filtros o <em>todos los elementos</em>.</li>
+<li>Elige el formato: <em>csv</em>, <em>xlsx</em> o <em>splitted xlsx</em> y, a continuación, haz clic en <strong>Exportar</strong>.</li>
 </ol>
-<h3 id="coordenadas-de-ubicación">Coordenadas de ubicación</h3>
-<p>Si estableces el atributo "coordinates" de un valor de ubicación concreto, la información se utilizará para visualizar los datos de tus formularios en un <a href="../../forms/forms-map/">mapa</a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Eliminación masiva</p>
+<p>Selecciona varias filas con las casillas y, a continuación, haz clic en <strong>Eliminar</strong> en la barra de acciones situada encima de la tabla para eliminar varias ubicaciones a la vez.</p>
+</div>
+<h3 id="coordenadas-de-la-ubicación">Coordenadas de la ubicación</h3>
+<p>Si estableces el atributo <strong>Coordenadas</strong> para una ubicación, esa información se utiliza para visualizar los datos de tu form en un <a href="../../forms/forms-map/">mapa</a>.</p>
 <h2 id="páginas-relacionadas">Páginas relacionadas</h2>
 <ul>
-<li><a href="../">Descripción general de las métricas</a> – vuelve al inicio de las métricas.</li>
-<li><a href="../cases/">Casos</a> – gestiona los casos que hacen referencia a ubicaciones.</li>
-<li><a href="../organizations/">Organizaciones</a> – gestiona las organizaciones vinculadas a ubicaciones.</li>
-<li><a href="../projects/">Proyectos</a> – consulta los proyectos asociados a ubicaciones.</li>
+<li><a href="../">Metrics Overview</a> – vuelve al inicio de las métricas.</li>
+<li><a href="../cases/">Cases</a> – gestiona los casos que hacen referencia a ubicaciones.</li>
+<li><a href="../organizations/">Organizations</a> – gestiona las organizaciones vinculadas a ubicaciones.</li>
+<li><a href="../projects/">Projects</a> – consulta los proyectos asociados a ubicaciones.</li>
 </ul>
 
 

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Gérez les groupes d'utilisateurs dans Dino — consultez, créez, modifiez et supprimez des groupes de permissions avec les rôles, formulaires, rapports et métriques qui leur sont attribués.">
+        <meta name="description" content="Gérez les groupes d'utilisateurs dans Dino — consultez, créez, modifiez et supprimez des groupes de permissions avec les rôles, formulaires, rapports et métriques associés.">
       
       
       
@@ -15,6 +15,8 @@
       
         <link rel="prev" href="../users-list/">
       
+      
+        <link rel="next" href="../../user-area/">
       
       
         
@@ -1437,10 +1439,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pages-connexes" class="md-nav__link">
+  <a href="#pages-associées" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pages connexes
+        Pages associées
       
     </span>
   </a>
@@ -1459,6 +1461,33 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Espace utilisateur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1556,10 +1585,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pages-connexes" class="md-nav__link">
+  <a href="#pages-associées" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pages connexes
+        Pages associées
       
     </span>
   </a>
@@ -1584,76 +1613,88 @@
 
 
 <h1 id="liste-des-groupes">Liste des groupes</h1>
-<p>La page <strong>Liste des groupes</strong> affiche tous les groupes d'utilisateurs dans Dino. Vous pouvez y consulter, modifier, supprimer et créer des groupes. Chaque groupe définit un ensemble de permissions et de règles d'accès en associant un rôle utilisateur à des schémas de formulaire, des schémas de rapport, des statuts de formulaire et des types de métriques spécifiques (tels que les zones, les cas, les projets, les localisations ou les organisations).</p>
+<p>La page <strong>Liste des groupes</strong> affiche tous les groupes d'utilisateurs dans Dino. Vous pouvez y consulter, modifier, supprimer et créer des groupes. Chaque groupe définit un ensemble de permissions et de règles d'accès en associant un rôle utilisateur à des formulaires, des rapports, des statuts de formulaire et des types de métriques spécifiques (tels que les domaines, les cas, les projets, les emplacements ou les organisations).</p>
 <p><img alt="Vue principale de la page Liste des groupes" src="../../imgs/administration/groups-list.png" /></p>
 <h2 id="aperçu-de-la-liste">Aperçu de la liste</h2>
-<p>Le tableau affiche les colonnes suivantes :</p>
+<p>Le tableau comporte les colonnes suivantes :</p>
 <ul>
-<li><strong>Nom du groupe</strong> – le nom du groupe d'utilisateurs (visible par défaut).</li>
+<li><strong>Nom de groupe</strong> – le nom du groupe d'utilisateurs (visible par défaut).</li>
 <li><strong>ID</strong> – identifiant interne (masqué par défaut).</li>
-<li><strong>Date de création</strong> – date à laquelle le groupe a été créé (masquée par défaut).</li>
+<li><strong>Date de création</strong> – la date de création du groupe (masquée par défaut).</li>
 </ul>
-<p>Vous pouvez personnaliser les colonnes affichées en cliquant sur l'icône <strong>Personnalisez les colonnes</strong> à droite de l'en-tête du tableau.</p>
+<p>Le nombre d'éléments trouvés apparaît au-dessus du tableau, à côté du paginateur. Utilisez le bouton <strong>Colonnes</strong> (infobulle <em>Personnaliser les colonnes</em>), au-dessus du tableau à droite, pour modifier les colonnes affichées.</p>
 <h2 id="recherche-et-filtrage">Recherche et filtrage</h2>
-<p>Utilisez la <strong>barre de recherche</strong> en haut de la page pour filtrer les groupes par mot-clé. Le panneau <strong>Filtres</strong> (dépliable) vous permet de restreindre la liste par :</p>
-<ul>
-<li>Plage de dates (du/au)</li>
-<li>Tout type de métrique défini dans votre déploiement, c'est-à-dire un ou plusieurs des éléments suivants : Projet, Localisation, Zone, Cas, Organisation</li>
-</ul>
-<p>Vous pouvez également enregistrer et charger des préréglages de filtres à l'aide du gestionnaire de préréglages.</p>
+<p>Utilisez le champ <strong>recherche par mot-clé</strong> dans la barre d'outils pour filtrer les groupes par nom. Ouvrez la boîte de dialogue <strong>Filtres</strong> pour plus d'options :</p>
+<ol>
+<li>Cliquez sur <strong>Filtres</strong>.</li>
+<li>Définissez une <strong>De date</strong> et une <strong>À ce jour</strong> pour limiter les résultats aux groupes créés dans cette plage.</li>
+<li>Affinez la liste à l'aide d'un ou plusieurs filtres de métriques — <strong>Projet</strong>, <strong>Emplacement</strong>, <strong>Domaine</strong>, <strong>Cas</strong> ou <strong>Organisation</strong> — selon ceux actifs dans votre déploiement.</li>
+<li>Cliquez sur <strong>Chercher</strong> pour appliquer les filtres, ou sur <strong>Réinitialiser les filtres</strong> pour les effacer.</li>
+</ol>
+<p>Les filtres appliqués apparaissent sous forme de puces sous la barre d'outils. Cliquez sur l'icône <strong>annuler</strong> d'une puce pour supprimer ce filtre.</p>
 <h2 id="actions-sur-les-groupes">Actions sur les groupes</h2>
-<p>Chaque ligne comporte trois icônes d'action à droite :</p>
+<p>Survolez une ligne pour faire apparaître les icônes <strong>Modifier</strong> et <strong>Voir</strong>. Cliquez sur une ligne pour la sélectionner : la barre d'actions au-dessus du tableau affiche alors toutes les actions disponibles :</p>
 <ul>
-<li><strong>Voir</strong> – Consulter les détails du groupe (ouvre l'éditeur en mode lecture seule)</li>
+<li><strong>Voir</strong> – Voir les détails du groupe (ouvre la page du groupe en mode lecture seule)</li>
 <li><strong>Modifier</strong> – Modifier les propriétés du groupe</li>
 <li><strong>Supprimer</strong> – Supprimer le groupe (confirmation requise)</li>
 </ul>
 <h2 id="créer-un-nouveau-groupe">Créer un nouveau groupe</h2>
+<p>Les groupes sont créés et modifiés sur une page dédiée, et non dans une boîte de dialogue.</p>
 <ol>
-<li>Cliquez sur le bouton flottant <strong>+</strong> en bas à droite de l'écran.</li>
-<li>Dans la boîte de dialogue de l'éditeur qui s'ouvre, saisissez un <strong>Nom du groupe</strong> (obligatoire).</li>
-<li>Parcourez les onglets pour sélectionner :<ul>
-<li><strong>Rôle utilisateur</strong> (obligatoire – vous devez choisir exactement un rôle)</li>
-<li><strong>Schémas de formulaire</strong></li>
-<li><strong>Statuts de formulaire</strong></li>
-<li><strong>Schémas de rapport</strong></li>
-<li><strong>Types de métriques</strong> (tous les types actifs pour votre déploiement : Zone, Cas, Projet, Localisation, Organisation) – si actif</li>
+<li>Cliquez sur <strong>Ajouter un nouveau groupe</strong> dans la barre d'outils. La page <em>Créer un groupe</em> s'ouvre.</li>
+<li>Saisissez le <strong>Nom de groupe</strong> dans l'en-tête de la page.</li>
+<li>Choisissez les éléments du groupe, onglet par onglet. Chaque onglet indique le nombre d'éléments qu'il contient et n'apparaît que si sa catégorie comporte des éléments :<ul>
+<li><strong>Rôle utilisateur</strong> (obligatoire – un groupe ne contient qu'un seul rôle ; en ajouter un autre le remplace)</li>
+<li><strong>Formulaires</strong></li>
+<li><strong>Statut du formulaire</strong></li>
+<li><strong>Report schema</strong></li>
+<li>Un onglet par type de métrique actif (<strong>Domaine</strong>, <strong>Cas</strong>, <strong>Projet</strong>, <strong>Emplacement</strong>, <strong>Organisation</strong>)</li>
 </ul>
 </li>
-<li>Dans la boîte de dialogue des <strong>éléments disponibles</strong> à droite, sélectionnez un ou plusieurs éléments en cliquant sur l'icône <strong>ajouter</strong> à côté de chacun d'eux pour le déplacer vers le panneau <strong>Éléments du groupe</strong>.</li>
-<li>Cliquez sur <strong>Enregistrer</strong>.</li>
+<li>Dans le panneau de gauche, recherchez les éléments et cliquez sur <strong>Ajouter</strong> à côté de chacun de ceux que vous voulez, ou sur <strong>Ajouter tous les affichés</strong> pour ajouter tous les éléments listés. Le panneau de droite (<em>Dans le groupe</em>) montre ce que le groupe contient pour cette catégorie.</li>
+<li>Cliquez sur <strong>Enregistrer</strong>. Il n'est activé que lorsque le groupe possède un nom et un rôle utilisateur.</li>
 </ol>
 <div class="admonition tip">
-<p class="admonition-title">Option Tout</p>
-<p>Pour les types de métriques et d'autres catégories, vous pouvez voir une option « Tout … ». La sélectionner applique la restriction à chaque élément de ce type.</p>
+<p class="admonition-title">Option Tous</p>
+<p>Chaque catégorie, sauf Rôle utilisateur, propose une option « Tous … » en haut de sa liste (par exemple <em>Tous les formulaires</em>). La choisir remplace les éléments individuels ; ajouter un élément individuel la supprime. Pour les métriques hiérarchiques, ajouter une valeur ajoute aussi ses enfants.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Groupes administrateurs</p>
+<p>Si le rôle du groupe est un rôle administrateur, <strong>Formulaires</strong> et <strong>Report schema</strong> sont toujours définis sur <strong>Tous</strong> et verrouillés, comme l'indique une icône de cadenas : seul un groupe positionné sur <strong>Tous</strong> pour ces éléments peut créer de nouveaux schémas. Choisissez un autre rôle pour lever le verrou.</p>
 </div>
 <h2 id="modifier-ou-consulter-un-groupe">Modifier ou consulter un groupe</h2>
 <ol>
-<li>Dans le tableau, cliquez sur l'icône <strong>Modifier</strong> (edit) ou <strong>Voir</strong> (view) du groupe que vous souhaitez modifier.</li>
-<li>Dans la boîte de dialogue de l'éditeur, vous pouvez :<ul>
-<li>Modifier le <strong>Nom du groupe</strong>.</li>
-<li>Ajouter ou supprimer des éléments dans n'importe quel onglet (uniquement en mode édition).</li>
-<li>Supprimer des éléments en cliquant sur l'icône <strong>supprimer</strong> à côté de ceux-ci.</li>
+<li>
+<p>Dans le tableau, cliquez sur l'icône <strong>Modifier</strong> ou <strong>Voir</strong> du groupe. La page <em>Modifier le groupe</em> ou <em>Voir le groupe</em> s'ouvre.</p>
+<p><img alt="Éditeur de modification d'un groupe de permissions utilisateur" src="../../imgs/administration/groups-list-edit.png" /></p>
+</li>
+<li>
+<p>En mode modification, vous pouvez :</p>
+<ul>
+<li>Modifier le <strong>Nom de groupe</strong>.</li>
+<li>Ajouter des éléments depuis le panneau de gauche, ou les retirer du panneau de droite avec le bouton × (<strong>Vider</strong> supprime tous les éléments de la catégorie).</li>
 </ul>
 </li>
-<li>Cliquez sur <strong>Enregistrer</strong> pour appliquer les modifications (le mode consultation n'affiche qu'un bouton <strong>Fermer</strong>).</li>
+<li>Cliquez sur <strong>Enregistrer</strong> pour appliquer les modifications. Il n'y a pas de bouton Annuler : pour quitter sans enregistrer, revenez en arrière via le fil d'Ariane.</li>
 </ol>
+<p>En mode consultation, tout est en lecture seule et il n'y a pas de bouton <strong>Enregistrer</strong>.</p>
 <h2 id="supprimer-un-groupe">Supprimer un groupe</h2>
 <ol>
-<li>Cliquez sur l'icône <strong>supprimer</strong> du groupe.</li>
+<li>Cliquez sur la ligne du groupe pour la sélectionner, puis cliquez sur <strong>Supprimer</strong> dans la barre d'actions.</li>
 <li>Confirmez la suppression dans la boîte de dialogue qui apparaît.</li>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Action irréversible</p>
-<p>La suppression d'un groupe est irréversible. Assurez-vous qu'aucun utilisateur ne dépend de ce groupe avant de le supprimer.</p>
+<p>La suppression d'un groupe est irréversible. Assurez-vous qu'aucun utilisateur ne dépend du groupe avant de le supprimer.</p>
 </div>
-<h2 id="pages-connexes">Pages connexes</h2>
+<h2 id="pages-associées">Pages associées</h2>
 <ul>
-<li><a href="../users-list/">Liste des utilisateurs</a> – gérez les comptes utilisateurs individuels et leur affectation à des groupes.</li>
-<li><a href="../../metrics/">Métriques</a> – configurez les types de métriques pouvant être attribués aux groupes (zones, cas, projets, etc.).</li>
-<li><a href="../../forms/edit-form-schema/">Schémas de formulaire</a> – créez et modifiez les schémas de formulaire pouvant être liés aux groupes.</li>
-<li><a href="../../reports/edit-report-schema/">Schémas de rapport</a> – gérez les schémas de rapport disponibles pour les groupes.</li>
-<li><a href="../../interface/">Présentation de l'interface</a> – découvrez la navigation et la disposition générale.</li>
+<li><a href="../users-list/">Liste des utilisateurs</a> – gérez les comptes utilisateurs individuels et leurs affectations de groupe.</li>
+<li><a href="../../metrics/">Métriques</a> – configurez les types de métriques pouvant être attribués aux groupes (domaines, cas, projets, etc.).</li>
+<li><a href="../../forms/edit-form-schema/">Formulaires</a> – créez et modifiez les formulaires pouvant être liés aux groupes.</li>
+<li><a href="../../reports/edit-report-schema/">Report schemas</a> – gérez les report schemas disponibles pour les groupes.</li>
+<li><a href="../../interface/">Vue d'ensemble de l'interface</a> – découvrez la navigation et la disposition générale.</li>
 </ul>
 
 

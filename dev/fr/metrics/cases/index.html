@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Gérez les cas dans Dino — créez, modifiez, visualisez, filtrez, exportez et organisez les fiches de cas à l'aide d'un tableau de données structuré.">
+        <meta name="description" content="Gérer les cas dans Dino — créez, modifiez, consultez, imprimez, filtrez et exportez les enregistrements de cas depuis un tableau de données structuré.">
       
       
       
@@ -1053,10 +1053,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#actions-sur-un-cas-individuel" class="md-nav__link">
+  <a href="#travailler-avec-un-seul-cas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Actions sur un cas individuel
+        Travailler avec un seul cas
       
     </span>
   </a>
@@ -1064,10 +1064,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#actions-groupées" class="md-nav__link">
+  <a href="#travailler-avec-plusieurs-cas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Actions groupées
+        Travailler avec plusieurs cas
       
     </span>
   </a>
@@ -1075,10 +1075,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#créer-un-nouveau-cas" class="md-nav__link">
+  <a href="#créer-un-cas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Créer un nouveau cas
+        Créer un cas
       
     </span>
   </a>
@@ -1097,10 +1097,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#filtrage-et-recherche" class="md-nav__link">
+  <a href="#rechercher-et-filtrer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Filtrage et recherche
+        Rechercher et filtrer
       
     </span>
   </a>
@@ -1112,17 +1112,6 @@
     <span class="md-ellipsis">
       
         Exporter des cas
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#personnaliser-le-tableau" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Personnaliser le tableau
       
     </span>
   </a>
@@ -1487,6 +1476,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Espace utilisateur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1525,10 +1541,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#actions-sur-un-cas-individuel" class="md-nav__link">
+  <a href="#travailler-avec-un-seul-cas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Actions sur un cas individuel
+        Travailler avec un seul cas
       
     </span>
   </a>
@@ -1536,10 +1552,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#actions-groupées" class="md-nav__link">
+  <a href="#travailler-avec-plusieurs-cas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Actions groupées
+        Travailler avec plusieurs cas
       
     </span>
   </a>
@@ -1547,10 +1563,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#créer-un-nouveau-cas" class="md-nav__link">
+  <a href="#créer-un-cas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Créer un nouveau cas
+        Créer un cas
       
     </span>
   </a>
@@ -1569,10 +1585,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#filtrage-et-recherche" class="md-nav__link">
+  <a href="#rechercher-et-filtrer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Filtrage et recherche
+        Rechercher et filtrer
       
     </span>
   </a>
@@ -1584,17 +1600,6 @@
     <span class="md-ellipsis">
       
         Exporter des cas
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#personnaliser-le-tableau" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Personnaliser le tableau
       
     </span>
   </a>
@@ -1630,75 +1635,69 @@
 
 
 <h1 id="cas">Cas</h1>
-<p>La page Cas vous offre un espace de travail centralisé pour suivre et gérer les cas individuels. Chaque cas est un enregistrement structuré pouvant contenir un nom, un code, une image, une relation parent, des notes et des attributs supplémentaires. Vous pouvez créer de nouveaux cas, modifier ceux qui existent déjà, consulter leurs détails, supprimer des enregistrements et exporter votre liste de cas — le tout depuis un seul tableau interactif.</p>
-<p><img alt="Main view of the Cases page" src="../../imgs/metrics/cases.png" /></p>
+<p>La page Cas est un espace de travail centralisé pour suivre et gérer les enregistrements de cas individuels. Chaque cas est un enregistrement structuré qui peut contenir un nom, un code, une image, une relation parent, des notes et des attributs supplémentaires. Depuis cette page, vous pouvez créer de nouveaux cas, modifier ou consulter les cas existants, imprimer des fiches de cas, supprimer des enregistrements et exporter votre liste de cas — le tout à partir d'un seul tableau interactif.</p>
+<p><img alt="Vue principale de la page Cas" src="../../imgs/metrics/cases.png" /></p>
 <h2 id="aperçu-du-tableau">Aperçu du tableau</h2>
-<p>Le tableau principal affiche les colonnes suivantes par défaut :</p>
+<p>Le tableau affiche les colonnes suivantes par défaut :</p>
 <ul>
-<li><strong>Nom du cas</strong> – Le nom que vous attribuez au cas (triable).</li>
-<li><strong>Code</strong> – Un code généré par le système ou attribué manuellement (en lecture seule après la création).</li>
-<li><strong>Image du cas</strong> – Un fichier image téléversé représentant le cas.</li>
-<li><strong>Cas parent</strong> – Le nom du cas parent auquel ce cas appartient, le cas échéant.</li>
+<li><strong>Case Name</strong> – Le nom attribué au cas (triable).</li>
+<li><strong>Code</strong> – Un code identifiant le cas. Dino le génère : vous ne le saisissez pas, et il n'est pas affiché dans la boîte de dialogue du cas.</li>
+<li><strong>Case Image</strong> – Un fichier image téléversé représentant le cas.</li>
+<li><strong>Cas parent</strong> – Le nom du cas parent auquel ce cas appartient.</li>
 </ul>
-<p>Des colonnes supplémentaires (telles que <strong>ID</strong>, <strong>Notes</strong>, <strong>Date de création</strong> et <strong>Attributs supplémentaires</strong>) sont masquées par défaut. Vous pouvez personnaliser les colonnes affichées en cliquant sur le bouton <strong>Personnalisez les colonnes</strong> dans l'en-tête du tableau.</p>
-<h2 id="actions-sur-un-cas-individuel">Actions sur un cas individuel</h2>
-<p>À droite de chaque ligne, vous trouverez des icônes correspondant aux actions suivantes :</p>
+<p>Les colonnes supplémentaires — <strong>ID</strong>, <strong>Notes</strong>, <strong>Date de création</strong> et <strong>Attributs supplémentaires</strong> — sont masquées par défaut. Cliquez sur <strong>Colonnes</strong> au-dessus du tableau pour choisir les colonnes à afficher. Vous pouvez également faire glisser les en-têtes de colonnes pour les réorganiser, et la page affiche le nombre total d'éléments trouvés à côté du paginateur.</p>
+<h2 id="travailler-avec-un-seul-cas">Travailler avec un seul cas</h2>
+<p>Survolez une ligne pour afficher les icônes <strong>Modifier</strong> et <strong>Voir</strong>. Cliquez sur la ligne pour la sélectionner : la barre d'actions au-dessus du tableau affiche alors toutes les actions :</p>
 <ul>
-<li><strong>Modifier</strong> – Ouvre une boîte de dialogue permettant de modifier les détails du cas.</li>
+<li><strong>Modifier</strong> – Ouvre une boîte de dialogue dans laquelle vous pouvez modifier les détails du cas.</li>
 <li><strong>Imprimer</strong> – Génère une fiche PDF imprimable pour le cas.</li>
-<li><strong>Visualiser</strong> – Ouvre une boîte de dialogue en lecture seule permettant de consulter les informations du cas.</li>
+<li><strong>Voir</strong> – Ouvre une boîte de dialogue en lecture seule pour consulter les informations du cas.</li>
 <li><strong>Supprimer</strong> – Ouvre une boîte de dialogue de confirmation pour supprimer définitivement le cas.</li>
 </ul>
-<p>Cliquez sur l'icône <strong>Plus</strong> (trois points verticaux) pour afficher toutes les actions disponibles si certaines sont masquées.</p>
-<h2 id="actions-groupées">Actions groupées</h2>
-<p>Sélectionnez plusieurs cas à l'aide des cases à cocher de la première colonne. Dès qu'au moins un cas est sélectionné, un bouton <strong>Supprimer</strong> apparaît en haut du tableau. Vous pouvez supprimer tous les cas sélectionnés en une seule fois.</p>
-<div class="admonition warning">
-<p class="admonition-title">La suppression groupée est définitive</p>
-<p>Les cas supprimés ne peuvent pas être récupérés. Utilisez l'action de suppression groupée avec prudence.</p>
-</div>
-<h2 id="créer-un-nouveau-cas">Créer un nouveau cas</h2>
+<h2 id="travailler-avec-plusieurs-cas">Travailler avec plusieurs cas</h2>
 <ol>
-<li>Cliquez sur le bouton d'action flottant <strong>Ajouter</strong> (icône plus) en bas à droite de la page.</li>
-<li>Une boîte de dialogue s'ouvre. Remplissez les champs obligatoires :</li>
-<li><strong>Nom du cas</strong> – Saisissez un nom descriptif.</li>
-<li><strong>Code</strong> – (Facultatif) Indiquez un code unique. Ce champ est en lecture seule après la création.</li>
-<li><strong>Image du cas</strong> – Téléversez un fichier image.</li>
-<li><strong>Cas parent</strong> – Associez éventuellement ce cas à un cas parent existant.</li>
+<li>Sélectionnez une ou plusieurs lignes à l'aide des cases à cocher de la première colonne.</li>
+<li>Lorsqu'une seule ligne est sélectionnée, toutes ses actions deviennent disponibles dans la barre d'actions au-dessus du tableau.</li>
+<li>Lorsque plusieurs lignes sont sélectionnées, seules les actions groupées restent disponibles — actuellement <strong>Supprimer</strong>.</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">La suppression est définitive</p>
+<p>Les cas supprimés ne peuvent pas être récupérés. Vérifiez attentivement votre sélection avant de confirmer une suppression groupée. Un cas utilisé par des form, ou comportant des cas enfants, ne peut pas être supprimé ; voir <a href="../">Metrics</a>.</p>
+</div>
+<h2 id="créer-un-cas">Créer un cas</h2>
+<ol>
+<li>Cliquez sur <strong>Add new CASE</strong> dans la barre d'outils au-dessus du tableau.</li>
+<li>Dans la boîte de dialogue, renseignez les détails du cas. Les champs facultatifs sont marqués <em>(optional)</em>.<ul>
+<li><strong>Case Name</strong> – Saisissez un nom descriptif.</li>
+<li><strong>Case Image</strong> – Téléversez un fichier image.</li>
+<li><strong>Cas parent</strong> – Liez éventuellement ce cas à un cas parent existant.</li>
 <li><strong>Notes</strong> – Ajoutez toute note pertinente.</li>
+</ul>
+</li>
 <li>Cliquez sur <strong>Enregistrer</strong> pour créer le cas.</li>
 </ol>
 <h2 id="importer-des-cas">Importer des cas</h2>
-<p>Utilisez le bouton d'action flottant <strong>Importer</strong> (icône de téléversement vers le cloud) pour importer des cas en masse depuis un fichier. Les formats pris en charge sont définis par votre administrateur système.</p>
-<h2 id="filtrage-et-recherche">Filtrage et recherche</h2>
-<p>La barre de recherche située en haut vous permet de filtrer les cas par :</p>
+<p>Cliquez sur <strong>Import CASE</strong> dans la barre d'outils pour téléverser des cas en masse à partir d'un fichier <code>.xls</code>, <code>.xlsx</code> ou <code>.csv</code>. La page d'importation vous guide à travers le téléversement du fichier, le mappage de ses colonnes et la vérification du résultat. Les cas dont le nom existe déjà sont réutilisés, et non mis à jour ; le code est généré par Dino et ne peut pas être importé.</p>
+<h2 id="rechercher-et-filtrer">Rechercher et filtrer</h2>
+<p>Utilisez la barre d'outils pour affiner le tableau :</p>
 <ul>
-<li><strong>Mot-clé</strong> – Effectue une recherche dans tous les champs affichés.</li>
-<li><strong>Plage de dates</strong> – Filtre par date de création (Du / Au).</li>
-<li><strong>Filtres supplémentaires</strong> – Sélectionnez parmi des filtres prédéfinis tels que la métrique, le statut, l'utilisateur ou le groupe d'utilisateurs.</li>
+<li><strong>Recherche par mot-clé</strong> – Saisissez du texte dans le champ de recherche pour trouver une correspondance dans les champs affichés.</li>
+<li><strong>Filtres</strong> – Ouvrez le panneau de filtres pour définir un <strong>De date</strong> et un <strong>À ce jour</strong>, qui filtrent par date de création, puis cliquez sur <strong>Chercher</strong>. Le badge sur le bouton <strong>Filtres</strong> indique le nombre de filtres actifs.</li>
+<li>Les filtres appliqués apparaissent sous forme de puces sous la barre d'outils ; cliquez sur l'icône d'annulation d'une puce pour supprimer ce filtre.</li>
 </ul>
-<p>Après avoir appliqué des filtres, vous pouvez enregistrer la combinaison sous forme de <strong>préréglage</strong> pour la réutiliser rapidement. Pour enregistrer un préréglage :</p>
-<ol>
-<li>Ouvrez le panneau de filtres.</li>
-<li>Saisissez un nom dans le champ de préréglage.</li>
-<li>Cliquez sur <strong>Enregistrer</strong>.<br />
-Pour appliquer un préréglage enregistré, sélectionnez-le dans la liste et cliquez sur <strong>Appliquer</strong>.</li>
-</ol>
 <h2 id="exporter-des-cas">Exporter des cas</h2>
-<p>Cliquez sur le bouton <strong>Exporter</strong> (icône de téléchargement depuis le cloud) dans la barre de filtres. Choisissez le format d'export (par exemple CSV ou Excel) et sélectionnez les colonnes à inclure. Le fichier exporté contiendra tous les cas actuellement visibles, en tenant compte des filtres actifs.</p>
-<h2 id="personnaliser-le-tableau">Personnaliser le tableau</h2>
-<ul>
-<li><strong>Trier</strong> – Cliquez sur l'en-tête d'une colonne triable (par exemple <strong>Nom du cas</strong>, <strong>Date de création</strong>) pour ordonner le tableau.</li>
-<li><strong>Sélecteur de colonnes</strong> – Ouvrez la boîte de dialogue du sélecteur de colonnes pour afficher ou masquer des colonnes.</li>
-<li><strong>Développer les lignes</strong> – Certains cas peuvent comporter des sous-éléments (d'autres cas liés en tant que détails). Cliquez sur une ligne pour la développer et voir les enregistrements associés.</li>
-</ul>
-<p>La page affiche également un <strong>fil d'Ariane</strong> en haut, qui vous permet de revenir à la section Métriques principale.</p>
+<ol>
+<li>Cliquez sur <strong>Exportation</strong> dans la barre d'outils.</li>
+<li>Choisissez ce qu'il faut exporter : <em>Éléments de la page</em> (par défaut), les éléments correspondant à vos filtres, ou <em>Tous les éléments</em>.</li>
+<li>Choisissez le format : <em>csv</em>, <em>xlsx</em> ou <em>splitted xlsx</em>, puis cliquez sur <strong>Exportation</strong>.</li>
+</ol>
 <h2 id="pages-associées">Pages associées</h2>
 <ul>
-<li><a href="../">Vue d'ensemble des métriques</a> – Revenez au tableau de bord principal des métriques.</li>
-<li><a href="../areas/">Zones thématiques</a> – Organisez les cas par zone thématique.</li>
-<li><a href="../locations/">Emplacements</a> – Associez les cas à des emplacements géographiques.</li>
-<li><a href="../organizations/">Organisations</a> – Liez les cas à des organisations.</li>
-<li><a href="../projects/">Projets</a> – Regroupez les cas dans des projets.</li>
+<li><a href="../">Metrics Overview</a> – Revenir au tableau de bord principal des métriques.</li>
+<li><a href="../areas/">Thematic Areas</a> – Organiser les cas par domaine thématique.</li>
+<li><a href="../locations/">Locations</a> – Associer les cas à des localisations géographiques.</li>
+<li><a href="../organizations/">Organizations</a> – Lier les cas à des organisations.</li>
+<li><a href="../projects/">Projects</a> – Regrouper les cas sous des projets.</li>
 </ul>
 
 

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Una panoramica dell'area Metriche in Dino — i tipi di dati di riferimento utilizzati per classificare e collegare i dati dei form e i report.">
+        <meta name="description" content="Una panoramica dell'area Metriche in Dino — i tipi di dati di riferimento usati per classificare e collegare i dati dei form e i report.">
       
       
       
@@ -1421,6 +1421,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Area utente
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1498,17 +1525,17 @@
 
 
 <h1 id="metriche">Metriche</h1>
-<p>Le metriche sono le categorie di dati di riferimento utilizzate in tutto Dino per classificare, organizzare e filtrare i dati raccolti. Le metriche possono essere associate ai form raccolti e poi utilizzate per definire visualizzazioni sui dati della tua installazione. Per esempio, le metriche possono essere utilizzate per definire i permessi degli utenti: a un determinato utente può essere concesso l'accesso solo ad alcuni valori specifici delle metriche. Questo può essere utile, per esempio, in un'organizzazione presente in più paesi, se vuoi limitare l'accesso di alcuni utenti ai soli dati del paese in cui operano. Allo stesso modo, puoi limitare l'accesso degli utenti Dino seguendo altri criteri utilizzando altre metriche, come la metrica progetto, per limitare l'accesso solo ad alcuni progetti, o la metrica organizzazione, per limitare l'accesso solo ai dati di alcuni partner.</p>
-<p>Oltre a essere utilizzate per limitare l'accesso ai dati, le metriche possono anche essere usate per facilitare i filtri e le aggregazioni. Per esempio, potrei voler contare quanti form sono stati raccolti per un determinato paese. In questo caso posso filtrare i dati dei miei form in base al valore della metrica posizione. I filtri possono anche trarre vantaggio dalla struttura gerarchica delle metriche. Per esempio, se ho una struttura di posizioni su, diciamo, tre livelli, perché mappo le province (cioè un valore di metrica per ogni provincia), raggruppate in regioni (cioè un valore di metrica per ogni regione, utilizzato anche come genitore per le province), raggruppate in paesi (cioè un valore di metrica per ogni paese, utilizzato come genitore per le regioni). Quindi, in questo caso potrei filtrare tutti i form di una determinata regione semplicemente filtrando la regione, selezionando così tutte le province che condividono la stessa regione.</p>
-<p>Questo meccanismo può anche essere utilizzato quando si generano report. I dati di un report di un determinato report schema possono essere generati utilizzando un particolare valore di una metrica. Ciò implica che il report schema viene applicato a tutti i form che hanno lo stesso valore di metrica, seguendo una gerarchia di valori di metrica.</p>
-<p>Infine, le metriche possono essere utilizzate per collegare diversi dati dei form. Per esempio, posso avere un form per i dati personali dei beneficiari - uno per persona - e poi un altro form per le loro visite mediche - più di uno per persona. La metrica caso può essere utilizzata per collegare il form dei dati personali ai form delle visite e anche per copiare alcuni dati del form personale, come la data di nascita, nei form delle visite mediche.</p>
+<p>Le metriche sono le categorie di dati di riferimento utilizzate in Dino per classificare, organizzare e filtrare i dati raccolti. Le metriche possono essere associate ai form raccolti e poi utilizzate per definire visualizzazioni sui dati della tua installazione. Ad esempio, le metriche possono essere usate per definire i permessi degli utenti: a un determinato utente può essere concesso l'accesso solo ad alcuni valori specifici delle metriche. Questo può essere utile, ad esempio, in un'organizzazione presente in più paesi, se vuoi limitare alcuni utenti ad accedere solo ai dati del paese in cui operano. Allo stesso modo, puoi limitare l'accesso degli utenti Dino seguendo altri criteri usando altre metriche, come la metrica progetto, per limitare l'accesso solo ad alcuni progetti, o la metrica organizzazione, per limitare l'accesso solo ai dati di alcuni partner.</p>
+<p>Oltre che per limitare l'accesso ai dati, le metriche possono essere utilizzate anche per facilitare i filtri e le aggregazioni. Ad esempio, potrei voler contare quanti form sono stati raccolti per un determinato paese. In questo caso posso filtrare i dati dei miei form in base al valore della metrica posizione. I filtri possono trarre vantaggio anche dalla struttura gerarchica delle metriche. Ad esempio, se ho una struttura di posizioni su, diciamo, tre livelli, perché mappo le province (cioè un valore di metrica per ogni provincia), raggruppate in regioni (cioè un valore di metrica per ogni regione, usato anche come genitore delle province), raggruppate in paesi (cioè un valore di metrica per ogni paese, usato come genitore delle regioni). Quindi, in questo caso potrei filtrare tutti i form di una determinata regione semplicemente filtrando la regione, selezionando così tutte le province che condividono la stessa regione.</p>
+<p>Questo meccanismo può essere utilizzato anche quando si generano report. I dati di un report di un determinato report schema possono essere generati utilizzando un particolare valore di una metrica. Questo implica che il report schema viene applicato a tutti i form che hanno lo stesso valore di metrica, seguendo una gerarchia di valori di metrica.</p>
+<p>Infine, le metriche possono essere utilizzate per collegare dati di form diversi. Ad esempio, posso avere un form per i dati personali dei beneficiari - uno per persona - e poi un altro form per le loro visite mediche - più di uno per persona. La metrica caso può essere utilizzata per collegare il form dei dati personali ai form delle visite e anche per copiare alcuni dei dati del form personale, come la data di nascita, nei form delle visite mediche.</p>
 <p>I diversi modi di utilizzare le metriche rendono questa entità uno strumento potente per gestire i dati.</p>
 <p>La sezione Metriche è dove gestisci gli elenchi dei valori disponibili per ciascuna categoria. Funge da hub centrale per tutti i tuoi dati di riferimento.</p>
-<p><img alt="Vista principale della pagina Metriche" src="../imgs/metrics/index.png" /></p>
+<p><img alt="Visualizzazione principale della pagina Metriche" src="../imgs/metrics/index.png" /></p>
 <hr />
 <h2 id="tipi-di-metrica">Tipi di metrica</h2>
-<p>La pagina principale mostra i tipi di metrica attivi nella tua installazione Dino. Ogni tipo è mostrato come una scheda con un'icona e un'etichetta. Clicca su una qualsiasi scheda per aprire la sua pagina di gestione.</p>
-<p>A seconda della configurazione del tuo sistema, alcuni o tutti i seguenti tipi di metrica possono essere disponibili:</p>
+<p>La pagina principale mostra i tipi di metrica attivi nella tua installazione Dino. Ogni tipo è mostrato come una scheda con un'icona e un'etichetta. Clicca su una scheda qualsiasi per aprire la sua pagina di gestione.</p>
+<p>A seconda della configurazione del tuo sistema, alcuni o tutti i seguenti tipi di metrica potrebbero essere disponibili:</p>
 <table>
 <thead>
 <tr>
@@ -1540,20 +1567,20 @@
 </tbody>
 </table>
 <div class="admonition tip">
-<p class="admonition-title">Accesso alle metriche</p>
-<p>Puoi accedere all'area Metriche cliccando su <strong>Metriche</strong> nel menu principale dell'applicazione.</p>
+<p class="admonition-title">Accedere alle Metriche</p>
+<p>Puoi navigare verso l'area Metriche cliccando su <strong>Metriche</strong> nel menu principale dell'applicazione.</p>
 </div>
 <hr />
 <h2 id="cosa-puoi-fare">Cosa puoi fare</h2>
 <p>Dalla pagina principale delle Metriche, puoi:</p>
 <ol>
 <li><strong>Visualizzare tutti i tipi di metrica attivi</strong> disponibili per i tuoi dati.</li>
-<li><strong>Accedere a un tipo di metrica specifico</strong> cliccando sulla sua scheda. Questo ti porta a una pagina dedicata dove puoi gestire l'elenco dei valori per quel tipo (ad es., aggiungere una nuova posizione o modificare il nome di un progetto).</li>
-<li><strong>Utilizzare il percorso di navigazione</strong> nella parte superiore della pagina per tenere traccia del tuo percorso all'interno della sezione Metriche.</li>
+<li><strong>Navigare verso un tipo di metrica specifico</strong> cliccando sulla sua scheda. Questo ti porta a una pagina dedicata dove puoi gestire l'elenco dei valori per quel tipo (ad esempio, aggiungere una nuova posizione o modificare il nome di un progetto).</li>
+<li><strong>Usare il percorso di navigazione</strong> in cima alla pagina per seguire il tuo percorso di navigazione all'interno della sezione Metriche.</li>
 </ol>
-<p>Per istruzioni dettagliate su come aggiungere, modificare o eliminare valori all'interno di un tipo di metrica specifico, consulta la documentazione per ogni tipo di metrica:</p>
+<p>Per istruzioni dettagliate su come aggiungere, modificare o eliminare valori all'interno di un tipo di metrica specifico, consulta la documentazione per ciascun tipo di metrica:</p>
 <ul>
-<li><a href="areas/">Aree</a></li>
+<li><a href="areas/">Aree tematiche</a></li>
 <li><a href="cases/">Casi</a></li>
 <li><a href="locations/">Posizioni</a></li>
 <li><a href="organizations/">Organizzazioni</a></li>
@@ -1563,17 +1590,17 @@
 <h2 id="navigare-nella-sezione-metriche">Navigare nella sezione Metriche</h2>
 <ol>
 <li>Nella pagina principale delle Metriche, esamina le schede per ciascun tipo di metrica disponibile.</li>
-<li>Clicca sulla scheda del tipo di metrica che vuoi gestire (ad es., <strong>Posizioni</strong>).</li>
+<li>Clicca sulla scheda del tipo di metrica che vuoi gestire (ad esempio, <strong>Posizioni</strong>).</li>
 <li>Verrai portato a una pagina dedicata per quel tipo di metrica, dove puoi visualizzare, aggiungere, modificare o eliminare valori specifici.</li>
-<li>Utilizza il percorso di navigazione nella parte superiore della pagina per tornare facilmente alla pagina principale delle Metriche o ad altre sezioni.</li>
+<li>Usa il percorso di navigazione in cima alla pagina per tornare facilmente alla pagina principale delle Metriche o ad altre sezioni.</li>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Configurazione del sistema</p>
 <p>I tipi di metrica disponibili sono configurati dall'amministratore del tuo sistema. Se non vedi un tipo di metrica specifico di cui hai bisogno, contatta il tuo amministratore.</p>
 </div>
 <div class="admonition warning">
-<p class="admonition-title">Eliminazione di un valore di metrica</p>
-<p>Questo vale per tutte le metriche. L'eliminazione di un valore di metrica, per esempio una determinata posizione o un caso, può influire sui form che lo referenziano. Ecco perché, prima di eliminare un valore di metrica, il sistema verifica se c'è qualche elemento in Dino associato a quel valore. Se esiste un dato di form, o un dato di report o qualsiasi riferimento all'interno dei permessi, l'eliminazione di quel valore non sarà consentita. Assicurati che nessun record attivo dipenda da un valore di metrica prima di rimuoverlo.</p>
+<p class="admonition-title">Eliminare un valore di metrica</p>
+<p>Questo vale per tutte le metriche. Prima di eliminare un valore di metrica, ad esempio una determinata posizione o un caso, Dino verifica se è ancora in uso. Se qualche form lo utilizza, o se ha valori figli, l'eliminazione viene rifiutata (<em>Some forms use these metrics. You cannot delete them.</em> / <em>Some metrics have children. You cannot delete them.</em>). Se solo i report lo utilizzano, ricevi un avviso e puoi comunque confermare. I permessi di gruppo che fanno riferimento al valore <strong>non</strong> vengono controllati: rimuovilo da qualsiasi gruppo prima di eliminarlo.</p>
 </div>
 
 

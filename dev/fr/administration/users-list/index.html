@@ -1368,10 +1368,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#recherche-et-filtres" class="md-nav__link">
+  <a href="#rechercher-et-filtrer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Recherche et filtres
+        Rechercher et filtrer
       
     </span>
   </a>
@@ -1410,6 +1410,17 @@
     <span class="md-ellipsis">
       
         Modifier un utilisateur
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pages-associées" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pages associées
       
     </span>
   </a>
@@ -1456,6 +1467,33 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Espace utilisateur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1510,10 +1548,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#recherche-et-filtres" class="md-nav__link">
+  <a href="#rechercher-et-filtrer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Recherche et filtres
+        Rechercher et filtrer
       
     </span>
   </a>
@@ -1558,6 +1596,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#pages-associées" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pages associées
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1576,55 +1625,62 @@
 
 
 <h1 id="liste-des-utilisateurs">Liste des utilisateurs</h1>
-<p>La page Liste des utilisateurs présente l'ensemble des comptes utilisateurs de votre organisation Dino. Vous pouvez y consulter les détails des utilisateurs, modifier les comptes et créer de nouveaux utilisateurs.</p>
+<p>La page Liste des utilisateurs présente la liste complète de tous les comptes utilisateurs de votre organisation Dino. Vous pouvez y consulter les détails des utilisateurs, modifier les comptes et créer de nouveaux utilisateurs.</p>
 <p><img alt="Vue principale de la page Liste des utilisateurs" src="../../imgs/administration/users-list.png" /></p>
 <h2 id="comprendre-la-liste-des-utilisateurs">Comprendre la liste des utilisateurs</h2>
 <p>La liste principale affiche les informations clés de chaque utilisateur :</p>
 <ul>
-<li><strong>E-mail :</strong> l'adresse e-mail de connexion de l'utilisateur.</li>
-<li><strong>Nom complet :</strong> le nom associé au compte.</li>
-<li><strong>Désactivé :</strong> un bouton bascule indiquant si le compte est actif ou désactivé. Vous pouvez cliquer directement sur ce bouton dans la liste pour modifier le statut.</li>
+<li><strong>Email :</strong> L'adresse e-mail de connexion de l'utilisateur.</li>
+<li><strong>Nom et prénom :</strong> Le nom associé au compte.</li>
+<li><strong>Disabled :</strong> Un bouton à bascule indiquant si le compte est actif ou désactivé. Vous pouvez cliquer directement sur ce bouton dans la liste pour changer le statut.</li>
 </ul>
-<p>Vous pouvez trier la liste par la colonne <strong>Date de création</strong>. La colonne <strong>ID</strong> est masquée par défaut.</p>
+<p>Vous pouvez trier la liste selon les colonnes <strong>Email</strong>, <strong>Nom et prénom</strong> ou <strong>Date de création</strong>. Les colonnes <strong>ID</strong> et <strong>Date de création</strong> sont masquées par défaut. Pour afficher ou masquer des colonnes, cliquez sur le bouton <strong>Colonnes</strong> au-dessus de la liste, à droite, et sélectionnez celles que vous souhaitez afficher.</p>
 <h2 id="utiliser-la-liste">Utiliser la liste</h2>
-<h3 id="recherche-et-filtres">Recherche et filtres</h3>
-<p>Utilisez la barre de recherche en haut de la page pour trouver des utilisateurs par leur e-mail ou leur nom complet.</p>
-<p>Pour appliquer des filtres plus précis :</p>
+<h3 id="rechercher-et-filtrer">Rechercher et filtrer</h3>
+<p>Utilisez la barre de recherche en haut de la page pour trouver des utilisateurs par leur e-mail ou leur nom et prénom.</p>
+<p>Pour appliquer des filtres plus spécifiques :</p>
 <ol>
-<li>Cliquez sur l'icône de filtre dans la barre de recherche.</li>
-<li>Dans la section <strong>User Permission Groups</strong>, vous pouvez sélectionner un ou plusieurs groupes d'utilisateurs afin de n'afficher que les membres de ces groupes.</li>
+<li>Cliquez sur le bouton <strong>Filtres</strong> dans la barre de recherche.</li>
+<li>Définissez un <strong>De date</strong> et un <strong>À ce jour</strong> pour filtrer par date de création, et sélectionnez un ou plusieurs groupes d'utilisateurs pour restreindre la liste aux membres de ces groupes.</li>
+<li>Cliquez sur <strong>Chercher</strong> pour appliquer les filtres, ou sur <strong>Réinitialiser les filtres</strong> pour les effacer.</li>
 </ol>
+<p>Les filtres appliqués apparaissent sous forme de puces sous la barre de recherche. Cliquez sur l'icône <strong>annuler</strong> d'une puce pour supprimer ce filtre.</p>
 <h3 id="actions-sur-les-utilisateurs">Actions sur les utilisateurs</h3>
-<p>Chaque ligne d'utilisateur comporte un menu d'actions (trois points verticaux) sur la droite. Cliquez dessus pour accéder aux options suivantes :</p>
+<p>Survolez la ligne d'un utilisateur pour afficher les icônes <strong>Modifier</strong> et <strong>Voir</strong>. Cliquez n'importe où sur la ligne pour la sélectionner : la barre d'actions au-dessus de la liste affiche alors toutes les actions que vous pouvez effectuer sur l'utilisateur sélectionné :</p>
 <ul>
-<li><strong>Edit :</strong> ouvrez l'éditeur d'utilisateur pour modifier les détails du compte.</li>
-<li><strong>Delete :</strong> supprimez définitivement le compte utilisateur. Une confirmation vous sera demandée.</li>
-<li><strong>View :</strong> ouvrez une vue en lecture seule des détails de l'utilisateur.</li>
+<li><strong>Modifier :</strong> Ouvrir l'éditeur d'utilisateur pour modifier les détails du compte.</li>
+<li><strong>Voir :</strong> Ouvrir une visualisation en lecture seule des détails de l'utilisateur.</li>
+<li><strong>Delete :</strong> Supprimer définitivement le compte utilisateur. Il vous sera demandé de confirmer cette action.</li>
 </ul>
-<p>Vous pouvez également cliquer n'importe où sur la ligne d'un utilisateur pour la sélectionner, ou cliquer sur l'icône d'agrandissement pour afficher un résumé des informations de l'utilisateur directement dans la liste.</p>
 <h2 id="créer-un-nouvel-utilisateur">Créer un nouvel utilisateur</h2>
 <p>Pour ajouter un nouvel utilisateur à votre organisation :</p>
 <ol>
-<li>Cliquez sur le bouton flottant bleu <strong>+</strong> dans le coin inférieur droit de l'écran.</li>
-<li>Un formulaire s'ouvre. Saisissez les informations du nouvel utilisateur, notamment son e-mail et son nom, puis affectez-le aux groupes d'utilisateurs appropriés. Pour plus d'informations sur les groupes, consultez <a href="../groups-list/">Liste des groupes</a>.</li>
-<li>Cliquez sur <strong>Save</strong> pour créer le compte. Le nouvel utilisateur recevra un e-mail contenant les instructions pour définir son mot de passe.</li>
+<li>Cliquez sur le bouton <strong>Ajouter un nouvel utilisateur</strong> dans la barre d'outils au-dessus de la liste.</li>
+<li>Un form s'ouvrira. Saisissez le <strong>Nom et prénom</strong> et l'<strong>Email</strong> du nouvel utilisateur, et affectez-le aux groupes appropriés dans <strong>User Permission Groups</strong>. Pour plus d'informations sur les groupes, consultez <a href="../groups-list/">Liste des groupes</a>.
+    Selon la façon dont votre Dino connecte les utilisateurs, le form peut également demander un <strong>Mot de passe</strong> et <strong>Confirmez le mot de passe</strong>, d'au moins 9 caractères.</li>
+<li>Cliquez sur <strong>Enregistrer</strong> pour créer le compte.</li>
 </ol>
-<div class="admonition warning">
-<p class="admonition-title">Restriction hors ligne</p>
-<p>Le bouton <strong>+</strong> sera désactivé (affichant une icône Wi-Fi barrée) si vous n'êtes pas connecté à Internet. Il n'est pas possible de créer de nouveaux comptes utilisateurs hors ligne. Vous pouvez toutefois consulter et modifier les utilisateurs existants hors ligne.</p>
+<p>Le bouton <strong>Enregistrer</strong> reste indisponible tant que tous les champs obligatoires ne sont pas correctement remplis.</p>
+<div class="admonition tip">
+<p class="admonition-title">Modes Voir et Modifier</p>
+<p>Le même form est utilisé pour créer, modifier et consulter des utilisateurs. En mode <strong>Voir</strong>, tous les champs sont en lecture seule et seul le bouton <strong>Fermer</strong> est affiché.</p>
 </div>
 <h2 id="modifier-un-utilisateur">Modifier un utilisateur</h2>
 <p>Pour modifier les informations d'un utilisateur existant :</p>
 <ol>
-<li>Cliquez sur le menu d'actions (trois points) sur la ligne de l'utilisateur.</li>
-<li>Sélectionnez <strong>Edit</strong>.</li>
-<li>Dans l'éditeur, mettez à jour les détails de l'utilisateur ou ses affectations de groupes.</li>
-<li>Cliquez sur <strong>Save</strong> pour appliquer les modifications.</li>
+<li>Survolez la ligne de l'utilisateur et cliquez sur l'icône <strong>Modifier</strong>, ou sélectionnez la ligne et cliquez sur <strong>Modifier</strong> dans la barre d'actions.</li>
+<li>Dans l'éditeur, mettez à jour le nom et prénom de l'utilisateur ou ses affectations de groupes. L'adresse e-mail ne peut pas être modifiée ici.</li>
+<li>Cliquez sur <strong>Enregistrer</strong> pour appliquer les modifications.</li>
 </ol>
 <div class="admonition tip">
 <p class="admonition-title">Désactivation rapide</p>
-<p>Vous pouvez activer ou désactiver rapidement la possibilité de connexion d'un utilisateur en cliquant sur le bouton bascule <strong>Désactivé</strong> directement dans la liste, sans ouvrir l'éditeur complet.</p>
+<p>Vous pouvez activer ou désactiver rapidement la capacité d'un utilisateur à se connecter en cliquant directement sur le bouton <strong>Disabled</strong> dans la liste, sans ouvrir l'éditeur complet.</p>
 </div>
+<h2 id="pages-associées">Pages associées</h2>
+<ul>
+<li><a href="../users/">Utilisateurs</a></li>
+<li><a href="../groups-list/">Liste des groupes</a></li>
+</ul>
 
 
 

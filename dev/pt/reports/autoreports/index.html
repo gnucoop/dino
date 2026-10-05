@@ -1432,6 +1432,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área do utilizador
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1520,21 +1547,16 @@
 
 
 <h1 id="relatórios-automáticos">Relatórios automáticos</h1>
-<p>Um relatório automático é um relatório que o Dino cria para você a partir de um form schema. Você não
-o escreve sozinho: você o ativa ao editar o form schema, e o Dino cria
-o report schema e um primeiro relatório para você.</p>
-<p>Use um relatório automático quando quiser ver os dados que um form coleta sem projetar um
-relatório primeiro. Quando você precisar de controle total sobre o layout, os cálculos ou os
-gráficos, construa o relatório com o <a href="../xlsreport/">formato XLSReport</a>.</p>
+<p>Um relatório automático é um relatório que o Dino cria para você a partir de um form schema. Você não o escreve por conta própria: você o ativa ao editar o form schema, e o Dino cria o report schema e um primeiro relatório para você.</p>
+<p>Use um relatório automático quando quiser ver os dados que um form coleta sem antes projetar um relatório. Quando precisar de controle total sobre o layout, os cálculos ou os gráficos, crie o relatório com o <a href="../xlsreport/">formato XLSReport</a>.</p>
 <h2 id="ativar-um-relatório-automático">Ativar um relatório automático</h2>
 <ol>
-<li>Abra a seção <strong>Forms</strong> e selecione o form schema para o qual você quer o relatório.</li>
-<li>Vá até a aba <strong>Configurações</strong>.</li>
+<li>Abra a seção <strong>Formulários</strong> e selecione o form schema para o qual você quer o relatório.</li>
+<li>Vá para a aba <strong>Configurações</strong>.</li>
 <li>Defina <strong>Gerar relatório</strong> como <strong>Sim</strong>.</li>
 <li>Salve o form schema.</li>
 </ol>
-<p>O Dino cria o relatório alguns segundos após salvar. Você pode encontrá-lo na
-seção <a href="../">Relatórios</a>, listado como qualquer outro relatório.</p>
+<p>O Dino cria o relatório alguns segundos após salvar. Você pode encontrá-lo na seção <a href="../">Relatórios</a>, listado como qualquer outro relatório.</p>
 <h2 id="o-que-o-dino-cria">O que o Dino cria</h2>
 <p>Salvar um form schema com <strong>Gerar relatório</strong> definido como <strong>Sim</strong> produz duas coisas:</p>
 <table>
@@ -1547,27 +1569,21 @@ seção <a href="../">Relatórios</a>, listado como qualquer outro relatório.</
 <tbody>
 <tr>
 <td>Um report schema</td>
-<td>Nomeado a partir do form, com o rótulo <strong>&lt;form label&gt; Auto Report</strong> e o mesmo ícone do form. Ele permanece vinculado ao form schema a partir do qual foi gerado.</td>
+<td>Nomeado a partir do form, com o rótulo <strong>&lt;rótulo do form&gt; Auto Report</strong> e o mesmo ícone do form. Ele permanece vinculado ao form schema a partir do qual foi gerado.</td>
 </tr>
 <tr>
 <td>Um primeiro relatório</td>
-<td>Criado alguns segundos depois, datado com o dia atual e atribuído a você. Ele não tem filtro de área, caso, posição, organização ou projeto, então cobre todos os dados que o form coletou.</td>
+<td>Criado alguns segundos depois, datado com o dia atual e atribuído a você. Ele não tem filtro de área, caso, posição, organização ou projeto, portanto abrange todos os dados que o form coletou.</td>
 </tr>
 </tbody>
 </table>
-<p>Você pode abrir o relatório gerado e trabalhar com ele como qualquer outro: o relatório que ele
-produz é um ponto de partida, não um resultado fixo.</p>
+<p>Você pode abrir o relatório gerado e trabalhar com ele como qualquer outro: o relatório que ele produz é um ponto de partida, não um resultado fixo.</p>
 <h2 id="desativar-um-relatório-automático">Desativar um relatório automático</h2>
-<p>Depois que um relatório automático existe, o campo <strong>Gerar relatório</strong> no form schema fica travado em
-<strong>Sim</strong> e mostra uma dica dizendo isso. Não há como remover o relatório a partir dessa
-tela.</p>
-<p>Para removê-lo, vá até a seção <strong>Relatórios</strong> e exclua o report schema do relatório gerado
-junto com os dados dele. O campo no form schema é desbloqueado assim que o relatório
-deixa de existir, e você pode defini-lo de volta como <strong>Não</strong>.</p>
+<p>Depois que um relatório automático existe, o campo <strong>Gerar relatório</strong> no form schema fica travado em <strong>Sim</strong> e mostra uma dica nesse sentido. Não há como remover o relatório a partir dessa tela.</p>
+<p>Para removê-lo, vá para a seção <strong>Relatórios</strong> e exclua o report schema do relatório gerado junto com seus dados. O campo no form schema é desbloqueado assim que o relatório desaparece, e você pode defini-lo de volta como <strong>Não</strong>.</p>
 <h2 id="páginas-relacionadas">Páginas relacionadas</h2>
 <ul>
-<li><a href="../../forms/edit-form-schema/">Editar Form Schema</a> — onde a opção <strong>Gerar relatório</strong>
-  fica</li>
+<li><a href="../../forms/edit-form-schema/">Editar form schema</a> — onde fica a opção <strong>Gerar relatório</strong></li>
 <li><a href="../xlsreport/">O formato XLSReport</a> — para relatórios que você mesmo projeta</li>
 <li><a href="../">Relatórios</a> — a seção onde os relatórios gerados aparecem</li>
 </ul>

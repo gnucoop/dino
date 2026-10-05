@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="إنشاء أو تعديل report schema لتحديد البنية والتخطيط ومصادر البيانات للـ reports في Dino.">
+        <meta name="description" content="أنشئ مخطط تقرير أو عدّله عن طريق استيراد ملف XLSReport، ثم افحصه في المعاينة قبل الحفظ.">
       
       
       
@@ -41,7 +41,7 @@
     
     
       
-        <title>تحرير report schema - توثيق Dinoapp</title>
+        <title>تحرير مخطط التقرير - توثيق Dinoapp</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#تحرير-report-schema" class="md-skip">
+        <a href="#تحرير-مخطط-التقرير" class="md-skip">
           انتقل إلى المحتوى
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              تحرير report schema
+              تحرير مخطط التقرير
             
           </span>
         </div>
@@ -820,10 +820,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#إنشاء-report-schema-جديد" class="md-nav__link">
+  <a href="#حقول-الصفحة" class="md-nav__link">
     <span class="md-ellipsis">
       
-        إنشاء report schema جديد
+        حقول الصفحة
       
     </span>
   </a>
@@ -831,10 +831,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#تحرير-report-schema-موجود" class="md-nav__link">
+  <a href="#إنشاء-مخطط-تقرير-جديد" class="md-nav__link">
     <span class="md-ellipsis">
       
-        تحرير report schema موجود
+        إنشاء مخطط تقرير جديد
       
     </span>
   </a>
@@ -842,10 +842,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#تهيئة-بيانات-الـ-report" class="md-nav__link">
+  <a href="#تعديل-مخطط-تقرير-موجود" class="md-nav__link">
     <span class="md-ellipsis">
       
-        تهيئة بيانات الـ report
+        تعديل مخطط تقرير موجود
       
     </span>
   </a>
@@ -1432,6 +1432,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    منطقة المستخدم
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1459,10 +1486,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#إنشاء-report-schema-جديد" class="md-nav__link">
+  <a href="#حقول-الصفحة" class="md-nav__link">
     <span class="md-ellipsis">
       
-        إنشاء report schema جديد
+        حقول الصفحة
       
     </span>
   </a>
@@ -1470,10 +1497,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#تحرير-report-schema-موجود" class="md-nav__link">
+  <a href="#إنشاء-مخطط-تقرير-جديد" class="md-nav__link">
     <span class="md-ellipsis">
       
-        تحرير report schema موجود
+        إنشاء مخطط تقرير جديد
       
     </span>
   </a>
@@ -1481,10 +1508,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#تهيئة-بيانات-الـ-report" class="md-nav__link">
+  <a href="#تعديل-مخطط-تقرير-موجود" class="md-nav__link">
     <span class="md-ellipsis">
       
-        تهيئة بيانات الـ report
+        تعديل مخطط تقرير موجود
       
     </span>
   </a>
@@ -1519,51 +1546,72 @@
 
 
 
-<h1 id="تحرير-report-schema">تحرير report schema</h1>
-<p>تتيح لك صفحة <strong>تحرير report schema</strong> إنشاء report schema جديد أو تعديل واحد موجود. يحدد report schema البنية والتخطيط ومصادر البيانات للـ report في Dino.</p>
-<p><img alt="العرض الرئيسي لصفحة تحرير report schema" src="../../imgs/reports/edit-report-schema.png" /></p>
-<p>في هذه الصفحة، تقوم بتهيئة اسم الـ report ووصفه وحقول البيانات المحددة التي ستظهر في الـ report من بيانات الـ form الخاصة بك.</p>
-<h2 id="إنشاء-report-schema-جديد">إنشاء report schema جديد</h2>
-<p>لإنشاء report schema جديد:</p>
-<ol>
-<li>انتقل إلى قسم <strong>Reports</strong> في القائمة الرئيسية.</li>
-<li>انقر على <strong>Create Report Schema</strong>.</li>
-<li>يتم نقلك إلى صفحة تحرير report schema.</li>
-<li>أدخل <strong>Name</strong> وصفيًا للـ report الخاص بك.</li>
-<li>(اختياري) قدّم <strong>Description</strong> لشرح الغرض من الـ report.</li>
-<li>استورد ملف XLSReport.</li>
-<li>انقر على <strong>Save</strong> لإنشاء الـ schema.</li>
-</ol>
-<h2 id="تحرير-report-schema-موجود">تحرير report schema موجود</h2>
-<p>لتعديل report schema قمت بإنشائه مسبقًا:</p>
-<ol>
-<li>انتقل إلى قسم <strong>Reports</strong>.</li>
-<li>ابحث عن report schema الذي ترغب في تحريره في القائمة وانقر عليه.</li>
-<li>انقر على زر <strong>Edit</strong> (غالبًا ما يُمثَّل بأيقونة قلم رصاص).</li>
-<li>يتم نقلك إلى صفحة تحرير report schema مع تحميل التهيئة الحالية.</li>
-<li>أجرِ التغييرات المطلوبة على الاسم أو الوصف أو تهيئة البيانات.</li>
-<li>انقر على <strong>Save</strong> لتحديث الـ schema.</li>
-</ol>
-<div class="admonition tip">
-<p class="admonition-title">حفظ عملك</p>
-<p>تذكّر دائمًا النقر على <strong>Save</strong> بعد إجراء التغييرات. لا تُطبَّق تعديلاتك حتى تحفظ الـ schema.</p>
-</div>
-<h2 id="تهيئة-بيانات-الـ-report">تهيئة بيانات الـ report</h2>
-<p>يكمن جوهر report schema في تحديد البيانات التي ستظهر في الـ report من بيانات الـ form الخاصة بك. يمكنك عادةً:</p>
+<h1 id="تحرير-مخطط-التقرير">تحرير مخطط التقرير</h1>
+<p>تتيح لك صفحة <strong>تحرير مخطط التقرير</strong> إنشاء مخطط تقرير جديد أو تعديل مخطط موجود. يحدد مخطط التقرير البنية والتخطيط ومصادر البيانات الخاصة بتقرير في Dino. ويأتي محتواه من ملف <a href="../xlsreport/">XLSReport</a> تستورده في هذه الصفحة.</p>
+<p><img alt="العرض الرئيسي لصفحة تحرير مخطط التقرير" src="../../imgs/reports/edit-report-schema.png" /></p>
+<h2 id="حقول-الصفحة">حقول الصفحة</h2>
+<table>
+<thead>
+<tr>
+<th>الحقل</th>
+<th>الوصف</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>اسم التقرير</strong></td>
+<td>مطلوب. يجب أن يكون فريداً: إذا كان مستخدماً بالفعل، تعرض الصفحة <em>هذا الاسم مستخدم بالفعل.</em></td>
+</tr>
+<tr>
+<td><strong>تسمية التقرير</strong></td>
+<td>مطلوب. الاسم المعروض في القوائم والبطاقات.</td>
+</tr>
+<tr>
+<td><strong>مجموعة الرموز</strong></td>
+<td><strong>افتراضي</strong> أو <strong>Humanitarian</strong>.</td>
+</tr>
+<tr>
+<td><strong>معرف الرمز</strong></td>
+<td>اختر رمزاً من قائمة الإكمال التلقائي. تتحدث المعاينة مباشرة.</td>
+</tr>
+<tr>
+<td><strong>المقاييس المطلوبة</strong></td>
+<td>المقاييس التي يجب اختيارها عند إنشاء تقرير من هذا المخطط.</td>
+</tr>
+</tbody>
+</table>
+<p>أسفل الحقول، تعرض الصفحة:</p>
 <ul>
-<li><strong>اختيار مصدر البيانات:</strong> اختر form schema الذي يحتوي على البيانات التي تريد إعداد report عنها.</li>
-<li><strong>اختيار حقول البيانات:</strong> اختر حقولًا محددة من form schemas المتصلة لتضمينها كأعمدة في الـ report.</li>
-<li><strong>تعيين أسماء العرض:</strong> خصّص عنوان العمود المعروض في الـ report لكل حقل محدد.</li>
-<li><strong>تحديد الفلاتر:</strong> حدّد شروطًا لتضمين بيانات محددة فقط تستوفي معاييرك (على سبيل المثال، البيانات الواردة ضمن نطاق زمني معين).</li>
+<li><strong>مخططات الـ form المرتبطة</strong> – مخططات الـ form التي يستخدمها التقرير، للقراءة فقط. تُؤخذ من ملف XLSReport المستورد عند الحفظ.</li>
+<li><strong>معاينة التقرير</strong> – التقرير المعروض من المخطط المستورد أو المحفوظ.</li>
 </ul>
+<p>تُعرَّف مصادر البيانات والأعمدة والفلاتر جميعها في ملف XLSReport: لا تحتوي الصفحة على أي عناصر تحكم لاختيارها.</p>
+<h2 id="إنشاء-مخطط-تقرير-جديد">إنشاء مخطط تقرير جديد</h2>
+<ol>
+<li>افتح قسم <strong>التقارير</strong> في القائمة الرئيسية.</li>
+<li>اضغط على زر <strong>+</strong> (<em>Add new Reports schema</em>) في الزاوية اليمنى السفلية.</li>
+<li>أدخل <strong>اسم التقرير</strong> و<strong>تسمية التقرير</strong>، واختيارياً الرمز و<strong>المقاييس المطلوبة</strong>.</li>
+<li>اضغط على <strong>استيراد</strong>، ثم <strong>اختر ملفاً</strong> وحدد ملف XLSReport (.xls أو .xlsx).</li>
+<li>اضغط على <strong>تطبيق</strong>: يُحمَّل الملف في الصفحة ويُعرض في <strong>معاينة التقرير</strong>.</li>
+<li>اضغط على <strong>حفظ</strong> لتخزين المخطط. يبقى <strong>حفظ</strong> معطلاً حتى تصبح الحقول المطلوبة صالحة.</li>
+</ol>
 <div class="admonition warning">
-<p class="admonition-title">مصدر البيانات</p>
-<p>يجب ربط report schema بـ form schema واحد على الأقل ليكون لديه بيانات لعرضها. تأكد من وجود الـ form ذي الصلة قبل إنشاء الـ report الخاص بك.</p>
+<p class="admonition-title">استورد قبل الحفظ</p>
+<p>لا يمكن حفظ مخطط تقرير جديد دون ملف مستورد: فحفظه فارغاً يعرض <em>Oops! Something went wrong saving the Report</em>. يقوم <strong>تطبيق</strong> بتحميل الملف في الصفحة فقط؛ لا يُخزَّن أي شيء حتى تضغط على <strong>حفظ</strong>.</p>
 </div>
+<h2 id="تعديل-مخطط-تقرير-موجود">تعديل مخطط تقرير موجود</h2>
+<ol>
+<li>افتح قسم <strong>التقارير</strong>.</li>
+<li>على بطاقة مخطط التقرير، اضغط على أيقونة القلم (<em>تحرير مخطط التقرير</em>).</li>
+<li>غيّر الحقول، أو استورد ملف XLSReport جديداً لاستبدال محتوى التقرير.</li>
+<li>اضغط على <strong>حفظ</strong> لتحديث المخطط.</li>
+</ol>
+<p>لحذف مخطط تقرير، اضغط على أيقونة سلة المهملات (<em>حذف مخطط التقرير</em>) على بطاقته. لا يمكن حذف مخطط لا تزال له تقارير: احذف تقاريره أولاً.</p>
 <h2 id="الخطوات-التالية">الخطوات التالية</h2>
-<p>بعد حفظ report schema الخاص بك، يمكنك:</p>
+<p>بعد حفظ مخطط التقرير، يمكنك:</p>
 <ul>
-<li>الانتقال إلى صفحة <a href="../">Reports</a> لعرض وتشغيل الـ report الجديد الخاص بك.</li>
+<li>الانتقال إلى صفحة <a href="../">التقارير</a> لعرض تقريرك الجديد وتشغيله.</li>
+<li>استخدام <a href="../edit-report/">تحرير التقرير</a> للتعامل مع التقرير نفسه بعد إعداد المخطط.</li>
 <li>العودة إلى هذه الصفحة لإجراء مزيد من التعديلات حسب الحاجة.</li>
 </ul>
 

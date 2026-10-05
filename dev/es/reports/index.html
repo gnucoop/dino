@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Una visión general del área de Reportes en Dino: cómo encontrar esquemas de reportes y navegar a tus reportes.">
+        <meta name="description" content="Una visión general del área de Informes en Dino: cómo encontrar esquemas de informes y navegar a tus informes.">
       
       
       
@@ -41,7 +41,7 @@
     
     
       
-        <title>Reportes - Documentación Dinoapp</title>
+        <title>Informes - Documentación Dinoapp</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#reportes" class="md-skip">
+        <a href="#informes" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -118,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Reportes
+              Informes
             
           </span>
         </div>
@@ -792,10 +792,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#explorar-esquemas-de-reportes" class="md-nav__link">
+  <a href="#explorar-esquemas-de-informes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Explorar esquemas de reportes
+        Explorar esquemas de informes
       
     </span>
   </a>
@@ -803,10 +803,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#crear-un-nuevo-esquema-de-reporte" class="md-nav__link">
+  <a href="#agregar-un-nuevo-esquema-de-informe" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Crear un nuevo esquema de reporte
+        Agregar un nuevo esquema de informe
       
     </span>
   </a>
@@ -814,10 +814,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#qué-puedes-hacer" class="md-nav__link">
+  <a href="#abrir-los-informes-de-un-esquema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Qué puedes hacer
+        Abrir los informes de un esquema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#qué-puedes-hacer-después" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué puedes hacer después
       
     </span>
   </a>
@@ -1421,6 +1432,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área de usuario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1448,10 +1486,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#explorar-esquemas-de-reportes" class="md-nav__link">
+  <a href="#explorar-esquemas-de-informes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Explorar esquemas de reportes
+        Explorar esquemas de informes
       
     </span>
   </a>
@@ -1459,10 +1497,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#crear-un-nuevo-esquema-de-reporte" class="md-nav__link">
+  <a href="#agregar-un-nuevo-esquema-de-informe" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Crear un nuevo esquema de reporte
+        Agregar un nuevo esquema de informe
       
     </span>
   </a>
@@ -1470,10 +1508,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#qué-puedes-hacer" class="md-nav__link">
+  <a href="#abrir-los-informes-de-un-esquema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Qué puedes hacer
+        Abrir los informes de un esquema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#qué-puedes-hacer-después" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué puedes hacer después
       
     </span>
   </a>
@@ -1497,34 +1546,58 @@
 
 
 
-<h1 id="reportes">Reportes</h1>
-<p>El área de Reportes es tu centro para acceder a todos los esquemas de reportes disponibles. Un esquema de reporte define la estructura y el contenido de un reporte que se puede generar a partir de los datos que has recopilado. Desde aquí, puedes explorar los esquemas y acceder a los reportes que ya se han creado.</p>
-<p><img alt="Vista principal de la página de Reportes" src="../imgs/reports/index.png" /></p>
-<p>Los reportes solo se pueden crear utilizando un tipo de formulario basado en Excel llamado <a href="xlsreport/">XLSReport</a>. Para crear un nuevo reporte, primero debes crear un archivo XLSReport y luego importarlo en Dino siguiendo el procedimiento que se describe a continuación.</p>
+<h1 id="informes">Informes</h1>
+<p>El área de Informes es tu centro para acceder a todos los esquemas de informes disponibles. Un esquema de informe define la estructura y el contenido de un informe que se puede generar a partir de los datos recopilados. Desde aquí, puedes explorar los esquemas y acceder a los informes que ya se han creado para cada uno.</p>
+<p><img alt="Vista principal de la página de Informes" src="../imgs/reports/index.png" /></p>
+<p>Los esquemas de informes se crean a partir de un formato basado en Excel llamado <a href="xlsreport/">XLSReport</a>, o se generan automáticamente a partir de un esquema de formulario (consulta <a href="autoreports/">Informes automáticos</a>). Para crear uno a partir de un archivo, primero preparas un archivo XLSReport y luego lo importas en Dino. Para conocer el procedimiento completo, consulta <a href="edit-report-schema/">Editar esquema de informe</a>.</p>
 <hr />
-<h2 id="explorar-esquemas-de-reportes">Explorar esquemas de reportes</h2>
-<p>Cuando abres la página de Reportes, ves una lista de todos los esquemas de reportes a los que tienes permiso de acceso. La lista está ordenada alfabéticamente por la etiqueta del esquema.</p>
+<h2 id="explorar-esquemas-de-informes">Explorar esquemas de informes</h2>
+<p>Cuando abres la página de Informes, ves una tarjeta por cada esquema de informe al que tienes permiso de acceso. Las tarjetas se ordenan alfabéticamente por la etiqueta del esquema.</p>
 <p>Para encontrar un esquema específico:</p>
 <ol>
-<li>Usa la barra de búsqueda en la parte superior de la página.</li>
+<li>Usa el campo <strong>Filtrar</strong> en la parte superior de la página.</li>
 <li>Escribe cualquier parte del nombre o la etiqueta del esquema.</li>
-<li>La lista se filtrará en tiempo real para mostrar solo los esquemas coincidentes.</li>
+<li>La lista se filtra mientras escribes, mostrando solo los esquemas que coinciden.</li>
 </ol>
-<p>Para ver los reportes de un esquema específico, haz clic en su tarjeta en la lista.</p>
+<p>Para abrir los informes de un esquema, haz clic en cualquier parte de su tarjeta.</p>
+<p>En cada tarjeta que puedas editar, los íconos de la esquina superior derecha te permiten gestionar el esquema directamente:</p>
+<ul>
+<li><strong>Editar</strong> (ícono de lápiz) — abre el esquema para editarlo. Consulta <a href="edit-report-schema/">Editar esquema de informe</a>.</li>
+<li><strong>Eliminar</strong> (ícono de papelera) — elimina el esquema después de que confirmes. Un esquema que todavía tiene informes no se puede eliminar: elimina primero sus informes.</li>
+</ul>
+<p>Un ícono de huella digital en una tarjeta significa que el esquema de informe es <em>único</em>: solo puede producir un informe para un conjunto exacto de métricas determinado. Si intentas crear un informe que ya existe para esas métricas, Dino no creará un duplicado.</p>
 <div class="admonition tip">
-<p class="admonition-title">Primeros pasos</p>
-<p>Si ves el mensaje "There are no reports", significa que aún no se ha creado ningún esquema de reporte ni se ha compartido contigo. Ponte en contacto con tu administrador de Dino para comenzar.</p>
+<p class="admonition-title">¿Aún no hay esquemas?</p>
+<p>Si ves el mensaje "There are not any Reports currently available", todavía no se ha creado ningún esquema de informe ni se ha compartido contigo. Pídele a tu administrador de Dino que cree uno, o agrega uno tú mismo si tienes permiso.</p>
 </div>
 <hr />
-<h2 id="crear-un-nuevo-esquema-de-reporte">Crear un nuevo esquema de reporte</h2>
-<p>Puedes iniciar el proceso de generar un nuevo esquema de reporte directamente desde la página principal de Reportes. Haz clic en el botón <strong>+</strong> (más) ubicado en la esquina inferior derecha de la pantalla.</p>
-<p>Para conocer los pasos detallados, consulta la guía sobre <a href="edit-report/">Edit Report</a>.</p>
+<h2 id="agregar-un-nuevo-esquema-de-informe">Agregar un nuevo esquema de informe</h2>
+<p>Puedes empezar a crear un nuevo esquema de informe desde la página principal de Informes.</p>
+<ol>
+<li>Haz clic en el botón <strong>+</strong> (<em>Add new Reports schema</em>) en la esquina inferior derecha de la pantalla. Solo se muestra si tienes permitido crear esquemas de informes.</li>
+<li>Sigue los pasos descritos en <a href="edit-report-schema/">Editar esquema de informe</a>.</li>
+</ol>
 <hr />
-<h2 id="qué-puedes-hacer">Qué puedes hacer</h2>
-<p>Desde la página principal de Reportes, puedes navegar para realizar estas acciones clave:</p>
+<h2 id="abrir-los-informes-de-un-esquema">Abrir los informes de un esquema</h2>
+<p>Al hacer clic en la tarjeta de un esquema, accedes a la lista de informes generados a partir de ese esquema. Desde allí puedes:</p>
+<ol>
+<li>Explorar los informes existentes en una tabla, con detalles como el usuario que creó el informe, el nombre del informe y el rango de fechas recopiladas.</li>
+<li>Filtrar y buscar en la lista para acotar los informes que necesitas. Usa la búsqueda por palabra clave, los campos de rango de fechas y el botón <strong>Filtros</strong> para condiciones más avanzadas. También puedes guardar un conjunto de filtros como preajuste y aplicarlo de nuevo más tarde.</li>
+<li>Abrir un informe para revisarlo: pasa el cursor sobre su fila y haz clic en el ícono <strong>Ver</strong> (ojo), o selecciona la fila y haz clic en <strong>Ver</strong> en la barra de acciones encima de la tabla. Consulta <a href="edit-report/">Editar informe</a>.</li>
+<li>Eliminar un informe que ya no necesitas: selecciona su fila y luego haz clic en <strong>Eliminar</strong> en la barra de acciones.</li>
+</ol>
+<p>Para crear un nuevo informe a partir del esquema seleccionado, haz clic en <strong>Agregar nuevo informe</strong> encima de la tabla. Los informes que usan prompts de IA consumen DINO-AI Tokens. La cantidad de tokens que usará el informe se muestra junto al botón, así siempre sabes el costo antes de empezar.</p>
+<div class="admonition warning">
+<p class="admonition-title">Tokens insuficientes</p>
+<p>Si no tienes suficientes DINO-AI Tokens en tu cuenta, Dino no iniciará el informe y mostrará un mensaje pidiéndote que agregues más tokens. Agrega tokens a tu cuenta e inténtalo de nuevo.</p>
+</div>
+<hr />
+<h2 id="qué-puedes-hacer-después">Qué puedes hacer después</h2>
+<p>Desde el área de Informes, puedes continuar con estas tareas:</p>
 <ul>
-<li><strong><a href="edit-report/">Edit Report</a></strong> — Genera un nuevo documento de reporte seleccionando un esquema, eligiendo tus métricas y estableciendo un rango de fechas.</li>
-<li><strong><a href="edit-report-schema/">Edit Report Schema</a></strong> — Crea nuevos esquemas de reportes o edita los existentes para definir qué datos aparecen en los reportes. Esto normalmente requiere permisos de administrador.</li>
+<li><strong><a href="edit-report/">Editar informe</a></strong> — Revisa un informe y expórtalo.</li>
+<li><strong><a href="edit-report-schema/">Editar esquema de informe</a></strong> — Crea nuevos esquemas de informes o edita los existentes para definir qué aparece en tus informes. Esto normalmente requiere permisos de administrador.</li>
+<li><strong><a href="../aggregation/">Agregación</a></strong> — Explora los datos de todos tus esquemas de formulario en una sola lista.</li>
 </ul>
 
 

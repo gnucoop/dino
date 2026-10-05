@@ -909,10 +909,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pages-associées" class="md-nav__link">
+  <a href="#pages-liées" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pages associées
+        Pages liées
       
     </span>
   </a>
@@ -1432,6 +1432,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Espace utilisateur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1492,10 +1519,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pages-associées" class="md-nav__link">
+  <a href="#pages-liées" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pages associées
+        Pages liées
       
     </span>
   </a>
@@ -1520,23 +1547,18 @@
 
 
 <h1 id="rapports-automatiques">Rapports automatiques</h1>
-<p>Un rapport automatique est un rapport que Dino construit pour vous à partir d'un form schema. Vous ne
-l'écrivez pas vous-même : vous l'activez pendant la modification du form schema, et Dino crée
-le report schema ainsi qu'un premier rapport pour vous.</p>
-<p>Utilisez un rapport automatique lorsque vous voulez consulter les données qu'un form collecte sans concevoir un
-rapport au préalable. Lorsque vous avez besoin d'un contrôle total sur la mise en page, les calculs ou les
-graphiques, construisez plutôt le rapport avec le <a href="../xlsreport/">format XLSReport</a>.</p>
+<p>Un rapport automatique est un rapport que Dino construit pour vous à partir d'un form schema. Vous ne l'écrivez pas vous-même : vous l'activez pendant la modification du form schema, et Dino crée le report schema ainsi qu'un premier rapport pour vous.</p>
+<p>Utilisez un rapport automatique lorsque vous souhaitez consulter les données collectées par un form sans devoir d'abord concevoir un rapport. Lorsque vous avez besoin d'un contrôle total sur la mise en page, les calculs ou les graphiques, construisez plutôt le rapport avec le <a href="../xlsreport/">format XLSReport</a>.</p>
 <h2 id="activer-un-rapport-automatique">Activer un rapport automatique</h2>
 <ol>
-<li>Ouvrez la section <strong>Forms</strong> et sélectionnez le form schema pour lequel vous voulez le rapport.</li>
-<li>Allez dans l'onglet <strong>Paramètres</strong>.</li>
-<li>Réglez <strong>Generate Report</strong> sur <strong>Yes</strong>.</li>
+<li>Ouvrez la section <strong>Formulaires</strong> et sélectionnez le form schema pour lequel vous voulez le rapport.</li>
+<li>Rendez-vous dans l'onglet <strong>Paramètres</strong>.</li>
+<li>Réglez <strong>Générer un rapport</strong> sur <strong>Oui</strong>.</li>
 <li>Enregistrez le form schema.</li>
 </ol>
-<p>Dino crée le rapport quelques secondes après l'enregistrement. Vous le trouverez dans la
-section <a href="../">Rapports</a>, listé comme n'importe quel autre rapport.</p>
+<p>Dino crée le rapport quelques secondes après l'enregistrement. Vous le trouverez dans la section <a href="../">Rapports</a>, listé comme n'importe quel autre rapport.</p>
 <h2 id="ce-que-dino-crée">Ce que Dino crée</h2>
-<p>Enregistrer un form schema avec <strong>Generate Report</strong> réglé sur <strong>Yes</strong> produit deux choses :</p>
+<p>L'enregistrement d'un form schema avec <strong>Générer un rapport</strong> réglé sur <strong>Oui</strong> produit deux éléments :</p>
 <table>
 <thead>
 <tr>
@@ -1551,21 +1573,17 @@ section <a href="../">Rapports</a>, listé comme n'importe quel autre rapport.</
 </tr>
 <tr>
 <td>Un premier rapport</td>
-<td>Créé quelques secondes plus tard, daté du jour courant et attribué à vous. Il n'a aucun filtre d'area, de case, de location, d'organization ou de project, il couvre donc toutes les données que le form a collectées.</td>
+<td>Créé quelques secondes plus tard, daté du jour courant et qui vous est attribué. Il n'a aucun filtre de zone, de cas, de posizione, d'organisation ou de projet, il couvre donc toutes les données que le form a collectées.</td>
 </tr>
 </tbody>
 </table>
-<p>Vous pouvez ouvrir le rapport généré et l'utiliser comme n'importe quel autre : le rapport qu'il
-produit est un point de départ, pas un résultat figé.</p>
+<p>Vous pouvez ouvrir le rapport généré et l'utiliser comme n'importe quel autre : le rapport qu'il produit est un point de départ, pas un résultat figé.</p>
 <h2 id="désactiver-un-rapport-automatique">Désactiver un rapport automatique</h2>
-<p>Une fois qu'un rapport automatique existe, le champ <strong>Generate Report</strong> du form schema se verrouille sur
-<strong>Yes</strong> et affiche une indication en ce sens. Il n'y a aucun moyen de retirer le rapport depuis cet
-écran.</p>
-<p>Pour le supprimer, allez dans la section <strong>Rapports</strong> et supprimez le report schema du rapport généré ainsi que ses données. Le champ du form schema se déverrouille dès que le rapport a
-disparu, et vous pouvez le régler de nouveau sur <strong>No</strong>.</p>
-<h2 id="pages-associées">Pages associées</h2>
+<p>Une fois qu'un rapport automatique existe, le champ <strong>Générer un rapport</strong> du form schema se verrouille sur <strong>Oui</strong> et affiche une indication en ce sens. Il n'est pas possible de retirer le rapport depuis cet écran.</p>
+<p>Pour le supprimer, rendez-vous dans la section <strong>Rapports</strong> et supprimez le report schema du rapport généré ainsi que ses données. Le champ du form schema se déverrouille dès que le rapport a disparu, et vous pouvez le régler de nouveau sur <strong>Non</strong>.</p>
+<h2 id="pages-liées">Pages liées</h2>
 <ul>
-<li><a href="../../forms/edit-form-schema/">Modifier un Form Schema</a> — où se trouve l'option <strong>Generate Report</strong></li>
+<li><a href="../../forms/edit-form-schema/">Modifier un form schema</a> — où se trouve l'option <strong>Générer un rapport</strong></li>
 <li><a href="../xlsreport/">Le format XLSReport</a> — pour les rapports que vous concevez vous-même</li>
 <li><a href="../">Rapports</a> — la section où apparaissent les rapports générés</li>
 </ul>

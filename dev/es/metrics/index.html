@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Una visión general del área de Métricas en Dino — los tipos de datos de referencia utilizados para clasificar y vincular los datos de formularios y reportes.">
+        <meta name="description" content="Una visión general del área de Métricas en Dino — los tipos de datos de referencia que se utilizan para clasificar y vincular los datos de los formularios y los informes.">
       
       
       
@@ -997,10 +997,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#qué-puedes-hacer" class="md-nav__link">
+  <a href="#qué-puede-hacer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Qué puedes hacer
+        Qué puede hacer
       
     </span>
   </a>
@@ -1421,6 +1421,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área de usuario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1459,10 +1486,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#qué-puedes-hacer" class="md-nav__link">
+  <a href="#qué-puede-hacer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Qué puedes hacer
+        Qué puede hacer
       
     </span>
   </a>
@@ -1498,17 +1525,17 @@
 
 
 <h1 id="métricas">Métricas</h1>
-<p>Las métricas son las categorías de datos de referencia utilizadas en todo Dino para clasificar, organizar y filtrar los datos que recopilas. Las métricas se pueden asociar a los form recopilados y luego usarse para definir visualizaciones sobre los datos de tu instalación. Por ejemplo, las métricas se pueden usar para definir permisos de usuario: a un usuario determinado se le puede conceder acceso solo a algunos valores específicos de las métricas. Esto puede ser útil, por ejemplo, en una organización que opera en varios países, si quieres limitar a ciertos usuarios para que accedan únicamente a los datos del país donde operan. De manera similar, puedes limitar el acceso de los usuarios de Dino siguiendo otros criterios mediante otras métricas, como la métrica proyecto, para limitar el acceso solo a algunos proyectos, o la métrica organización, para limitar el acceso solo a los datos de algunos socios.</p>
-<p>Además de usarse para limitar el acceso a los datos, las métricas también pueden usarse para facilitar filtros y agregaciones. Por ejemplo, podría querer contar cuántos form se han recopilado para un país determinado. En este caso puedo filtrar los datos de mis form en función del valor de la métrica ubicación. Los filtros también pueden beneficiarse de la estructura jerárquica de las métricas. Por ejemplo, si tengo una estructura de ubicaciones en, digamos, tres niveles, porque mapeo provincias (es decir, un valor de métrica para cada provincia), agrupadas en regiones (es decir, un valor de métrica para cada región, que también se usa como padre de las provincias), agrupadas en países (es decir, un valor de métrica para cada país, que se usa como padre de las regiones). Así, en este caso podría filtrar todos los form de una región determinada simplemente filtrando la región, seleccionando así todas las provincias que comparten la misma región.</p>
-<p>Este mecanismo también se puede usar al generar reportes. Los datos de un report de un report schema determinado se pueden generar usando un valor particular de una métrica. Esto implicará que el report schema se aplique a todos los form que tengan el mismo valor de métrica, siguiendo una jerarquía de valores de métrica.</p>
-<p>Por último, las métricas se pueden usar para vincular datos de distintos form. Por ejemplo, puedo tener un form para los datos personales de los beneficiarios —uno por persona— y luego otro form para sus visitas médicas —más de uno por persona. La métrica caso se puede usar para vincular el form de datos personales con los form de visitas y también para copiar algunos de los datos del form personal, como la fecha de nacimiento, a los form de visitas médicas.</p>
-<p>Las distintas formas de usar las métricas hacen de esta entidad una herramienta potente para gestionar los datos.</p>
-<p>La sección Métricas es donde gestionas las listas de valores disponibles para cada categoría. Sirve como el centro neurálgico de todos tus datos de referencia.</p>
+<p>Las Métricas son las categorías de datos de referencia que se utilizan en todo Dino para clasificar, organizar y filtrar los datos recopilados. Las métricas se pueden asociar a los formularios recopilados y luego utilizarse para definir vistas sobre los datos de su instalación. Por ejemplo, las métricas se pueden usar para definir permisos de usuario: a un usuario determinado se le puede conceder acceso solo a algunos valores específicos de las métricas. Esto puede ser útil, por ejemplo, en una organización que opera en varios países, si desea limitar a ciertos usuarios el acceso únicamente a los datos del país donde operan. De manera similar, puede limitar el acceso de los usuarios de Dino según otros criterios utilizando otras métricas, como la métrica proyecto, para limitar el acceso a solo algunos proyectos, o la métrica organización, para limitar el acceso únicamente a los datos de algunos socios.</p>
+<p>Además de utilizarse para limitar el acceso a los datos, las métricas también pueden emplearse para facilitar los filtros y las agregaciones. Por ejemplo, es posible que quiera contar cuántos formularios se han recopilado para un país determinado. En este caso, puedo filtrar los datos de mis formularios en función del valor de la métrica ubicación. Los filtros también pueden beneficiarse de la estructura jerárquica de las métricas. Por ejemplo, si tengo una estructura de ubicaciones de, digamos, tres niveles, porque asigno provincias (es decir, un valor de métrica para cada provincia), agrupadas en regiones (es decir, un valor de métrica para cada región, que se utiliza también como padre de las provincias), agrupadas en países (es decir, un valor de métrica para cada país, que se utiliza como padre de las regiones). Así, en este caso podría filtrar todos los formularios de una región determinada simplemente filtrando la región, seleccionando así todas las provincias que comparten la misma región.</p>
+<p>Este mecanismo también puede utilizarse al generar informes. Los datos de un informe de un esquema de informe determinado pueden generarse utilizando un valor concreto de una métrica. Esto implicará que el esquema de informe se aplique a todos los formularios que tengan el mismo valor de métrica, siguiendo una jerarquía de valores de métrica.</p>
+<p>Por último, las métricas pueden utilizarse para vincular los datos de distintos formularios. Por ejemplo, puedo tener un formulario para los datos personales de los beneficiarios —uno por persona— y luego otro formulario para sus visitas médicas —más de uno por persona—. La métrica caso puede utilizarse para vincular el formulario de datos personales con los formularios de visitas, y también para copiar algunos de los datos del formulario personal, como la fecha de nacimiento, a los formularios de visitas médicas.</p>
+<p>Las distintas formas de utilizar las métricas hacen de esta entidad una herramienta potente para gestionar los datos.</p>
+<p>La sección Métricas es donde gestiona las listas de valores disponibles para cada categoría. Sirve como centro neurálgico para todos sus datos de referencia.</p>
 <p><img alt="Vista principal de la página Métricas" src="../imgs/metrics/index.png" /></p>
 <hr />
 <h2 id="tipos-de-métricas">Tipos de métricas</h2>
-<p>La página principal muestra los tipos de métricas que están activos en tu instalación de Dino. Cada tipo se muestra como una tarjeta con un icono y una etiqueta. Haz clic en cualquier tarjeta para abrir su página de gestión.</p>
-<p>Según la configuración de tu sistema, pueden estar disponibles algunos o todos los siguientes tipos de métricas:</p>
+<p>La página principal muestra los tipos de métricas que están activos en su instalación de Dino. Cada tipo se muestra como una tarjeta con un icono y una etiqueta. Haga clic en cualquier tarjeta para abrir su página de gestión.</p>
+<p>Según la configuración de su sistema, pueden estar disponibles algunos o todos los siguientes tipos de métricas:</p>
 <table>
 <thead>
 <tr>
@@ -1519,41 +1546,41 @@
 <tbody>
 <tr>
 <td><strong>Áreas temáticas</strong></td>
-<td>Áreas de trabajo o agrupaciones temáticas para tus actividades.</td>
+<td>Áreas de trabajo o agrupaciones temáticas para sus actividades.</td>
 </tr>
 <tr>
 <td><strong>Casos</strong></td>
-<td>Casos individuales, personas o beneficiarios rastreados a través de los datos de los form.</td>
+<td>Casos individuales, personas o beneficiarios a los que se hace seguimiento en los datos de los formularios.</td>
 </tr>
 <tr>
 <td><strong>Ubicaciones</strong></td>
-<td>Ubicaciones geográficas donde se recopilan datos o se realizan actividades.</td>
+<td>Ubicaciones geográficas donde se recopilan datos o se desarrollan actividades.</td>
 </tr>
 <tr>
 <td><strong>Proyectos</strong></td>
-<td>Proyectos a los que están vinculados los datos de form y los reportes.</td>
+<td>Proyectos a los que se vinculan los datos de los formularios y los informes.</td>
 </tr>
 <tr>
 <td><strong>Organizaciones</strong></td>
-<td>Organizaciones involucradas en las actividades o responsables de ellas.</td>
+<td>Organizaciones que participan en las actividades o son responsables de ellas.</td>
 </tr>
 </tbody>
 </table>
 <div class="admonition tip">
-<p class="admonition-title">Acceder a las Métricas</p>
-<p>Puedes navegar al área de Métricas haciendo clic en <strong>Métricas</strong> en el menú principal de la aplicación.</p>
+<p class="admonition-title">Acceder a las métricas</p>
+<p>Puede navegar al área de Métricas haciendo clic en <strong>Métricas</strong> en el menú principal de la aplicación.</p>
 </div>
 <hr />
-<h2 id="qué-puedes-hacer">Qué puedes hacer</h2>
-<p>Desde la página principal de Métricas, puedes:</p>
+<h2 id="qué-puede-hacer">Qué puede hacer</h2>
+<p>Desde la página principal de Métricas, puede:</p>
 <ol>
-<li><strong>Ver todos los tipos de métricas activos</strong> disponibles para tus datos.</li>
-<li><strong>Navegar a un tipo de métrica específico</strong> haciendo clic en su tarjeta. Esto te lleva a una página dedicada donde puedes gestionar la lista de valores para ese tipo (por ejemplo, añadir una nueva ubicación o editar el nombre de un proyecto).</li>
-<li><strong>Usar el recorrido de navegación</strong> en la parte superior de la página para hacer seguimiento de tu ruta de navegación dentro de la sección Métricas.</li>
+<li><strong>Ver todos los tipos de métricas activos</strong> disponibles para sus datos.</li>
+<li><strong>Navegar a un tipo de métrica específico</strong> haciendo clic en su tarjeta. Esto le lleva a una página dedicada donde puede gestionar la lista de valores de ese tipo (por ejemplo, añadir una nueva ubicación o editar el nombre de un proyecto).</li>
+<li><strong>Utilizar la ruta de navegación</strong> en la parte superior de la página para hacer seguimiento de su recorrido dentro de la sección Métricas.</li>
 </ol>
-<p>Para obtener instrucciones detalladas sobre cómo añadir, editar o eliminar valores dentro de un tipo de métrica específico, consulta la documentación de cada tipo de métrica:</p>
+<p>Para obtener instrucciones detalladas sobre cómo añadir, editar o eliminar valores dentro de un tipo de métrica específico, consulte la documentación de cada tipo de métrica:</p>
 <ul>
-<li><a href="areas/">Áreas</a></li>
+<li><a href="areas/">Áreas temáticas</a></li>
 <li><a href="cases/">Casos</a></li>
 <li><a href="locations/">Ubicaciones</a></li>
 <li><a href="organizations/">Organizaciones</a></li>
@@ -1562,18 +1589,18 @@
 <hr />
 <h2 id="navegar-por-la-sección-métricas">Navegar por la sección Métricas</h2>
 <ol>
-<li>En la página principal de Métricas, revisa las tarjetas de cada tipo de métrica disponible.</li>
-<li>Haz clic en la tarjeta del tipo de métrica que quieres gestionar (por ejemplo, <strong>Ubicaciones</strong>).</li>
-<li>Se te llevará a una página dedicada para ese tipo de métrica, donde puedes ver, añadir, editar o eliminar valores específicos.</li>
-<li>Usa el recorrido de navegación en la parte superior de la página para volver fácilmente a la página principal de Métricas o a otras secciones.</li>
+<li>En la página principal de Métricas, revise las tarjetas de cada tipo de métrica disponible.</li>
+<li>Haga clic en la tarjeta del tipo de métrica que desea gestionar (por ejemplo, <strong>Ubicaciones</strong>).</li>
+<li>Se le llevará a una página dedicada a ese tipo de métrica, donde podrá ver, añadir, editar o eliminar valores específicos.</li>
+<li>Utilice la ruta de navegación en la parte superior de la página para volver fácilmente a la página principal de Métricas o a otras secciones.</li>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Configuración del sistema</p>
-<p>Los tipos de métricas disponibles son configurados por el administrador de tu sistema. Si no ves un tipo de métrica específico que necesitas, ponte en contacto con tu administrador.</p>
+<p>Los tipos de métricas disponibles los configura su administrador del sistema. Si no ve un tipo de métrica específico que necesita, póngase en contacto con su administrador.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Eliminar un valor de métrica</p>
-<p>Esto es válido para todas las métricas. Eliminar un valor de métrica, por ejemplo una ubicación determinada o un caso, puede afectar a los form que lo referencian. Por este motivo, antes de eliminar un valor de métrica, el sistema comprueba si existe algún elemento en Dino asociado a ese valor. Si hay datos de un form, datos de un report o cualquier referencia dentro de los permisos, no se permitirá eliminar ese valor. Asegúrate de que ningún registro activo dependa de un valor de métrica antes de eliminarlo.</p>
+<p>Esto es aplicable a todas las métricas. Antes de eliminar un valor de métrica, por ejemplo una ubicación o un caso determinados, Dino comprueba si todavía está en uso. Si algún formulario lo utiliza, o tiene valores secundarios, se rechaza la eliminación (<em>Some forms use these metrics. You cannot delete them.</em> / <em>Some metrics have children. You cannot delete them.</em>). Si solo lo utilizan informes, aparece una advertencia y aún puede confirmar. Los permisos de grupo que hacen referencia al valor <strong>no</strong> se comprueban: elimínelo de cualquier grupo antes de borrarlo.</p>
 </div>
 
 

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Aprenda a importar dados estruturados em massa para qualquer form schema usando um arquivo CSV ou Excel. O assistente em duas etapas permite enviar um arquivo e depois mapear suas colunas para os campos do form.">
+        <meta name="description" content="Aprenda a importar dados estruturados em massa para qualquer form schema usando um arquivo CSV ou Excel. O assistente permite carregar um arquivo, mapear suas colunas para os campos do form e revisar o resultado da importação.">
       
       
       
@@ -665,22 +665,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#etapa-1--enviar-arquivo" class="md-nav__link">
+  <a href="#etapa-1--carregar-arquivo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Etapa 1 — Enviar arquivo
+        Etapa 1 — Carregar arquivo
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Etapa 1 — Enviar arquivo">
+    <nav class="md-nav" aria-label="Etapa 1 — Carregar arquivo">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#formatando-o-arquivo-de-importação" class="md-nav__link">
+  <a href="#formatar-o-arquivo-de-importação" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Formatando o arquivo de importação
+        Formatar o arquivo de importação
       
     </span>
   </a>
@@ -754,10 +754,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#aplicar-importação" class="md-nav__link">
+  <a href="#etapa-3--resultado" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Aplicar importação
+        Etapa 3 — Resultado
       
     </span>
   </a>
@@ -777,10 +777,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#lidando-com-métricas-durante-a-importação" class="md-nav__link">
+  <a href="#lidar-com-métricas-durante-a-importação" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lidando com métricas durante a importação
+        Lidar com métricas durante a importação
       
     </span>
   </a>
@@ -793,10 +793,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#slides-de-repetição" class="md-nav__link">
+  <a href="#slides-repetidos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Slides de repetição
+        Slides repetidos
       
     </span>
   </a>
@@ -1549,6 +1549,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área do utilizador
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1587,22 +1614,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#etapa-1--enviar-arquivo" class="md-nav__link">
+  <a href="#etapa-1--carregar-arquivo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Etapa 1 — Enviar arquivo
+        Etapa 1 — Carregar arquivo
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Etapa 1 — Enviar arquivo">
+    <nav class="md-nav" aria-label="Etapa 1 — Carregar arquivo">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#formatando-o-arquivo-de-importação" class="md-nav__link">
+  <a href="#formatar-o-arquivo-de-importação" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Formatando o arquivo de importação
+        Formatar o arquivo de importação
       
     </span>
   </a>
@@ -1676,10 +1703,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#aplicar-importação" class="md-nav__link">
+  <a href="#etapa-3--resultado" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Aplicar importação
+        Etapa 3 — Resultado
       
     </span>
   </a>
@@ -1699,10 +1726,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#lidando-com-métricas-durante-a-importação" class="md-nav__link">
+  <a href="#lidar-com-métricas-durante-a-importação" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lidando com métricas durante a importação
+        Lidar com métricas durante a importação
       
     </span>
   </a>
@@ -1715,10 +1742,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#slides-de-repetição" class="md-nav__link">
+  <a href="#slides-repetidos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Slides de repetição
+        Slides repetidos
       
     </span>
   </a>
@@ -1754,42 +1781,41 @@
 
 
 <h1 id="importar-dados">Importar dados</h1>
-<p>A página <strong>Importar dados</strong> permite enviar dados em massa para um form schema a partir de um arquivo <code>.xls</code>, <code>.xlsx</code> ou <code>.csv</code>. Um assistente em duas etapas orienta você no envio do arquivo e no mapeamento das colunas do arquivo para os campos do form.</p>
-<p><img alt="Visualização principal da página Importar dados" src="../../imgs/forms/import.png" /></p>
+<p>A página <strong>Importar dados</strong> permite carregar dados em massa para um form schema a partir de um arquivo <code>.xls</code>, <code>.xlsx</code> ou <code>.csv</code>. Um assistente em três etapas — <strong>Carregar arquivo</strong>, <strong>Mapear campos</strong>, <strong>Resultado</strong> — orienta você no carregamento do arquivo, no mapeamento de suas colunas para os campos do form e na revisão do resultado.</p>
+<p><img alt="Visão principal da página Importar dados" src="../../imgs/forms/import.png" /></p>
 <h2 id="acessar-a-página-de-importação">Acessar a página de importação</h2>
 <ol>
-<li>Navegue até a lista <strong>Forms</strong> e selecione um form schema.</li>
-<li>Na visualização de dados do form, clique em <strong>Importar</strong> (o botão da barra de ferramentas).</li>
+<li>Navegue até a lista <strong>Formulários</strong> e selecione um form schema.</li>
+<li>Na visualização de dados do form, clique em <strong>Importar formulários</strong> na barra de ferramentas.</li>
 </ol>
-<h2 id="etapa-1--enviar-arquivo">Etapa 1 — Enviar arquivo</h2>
-<p>A primeira etapa mostra uma área de arrastar e soltar ou um seletor de arquivos.</p>
+<h2 id="etapa-1--carregar-arquivo">Etapa 1 — Carregar arquivo</h2>
+<p>A primeira etapa mostra uma zona de arrastar e soltar ou um seletor de arquivos.</p>
 <ul>
 <li><strong>Formatos aceitos:</strong> <code>.xls</code>, <code>.xlsx</code>, <code>.csv</code></li>
 <li><strong>Tamanho máximo do arquivo:</strong> 20 MB</li>
 </ul>
-<p>Para enviar:</p>
+<p>Para carregar:</p>
 <ol>
-<li>Arraste um arquivo para a área tracejada <strong>ou</strong> clique em <strong>Escolher um arquivo</strong> para procurar.</li>
-<li>Após a seleção, o nome do arquivo aparece em um chip junto com o número de colunas detectadas.</li>
 <li>(Opcional) Deixe <strong>Reutilizar métricas existentes com o mesmo nome</strong> marcado (o padrão) para que qualquer métrica no arquivo cujo nome corresponda a uma métrica já existente no sistema seja vinculada a essa métrica existente em vez de criar uma duplicata. Desmarque para sempre criar novas métricas.</li>
-<li>Clique em <strong>Avançar</strong> (ou no rótulo do stepper "2 · Mapear campos") para prosseguir.</li>
+<li>Arraste um arquivo para a área tracejada <strong>ou</strong> clique em <strong>Escolher um arquivo</strong> para procurar.</li>
+<li>Depois que o arquivo for lido, o assistente passa automaticamente para <strong>Mapear campos</strong>.</li>
 </ol>
-<h3 id="formatando-o-arquivo-de-importação">Formatando o arquivo de importação</h3>
+<h3 id="formatar-o-arquivo-de-importação">Formatar o arquivo de importação</h3>
 <p>Veja a descrição na seção <a href="#formato-do-arquivo">abaixo</a></p>
 <div class="admonition tip">
 <p class="admonition-title">Formatos de arquivo fáceis</p>
-<p>O Dino aceita o mesmo arquivo obtido durante a <a href="../#exportar">exportação</a>. Assim, a maneira mais fácil de obter um arquivo formatado corretamente para importação é primeiro exportar alguns dados de um form do mesmo schema e depois excluir as linhas que contêm os dados exportados, mantendo apenas os cabeçalhos das colunas. De qualquer forma, certifique-se de que os cabeçalhos das colunas estejam claros – eles serão usados como sugestões durante o mapeamento.</p>
+<p>O Dino aceita o mesmo arquivo obtido durante a <a href="../#exportar">exportação</a>. Portanto, a maneira mais fácil de obter um arquivo devidamente formatado para importação é primeiro exportar alguns dados do form do mesmo schema e depois excluir as linhas que contêm os dados exportados, mantendo apenas os cabeçalhos das colunas. Em qualquer caso, certifique-se de que os cabeçalhos das colunas estejam claros – eles serão usados como sugestões durante o mapeamento.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Métricas identificadas por ID</p>
 <p>Se uma coluna de métrica no seu arquivo fornecer o <strong>ID</strong> (UUID) da métrica, essa linha será vinculada à métrica existente com esse ID e nenhuma nova métrica será criada. O ID tem precedência sobre o nome da métrica, então isso acontece independentemente da opção <strong>Reutilizar métricas existentes com o mesmo nome</strong> (que se aplica apenas à correspondência por nome).</p>
 </div>
 <h2 id="etapa-2--mapear-campos">Etapa 2 — Mapear campos</h2>
-<p>Após o envio, você verá uma tabela listando todas as colunas do seu arquivo. Cada linha tem três colunas:</p>
+<p>Após o carregamento, você verá uma tabela listando todas as colunas do seu arquivo. Cada linha tem três colunas:</p>
 <ul>
 <li><strong>Coluna do arquivo</strong> – o cabeçalho original do seu arquivo.</li>
-<li><strong>Campo do form</strong> – um menu suspenso onde você seleciona o campo do form correspondente.</li>
-<li><strong>Status</strong> – mostra se a coluna está mapeada, ignorada ou se há um erro.</li>
+<li><strong>Campo</strong> – um menu suspenso onde você seleciona o campo do form correspondente.</li>
+<li><strong>Status</strong> – mostra se a coluna está mapeada, ignorada ou se tem um erro.</li>
 </ul>
 <h3 id="ações-de-mapeamento">Ações de mapeamento</h3>
 <ul>
@@ -1798,32 +1824,40 @@
 <li><strong>Restaurar uma coluna ignorada</strong> – clique no botão <strong>Restaurar</strong> na coluna de status.</li>
 </ul>
 <h3 id="correspondência-automática">Correspondência automática</h3>
-<p>Clique em <strong>Correspondência automática</strong> para que o Dino emparelhe automaticamente as colunas com os campos do form com base na similaridade de nomes. Este é um bom ponto de partida – revise e ajuste os mapeamentos conforme necessário.</p>
+<p>Quando o arquivo é lido, o Dino mapeia todas as colunas cujo cabeçalho é exatamente o nome de um campo do form, ou o nome de um campo repetido seguido de <code>__N</code> (veja <a href="#slides-repetidos">Slides repetidos</a>). As outras colunas ficam para você mapear.</p>
+<p>Clique em <strong>Reassociar tudo</strong> para redefinir todas as colunas e deixar o Dino associá-las novamente, desta vez também pareando colunas com campos cujos nomes ou rótulos sejam semelhantes. Revise o resultado e ajuste os mapeamentos conforme necessário.</p>
 <div class="admonition tip">
-<p class="admonition-title">A correspondência automática funciona melhor com cabeçalhos que correspondem exatamente aos rótulos dos campos ou que contêm palavras-chave semelhantes.</p>
+<p class="admonition-title">A correspondência funciona melhor com cabeçalhos que são os nomes dos campos, como em um arquivo exportado.</p>
 </div>
 <h3 id="repetição">Repetição</h3>
-<p>Se um campo do form selecionado for um campo de repetição (por exemplo, vários números de telefone), um campo <strong>Repetição</strong> aparece abaixo do menu suspenso. Insira o índice de repetição (0, 1, 2, …) para atribuir esta coluna do arquivo a uma ocorrência do grupo de repetição.</p>
+<p>Se um campo do form selecionado for um campo repetido (por exemplo, vários números de telefone), um campo <strong>Repetição</strong> aparece abaixo do menu suspenso. Insira o índice de repetição (0, 1, 2, …) para atribuir esta coluna do arquivo a uma ocorrência do grupo repetido.</p>
 <h3 id="resumo-da-barra-de-ferramentas">Resumo da barra de ferramentas</h3>
 <p>Na parte superior da área de mapeamento, você pode ver três chips:</p>
 <ul>
 <li><strong>Total de colunas</strong> – número de colunas do arquivo.</li>
-<li><strong>Mapeadas</strong> – colunas que foram atribuídas a um campo do form.</li>
-<li><strong>Ignoradas</strong> – colunas que você optou por ignorar.</li>
+<li><strong>Mapeado</strong> – colunas que foram atribuídas a um campo do form.</li>
+<li><strong>Ignorado</strong> – colunas que você escolheu ignorar.</li>
 </ul>
-<p>Use o campo <strong>Pesquisar colunas</strong> para filtrar a tabela pelo nome da coluna do arquivo.</p>
-<h2 id="aplicar-importação">Aplicar importação</h2>
-<p>Quando todas as colunas desejadas estiverem mapeadas e não houver erros, o botão <strong>Aplicar importação</strong> ficará habilitado. Clique nele para iniciar a importação. Durante o processamento, um indicador de carregamento aparece. Você pode clicar em <strong>Voltar</strong> para retornar à etapa 1 ou cancelar a importação.</p>
-<p>Após uma importação bem-sucedida, você retorna à lista de dados do form, onde os novos dados aparecem.</p>
+<p>Use o campo <strong>Pesquisar colunas…</strong> para filtrar a tabela pelo nome da coluna do arquivo.</p>
+<p>Clique em <strong>Voltar</strong> para retornar à etapa de carregamento: o arquivo e os mapeamentos são descartados, e você escolhe o arquivo novamente.</p>
+<p>Quando todas as colunas desejadas estiverem mapeadas e não houver erros, o botão <strong>Aplicar importação</strong> fica habilitado. Clique nele para iniciar a importação. Durante o processamento, um indicador de carregamento aparece.</p>
 <div class="admonition warning">
 <p class="admonition-title">Mapeamento duplicado</p>
-<p>Se você mapear o mesmo campo do form para mais de uma coluna do arquivo, um erro de validação será exibido e o botão <strong>Aplicar importação</strong> permanecerá desabilitado até que seja corrigido.</p>
+<p>Se você mapear o mesmo campo do form para mais de uma coluna do arquivo, um erro de validação será exibido (<em>Campo mapeado para mais de uma coluna</em>) e o botão <strong>Aplicar importação</strong> permanecerá desabilitado até ser corrigido.</p>
 </div>
+<h2 id="etapa-3--resultado">Etapa 3 — Resultado</h2>
+<p>A última etapa informa o que aconteceu:</p>
+<ul>
+<li>Um banner informa se a importação foi <strong>bem-sucedida</strong>, <strong>parcial</strong> (algumas linhas foram rejeitadas) ou terminou com um <strong>ERRO</strong> (nada foi importado).</li>
+<li>Contadores mostram <strong>Linhas importadas</strong>, <strong>Linhas rejeitadas</strong>, <strong>Linhas no arquivo</strong> e <strong>Métricas criadas</strong>.</li>
+<li>As listas de problemas mostram as linhas do arquivo afetadas e o motivo. Use <strong>Pesquisar por linha ou erro</strong> para filtrar listas longas.</li>
+</ul>
+<p>Clique em <strong>Fechar</strong> para retornar à lista de dados do form, onde os novos dados aparecem. Após um erro, <strong>Voltar</strong> leva você de volta à etapa de mapeamento para corrigir os problemas.</p>
 <h2 id="formato-do-arquivo">Formato do arquivo</h2>
-<p>Descrevemos o procedimento para importar alguns dados em massa usando um arquivo Excel gerado pelo Google Sheets. O mesmo procedimento vale para arquivos CSV ou se você trabalhar diretamente com o Excel.</p>
-<p>Suponhamos que você queira importar dados em um form chamado Projects que tem 2 slides, um dos quais é um slide de repetição:</p>
-<p><img alt="O form Projects, com dois slides, um dos quais é um slide de repetição" src="../../imgs/forms/import-repeating-slide.png" /></p>
-<p>O form Projects foi criado usando o seguinte XLSForm. A planilha "survey" é</p>
+<p>Descrevemos o procedimento para importar alguns dados em massa usando um arquivo Excel gerado a partir do Google Sheets. O mesmo procedimento vale para arquivos CSV ou se você trabalhar diretamente com o Excel.</p>
+<p>Suponhamos que você queira importar dados em um form chamado Projects que tem 2 slides, um dos quais é um slide repetido:</p>
+<p><img alt="O form Projects, com dois slides, um dos quais é um slide repetido" src="../../imgs/forms/import-repeating-slide.png" /></p>
+<p>O form Projects foi criado usando o seguinte XLSForm. A planilha “survey” é</p>
 <table>
 <thead>
 <tr>
@@ -1900,7 +1934,7 @@
 </tr>
 </tbody>
 </table>
-<p>e a "choices" é</p>
+<p>e a “choices” é</p>
 <table>
 <thead>
 <tr>
@@ -1972,44 +2006,46 @@
 </tr>
 </tbody>
 </table>
-<p>Siga estes passos:</p>
+<p>Siga estas etapas:</p>
 <ol>
-<li>Crie um arquivo vazio com apenas uma planilha (os nomes do arquivo e da planilha não importam).   </li>
-<li>Na primeira linha, você precisa colocar os nomes dos campos do form e dos campos específicos do DINO. Neste exemplo, os campos do form podem ser:  </li>
-<li><strong>country</strong>  </li>
-<li><strong>country_other</strong>  </li>
-<li><strong>title</strong>  </li>
-<li><strong>project_date_start</strong>  </li>
-<li><strong>selected_donor</strong>  </li>
-<li><strong>budget</strong>  </li>
-<li><strong>isleader</strong>  </li>
-<li><strong><em>indic</em></strong> (*)  </li>
+<li>Crie um arquivo vazio com apenas uma planilha (os nomes do arquivo e da planilha não importam).</li>
+<li>Na primeira linha, você precisa colocar os nomes dos campos do form e dos campos específicos do DINO. Neste exemplo, os campos do form podem ser:</li>
+<li><strong>country</strong></li>
+<li><strong>country_other</strong></li>
+<li><strong>title</strong></li>
+<li><strong>project_date_start</strong></li>
+<li><strong>selected_donor</strong></li>
+<li><strong>budget</strong></li>
+<li><strong>isleader</strong></li>
+<li><strong><em>indic</em></strong> (*)</li>
 <li><strong><em>value_indic</em></strong> (*)</li>
 </ol>
-<p>observe que os campos que estão dentro de slides de repetição precisam ser tratados de forma diferente (por isso colocamos um asterisco). Consulte a seção específica abaixo.</p>
+<p>cuidado, pois os campos que estão dentro de slides repetidos precisam ser tratados de forma diferente (por isso colocamos um asterisco). Consulte a seção específica abaixo.</p>
 <p>Os campos específicos do DINO podem ser:</p>
 <ol>
-<li><strong>created_at</strong>. A data de criação do form. Especifique isto apenas se você quiser que seus forms tenham uma data de criação diferente da data de importação;  </li>
-<li><strong>user_data_ref_id</strong>. O ID do usuário que será associado ao form (o padrão é o ID do usuário que está importando os forms);  </li>
-<li><strong>area_id</strong>. O ID da métrica AREA a ser associada ao form;  </li>
-<li>[area_name]  </li>
-<li><strong>case_id</strong>. O ID da métrica CASE a ser associada ao form;  </li>
-<li>[case_name]     </li>
-<li><strong>project_id</strong>. O ID da métrica PROJECT a ser associada ao form;  </li>
-<li>[project_name]  </li>
-<li>[project_code]  </li>
-<li><strong>location_id</strong>. O ID da métrica LOCATION a ser associada ao form;  </li>
-<li>[location_name]  </li>
-<li><strong>organization_id</strong>. O ID da métrica ORGANISATION a ser associada ao form;  </li>
+<li><strong>created_at</strong>. A data de criação do form. Especifique isso apenas se quiser que seus forms tenham uma data de criação diferente da data da importação;</li>
+<li><strong>user_data_ref_id</strong>. O ID do usuário que será associado ao form. É aplicado apenas quando um administrador importa; para outros usuários, o valor é ignorado e os forms são atribuídos ao usuário que os está importando;</li>
+<li><strong>area_id</strong>. O ID da métrica AREA a ser associada ao form;</li>
+<li>[area_name]</li>
+<li><strong>case_id</strong>. O ID da métrica CASE a ser associada ao form;</li>
+<li>[case_name]</li>
+<li><strong>project_id</strong>. O ID da métrica PROJECT a ser associada ao form;</li>
+<li>[project_name]</li>
+<li>[project_code]</li>
+<li><strong>location_id</strong>. O ID da métrica LOCATION a ser associada ao form;</li>
+<li>[location_name]</li>
+<li><strong>organization_id</strong>. O ID da métrica ORGANISATION a ser associada ao form;</li>
+<li>[organization_name]</li>
+<li><strong>form_status_name</strong>. O nome de um dos status do form schema. As linhas sem ele recebem o primeiro status do schema. Se algum valor não corresponder a um nome de status existente, o arquivo não será importado (<em>Status inválidos</em>);</li>
 <li>
-<p>[organization_name]</p>
+<p><strong>dinoinvalid</strong>. Marca o form como inválido. Use <code>true</code>, <code>1</code>, <code>yes</code>, <code>y</code> ou <code>x</code>; qualquer outro valor ou uma célula vazia deixa o form válido.</p>
 </li>
 <li>
-<p>cada linha corresponderá a um novo form diferente. Então, se criarmos um arquivo com um cabeçalho + digamos, 5 linhas de dados, se o envio for bem-sucedido, criaremos 5 novos forms no DINO.   </p>
+<p>cada linha corresponderá a um novo form diferente. Então, se criarmos um arquivo com um cabeçalho + digamos, 5 linhas de dados, se o carregamento for bem-sucedido, criaremos 5 novos forms no DINO.</p>
 </li>
-<li>Não é necessário ter uma coluna para cada campo do form; não é necessário preencher todas as linhas de uma determinada coluna, mas se um campo estiver vazio para todas as linhas, ele pode ser omitido,   </li>
-<li>Os campos de data devem ser formatados como AAAA-MM-DD em texto (atenção).   </li>
-<li>Os campos de escolha única devem conter uma das opções aceitas conforme especificado na "choices" (veja o construtor de form ou o arquivo XLSForm).   </li>
+<li>Não é necessário ter uma coluna para cada campo do form; não é necessário preencher todas as linhas de uma determinada coluna, mas se um campo estiver vazio para todas as linhas, ele pode ser omitido,</li>
+<li>Os campos de data devem ser formatados como AAAA-MM-DD em formato de texto (cuidado).</li>
+<li>Os campos de escolha única devem conter uma das opções aceitas conforme especificado na “choices” (veja o construtor de forms ou o arquivo XLSForm).</li>
 <li>Os campos de múltipla escolha devem ser formatados de acordo com o seguinte padrão: [opt1, opt2] (ou seja, uma lista de opções entre colchetes).</li>
 </ol>
 <p>Por exemplo, um arquivo válido poderia ser o seguinte:</p>
@@ -2046,11 +2082,11 @@
 </tr>
 </tbody>
 </table>
-<p>Neste caso, estamos importando 2 forms e, para ambos, estamos selecionando apenas a métrica AREA. Além disso, observe que não fornecemos todos os campos do form para todos os forms, mas, para os campos em que fornecemos um valor, seguimos estritamente as indicações descritas acima.</p>
-<h3 id="lidando-com-métricas-durante-a-importação">Lidando com métricas durante a importação</h3>
+<p>Neste caso, estamos importando 2 forms; para ambos, estamos selecionando apenas a métrica AREA. Além disso, observe que não fornecemos todos os campos do form para todos os forms, mas, para os campos em que fornecemos um valor, seguimos rigorosamente as indicações descritas acima.</p>
+<h3 id="lidar-com-métricas-durante-a-importação">Lidar com métricas durante a importação</h3>
 <p>Durante a importação de alguns dados de form, no que diz respeito às métricas, você pode querer:</p>
 <ul>
-<li>criar novas métricas durante a importação  </li>
+<li>criar novas métricas durante a importação</li>
 <li>reutilizar métricas já criadas</li>
 </ul>
 <p>As regras a seguir para gerenciar corretamente as métricas são as seguintes:</p>
@@ -2058,65 +2094,67 @@
 <thead>
 <tr>
 <th>MÉTRICA</th>
-<th>CRIAÇÃO PELA UI</th>
-<th>CRIAÇÃO POR IMPORTAÇÃO</th>
-<th>CRIAÇÃO + ATRIBUIÇÃO POR IMPORTAÇÃO</th>
-<th>USO POR IMPORTAÇÃO</th>
-<th>CRIAÇÃO + ATRIBUIÇÃO POR IMPORTAÇÃO (parent)</th>
-<th>USO COMO PARENT</th>
+<th>CRIAR NA INTERFACE</th>
+<th>CRIAR NA IMPORTAÇÃO</th>
+<th>CRIAR + ATRIBUIR NA IMPORTAÇÃO</th>
+<th>USAR NA IMPORTAÇÃO</th>
+<th>CRIAR + ATRIBUIR NA IMPORTAÇÃO (pai)</th>
+<th>USAR COMO PAI</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Case</strong></td>
-<td>name</td>
-<td>name</td>
-<td>name</td>
-<td>id, ou name (com a opção reuse), ou ambos</td>
-<td>name</td>
-<td>id, ou name (com a opção reuse), ou ambos</td>
+<td><strong>Caso</strong></td>
+<td>nome</td>
+<td>nome</td>
+<td>nome</td>
+<td>id, ou nome (com a opção de reutilização), ou ambos</td>
+<td>nome, em outra linha do mesmo arquivo</td>
+<td>id ou nome</td>
 </tr>
 <tr>
-<td><strong>Organization</strong></td>
-<td>name</td>
-<td>name</td>
-<td>name</td>
-<td>id, ou name (com a opção reuse), ou ambos</td>
-<td>name</td>
-<td>id, ou name (com a opção reuse), ou ambos</td>
+<td><strong>Organização</strong></td>
+<td>nome</td>
+<td>nome</td>
+<td>nome</td>
+<td>id, ou nome (com a opção de reutilização), ou ambos</td>
+<td>nome, em outra linha do mesmo arquivo</td>
+<td>id ou nome</td>
 </tr>
 <tr>
-<td><strong>Location</strong></td>
-<td>name</td>
-<td>name</td>
-<td>name</td>
-<td>id, ou name (com a opção reuse), ou ambos</td>
-<td>name</td>
-<td>id, ou name (com a opção reuse), ou ambos</td>
+<td><strong>Localização</strong></td>
+<td>nome</td>
+<td>nome</td>
+<td>nome</td>
+<td>id, ou nome (com a opção de reutilização), ou ambos</td>
+<td>nome, em outra linha do mesmo arquivo</td>
+<td>id ou nome</td>
 </tr>
 <tr>
-<td><strong>Area</strong></td>
-<td>name</td>
-<td>name</td>
-<td>name</td>
-<td>id, ou name (com a opção reuse), ou ambos</td>
-<td>name</td>
-<td>id, ou name (com a opção reuse), ou ambos</td>
+<td><strong>Área</strong></td>
+<td>nome</td>
+<td>nome</td>
+<td>nome</td>
+<td>id, ou nome (com a opção de reutilização), ou ambos</td>
+<td>nome, em outra linha do mesmo arquivo</td>
+<td>id ou nome</td>
 </tr>
 <tr>
-<td><strong>Project</strong></td>
-<td>name, code</td>
-<td>name, code</td>
-<td>name, code</td>
-<td>id</td>
-<td>name, code</td>
-<td>id</td>
+<td><strong>Projeto</strong></td>
+<td>nome, código</td>
+<td>nome, código</td>
+<td>nome, código</td>
+<td>id, ou nome (com a opção de reutilização), ou ambos</td>
+<td>nome e código, em outra linha do mesmo arquivo</td>
+<td>id ou nome</td>
 </tr>
 </tbody>
 </table>
-<h2 id="slides-de-repetição">Slides de repetição</h2>
-<p>Se você tem campos em slides de repetição, eles precisam ser nomeados de forma diferente. Cada campo no slide de repetição precisa ser chamado \&lt;field_name&gt;__X, onde X é o número da repetição, de 0 (correspondendo a uma repetição) até N-1, onde N é o número total de repetições de slide naquele form. <br />
-Por exemplo, suponha que você tenha apenas 1 repetição do slide de repetição e queira adicionar os dois campos "Indicator description" e "Value reached". Você precisaria adicionar estas duas colunas ao seu arquivo de importação:</p>
+<p>Quando uma linha tem tanto o id quanto o nome de uma métrica, o id prevalece e o nome é ignorado. Uma nova métrica é criada apenas quando o nome é fornecido e o id está vazio.</p>
+<p>Os pais são definidos com as colunas <code>&lt;metric&gt;_parent_id</code> e <code>&lt;metric&gt;_parent_name</code> (por exemplo <code>location_parent_name</code>), e se aplicam apenas a métricas criadas pela importação. O pai deve ser do mesmo tipo de métrica e já existir ou ser criado por outra linha do mesmo arquivo, em qualquer ordem. Um pai que não corresponde a nada não é criado: essa métrica é reportada como <em>métrica com parent inválido</em>.</p>
+<h2 id="slides-repetidos">Slides repetidos</h2>
+<p>Se você tiver um campo em slides repetidos, eles precisam ser nomeados de forma diferente. Cada campo no slide repetido precisa ser chamado \&lt;field_name&gt;__X, onde X é o número da repetição, de 0 (correspondente a uma repetição) a N-1, onde N é o número total de repetições de slide naquele form.
+Por exemplo, suponha que você tenha apenas 1 repetição do slide repetido e queira adicionar os campos “Indicator description” e “Value reached”. Você precisaria adicionar estas duas colunas ao seu arquivo de importação:</p>
 <table>
 <thead>
 <tr>
@@ -2131,7 +2169,7 @@ Por exemplo, suponha que você tenha apenas 1 repetição do slide de repetiçã
 </tr>
 </tbody>
 </table>
-<p>Assim, por exemplo, poderíamos ter:</p>
+<p>Então, por exemplo, poderíamos ter:</p>
 <table>
 <thead>
 <tr>
@@ -2175,7 +2213,11 @@ Por exemplo, suponha que você tenha apenas 1 repetição do slide de repetiçã
 </tbody>
 </table>
 <h2 id="erros">Erros</h2>
-<p>Verifique os IDs no seu arquivo antes de importar. Se uma coluna fizer referência a uma entidade pelo seu ID (uma métrica ou um usuário) e não existir nenhuma entidade com esse ID no Dino, os forms importados não poderão ser sincronizados com o servidor.</p>
+<ul>
+<li><strong>IDs desconhecidos</strong> – se uma coluna se referir a um usuário ou a uma métrica por um ID que não existe no Dino, o arquivo inteiro não será importado (<em>Arquivo não importado!</em>), e o resultado lista os <em>Ids de usuário inválidos</em> ou <em>Ids de métrica inválidos</em>. Verifique os IDs no seu arquivo antes de importar.</li>
+<li><strong>Status de form desconhecido</strong> – um <code>form_status_name</code> que não corresponde a nenhum status do schema também interrompe a importação (<em>Status inválidos</em>).</li>
+<li><strong>Métricas que não podem ser vinculadas</strong> – uma linha que nomeia uma métrica que o Dino não consegue criar ou encontrar é rejeitada, e o resultado mostra o motivo; as outras linhas são importadas.</li>
+</ul>
 
 
 

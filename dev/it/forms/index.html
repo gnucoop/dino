@@ -570,22 +570,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#lavorare-con-i-dati" class="md-nav__link">
+  <a href="#creare-un-form-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lavorare con i dati
+        Creare un Form Schema
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Lavorare con i dati">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lavorare-con-i-dati" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lavorare con i Dati
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lavorare con i Dati">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#esportazione" class="md-nav__link">
+  <a href="#esporta" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Esportazione
+        Esporta
       
     </span>
   </a>
@@ -596,7 +607,7 @@
   <a href="#azioni-sulle-righe" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Azioni sulle righe
+        Azioni sulle Righe
       
     </span>
   </a>
@@ -604,10 +615,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#creare-nuovi-dati" class="md-nav__link">
+  <a href="#creare-un-nuovo-dato" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creare nuovi dati
+        Creare un Nuovo Dato
       
     </span>
   </a>
@@ -618,7 +629,7 @@
   <a href="#operazioni-in-blocco" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Operazioni in blocco
+        Operazioni in Blocco
       
     </span>
   </a>
@@ -1460,6 +1471,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Area utente
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1487,22 +1525,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#lavorare-con-i-dati" class="md-nav__link">
+  <a href="#creare-un-form-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lavorare con i dati
+        Creare un Form Schema
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Lavorare con i dati">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lavorare-con-i-dati" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lavorare con i Dati
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lavorare con i Dati">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#esportazione" class="md-nav__link">
+  <a href="#esporta" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Esportazione
+        Esporta
       
     </span>
   </a>
@@ -1513,7 +1562,7 @@
   <a href="#azioni-sulle-righe" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Azioni sulle righe
+        Azioni sulle Righe
       
     </span>
   </a>
@@ -1521,10 +1570,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#creare-nuovi-dati" class="md-nav__link">
+  <a href="#creare-un-nuovo-dato" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creare nuovi dati
+        Creare un Nuovo Dato
       
     </span>
   </a>
@@ -1535,7 +1584,7 @@
   <a href="#operazioni-in-blocco" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Operazioni in blocco
+        Operazioni in Blocco
       
     </span>
   </a>
@@ -1576,69 +1625,94 @@
 
 
 <h1 id="form">Form</h1>
-<p>La pagina <strong>Form</strong> è il tuo punto di partenza per la raccolta strutturata di dati in Dino. Da qui puoi sfogliare, creare e gestire i form schema, quindi visualizzare e utilizzare i dati raccolti tramite ciascun form.</p>
-<p><img alt="Vista principale della pagina Form" src="../imgs/forms/index.png" /></p>
-<p>La vista principale mostra una <strong>griglia di riquadri di form schema</strong>. Ogni riquadro mostra l'etichetta e l'icona del form. Passando il mouse su un riquadro vengono mostrati i pulsanti delle azioni:</p>
+<p>La pagina <strong>Form</strong> è il punto di partenza per raccogliere dati strutturati in Dino. Da qui puoi sfogliare, creare e gestire i form schema, poi visualizzare e lavorare con i dati raccolti tramite ciascun form.</p>
+<p><img alt="Visualizzazione principale della pagina Form" src="../imgs/forms/index.png" /></p>
+<p>La visualizzazione principale mostra una <strong>griglia di riquadri dei form schema</strong>. Ogni riquadro mostra l'etichetta e l'icona del form. Un riquadro contrassegnato da un'icona a impronta digitale è unico: può esistere un solo dato con quell'esatto insieme di metriche. Passando il mouse su un riquadro compaiono i pulsanti di azione:</p>
 <ul>
-<li><strong>Modifica schema</strong> – Modifica la struttura del form (campi, validazione, metriche).</li>
-<li><strong>Elimina schema</strong> – Rimuove il form schema (e tutti i suoi dati).</li>
-<li><strong>Condividi URL</strong> – Ottieni un link pubblico per consentire l'invio di dati dall'esterno.</li>
-<li><strong>Visualizza mappa</strong> – Apre la visualizzazione mappa per i dati con informazioni di posizione.</li>
-<li><strong>Chatta con i tuoi dati</strong> – Usa la funzionalità <a href="datachat/">DataChat</a> per porre domande sui dati in linguaggio naturale.</li>
+<li><strong>Modifica il Form Schema</strong> – Modifica la struttura del form (campi, validazione, metriche).</li>
+<li><strong>Elimina Form Schema</strong> – Rimuove il form schema. Dino rifiuta se il form schema ha ancora dati o se un report lo utilizza, e chiede conferma se altri form o gruppi di utenti vi fanno riferimento.</li>
+<li><strong>Condividi Link Pubblico</strong> – Ottieni un link pubblico che consente l'invio di dati dall'esterno.</li>
+<li><strong>Visualizza la mappa</strong> – Apri la visualizzazione mappa per i dati con informazioni sulla posizione.</li>
+<li><strong>Chatta con i tuoi dati</strong> – Fai domande sui tuoi dati in linguaggio naturale usando <a href="datachat/">DataChat</a>.</li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Le azioni disponibili su un riquadro dipendono dai tuoi permessi. Potresti non vedere tutti i pulsanti.</p>
 </div>
-<p>Per creare un nuovo form schema, fai clic sul pulsante flottante <strong>+</strong> in basso a destra. Verrai indirizzato alla pagina <a href="edit-form-schema/">Modifica form schema</a> per progettare il tuo form.</p>
-<h2 id="lavorare-con-i-dati">Lavorare con i dati</h2>
-<p>Fai clic sul riquadro di un form schema per accedere alla sua <strong>lista di form</strong>. Questa tabella mostra tutte le voci di dati raccolte per quello schema.</p>
+<p>Se non esiste ancora alcun form schema, la pagina mostra un messaggio che ti invita ad aggiungerne uno. Quando l'istanza lo abilita, un campo <strong>Filtra</strong> sopra i riquadri li restringe per nome.</p>
+<h2 id="creare-un-form-schema">Creare un Form Schema</h2>
+<ol>
+<li>Clicca il pulsante flottante <strong>+</strong> in basso a destra nella pagina.</li>
+<li>Progetta il tuo form nella pagina <a href="edit-form-schema/">Modifica il Form Schema</a>.</li>
+</ol>
+<h2 id="lavorare-con-i-dati">Lavorare con i Dati</h2>
+<p>Clicca sul riquadro di un form schema per aprire la sua <strong>lista di form</strong>. Questa tabella mostra ogni dato raccolto per quel form schema.</p>
 <p><img alt="Lista di form (tabella dati) per un form schema" src="../imgs/forms/index-list.png" /></p>
-<p>La lista include una <strong>barra dei filtri</strong> che ti consente di cercare per parola chiave, intervallo di date, metriche, stato, utente e altro ancora. Puoi anche salvare dei filtri preimpostati per riutilizzarli rapidamente.</p>
-<h3 id="esportazione">Esportazione</h3>
-<p>Usa il pulsante <strong>esporta</strong> per scaricare i dati in formato CSV o XLSX.</p>
-<p><img alt="Finestra di esportazione per scaricare i dati del form" src="../imgs/forms/index-export.png" /></p>
-<p>La finestra di esportazione ti consente di specificare alcuni parametri importanti per l'esportazione:</p>
-<p>1) Quanti form esportare. <br />
-   1) <em>Form nella pagina</em>. Esporta solo i form visualizzati nella pagina precedente, eventualmente filtrati e suddivisi in pagine. <br />
-   2) <em>Aggiungi filtri</em> o <em>Tutti gli elementi/1filtri</em>. Se hai già applicato un filtro alla tua lista di form, è possibile esportare solo i form filtrati (seconda opzione). Se non hai ancora applicato alcun filtro, viene mostrata la prima opzione, che ti consente di aggiungere altri filtri. <br />
-   3) <em>Tutti i form</em>. Tutti i form, senza filtro né paginazione. <br />
-2) Formato. <br />
-    1) <em>CSV</em>. I dati verranno esportati in un file CSV. Ogni form estratto sarà una riga di un file in cui i campi saranno le colonne. <br />
-    2) <em>XLSX</em>. Esportazione in formato Excel.<br />
-    3) <em>Splitted XLSX</em>. Esportazione in formato Excel in cui ogni slide è un foglio diverso. <br />
-3) Opzioni dei campi<br />
-    1) <em>Seleziona tutti i campi del form</em>. Consente di esportare tutti i campi del form.<br />
-    2) <em>Valori delle etichette</em>. Per i campi che hanno valori preimpostati (campi a selezione singola o multipla), il valore esportato è il valore visualizzato, non il codice interno utilizzato per rappresentare quel valore. <br />
-    3) <em>Formato Data Analysis</em>. I form che contengono slide ripetute e scelte multiple vengono esportati su più righe; ogni riga contiene solo una slide ripetuta e solo una scelta multipla, mentre gli altri campi rimangono invariati. Viene aggiunta una colonna extra, chiamata <em>conta</em>. Questa colonna assume il valore 1 solo nella prima riga del gruppo di ripetizione e 0 nelle altre.<br />
-    4) <em>Colonne separate</em>. Le scelte multiple vengono esportate come colonne multiple 
-4) <em>Selezione slide</em>. Consente di visualizzare l'elenco dei campi di ogni slide, se desideri esportare solo alcuni campi e non tutti. <br />
-5) <em>Selezione dei campi</em>. Puoi selezionare/deselezionare singoli campi.   </p>
-<p>Alcune colonne del file esportato non possono essere deselezionate. Sono:</p>
+<p>Sopra la tabella puoi vedere quanti elementi sono stati trovati e puoi spostarti tra le pagine. La barra degli strumenti offre:</p>
 <ul>
-<li>Form ID</li>
+<li><strong>Aggiungi nuovo form</strong> – Crea un nuovo dato.</li>
+<li><strong>Importa form</strong> – Importa dati da un file. Vedi <a href="import/">Importa dati</a>.</li>
+<li><strong>Filtri</strong> – Restringe la lista per intervallo di date, stato, utente, metriche e altro. Passa tra filtri <em>Semplice</em> e <em>Avanzato</em>, oppure salva un filtro predefinito per riutilizzarlo in seguito.</li>
+<li><strong>Esporta</strong> – Scarica i dati in un file. Vedi <a href="#esporta">Esporta</a>.</li>
+</ul>
+<p>A sinistra nella barra degli strumenti, il selettore <strong>Dati</strong> / <strong>Mappa</strong> / <strong>AI</strong> cambia visualizzazione; vedi <a href="#visualizzazioni-aggiuntive">Visualizzazioni aggiuntive</a>.</p>
+<p>Una riga i cui dati potrebbero essere incompleti mostra un'icona di avviso. Le righe con file in attesa di sincronizzazione mostrano un'icona di caricamento su cloud.</p>
+<h3 id="esporta">Esporta</h3>
+<p>Usa il pulsante <strong>Esporta</strong> nella barra degli strumenti per scaricare i dati.</p>
+<p><img alt="Finestra di esportazione per scaricare i dati dei form" src="../imgs/forms/index-export.png" /></p>
+<p>La finestra <strong>Esporta dati</strong> ti permette di scegliere:</p>
+<p>1) Quali form esportare.
+    1) <em>Elementi nella pagina</em>. Solo i form mostrati nella pagina corrente della lista (impostazione predefinita).
+    2) <em>Con filtri attivi (N)</em>. Tutti i form che corrispondono ai filtri che hai applicato. Quando nessun filtro è attivo, questa opzione mostra <em>Aggiungi filtri</em>: chiude la finestra così puoi impostarne alcuni.
+    3) <em>Tutti gli elementi</em>. Tutti i form, senza filtro né paginazione. Su un form di grandi dimensioni questo può rallentare il dispositivo.
+2) Il formato.
+    1) <em>csv</em>. Ogni form esportato è una riga e ogni campo una colonna.
+    2) <em>xlsx</em>. Lo stesso, in formato Excel.
+    3) <em>splitted xlsx</em>. Formato Excel, con un foglio per slide.
+3) Nel menu <strong>Campi e formati</strong>:
+    1) <em>Seleziona tutti i campi del Form</em>. Esporta ogni campo del form.
+    2) <em>Valori delle etichette</em>. Per i campi con valori predefiniti (scelta singola o multipla), esporta l'etichetta visualizzata invece del codice interno.
+    3) <em>Formato del valore</em>, uno tra:</p>
+<pre><code>    - *Predefinito*.
+    - *Formato analisi dati*. Le slide ripetute e i campi a scelta multipla vengono esportati su più righe, una ripetizione e una scelta per riga; gli altri campi vengono ripetuti su ogni riga. Una colonna aggiuntiva, *conta*, è 1 sulla prima riga di ogni form e 0 sulle righe aggiuntive generate per lo stesso form, così sommando *conta* si contano i form.
+    - *Colonne separate*. Ogni opzione di un campo a scelta multipla ottiene una propria colonna, con 1 o 0.
+</code></pre>
+<p>4) I campi da esportare. La lista <strong>Sezioni</strong> a sinistra mostra ogni sezione con i suoi campi selezionati e totali. Per la sezione attiva puoi cercare un campo, usare <strong>Seleziona tutti</strong> / <strong>Deseleziona</strong>, oppure spuntare singoli campi. Il piè di pagina mostra quanti campi sono selezionati; clicca <strong>Esporta</strong> per scaricare.</p>
+<p>Alcune colonne vengono sempre esportate e non possono essere deselezionate:</p>
+<ul>
+<li>ID del form</li>
 <li>Data di creazione</li>
 <li>Data di aggiornamento</li>
-<li>Dati utente DINO (nome e ID)</li>
+<li>Dati utente DINO (ID e nome completo)</li>
 <li>Dati delle metriche (id, nome, ecc...)</li>
+<li>Stato del form (id, nome, etichetta, livello, colore), quando il form ha stati</li>
 <li>Dinoinvalid</li>
 </ul>
-<h3 id="azioni-sulle-righe">Azioni sulle righe</h3>
-<p>Fai clic su una riga per espandere i suoi dettagli, oppure usa le azioni della riga (visualizza, modifica, elimina, stampa come PDF, scarica come DOCX, stampa badge). Le azioni disponibili dipendono dai tuoi permessi e dalla configurazione del form.</p>
-<h3 id="creare-nuovi-dati">Creare nuovi dati</h3>
-<p>Fai clic sul pulsante flottante <strong>+</strong> nella pagina della lista per aprire un form vuoto per l'inserimento dei dati.</p>
+<h3 id="azioni-sulle-righe">Azioni sulle Righe</h3>
+<p>Passa il mouse su una riga per mostrare le icone <strong>Vedi</strong> e <strong>Modifica</strong>. Clicca una riga per selezionarla: la barra delle azioni sopra la tabella mostra quindi ogni azione che puoi usare su di essa (vedi, modifica, elimina, stampa come PDF, scarica come DOCX, stampa badge). Le azioni disponibili dipendono dai tuoi permessi e dalla configurazione del form.</p>
+<h3 id="creare-un-nuovo-dato">Creare un Nuovo Dato</h3>
+<ol>
+<li>Apri la lista di form per il form schema che desideri.</li>
+<li>Clicca <strong>Aggiungi nuovo form</strong> nella barra degli strumenti.</li>
+<li>Compila il form vuoto e salvalo. Vedi <a href="edit-form/">Modifica Form</a>.</li>
+</ol>
 <p><img alt="Form vuoto aperto per inviare un nuovo dato" src="../imgs/forms/index-create.png" /></p>
-<p>Compila i campi e invia. I nuovi dati appariranno nella lista.</p>
-<h3 id="operazioni-in-blocco">Operazioni in blocco</h3>
-<p>Seleziona più dati usando le caselle di controllo per eseguire <strong>eliminazione</strong> o <strong>modifica</strong> in blocco (cambia lo stesso valore di campo in tutte le voci selezionate).</p>
+<p>Il nuovo dato appare nella lista.</p>
+<h3 id="operazioni-in-blocco">Operazioni in Blocco</h3>
+<p>Seleziona uno o più dati usando le caselle di controllo per rivelare le azioni in blocco. Puoi <strong>elimina</strong> i dati selezionati o <strong>Modifica</strong> li insieme, applicando lo stesso valore di campo a tutti.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Eliminare un form schema o i suoi dati non può essere annullato. Fai attenzione quando usi le azioni di eliminazione.</p>
+</div>
 <h2 id="visualizzazioni-aggiuntive">Visualizzazioni aggiuntive</h2>
+<p>Cambia visualizzazione con i pulsanti <strong>Dati</strong> / <strong>Mappa</strong> / <strong>AI</strong> a sinistra nella barra degli strumenti della lista di form, oppure dai pulsanti su un riquadro di form schema. I filtri che hai applicato vengono mantenuti.</p>
 <ul>
-<li><strong>Mappa</strong> – Visualizza i dati con coordinate geografiche su una mappa interattiva. Scopri di più in <a href="forms-map/">Mappa dei form</a>.</li>
-<li><strong>DataChat</strong> – Interroga i dati del tuo form usando il linguaggio naturale. Vedi <a href="datachat/">DataChat</a> per i dettagli.</li>
+<li><strong>Mappa</strong> – Visualizza i dati con coordinate geografiche su una mappa interattiva. È disponibile solo quando il form schema raccoglie posizioni. Scopri di più in <a href="forms-map/">Mappa dei Form</a>.</li>
+<li><strong>DataChat</strong> (la visualizzazione <strong>AI</strong>) – Interroga i dati del tuo form usando il linguaggio naturale. Vedi <a href="datachat/">DataChat</a> per i dettagli.</li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>La funzionalità DataChat può consumare crediti. Controlla il saldo crediti del tuo account prima di utilizzarla.</p>
+<p>DataChat può consumare crediti. Controlla il saldo crediti del tuo account prima di usarlo.</p>
 </div>
 
 

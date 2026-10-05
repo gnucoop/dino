@@ -1258,10 +1258,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#il-pulsante-di-invio-è-disabilitato" class="md-nav__link">
+  <a href="#il-pulsante-successiva-o-invia-è-disattivato" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Il pulsante di invio è disabilitato.
+        Il pulsante Successiva o Invia è disattivato.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#impossibile-aprire-questo-form-perché-mancano-alcune-informazioni-necessarie-nel-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "Impossibile aprire questo form perché mancano alcune informazioni necessarie nel link."
       
     </span>
   </a>
@@ -1283,7 +1294,7 @@
   <a href="#ops-non-è-stato-possibile-trovare-questo-form-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        "Ops! Non è stato possibile trovare questo form schema."
+        "Ops! Non è stato possibile trovare questo Form Schema."
       
     </span>
   </a>
@@ -1303,6 +1314,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pagine-correlate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pagine correlate
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1480,6 +1502,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Area utente
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1552,10 +1601,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#il-pulsante-di-invio-è-disabilitato" class="md-nav__link">
+  <a href="#il-pulsante-successiva-o-invia-è-disattivato" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Il pulsante di invio è disabilitato.
+        Il pulsante Successiva o Invia è disattivato.
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#impossibile-aprire-questo-form-perché-mancano-alcune-informazioni-necessarie-nel-link" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "Impossibile aprire questo form perché mancano alcune informazioni necessarie nel link."
       
     </span>
   </a>
@@ -1577,7 +1637,7 @@
   <a href="#ops-non-è-stato-possibile-trovare-questo-form-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        "Ops! Non è stato possibile trovare questo form schema."
+        "Ops! Non è stato possibile trovare questo Form Schema."
       
     </span>
   </a>
@@ -1600,6 +1660,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#pagine-correlate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pagine correlate
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1618,68 +1689,79 @@
 
 
 <h1 id="form-pubblici">Form pubblici</h1>
-<p>I form pubblici consentono a chiunque disponga di un link di inviare dati a Dino senza bisogno di effettuare l'accesso o di avere un account. Sono comunemente utilizzati per sondaggi, iscrizioni o raccolta di feedback. Se hai ricevuto un link pubblico a un form, puoi usare questa pagina per compilarlo.</p>
-<p>Gli indirizzi dei form pubblici seguono il pattern <code>/f/</code> seguito da un identificatore univoco (ad es. <code>https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a</code>). L'identificatore è l'ID del form schema. Se un valore di metrica deve essere aggiunto ai dati del form, è possibile includerlo nell'URL usando la seguente sintassi (ad es. per il caso della metrica): <code>https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a?case=a6408e72-c60c-4d54-ad2f-44fd4a90cdb2</code>
-dove l'ID del valore di metrica è ancora una volta l'ID della metrica assegnato da Dino.</p>
-<p>Non è necessario ricordare questa sintassi, poiché il link viene generato automaticamente da Dino quando fai clic sull'icona di condivisione del form schema. Una volta generato, il link può essere condiviso via email, WhatsApp o qualsiasi altro mezzo.</p>
+<p>I form pubblici consentono a chiunque disponga di un link di inviare dati a Dino senza dover effettuare l'accesso o possedere un account. Sono comunemente utilizzati per sondaggi, iscrizioni o raccolta di feedback. Se hai ricevuto un link pubblico a un form, puoi usare questa pagina per compilarlo.</p>
+<p>Gli indirizzi dei form pubblici seguono lo schema <code>/f/</code> seguito da un identificatore univoco (ad esempio, <code>https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a</code>). L'identificatore è l'ID del form schema. Se si deve aggiungere un valore di metrica ai dati del form, è possibile includerlo nell'url usando la seguente sintassi (ad esempio per il caso della metrica): <code>https://your-dino-instance.com/f/963f643f-ad55-4b85-a3d6-100b113f2e9a?case=a6408e72-c60c-4d54-ad2f-44fd4a90cdb2</code>
+dove l'ID del valore della metrica è ancora una volta l'ID della metrica assegnato da Dino.</p>
+<p>Non è necessario ricordare questa sintassi, poiché il link viene generato automaticamente da Dino quando si clicca sull'icona di condivisione del form schema. Una volta generato, il link può essere condiviso via email, WhatsApp o qualsiasi altro mezzo.</p>
 <hr />
 <h2 id="accedere-a-un-form-pubblico">Accedere a un form pubblico</h2>
 <ol>
-<li>Fai clic sul link del form pubblico che hai ricevuto (ad es. via email o in un messaggio condiviso). Il link ti porterà a <code>/f/...</code> sulla tua istanza Dino.</li>
-<li>Il form si aprirà direttamente nel tuo browser web. Non devi effettuare l'accesso.</li>
-<li>Controlla il titolo del form e l'eventuale testo introduttivo per confermare che sia il form giusto.</li>
+<li>Clicca sul link del form pubblico che hai ricevuto (ad esempio, via email o in un messaggio condiviso). Il link ti porterà a <code>/f/...</code> sulla tua istanza Dino.</li>
+<li>Il form si aprirà direttamente nel tuo browser web. Non è necessario effettuare l'accesso.</li>
+<li>Controlla il titolo del form e l'eventuale testo introduttivo per confermare che si tratti del form corretto.</li>
 </ol>
+<p>Un selettore di lingua nella barra superiore dello schermo ti consente di scegliere la lingua del form. Usalo per passare al form nella lingua che preferisci prima di iniziare a compilarlo.</p>
+<p>Se il form include più sezioni, sotto il titolo viene mostrata una barra di avanzamento che ti permette di vedere a che punto sei.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>I link dei form pubblici contengono un identificatore lungo (come <code>/f/abc123def</code>). Se la pagina non si carica, assicurati che l'intero link sia stato copiato correttamente.</p>
+<p>I link dei form pubblici contengono un identificatore lungo (come <code>/f/abc123def</code>). Se la pagina non si carica, assicurati che il link sia stato copiato per intero.</p>
 </div>
 <hr />
 <h2 id="compilare-e-inviare">Compilare e inviare</h2>
 <ol>
-<li>Compila tutti i campi del form. I campi contrassegnati con un asterisco (<em>) sono </em><em>obbligatori</em>*.</li>
-<li>Se il form ha più sezioni, usa le schede o i pulsanti di navigazione nella parte superiore del form per spostarti tra esse.</li>
-<li>Mentre compili i campi, il form convalida i dati inseriti. I valori non validi sono in genere evidenziati.</li>
-<li>Quando tutti i campi obbligatori sono validi, il pulsante di invio principale (di solito un pulsante circolare con l'icona di invio) diventa attivo.</li>
-<li>Fai clic sul pulsante di invio per inviare i tuoi dati.</li>
+<li>Compila tutti i campi del form. I campi contrassegnati con un asterisco (<em>) sono </em><em>necessario</em>*.</li>
+<li>Se il form ha più sezioni, usa i pulsanti <strong>Successiva</strong> e <strong>Precedente</strong> in fondo al form per spostarti tra esse. Il titolo della sezione è mostrato nella parte superiore di ogni passaggio.</li>
+<li>Mentre compili i campi, il form convalida i tuoi inserimenti. I valori non validi sono in genere evidenziati.</li>
+<li>Una volta che tutti i campi necessari sono validi, il pulsante <strong>Invia</strong> diventa attivo.</li>
+<li>Clicca <strong>Invia</strong> per inviare i tuoi dati.</li>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Il pulsante di invio rimane disabilitato (in grigio) se un campo obbligatorio è vuoto o contiene dati non validi. Scorri il form per individuare e correggere eventuali problemi evidenziati.</p>
+<p>Il pulsante <strong>Successiva</strong> resta disattivato se la sezione corrente non è ancora valida, e il pulsante <strong>Invia</strong> resta disattivato (in grigio) se un campo necessario è vuoto o contiene dati non validi. Controlla la sezione corrente, o torna indietro nelle sezioni precedenti, per individuare e correggere eventuali problemi evidenziati.</p>
 </div>
 <hr />
 <h2 id="dopo-linvio">Dopo l'invio</h2>
-<p>Dopo un invio riuscito, vedrai una schermata di conferma con un segno di spunta e il messaggio: <strong>"Il form è stato inviato correttamente."</strong></p>
-<p>Comparirà anche una notifica in fondo allo schermo. Da questa notifica puoi:</p>
-<ul>
-<li><strong>Compilane un altro</strong>: fai clic per ricaricare la pagina con una copia nuova e vuota dello stesso form, così puoi effettuare un altro invio.</li>
-<li><strong>Chiudi</strong>: chiude la notifica.</li>
-</ul>
+<p>Dopo un invio riuscito, vedrai una schermata di conferma con un segno di spunta e il messaggio: <strong>"Il form è stato inviato con successo."</strong></p>
+<p>Inoltre, per qualche secondo compare una notifica nella parte inferiore dello schermo. Clicca <strong>Compila un altro</strong> per ricaricare la pagina con una copia nuova e vuota dello stesso form, così da poter effettuare un altro invio.</p>
 <hr />
 <h2 id="risoluzione-dei-problemi">Risoluzione dei problemi</h2>
-<h3 id="il-pulsante-di-invio-è-disabilitato">Il pulsante di invio è disabilitato.</h3>
-<p>Ciò significa che il form non è ancora valido. Verifica quanto segue:</p>
+<h3 id="il-pulsante-successiva-o-invia-è-disattivato">Il pulsante Successiva o Invia è disattivato.</h3>
+<p>Ciò significa che la sezione corrente o il form nel suo complesso non è ancora valido. Verifica se ci sono:</p>
 <ul>
-<li><strong>Campi obbligatori vuoti</strong>: assicurati che tutti i campi contrassegnati con un asterisco (*) siano compilati.</li>
-<li><strong>Dati non validi</strong>: cerca i campi evidenziati in rosso e correggi le informazioni (ad es. un formato email non valido).</li>
+<li><strong>Campi necessari vuoti</strong>: assicurati che tutti i campi contrassegnati con un asterisco (*) siano compilati.</li>
+<li><strong>Dati non validi</strong>: cerca i campi evidenziati in rosso e correggi le informazioni (ad esempio, un formato email non valido).</li>
+</ul>
+<h3 id="impossibile-aprire-questo-form-perché-mancano-alcune-informazioni-necessarie-nel-link">"Impossibile aprire questo form perché mancano alcune informazioni necessarie nel link."</h3>
+<p>Il link che hai usato è incompleto. Alcuni form richiedono informazioni sulla metrica (come un caso, una posizione o un'organizzazione) da includere nell'indirizzo.</p>
+<ul>
+<li>Contatta la persona che ti ha inviato il link del form e chiedile di condividere il link completo.</li>
 </ul>
 <h3 id="impossibile-salvare-il-form">"Impossibile salvare il form."</h3>
-<p>L'invio ha riscontrato un errore temporaneo, spesso legato alla tua connessione internet.</p>
+<p>Il tuo invio ha riscontrato un errore temporaneo, spesso legato alla tua connessione internet.</p>
 <ol>
-<li>Fai clic su <strong>"Riprova"</strong> nella notifica in fondo allo schermo.</li>
-<li>Se l'errore persiste, controlla la tua connessione internet e prova ad aggiornare la pagina.</li>
-<li>Se continua a non funzionare, contatta la persona che ti ha inviato il link del form.</li>
+<li>Controlla la tua connessione internet.</li>
+<li>Clicca <strong>"Riprova"</strong> nella notifica in fondo allo schermo. Dino invia di nuovo il form con le risposte che hai digitato: non devi compilarlo di nuovo.</li>
+<li>Se l'errore persiste, contatta la persona che ti ha inviato il link del form.</li>
 </ol>
-<h3 id="ops-non-è-stato-possibile-trovare-questo-form-schema">"Ops! Non è stato possibile trovare questo form schema."</h3>
+<h3 id="ops-non-è-stato-possibile-trovare-questo-form-schema">"Ops! Non è stato possibile trovare questo Form Schema."</h3>
 <p>Il link che stai usando non è corretto oppure il form è stato rimosso.</p>
 <ul>
 <li>Verifica di avere l'URL completo e corretto.</li>
-<li>Contatta la persona che ha condiviso il link con te per ottenerne uno aggiornato.</li>
+<li>Contatta la persona che ti ha condiviso il link per riceverne uno aggiornato.</li>
 </ul>
 <h3 id="il-form-non-si-carica-pagina-vuota">Il form non si carica (pagina vuota).</h3>
 <ul>
 <li>Aggiorna la pagina del browser.</li>
 <li>Assicurati che la tua connessione internet sia stabile.</li>
 <li>Verifica che il link sia completo e non sia stato troncato.</li>
+</ul>
+<hr />
+<h2 id="pagine-correlate">Pagine correlate</h2>
+<ul>
+<li><a href="../forms/">Form</a></li>
+<li><a href="../forms/edit-form-schema/">Modifica form schema</a></li>
+<li><a href="../administration/languages/">Lingue</a></li>
+<li><a href="../metrics/">Metriche</a></li>
 </ul>
 
 

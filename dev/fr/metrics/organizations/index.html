@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Gérez les organisations dans Dino – affichez, ajoutez, modifiez, supprimez et importez des organisations.">
+        <meta name="description" content="Gérez les organisations dans Dino – consultez, ajoutez, modifiez, supprimez et importez des organisations.">
       
       
       
@@ -1120,18 +1120,17 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#actions-groupées-et-filtres" class="md-nav__link">
+  <a href="#actions-groupées" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Actions groupées et filtres
+        Actions groupées
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Actions groupées et filtres">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#recherche-et-filtres" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1139,11 +1138,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1159,10 +1153,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#étapes--créer-une-organisation" class="md-nav__link">
+  <a href="#étapes--créer-une-nouvelle-organisation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Étapes : créer une organisation
+        Étapes : créer une nouvelle organisation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#étapes--importer-des-organisations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étapes : importer des organisations
       
     </span>
   </a>
@@ -1482,6 +1487,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Espace utilisateur
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1531,18 +1563,17 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#actions-groupées-et-filtres" class="md-nav__link">
+  <a href="#actions-groupées" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Actions groupées et filtres
+        Actions groupées
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Actions groupées et filtres">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#recherche-et-filtres" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1550,11 +1581,6 @@
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1570,10 +1596,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#étapes--créer-une-organisation" class="md-nav__link">
+  <a href="#étapes--créer-une-nouvelle-organisation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Étapes : créer une organisation
+        Étapes : créer une nouvelle organisation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#étapes--importer-des-organisations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étapes : importer des organisations
       
     </span>
   </a>
@@ -1620,69 +1657,78 @@
 
 
 <h1 id="organisations">Organisations</h1>
-<p>La page <strong>Organisations</strong> répertorie toutes les valeurs possibles de la métrique organisation. Les organisations peuvent être vos partenaires de projet ou toute entité impliquée dans vos activités. Utilisez cet écran pour afficher, ajouter, modifier, supprimer et importer des organisations, ainsi que pour gérer la hiérarchie organisationnelle.</p>
-<p><img alt="Main view of the Organizations page" src="../../imgs/metrics/organizations.png" /></p>
+<p>La page <strong>Organisations</strong> liste toutes les valeurs possibles de la métrique organisation. Les organisations peuvent être vos partenaires de projet ou toute entité impliquée dans vos activités. Utilisez cet écran pour consulter, ajouter, modifier, supprimer et importer des organisations, et pour gérer la hiérarchie organisationnelle.</p>
+<p><img alt="Vue principale de la page Organisations" src="../../imgs/metrics/organizations.png" /></p>
 <h2 id="colonnes-du-tableau">Colonnes du tableau</h2>
 <p>Par défaut, le tableau affiche les colonnes suivantes :</p>
 <ul>
-<li><strong>Nom de l'organisation</strong> – le nom de l'organisation. Cette colonne est triable.</li>
-<li><strong>Organisation parente</strong> – le nom de l'organisation parente, le cas échéant.</li>
+<li><strong>Organization Name</strong> – le nom de l'organisation. Cette colonne est triable.</li>
+<li><strong>Organisation parent</strong> – le nom de l'organisation parente, le cas échéant.</li>
 </ul>
-<p>Des colonnes supplémentaires (ID, Date de création, Chemin du logo, URL du site web, Attributs supplémentaires) sont masquées, mais disponibles lorsque vous personnalisez l'affichage des colonnes à l'aide de l'icône <strong>Personnalisez les colonnes</strong> (en bas à droite de l'en-tête du tableau).</p>
+<p>Des colonnes supplémentaires (ID, Creation Date, Logo path, Website url, Additional Attributes) sont masquées par défaut. Utilisez le bouton <strong>Colonnes</strong>, au-dessus du tableau à droite, pour les afficher ou les masquer.</p>
 <h2 id="actions-sur-les-lignes">Actions sur les lignes</h2>
-<p>Chaque ligne comporte trois actions accessibles en cliquant sur le bouton <strong>Plus</strong> (trois points) à côté de la ligne :</p>
+<p>Survolez une ligne pour faire apparaître les icônes <strong>Voir</strong> et <strong>Modifier</strong>. Cliquez sur la ligne pour la sélectionner : la barre d'actions au-dessus du tableau affiche alors toutes les actions :</p>
 <ul>
-<li><strong>Afficher</strong> (icône de visibilité) – ouvre une boîte de dialogue en lecture seule avec les détails de l'organisation.</li>
-<li><strong>Modifier</strong> (icône de crayon) – ouvre une boîte de dialogue pour modifier les détails de l'organisation.</li>
-<li><strong>Supprimer</strong> (icône de corbeille) – supprime définitivement l'organisation. Une boîte de dialogue de confirmation apparaît avant la suppression.</li>
+<li><strong>Voir</strong> (icône de visibilité) – ouvre une fenêtre en lecture seule avec les détails de l'organisation.</li>
+<li><strong>Modifier</strong> (icône de crayon) – ouvre une fenêtre pour modifier les détails de l'organisation.</li>
+<li><strong>Supprimer</strong> (icône de corbeille) – supprime définitivement l'organisation. Une fenêtre de confirmation s'affiche d'abord.</li>
 </ul>
 <div class="admonition warning">
-<p class="admonition-title">Supprimez les organisations avec prudence</p>
-<p>La suppression d'une organisation est irréversible. Assurez-vous qu'aucun cas ni formulaire actif n'en dépend avant de la supprimer.</p>
+<p class="admonition-title">Supprimez les organisations avec précaution</p>
+<p>La suppression d'une organisation est irréversible. Une organisation utilisée par des form, ou qui possède des organisations enfants, ne peut pas être supprimée ; voir <a href="../">Métriques</a>.</p>
 </div>
-<p>Vous pouvez également cliquer directement sur une ligne pour la <strong>sélectionner</strong> (pour les actions groupées) ou la <strong>développer</strong> pour voir des détails supplémentaires directement dans la ligne.</p>
-<h2 id="actions-groupées-et-filtres">Actions groupées et filtres</h2>
-<p>Sélectionnez plusieurs lignes à l'aide des cases à cocher de la première colonne, puis utilisez les boutons de suppression groupée ou de modification groupée qui apparaissent dans la barre d'outils.</p>
-<h3 id="recherche-et-filtres">Recherche et filtres</h3>
+<h2 id="actions-groupées">Actions groupées</h2>
+<p>Sélectionnez une ou plusieurs lignes à l'aide des cases à cocher de la première colonne. Une barre d'outils apparaît au-dessus du tableau avec les actions que vous pouvez appliquer :</p>
+<ul>
+<li>Avec une ligne sélectionnée, vous pouvez consulter, modifier ou supprimer cette organisation.</li>
+<li>Avec plusieurs lignes sélectionnées, vous pouvez toutes les supprimer en une seule fois.</li>
+</ul>
+<h2 id="recherche-et-filtres">Recherche et filtres</h2>
 <p>La barre de filtres en haut de la page propose :</p>
 <ul>
 <li><strong>Recherche par mot-clé</strong> – filtre les organisations par n'importe quel texte.</li>
-<li><strong>Plage de dates</strong> – filtre par plage de dates de création.</li>
-<li><strong>Gestionnaire de préréglages</strong> – enregistre et charge des préréglages de filtres de recherche.</li>
-<li><strong>Exporter</strong> – télécharge la liste filtrée sous forme de fichier.</li>
+<li><strong>Filtres</strong> – ouvre la fenêtre de filtres pour affiner la liste par date de création (<strong>De date</strong> / <strong>À ce jour</strong>).</li>
+<li><strong>Exportation</strong> – télécharge la liste sous forme de fichier.</li>
 </ul>
-<p>Cliquez sur le bouton <strong>Filtrer</strong> pour ouvrir des filtres avancés et obtenir un contrôle plus précis.</p>
+<p>Les filtres appliqués apparaissent sous forme de puces sous la barre de filtres. Cliquez sur l'icône d'annulation d'une puce pour supprimer ce filtre.</p>
 <h2 id="ajouter-et-importer-des-organisations">Ajouter et importer des organisations</h2>
-<p>Deux boutons d'action flottants sont toujours visibles dans le coin inférieur droit :</p>
+<p>Deux boutons sont disponibles dans la barre d'outils au-dessus du tableau :</p>
 <ul>
-<li><strong>Ajouter</strong> (icône plus) – ouvre une boîte de dialogue pour créer une organisation. Vous serez invité à saisir le nom de l'organisation, l'organisation parente, l'URL du site web et d'autres détails.</li>
-<li><strong>Importer</strong> (icône de téléversement cloud) – vous permet de téléverser un fichier (CSV, JSON ou XML) pour importer des organisations en masse. Suivez les instructions à l'écran pour mapper les champs.</li>
+<li><strong>Add new ORGANIZATION</strong> (icône plus) – ouvre une fenêtre pour créer une nouvelle organisation.</li>
+<li><strong>Import ORGANIZATION</strong> (icône de téléversement cloud) – téléversez un fichier pour importer des organisations en masse.</li>
 </ul>
 <div class="admonition tip">
-<p class="admonition-title">Internationalisation</p>
-<p>Les noms et libellés des organisations peuvent être traduits si votre instance Dino prend en charge plusieurs langues. Consultez <a href="../../administration/languages/">Langues</a> pour plus de détails.</p>
+<p class="admonition-title">Hiérarchie organisationnelle</p>
+<p>Définissez une <strong>Organisation parent</strong> lors de la création d'une organisation pour construire une hiérarchie d'entités liées.</p>
 </div>
-<h2 id="étapes--créer-une-organisation">Étapes : créer une organisation</h2>
+<h2 id="étapes--créer-une-nouvelle-organisation">Étapes : créer une nouvelle organisation</h2>
 <ol>
-<li>Cliquez sur le bouton flottant <strong>Ajouter</strong>.</li>
-<li>Dans la boîte de dialogue qui s'ouvre, remplissez les champs obligatoires (Nom de l'organisation et au moins un attribut).</li>
-<li>Si vous le souhaitez, définissez une <strong>Organisation parente</strong> pour créer une hiérarchie.</li>
+<li>Cliquez sur le bouton <strong>Add new ORGANIZATION</strong> dans la barre d'outils.</li>
+<li>Dans la fenêtre qui s'ouvre, remplissez les champs obligatoires, en commençant par le nom de l'organisation. Les champs facultatifs sont marqués <em>(optional)</em>.</li>
+<li>Définissez éventuellement une <strong>Organisation parent</strong> pour placer la nouvelle organisation dans une hiérarchie.</li>
+<li>Ajoutez éventuellement un chemin de logo, une URL de site web et tout attribut supplémentaire.</li>
 <li>Cliquez sur <strong>Enregistrer</strong>. La nouvelle organisation apparaît immédiatement dans la liste.</li>
+</ol>
+<h2 id="étapes--importer-des-organisations">Étapes : importer des organisations</h2>
+<ol>
+<li>Cliquez sur le bouton <strong>Import ORGANIZATION</strong> dans la barre d'outils.</li>
+<li>Téléversez un fichier <code>.xls</code>, <code>.xlsx</code> ou <code>.csv</code> et mappez ses colonnes aux attributs de l'organisation.</li>
+<li>Cliquez sur <strong>Appliquer l'importation</strong> et vérifiez le résultat. Les organisations dont le nom existe déjà sont réutilisées, et non mises à jour.</li>
 </ol>
 <h2 id="étapes--exporter-des-organisations">Étapes : exporter des organisations</h2>
 <ol>
-<li>Appliquez les filtres dont vous avez besoin dans la barre de recherche.</li>
-<li>Cliquez sur le bouton <strong>Exporter</strong> (icône de téléchargement cloud) dans la barre de filtres.</li>
-<li>Choisissez le format d'export (CSV, Excel, etc.) et confirmez.</li>
-<li>Le fichier est téléchargé sur votre appareil.</li>
+<li>Appliquez les filtres dont vous avez besoin.</li>
+<li>Cliquez sur le bouton <strong>Exportation</strong> dans la barre d'outils.</li>
+<li>Choisissez ce qu'il faut exporter : <em>Éléments de la page</em> (par défaut), les éléments correspondant à vos filtres, ou <em>Tous les éléments</em>.</li>
+<li>Choisissez le format : <em>csv</em>, <em>xlsx</em> ou <em>splitted xlsx</em>, puis cliquez sur <strong>Exportation</strong>.</li>
 </ol>
 <h2 id="pages-associées">Pages associées</h2>
 <ul>
-<li><a href="../">Aperçu des métriques</a> – toutes les pages de gestion des métriques.</li>
-<li><a href="../areas/">Zones thématiques</a> – gérer les zones thématiques pour les organisations.</li>
-<li><a href="../cases/">Cas</a> – associer des cas aux organisations.</li>
-<li><a href="../locations/">Lieux</a> – relier des lieux aux organisations.</li>
-<li><a href="../projects/">Projets</a> – connecter les organisations aux projets.</li>
+<li><a href="../">Présentation des métriques</a> – toutes les pages de gestion des métriques.</li>
+<li><a href="../areas/">Zones thématiques</a> – gérez les zones thématiques des organisations.</li>
+<li><a href="../cases/">Cas</a> – associez des cas aux organisations.</li>
+<li><a href="../locations/">Positions</a> – liez des positions aux organisations.</li>
+<li><a href="../projects/">Projets</a> – connectez les organisations aux projets.</li>
 </ul>
 
 

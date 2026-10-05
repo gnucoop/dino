@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Gerencie casos no Dino — crie, edite, visualize, filtre, exporte e organize registros de casos com uma tabela de dados estruturada.">
+        <meta name="description" content="Gerencie casos no Dino — crie, edite, visualize, imprima, filtre e exporte registros de casos a partir de uma tabela de dados estruturada.">
       
       
       
@@ -1053,10 +1053,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ações-em-um-único-caso" class="md-nav__link">
+  <a href="#trabalhando-com-um-único-caso" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ações em um único caso
+        Trabalhando com um único caso
       
     </span>
   </a>
@@ -1064,10 +1064,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ações-em-massa" class="md-nav__link">
+  <a href="#trabalhando-com-vários-casos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ações em massa
+        Trabalhando com vários casos
       
     </span>
   </a>
@@ -1075,10 +1075,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#criando-um-novo-caso" class="md-nav__link">
+  <a href="#criando-um-caso" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Criando um novo caso
+        Criando um caso
       
     </span>
   </a>
@@ -1097,10 +1097,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#filtragem-e-busca" class="md-nav__link">
+  <a href="#pesquisar-e-filtrar" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Filtragem e busca
+        Pesquisar e filtrar
       
     </span>
   </a>
@@ -1112,17 +1112,6 @@
     <span class="md-ellipsis">
       
         Exportando casos
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#personalizando-a-tabela" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Personalizando a tabela
       
     </span>
   </a>
@@ -1487,6 +1476,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área do utilizador
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1525,10 +1541,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ações-em-um-único-caso" class="md-nav__link">
+  <a href="#trabalhando-com-um-único-caso" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ações em um único caso
+        Trabalhando com um único caso
       
     </span>
   </a>
@@ -1536,10 +1552,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ações-em-massa" class="md-nav__link">
+  <a href="#trabalhando-com-vários-casos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ações em massa
+        Trabalhando com vários casos
       
     </span>
   </a>
@@ -1547,10 +1563,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#criando-um-novo-caso" class="md-nav__link">
+  <a href="#criando-um-caso" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Criando um novo caso
+        Criando um caso
       
     </span>
   </a>
@@ -1569,10 +1585,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#filtragem-e-busca" class="md-nav__link">
+  <a href="#pesquisar-e-filtrar" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Filtragem e busca
+        Pesquisar e filtrar
       
     </span>
   </a>
@@ -1584,17 +1600,6 @@
     <span class="md-ellipsis">
       
         Exportando casos
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#personalizando-a-tabela" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Personalizando a tabela
       
     </span>
   </a>
@@ -1630,71 +1635,65 @@
 
 
 <h1 id="casos">Casos</h1>
-<p>A página Casos oferece um espaço de trabalho centralizado para acompanhar e gerenciar casos individuais. Cada caso é um registro estruturado que pode conter um nome, código, imagem, relação de hierarquia, notas e atributos adicionais. Você pode criar novos casos, editar os existentes, visualizar detalhes, excluir registros e exportar sua lista de casos — tudo em uma única tabela interativa.</p>
+<p>A página Casos é um espaço de trabalho centralizado para acompanhar e gerenciar registros de casos individuais. Cada caso é um registro estruturado que pode conter um nome, um código, uma imagem, uma relação de caso principal, notas e atributos adicionais. A partir desta página, você pode criar novos casos, editar ou visualizar casos existentes, imprimir cards de casos, deletar registros e exportar sua lista de casos — tudo em uma única tabela interativa.</p>
 <p><img alt="Visualização principal da página Casos" src="../../imgs/metrics/cases.png" /></p>
 <h2 id="visão-geral-da-tabela">Visão geral da tabela</h2>
-<p>A tabela principal exibe as seguintes colunas por padrão:</p>
+<p>A tabela exibe as seguintes colunas por padrão:</p>
 <ul>
-<li><strong>Nome do caso</strong> – O nome que você atribui ao caso (classificável).</li>
-<li><strong>Código</strong> – Um código gerado pelo sistema ou atribuído manualmente (somente leitura após a criação).</li>
+<li><strong>Nome do caso</strong> – O nome atribuído ao caso (ordenável).</li>
+<li><strong>Código</strong> – Um código que identifica o caso. O Dino o gera: você não o insere, e ele não é exibido no diálogo do caso.</li>
 <li><strong>Imagem do caso</strong> – Um arquivo de imagem enviado que representa o caso.</li>
-<li><strong>Caso pai</strong> – O nome do caso pai ao qual este caso pertence.</li>
+<li><strong>Caso principal</strong> – O nome de qualquer caso principal ao qual este caso pertence.</li>
 </ul>
-<p>Colunas adicionais (como <strong>ID</strong>, <strong>Notas</strong>, <strong>Data de criação</strong> e <strong>Atributos adicionais</strong>) ficam ocultas por padrão. Você pode personalizar quais colunas aparecem clicando no botão <strong>Personalize as colunas</strong> no cabeçalho da tabela.</p>
-<h2 id="ações-em-um-único-caso">Ações em um único caso</h2>
-<p>No lado direito de cada linha, você encontra ícones para as seguintes ações:</p>
+<p>Colunas adicionais — <strong>ID</strong>, <strong>Notas</strong>, <strong>Data de criação</strong> e <strong>Atributos adicionais</strong> — ficam ocultas por padrão. Clique em <strong>Colunas</strong> acima da tabela para escolher quais colunas aparecem. Você também pode arrastar os cabeçalhos das colunas para reordená-las, e a página mostra o número total de itens encontrados ao lado do paginador.</p>
+<h2 id="trabalhando-com-um-único-caso">Trabalhando com um único caso</h2>
+<p>Passe o mouse sobre uma linha para exibir os ícones <strong>Editar</strong> e <strong>Ver</strong>. Clique na linha para selecioná-la: a barra de ações acima da tabela passa então a mostrar todas as ações:</p>
 <ul>
-<li><strong>Editar</strong> – Abre uma caixa de diálogo para modificar os detalhes do caso.</li>
-<li><strong>Imprimir</strong> – Gera um cartão em PDF imprimível para o caso.</li>
-<li><strong>Visualizar</strong> – Abre uma caixa de diálogo somente leitura para inspecionar as informações do caso.</li>
-<li><strong>Excluir</strong> – Abre uma caixa de diálogo de confirmação para remover o caso permanentemente.</li>
+<li><strong>Editar</strong> – Abre um diálogo onde você pode modificar os detalhes do caso.</li>
+<li><strong>Imprimir</strong> – Gera um card em PDF imprimível para o caso.</li>
+<li><strong>Ver</strong> – Abre um diálogo somente leitura para inspecionar as informações do caso.</li>
+<li><strong>Deletar</strong> – Abre um diálogo de confirmação para remover o caso permanentemente.</li>
 </ul>
-<p>Clique no ícone <strong>Mais</strong> (três pontos verticais) para ver todas as ações disponíveis caso algumas estejam ocultas.</p>
-<h2 id="ações-em-massa">Ações em massa</h2>
-<p>Selecione vários casos usando as caixas de seleção na primeira coluna. Quando pelo menos um caso está selecionado, um botão <strong>Excluir</strong> aparece no topo da tabela. Você pode excluir todos os casos selecionados de uma só vez.</p>
-<div class="admonition warning">
-<p class="admonition-title">A exclusão em massa é permanente</p>
-<p>Casos excluídos não podem ser recuperados. Use a ação de exclusão em massa com cuidado.</p>
-</div>
-<h2 id="criando-um-novo-caso">Criando um novo caso</h2>
+<h2 id="trabalhando-com-vários-casos">Trabalhando com vários casos</h2>
 <ol>
-<li>Clique no botão de ação flutuante <strong>Adicionar novo</strong> (ícone de mais) no canto inferior direito da página.</li>
-<li>Uma caixa de diálogo será aberta. Preencha os campos obrigatórios:</li>
+<li>Selecione uma ou mais linhas usando as caixas de seleção na primeira coluna.</li>
+<li>Quando uma única linha está selecionada, todas as suas ações ficam disponíveis na barra de ações acima da tabela.</li>
+<li>Quando várias linhas estão selecionadas, apenas as ações em massa permanecem — atualmente <strong>Deletar</strong>.</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">A exclusão é permanente</p>
+<p>Casos deletados não podem ser recuperados. Revise sua seleção com atenção antes de confirmar uma exclusão em massa. Um caso que é usado por forms, ou que possui casos filhos, não pode ser deletado; consulte <a href="../">Métricas</a>.</p>
+</div>
+<h2 id="criando-um-caso">Criando um caso</h2>
+<ol>
+<li>Clique em <strong>Adicionar novo CASO</strong> na barra de ferramentas acima da tabela.</li>
+<li>No diálogo, preencha os detalhes do caso. Os campos opcionais estão marcados com <em>(opcional)</em>.<ul>
 <li><strong>Nome do caso</strong> – Insira um nome descritivo.</li>
-<li><strong>Código</strong> – (Opcional) Informe um código exclusivo. Este campo é somente leitura após a criação.</li>
 <li><strong>Imagem do caso</strong> – Envie um arquivo de imagem.</li>
-<li><strong>Caso pai</strong> – Opcionalmente, vincule este caso a um caso pai existente.</li>
+<li><strong>Caso principal</strong> – Opcionalmente, vincule este caso a um caso principal existente.</li>
 <li><strong>Notas</strong> – Adicione quaisquer notas relevantes.</li>
+</ul>
+</li>
 <li>Clique em <strong>Salvar</strong> para criar o caso.</li>
 </ol>
 <h2 id="importando-casos">Importando casos</h2>
-<p>Use o botão de ação flutuante <strong>Importar</strong> (ícone de upload na nuvem) para enviar casos em massa a partir de um arquivo. Os formatos suportados são definidos pelo administrador do seu sistema.</p>
-<h2 id="filtragem-e-busca">Filtragem e busca</h2>
-<p>A barra de busca no topo permite filtrar casos por:</p>
+<p>Clique em <strong>Importar CASO</strong> na barra de ferramentas para enviar casos em massa a partir de um arquivo <code>.xls</code>, <code>.xlsx</code> ou <code>.csv</code>. A página de importação orienta você no envio do arquivo, no mapeamento de suas colunas e na revisão do resultado. Casos cujo nome já existe são reutilizados, não atualizados; o código é gerado pelo Dino e não pode ser importado.</p>
+<h2 id="pesquisar-e-filtrar">Pesquisar e filtrar</h2>
+<p>Use a barra de ferramentas para restringir a tabela:</p>
 <ul>
-<li><strong>Palavra-chave</strong> – Busca em todos os campos exibidos.</li>
-<li><strong>Intervalo de datas</strong> – Filtra pela data de criação (De / Até).</li>
-<li><strong>Filtros adicionais</strong> – Selecione entre filtros predefinidos, como métrica, status, usuário ou grupo de usuários.</li>
+<li><strong>Pesquisa por palavra-chave</strong> – Digite no campo de pesquisa para encontrar texto nos campos exibidos.</li>
+<li><strong>Filtros</strong> – Abra o painel de filtros para definir uma <strong>Data inicial</strong> e uma <strong>Até à data</strong>, que filtram pela data de criação, e clique em <strong>Pesquisar</strong>. O selo no botão <strong>Filtros</strong> mostra quantos filtros estão ativos.</li>
+<li>Os filtros aplicados aparecem como chips abaixo da barra de ferramentas; clique no ícone de cancelar em um chip para remover aquele filtro.</li>
 </ul>
-<p>Depois de aplicar os filtros, você pode salvar a combinação como uma <strong>predefinição</strong> para reutilizá-la rapidamente. Para salvar uma predefinição:</p>
-<ol>
-<li>Abra o painel de filtros.</li>
-<li>Insira um nome no campo de predefinição.</li>
-<li>Clique em <strong>Salvar</strong>.<br />
-Para aplicar uma predefinição salva, selecione-a na lista e clique em <strong>Aplicar</strong>.</li>
-</ol>
 <h2 id="exportando-casos">Exportando casos</h2>
-<p>Clique no botão <strong>Exportar</strong> (ícone de download na nuvem) na barra de filtros. Escolha o formato de exportação (por exemplo, CSV ou Excel) e selecione quais colunas incluir. O arquivo exportado conterá todos os casos atualmente visíveis, respeitando os filtros ativos.</p>
-<h2 id="personalizando-a-tabela">Personalizando a tabela</h2>
-<ul>
-<li><strong>Classificar</strong> – Clique no cabeçalho de qualquer coluna classificável (por exemplo, <strong>Nome do caso</strong>, <strong>Data de criação</strong>) para ordenar a tabela.</li>
-<li><strong>Seletor de colunas</strong> – Abra a caixa de diálogo do seletor de colunas para mostrar ou ocultar colunas.</li>
-<li><strong>Expandir linhas</strong> – Alguns casos podem ter subitens (outros casos vinculados como detalhes). Clique em uma linha para expandi-la e ver os registros relacionados.</li>
-</ul>
-<p>A página também exibe um <strong>percurso de navegação</strong> no topo, para que você possa voltar à seção principal de Métricas.</p>
+<ol>
+<li>Clique em <strong>Exportar</strong> na barra de ferramentas.</li>
+<li>Escolha o que exportar: <em>Itens da página</em> (o padrão), os itens correspondentes aos seus filtros, ou <em>Todos os itens</em>.</li>
+<li>Escolha o formato: <em>csv</em>, <em>xlsx</em> ou <em>splitted xlsx</em>, e clique em <strong>Exportar</strong>.</li>
+</ol>
 <h2 id="páginas-relacionadas">Páginas relacionadas</h2>
 <ul>
-<li><a href="../">Visão geral de métricas</a> – Volte ao painel principal de métricas.</li>
+<li><a href="../">Visão geral das métricas</a> – Retorne ao painel principal de métricas.</li>
 <li><a href="../areas/">Áreas temáticas</a> – Organize casos por área temática.</li>
 <li><a href="../locations/">Posições</a> – Associe casos a posições geográficas.</li>
 <li><a href="../organizations/">Organizações</a> – Vincule casos a organizações.</li>

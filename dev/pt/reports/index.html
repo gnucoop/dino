@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Uma visão geral da área de Relatórios no Dino — como encontrar esquemas de relatório e navegar até os seus relatórios.">
+        <meta name="description" content="Uma visão geral da área de Relatórios do Dino — como encontrar report schemas e navegar até os seus relatórios.">
       
       
       
@@ -792,10 +792,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#navegando-pelos-esquemas-de-relatório" class="md-nav__link">
+  <a href="#navegando-pelos-report-schemas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Navegando pelos Esquemas de Relatório
+        Navegando pelos Report Schemas
       
     </span>
   </a>
@@ -803,10 +803,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#criando-um-novo-esquema-de-relatório" class="md-nav__link">
+  <a href="#adicionando-um-novo-report-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Criando um Novo Esquema de Relatório
+        Adicionando um Novo Report Schema
       
     </span>
   </a>
@@ -814,10 +814,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#o-que-você-pode-fazer" class="md-nav__link">
+  <a href="#abrindo-os-relatórios-de-um-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        O Que Você Pode Fazer
+        Abrindo os Relatórios de um Schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#o-que-você-pode-fazer-a-seguir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        O que você pode fazer a seguir
       
     </span>
   </a>
@@ -1421,6 +1432,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área do utilizador
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1448,10 +1486,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#navegando-pelos-esquemas-de-relatório" class="md-nav__link">
+  <a href="#navegando-pelos-report-schemas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Navegando pelos Esquemas de Relatório
+        Navegando pelos Report Schemas
       
     </span>
   </a>
@@ -1459,10 +1497,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#criando-um-novo-esquema-de-relatório" class="md-nav__link">
+  <a href="#adicionando-um-novo-report-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Criando um Novo Esquema de Relatório
+        Adicionando um Novo Report Schema
       
     </span>
   </a>
@@ -1470,10 +1508,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#o-que-você-pode-fazer" class="md-nav__link">
+  <a href="#abrindo-os-relatórios-de-um-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        O Que Você Pode Fazer
+        Abrindo os Relatórios de um Schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#o-que-você-pode-fazer-a-seguir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        O que você pode fazer a seguir
       
     </span>
   </a>
@@ -1498,33 +1547,57 @@
 
 
 <h1 id="relatórios">Relatórios</h1>
-<p>A área de Relatórios é o seu ponto central para acessar todos os esquemas de relatório disponíveis. Um esquema de relatório define a estrutura e o conteúdo de um relatório que pode ser gerado a partir dos seus dados coletados. A partir daqui, você pode navegar pelos esquemas e acessar os relatórios que já foram criados.</p>
-<p><img alt="Visão principal da página de Relatórios" src="../imgs/reports/index.png" /></p>
-<p>Os relatórios só podem ser criados usando um formulário baseado em Excel chamado <a href="xlsreport/">XLSReport</a>. Para criar um novo relatório, você precisa primeiro criar um arquivo XLSReport e depois importá-lo para o Dino seguindo o procedimento descrito abaixo.</p>
+<p>A área de Relatórios é o seu centro de acesso a todos os report schemas disponíveis. Um report schema define a estrutura e o conteúdo de um relatório que pode ser gerado a partir dos seus dados coletados. A partir daqui, você pode navegar pelos schemas e acessar os relatórios que já foram criados para cada um deles.</p>
+<p><img alt="Visualização principal da página de Relatórios" src="../imgs/reports/index.png" /></p>
+<p>Os report schemas são criados a partir de um formato baseado em Excel chamado <a href="xlsreport/">XLSReport</a>, ou gerados automaticamente a partir de um form schema (veja <a href="autoreports/">Relatórios automáticos</a>). Para criar um a partir de um arquivo, você primeiro prepara um arquivo XLSReport e depois o importa para o Dino. Para o procedimento completo, veja <a href="edit-report-schema/">Editar Report Schema</a>.</p>
 <hr />
-<h2 id="navegando-pelos-esquemas-de-relatório">Navegando pelos Esquemas de Relatório</h2>
-<p>Ao abrir a página de Relatórios, você vê uma lista de todos os esquemas de relatório que tem permissão para acessar. A lista é ordenada alfabeticamente pelo rótulo do esquema.</p>
-<p>Para encontrar um esquema específico:</p>
+<h2 id="navegando-pelos-report-schemas">Navegando pelos Report Schemas</h2>
+<p>Quando você abre a página de Relatórios, vê um cartão para cada report schema ao qual tem permissão de acesso. Os cartões são ordenados alfabeticamente pelo rótulo do schema.</p>
+<p>Para encontrar um schema específico:</p>
 <ol>
-<li>Use a barra de pesquisa no topo da página.</li>
-<li>Digite qualquer parte do nome ou rótulo do esquema.</li>
-<li>A lista será filtrada em tempo real para mostrar apenas os esquemas correspondentes.</li>
+<li>Use o campo <strong>Filtrar</strong> no topo da página.</li>
+<li>Digite qualquer parte do nome ou rótulo do schema.</li>
+<li>A lista é filtrada conforme você digita, mostrando apenas os schemas correspondentes.</li>
 </ol>
-<p>Para visualizar os relatórios de um esquema específico, clique no cartão correspondente na lista.</p>
+<p>Para abrir os relatórios de um schema, clique em qualquer lugar do seu cartão.</p>
+<p>Em cada cartão que você pode editar, os ícones no canto superior direito permitem gerenciar o schema diretamente:</p>
+<ul>
+<li><strong>Editar</strong> (ícone de lápis) — abre o schema para edição. Veja <a href="edit-report-schema/">Editar Report Schema</a>.</li>
+<li><strong>Deletar</strong> (ícone de lixeira) — remove o schema após a sua confirmação. Um schema que ainda tem relatórios não pode ser deletado: delete seus relatórios primeiro.</li>
+</ul>
+<p>Um ícone de impressão digital em um cartão significa que o report schema é <em>único</em>: ele só pode produzir um relatório para um conjunto exato de métricas. Se você tentar criar um relatório que já existe para essas métricas, o Dino não criará uma duplicata.</p>
 <div class="admonition tip">
-<p class="admonition-title">Primeiros Passos</p>
-<p>Se você vir a mensagem "There are no reports", significa que nenhum esquema de relatório foi criado ainda ou compartilhado com você. Entre em contato com o administrador do Dino para começar.</p>
+<p class="admonition-title">Ainda não há schemas?</p>
+<p>Se você vir a mensagem "There are not any Reports currently available" (Não há nenhum relatório disponível no momento), significa que nenhum report schema foi criado ainda ou compartilhado com você. Peça ao seu administrador do Dino para criar um, ou adicione um você mesmo se tiver permissão.</p>
 </div>
 <hr />
-<h2 id="criando-um-novo-esquema-de-relatório">Criando um Novo Esquema de Relatório</h2>
-<p>Você pode iniciar o processo de geração de um novo esquema de relatório diretamente na página principal de Relatórios. Clique no botão <strong>+</strong> (mais) localizado no canto inferior direito da tela.</p>
-<p>Para etapas detalhadas, consulte o guia sobre <a href="edit-report/">Editar Relatório</a>.</p>
+<h2 id="adicionando-um-novo-report-schema">Adicionando um Novo Report Schema</h2>
+<p>Você pode começar a criar um novo report schema a partir da página principal de Relatórios.</p>
+<ol>
+<li>Clique no botão <strong>+</strong> (<em>Add new Reports schema</em>) no canto inferior direito da tela. Ele só é exibido se você tiver permissão para criar report schemas.</li>
+<li>Siga os passos descritos em <a href="edit-report-schema/">Editar Report Schema</a>.</li>
+</ol>
 <hr />
-<h2 id="o-que-você-pode-fazer">O Que Você Pode Fazer</h2>
-<p>Na página principal de Relatórios, você pode navegar para realizar estas ações principais:</p>
+<h2 id="abrindo-os-relatórios-de-um-schema">Abrindo os Relatórios de um Schema</h2>
+<p>Clicar em um cartão de schema leva você à lista de relatórios gerados a partir desse schema. A partir daí, você pode:</p>
+<ol>
+<li>Navegar pelos relatórios existentes em uma tabela, com detalhes como o usuário que criou o relatório, o nome do relatório e o intervalo de datas coletadas.</li>
+<li>Filtrar e pesquisar a lista para restringir os relatórios que você precisa. Use a pesquisa por palavra-chave, os campos de intervalo de datas e o botão <strong>Filtros</strong> para condições mais avançadas. Você também pode salvar um conjunto de filtros como predefinição e aplicá-lo novamente mais tarde.</li>
+<li>Abrir um relatório para revisá-lo: passe o mouse sobre a sua linha e clique no ícone <strong>Ver</strong> (olho), ou selecione a linha e clique em <strong>Ver</strong> na barra de ações acima da tabela. Veja <a href="edit-report/">Editar Relatório</a>.</li>
+<li>Deletar um relatório que você não precisa mais: selecione a sua linha e clique em <strong>Deletar</strong> na barra de ações.</li>
+</ol>
+<p>Para criar um novo relatório a partir do schema selecionado, clique em <strong>Adicionar novo relatório</strong> acima da tabela. Relatórios que usam prompts de IA consomem DINO-AI Tokens. O número de tokens que o relatório usará é mostrado ao lado do botão, para que você sempre saiba o custo antes de começar.</p>
+<div class="admonition warning">
+<p class="admonition-title">Tokens insuficientes</p>
+<p>Se você não tiver DINO-AI Tokens suficientes na sua conta, o Dino não iniciará o relatório e mostrará uma mensagem pedindo para você adicionar mais tokens. Adicione tokens à sua conta e tente novamente.</p>
+</div>
+<hr />
+<h2 id="o-que-você-pode-fazer-a-seguir">O que você pode fazer a seguir</h2>
+<p>A partir da área de Relatórios, você pode avançar para estas tarefas:</p>
 <ul>
-<li><strong><a href="edit-report/">Editar Relatório</a></strong> — Gere um novo documento de relatório selecionando um esquema, escolhendo suas métricas e definindo um intervalo de datas.</li>
-<li><strong><a href="edit-report-schema/">Editar Esquema de Relatório</a></strong> — Crie novos esquemas de relatório ou edite os existentes para definir quais dados aparecem nos relatórios. Isso geralmente requer permissões de administrador.</li>
+<li><strong><a href="edit-report/">Editar Relatório</a></strong> — Revisar um relatório e exportá-lo.</li>
+<li><strong><a href="edit-report-schema/">Editar Report Schema</a></strong> — Criar novos report schemas ou editar os existentes para definir o que aparece nos seus relatórios. Isso normalmente exige permissões de administrador.</li>
+<li><strong><a href="../aggregation/">Agregação</a></strong> — Navegar pelos dados de todos os seus form schemas em uma única lista.</li>
 </ul>
 
 

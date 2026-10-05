@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Visualiza, edita y gestiona cuentas de usuario en tu organización de Dino.">
+        <meta name="description" content="Ver, editar y gestionar cuentas de usuario en tu organización de Dino.">
       
       
       
@@ -1368,10 +1368,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#búsqueda-y-filtrado" class="md-nav__link">
+  <a href="#buscar-y-filtrar" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Búsqueda y filtrado
+        Buscar y filtrar
       
     </span>
   </a>
@@ -1379,10 +1379,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#acciones-de-usuario" class="md-nav__link">
+  <a href="#acciones-sobre-el-usuario" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Acciones de usuario
+        Acciones sobre el usuario
       
     </span>
   </a>
@@ -1410,6 +1410,17 @@
     <span class="md-ellipsis">
       
         Editar un usuario
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#páginas-relacionadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Páginas relacionadas
       
     </span>
   </a>
@@ -1456,6 +1467,33 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área de usuario
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1510,10 +1548,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#búsqueda-y-filtrado" class="md-nav__link">
+  <a href="#buscar-y-filtrar" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Búsqueda y filtrado
+        Buscar y filtrar
       
     </span>
   </a>
@@ -1521,10 +1559,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#acciones-de-usuario" class="md-nav__link">
+  <a href="#acciones-sobre-el-usuario" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Acciones de usuario
+        Acciones sobre el usuario
       
     </span>
   </a>
@@ -1558,6 +1596,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#páginas-relacionadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Páginas relacionadas
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1576,55 +1625,62 @@
 
 
 <h1 id="lista-de-usuarios">Lista de usuarios</h1>
-<p>La página Lista de usuarios proporciona una lista completa de todas las cuentas de usuario en tu organización de Dino. Desde aquí, puedes visualizar los detalles de los usuarios, editar cuentas y crear nuevos usuarios.</p>
+<p>La página Lista de usuarios proporciona una lista completa de todas las cuentas de usuario en tu organización de Dino. Desde aquí, puedes ver los detalles de los usuarios, editar cuentas y crear nuevos usuarios.</p>
 <p><img alt="Vista principal de la página Lista de usuarios" src="../../imgs/administration/users-list.png" /></p>
 <h2 id="entender-la-lista-de-usuarios">Entender la Lista de usuarios</h2>
 <p>La lista principal muestra información clave de cada usuario:</p>
 <ul>
-<li><strong>Correo electrónico:</strong> La dirección de correo electrónico de inicio de sesión del usuario.</li>
+<li><strong>Email:</strong> La dirección de correo electrónico de inicio de sesión del usuario.</li>
 <li><strong>Nombre completo:</strong> El nombre asociado a la cuenta.</li>
-<li><strong>Deshabilitado:</strong> Un interruptor que indica si la cuenta está activa o deshabilitada. Puedes hacer clic en este interruptor directamente en la lista para cambiar el estado.</li>
+<li><strong>Disabled:</strong> Un interruptor que indica si la cuenta está activa o deshabilitada. Puedes hacer clic en este interruptor directamente en la lista para cambiar el estado.</li>
 </ul>
-<p>Puedes ordenar la lista por la columna <strong>Fecha de creación</strong>. La columna <strong>ID</strong> está oculta por defecto.</p>
+<p>Puedes ordenar la lista por las columnas <strong>Email</strong>, <strong>Nombre completo</strong> o <strong>Fecha de creación</strong>. Las columnas <strong>ID</strong> y <strong>Fecha de creación</strong> están ocultas de forma predeterminada. Para mostrar u ocultar columnas, haz clic en el botón <strong>Columnas</strong> situado encima de la lista, a la derecha, y selecciona las que quieras mostrar.</p>
 <h2 id="trabajar-con-la-lista">Trabajar con la lista</h2>
-<h3 id="búsqueda-y-filtrado">Búsqueda y filtrado</h3>
-<p>Utiliza la barra de búsqueda en la parte superior de la página para encontrar usuarios por su correo electrónico o nombre completo.</p>
+<h3 id="buscar-y-filtrar">Buscar y filtrar</h3>
+<p>Usa la barra de búsqueda en la parte superior de la página para encontrar usuarios por su correo electrónico o nombre completo.</p>
 <p>Para aplicar filtros más específicos:</p>
 <ol>
-<li>Haz clic en el icono de filtro en la barra de búsqueda.</li>
-<li>En la sección <strong>Grupos de permisos de usuario</strong>, puedes seleccionar uno o varios grupos de usuarios para filtrar la lista y mostrar solo los miembros de esos grupos.</li>
+<li>Haz clic en el botón <strong>Filtros</strong> en la barra de búsqueda.</li>
+<li>Establece una <strong>Desde fecha</strong> y una <strong>Hasta la fecha</strong> para filtrar por fecha de creación, y selecciona uno o varios grupos de usuarios para limitar la lista a los miembros de esos grupos.</li>
+<li>Haz clic en <strong>Buscar</strong> para aplicar los filtros, o en <strong>Restablecer los filtros</strong> para borrarlos.</li>
 </ol>
-<h3 id="acciones-de-usuario">Acciones de usuario</h3>
-<p>Cada fila de usuario tiene un menú de acciones (tres puntos verticales) en el lado derecho. Haz clic en él para acceder a las siguientes opciones:</p>
+<p>Los filtros aplicados aparecen como chips debajo de la barra de búsqueda. Haz clic en el icono <strong>cancelar</strong> de un chip para eliminar ese filtro.</p>
+<h3 id="acciones-sobre-el-usuario">Acciones sobre el usuario</h3>
+<p>Pasa el cursor sobre la fila de un usuario para mostrar los iconos <strong>Editar</strong> y <strong>Ver</strong>. Haz clic en cualquier parte de la fila para seleccionarla: la barra de acciones situada encima de la lista mostrará entonces todas las acciones que puedes realizar sobre el usuario seleccionado:</p>
 <ul>
 <li><strong>Editar:</strong> Abre el editor de usuario para modificar los detalles de la cuenta.</li>
-<li><strong>Eliminar:</strong> Elimina permanentemente la cuenta de usuario. Se te pedirá que confirmes esta acción.</li>
 <li><strong>Ver:</strong> Abre una vista de solo lectura de los detalles del usuario.</li>
+<li><strong>Eliminar:</strong> Elimina permanentemente la cuenta de usuario. Se te pedirá que confirmes esta acción.</li>
 </ul>
-<p>También puedes hacer clic en cualquier parte de la fila de un usuario para seleccionarla, o hacer clic en el icono de expandir para ver un resumen de la información del usuario directamente en la lista.</p>
 <h2 id="crear-un-nuevo-usuario">Crear un nuevo usuario</h2>
 <p>Para agregar un nuevo usuario a tu organización:</p>
 <ol>
-<li>Haz clic en el botón flotante azul <strong>+</strong> en la esquina inferior derecha de la pantalla.</li>
-<li>Se abrirá un formulario. Introduce los datos del nuevo usuario, incluyendo el correo electrónico y el nombre, y asígnalo a los grupos de usuarios correspondientes. Para más información sobre grupos, consulta <a href="../groups-list/">Lista de grupos</a>.</li>
-<li>Haz clic en <strong>Guardar</strong> para crear la cuenta. El nuevo usuario recibirá un correo electrónico con instrucciones para establecer su contraseña.</li>
+<li>Haz clic en el botón <strong>Agregar nuevo usuario</strong> en la barra de herramientas situada encima de la lista.</li>
+<li>Se abrirá un formulario. Introduce el <strong>Nombre completo</strong> y el <strong>Email</strong> del nuevo usuario, y asígnalo a los grupos correspondientes en <strong>User Permission Groups</strong>. Para obtener más información sobre los grupos, consulta <a href="../groups-list/">Lista de grupos</a>.
+    Según cómo Dino inicie la sesión de los usuarios, el formulario también puede solicitar una <strong>Contraseña</strong> y <strong>confirmar Contraseña</strong>, de al menos 9 caracteres.</li>
+<li>Haz clic en <strong>Guardar</strong> para crear la cuenta.</li>
 </ol>
-<div class="admonition warning">
-<p class="admonition-title">Restricción sin conexión</p>
-<p>El botón <strong>+</strong> estará deshabilitado (mostrando un icono de Wi-Fi desactivado) si no estás conectado a internet. No se pueden crear nuevas cuentas de usuario mientras estás sin conexión. Aún puedes ver y editar usuarios existentes sin conexión.</p>
+<p>El botón <strong>Guardar</strong> permanece no disponible hasta que todos los campos obligatorios se hayan rellenado correctamente.</p>
+<div class="admonition tip">
+<p class="admonition-title">Modos de visualización y edición</p>
+<p>El mismo formulario se utiliza para crear, editar y ver usuarios. En el modo <strong>Ver</strong>, todos los campos son de solo lectura y solo se muestra el botón <strong>Cerrar</strong>.</p>
 </div>
 <h2 id="editar-un-usuario">Editar un usuario</h2>
 <p>Para modificar la información de un usuario existente:</p>
 <ol>
-<li>Haz clic en el menú de acciones (tres puntos) en la fila del usuario.</li>
-<li>Selecciona <strong>Editar</strong>.</li>
-<li>En el editor, actualiza cualquiera de los datos del usuario o sus asignaciones de grupo.</li>
+<li>Pasa el cursor sobre la fila del usuario y haz clic en el icono <strong>Editar</strong>, o selecciona la fila y haz clic en <strong>Editar</strong> en la barra de acciones.</li>
+<li>En el editor, actualiza el nombre completo del usuario o sus asignaciones de grupo. La dirección de correo electrónico no se puede cambiar aquí.</li>
 <li>Haz clic en <strong>Guardar</strong> para aplicar los cambios.</li>
 </ol>
 <div class="admonition tip">
 <p class="admonition-title">Deshabilitación rápida</p>
-<p>Puedes habilitar o deshabilitar rápidamente la capacidad de inicio de sesión de un usuario haciendo clic en el interruptor <strong>Deshabilitado</strong> directamente en la lista, sin abrir el editor completo.</p>
+<p>Puedes habilitar o deshabilitar rápidamente la capacidad de un usuario para iniciar sesión haciendo clic en el interruptor <strong>Disabled</strong> directamente en la lista, sin abrir el editor completo.</p>
 </div>
+<h2 id="páginas-relacionadas">Páginas relacionadas</h2>
+<ul>
+<li><a href="../users/">Usuarios</a></li>
+<li><a href="../groups-list/">Lista de grupos</a></li>
+</ul>
 
 
 

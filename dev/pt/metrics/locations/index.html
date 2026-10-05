@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Gerencie localizações geográficas usadas nas métricas e formulários do Dino.">
+        <meta name="description" content="Gerenciar localizações geográficas usadas nas métricas e nos form do Dino.">
       
       
       
@@ -1126,10 +1126,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#excluir-uma-localização" class="md-nav__link">
+  <a href="#deletar-uma-localização" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Excluir uma localização
+        Deletar uma localização
       
     </span>
   </a>
@@ -1504,6 +1504,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-area/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Área do utilizador
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1587,10 +1614,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#excluir-uma-localização" class="md-nav__link">
+  <a href="#deletar-uma-localização" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Excluir uma localização
+        Deletar uma localização
       
     </span>
   </a>
@@ -1664,67 +1691,69 @@
 
 
 <h1 id="localizações">Localizações</h1>
-<p>A página <strong>Localizações</strong> permite gerenciar as localizações geográficas referenciadas pelos seus formulários, casos e outras métricas. Você pode adicionar novas localizações, editar entradas existentes, importar dados em massa e exportar a lista atual.</p>
+<p>A página <strong>Localizações</strong> permite gerenciar as localizações geográficas referenciadas pelos seus form, casos e outras métricas. Você pode adicionar novas localizações, editar entradas existentes, importar dados em massa e exportar a lista atual.</p>
 <p><img alt="Visualização principal da página Localizações" src="../../imgs/metrics/locations.png" /></p>
 <h2 id="o-que-você-vê">O que você vê</h2>
 <ul>
-<li><strong>Caminho de navegação</strong> – mostra sua posição atual na navegação.</li>
-<li><strong>Busca e Filtros</strong> – busca por palavra-chave, seletor de intervalo de datas e filtros avançados configuráveis (por exemplo, por métrica, status, usuário). Você também pode salvar e carregar predefinições de filtros.</li>
-<li><strong>Tabela</strong> – exibe Nome da Localização e Localização Pai por padrão. As colunas ocultas (ID, Data de Criação, Coordenadas, Atributos Adicionais) podem ser exibidas pelo botão <strong>Personalize as colunas</strong> (canto inferior direito do cabeçalho da tabela).</li>
+<li><strong>Percorso di navigazione</strong> – mostra sua posição atual na navegação.</li>
+<li><strong>Busca e Filtros</strong> – um campo de busca por palavra-chave e o botão <strong>Filtros</strong> para filtrar por data de criação (<strong>Data inicial</strong> / <strong>Até à data</strong>).</li>
+<li><strong>Contador de itens encontrados</strong> – mostra quantas localizações correspondem aos filtros atuais.</li>
+<li><strong>tabela</strong> – exibe Nome da Localização e Localização Pai por padrão. As colunas ocultas (ID, Data de Criação, Coordenadas, Atributos Adicionais) podem ser exibidas pelo botão <strong>Colunas</strong>, acima da tabela, à direita.</li>
 <li><strong>Paginação</strong> – controles para navegar entre as páginas.</li>
-<li><strong>Ações em massa</strong> – selecione linhas usando as caixas de seleção para excluir ou editar várias localizações de uma vez.</li>
-<li><strong>Botões de ação flutuantes</strong> – <strong>Adicionar Novo</strong> (ícone de mais) e <strong>Importar</strong> (ícone de upload na nuvem) permanecem disponíveis enquanto você rola a página.</li>
+<li><strong>Ações em massa</strong> – selecione linhas usando as caixas de seleção para deletar várias localizações de uma vez.</li>
+<li><strong>Botões da barra de ferramentas</strong> – <strong>Adicionar nova LOCALIZAÇÃO</strong> (ícone de mais) e <strong>Importar LOCALIZAÇÃO</strong> (ícone de upload na nuvem) ficam acima da tabela.</li>
 </ul>
 <h2 id="ações-da-linha">Ações da linha</h2>
-<p>Cada linha tem três ações rápidas (visíveis ao passar o mouse sobre a linha):</p>
+<p>Passe o mouse sobre uma linha para exibir os ícones <strong>Editar</strong> e <strong>Ver</strong>. Clique na linha para selecioná-la e destacá-la: a barra de ações acima da tabela mostra então todas as ações:</p>
 <ul>
 <li><strong>Editar</strong> – abre a caixa de diálogo da localização para modificar os detalhes.</li>
-<li><strong>Excluir</strong> – remove a localização após confirmação.</li>
-<li><strong>Ver</strong> – abre uma caixa de diálogo somente leitura mostrando todos os campos.</li>
+<li><strong>Deletar</strong> – remove a localização após confirmação.</li>
+<li><strong>Ver</strong> – abre uma caixa de diálogo somente leitura exibindo todos os campos.</li>
 </ul>
-<p>Clicar em uma linha a seleciona (destaca) e, se a lista for expansível, revela um painel de detalhes com dados adicionais.</p>
 <h2 id="trabalhando-com-localizações">Trabalhando com localizações</h2>
 <h3 id="adicionar-uma-nova-localização">Adicionar uma nova localização</h3>
 <ol>
-<li>Clique no botão flutuante <strong>Adicionar Novo</strong> (canto inferior direito).</li>
-<li>Na caixa de diálogo, preencha os campos obrigatórios (por exemplo, Nome da Localização).</li>
+<li>Clique no botão <strong>Adicionar nova LOCALIZAÇÃO</strong> acima da tabela.</li>
+<li>Na caixa de diálogo, preencha os campos obrigatórios (por exemplo, Nome da Localização). Os campos opcionais estão marcados como <em>(opcional)</em>.</li>
 <li>Opcionalmente, defina uma Localização Pai, Coordenadas e Atributos Adicionais.</li>
 <li>Clique em <strong>Salvar</strong>.</li>
 </ol>
 <h3 id="editar-uma-localização">Editar uma localização</h3>
 <ol>
-<li>Clique no ícone <strong>Editar</strong> (lápis) na linha desejada.</li>
+<li>Passe o mouse sobre a linha e clique no ícone <strong>Editar</strong> (lápis), ou selecione a linha e clique em <strong>Editar</strong> na barra de ações.</li>
 <li>Atualize os campos na caixa de diálogo.</li>
 <li>Clique em <strong>Salvar</strong>.</li>
 </ol>
-<h3 id="excluir-uma-localização">Excluir uma localização</h3>
+<h3 id="deletar-uma-localização">Deletar uma localização</h3>
 <ol>
-<li>Clique no ícone <strong>Excluir</strong> (lixeira) na linha.</li>
-<li>Confirme a exclusão no aviso.</li>
+<li>Clique na linha para selecioná-la e, em seguida, clique em <strong>Deletar</strong> na barra de ações acima da tabela.</li>
+<li>Confirme a exclusão na janela de confirmação.</li>
 </ol>
+<p>Uma localização que é usada por form, ou que possui localizações filhas, não pode ser deletada; consulte <a href="../">Métricas</a>.</p>
 <h3 id="importar-localizações-de-um-arquivo">Importar localizações de um arquivo</h3>
 <ol>
-<li>Clique no botão flutuante <strong>Importar</strong> (ícone de upload na nuvem).</li>
-<li>Selecione um arquivo CSV ou Excel seguindo o formato esperado.</li>
-<li>Mapeie as colunas para os campos de localização, se necessário.</li>
-<li>Clique em <strong>Importar</strong>.</li>
+<li>Clique no botão <strong>Importar LOCALIZAÇÃO</strong> acima da tabela.</li>
+<li>Envie um arquivo <code>.xls</code>, <code>.xlsx</code> ou <code>.csv</code>.</li>
+<li>Mapeie as colunas do arquivo para os campos da localização.</li>
+<li>Clique em <strong>Aplicar importação</strong> e revise o resultado.</li>
 </ol>
-<div class="admonition tip">
-<p class="admonition-title">Edição em massa</p>
-<p>Selecione várias linhas usando as caixas de seleção e clique no botão <strong>Editar</strong> (ícone edit_note) que aparece acima da tabela para atualizar várias localizações de uma vez.</p>
-</div>
+<p>Localizações cujo nome já existe são reutilizadas, não atualizadas.</p>
 <h3 id="exportar-a-lista-de-localizações">Exportar a lista de localizações</h3>
 <ol>
-<li>Clique no botão <strong>Exportar</strong> (ícone de download na nuvem) na barra de filtros.</li>
-<li>Escolha o formato de exportação (CSV ou Excel).</li>
-<li>O arquivo será baixado automaticamente.</li>
+<li>Clique em <strong>Exportar</strong> na barra de ferramentas.</li>
+<li>Escolha o que exportar: <em>Itens da página</em> (o padrão), os itens que correspondem aos seus filtros, ou <em>Todos os itens</em>.</li>
+<li>Escolha o formato: <em>csv</em>, <em>xlsx</em> ou <em>splitted xlsx</em> e, em seguida, clique em <strong>Exportar</strong>.</li>
 </ol>
+<div class="admonition tip">
+<p class="admonition-title">Exclusão em massa</p>
+<p>Selecione várias linhas usando as caixas de seleção e, em seguida, clique em <strong>Deletar</strong> na barra de ações acima da tabela para deletar várias localizações de uma vez.</p>
+</div>
 <h3 id="coordenadas-da-localização">Coordenadas da localização</h3>
-<p>Se você definir o atributo "coordinates" de um valor de localização específico, a informação será usada para visualizar os dados do seu formulário em um <a href="../../forms/forms-map/">mapa</a>.</p>
+<p>Se você definir o atributo <strong>Coordenadas</strong> para uma localização, essa informação é usada para visualizar os dados do seu form em um <a href="../../forms/forms-map/">mapa</a>.</p>
 <h2 id="páginas-relacionadas">Páginas relacionadas</h2>
 <ul>
-<li><a href="../">Visão Geral das Métricas</a> – retornar à página inicial das métricas.</li>
-<li><a href="../cases/">Casos</a> – gerenciar casos que fazem referência a localizações.</li>
+<li><a href="../">Visão Geral das Métricas</a> – voltar à página inicial das métricas.</li>
+<li><a href="../cases/">Casos</a> – gerenciar casos que referenciam localizações.</li>
 <li><a href="../organizations/">Organizações</a> – gerenciar organizações vinculadas a localizações.</li>
 <li><a href="../projects/">Projetos</a> – visualizar projetos associados a localizações.</li>
 </ul>
