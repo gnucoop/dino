@@ -480,8 +480,8 @@ export const PRT: Translation = {
   'Continue': 'Continuar',
   'Next page': 'Próxima página',
   'No': 'Não',
-  'No Forms were found': 'Nenhuma forma foi encontrada',
-  'No Forms were found for this Report': 'Nenhuma forma foi encontrada para este relatório',
+  'No Forms were found': 'Nenhum formulário foi encontrado',
+  'No Forms were found for this Report': 'Nenhum formulário foi encontrado para este relatório',
   'No file uploaded yet.': 'Nenhum arquivo enviado ainda.',
   'No metric manager or metric name was provided':
     'Nenhum gerente métrico ou nome métrico foi fornecido',

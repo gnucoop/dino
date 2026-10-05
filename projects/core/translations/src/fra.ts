@@ -488,8 +488,8 @@ export const FRA: Translation = {
   'Continue': 'Continuer',
   'Next page': 'Page suivante',
   'No': 'Non',
-  'No Forms were found': "Aucune forme n'a été trouvée",
-  'No Forms were found for this Report': "Aucune forme n'a été trouvée pour ce rapport",
+  'No Forms were found': "Aucun formulaire n'a été trouvé",
+  'No Forms were found for this Report': "Aucun formulaire n'a été trouvé pour ce rapport",
   'No file uploaded yet.': 'Pas encore de fichier téléchargé.',
   'No metric manager or metric name was provided':
     "Aucun gestionnaire métrique ou nom métrique n'a été fourni",
