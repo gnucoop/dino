@@ -169,6 +169,14 @@ For every page it (re)generates, the script writes the **English** source in
 > translation is kept (in default mode). Use `--full` or `--translate-only` to
 > force re-translation — see [modes](#documentation-generator-modes).
 
+UI labels are not left to the translator. For each page, every **bold** label,
+and every *italic* or quoted message, that is also a key in the app's translation file for that language
+(`projects/core/translations/src/ita.ts`, `esp.ts`, `fra.ts`, `prt.ts`,
+`ukr.ts`, `ar.ts`) is passed with the prompt, and the translation must use the
+app's string verbatim — so the docs name the buttons the reader actually sees.
+A label that is wrong in the docs is therefore fixed in the app's translation
+file, and reaches the docs at the next translation run.
+
 #### Which pages it regenerates (default — no flags)
 
 By default the script does **not** rewrite every page. It picks the scope from
