@@ -34,7 +34,7 @@ import {
 } from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {AuthError, AuthService, PasswordMatch, showValidationErrors} from '@dino/core/auth';
+import {AuthError, AuthService, PasswordMatch, translatedValidationErrors} from '@dino/core/auth';
 import {UserData, UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BehaviorSubject, Observable, of as obsOf, Subject} from 'rxjs';
 import {map, shareReplay, startWith, switchMap, take, takeUntil, tap} from 'rxjs/operators';
@@ -189,7 +189,7 @@ export class UserArea implements OnDestroy {
   /**
    * Displays the login/signup validation errors
    */
-  readonly showValErrors = showValidationErrors;
+  readonly showValErrors = translatedValidationErrors(this._ts);
 
   /**
    * The labels showValErrors names in its messages. Held here rather than written inline

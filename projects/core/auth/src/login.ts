@@ -29,7 +29,7 @@ import {map, startWith, switchMap, take} from 'rxjs/operators';
 import {NHostSignupRequest} from './auth-response';
 import {AuthService} from './auth-service';
 import {PasswordMatch} from './user-password-validator';
-import {showValidationErrors} from './validation-errors';
+import {translatedValidationErrors} from './validation-errors';
 import {TranslocoService} from '@ngneat/transloco';
 
 /**
@@ -78,7 +78,7 @@ export abstract class LoginComponent {
   /**
    * Displays the login/signup validation errors
    */
-  readonly showValErrors = showValidationErrors;
+  readonly showValErrors = translatedValidationErrors(this._ts);
 
   /**
    * True if the submit button is disabled.

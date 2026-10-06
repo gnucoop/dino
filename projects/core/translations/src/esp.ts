@@ -820,4 +820,32 @@ export const ESP: Translation = {
   'login_module_3_body': 'Combina y consulta datos de varios formularios.',
   'login_module_4_body': 'Define indicadores y síguelos en el tiempo.',
   'Dino is free and open-source software by': 'Dino es software libre y de código abierto de',
+  'Create user': 'Crear usuario',
+  'Edit user': 'Editar usuario',
+  'View user': 'Ver usuario',
+  'The full name of the User': 'El nombre completo del usuario',
+  'The User Email address': 'La dirección de correo electrónico del usuario',
+  'The User password': 'La contraseña del usuario',
+  'Confirm the User password': 'Confirma la contraseña del usuario',
+  'User Permission Groups': 'Grupos de permisos del usuario',
+  'Generate password': 'Generar contraseña',
+  'Send the user an email to change the password':
+    'Enviar al usuario un correo electrónico para cambiar la contraseña',
+  'Oops! Something went wrong while saving the User.':
+    '¡Vaya! Algo salió mal al guardar el usuario.',
+  'SAVE ERROR': 'ERROR AL GUARDAR',
+  '{{name}} saved': '{{name}} guardado',
+  'USER SAVED': 'USUARIO GUARDADO',
+  '{{name}} saved, but the email to set the password could not be sent.':
+    '{{name}} guardado, pero no se pudo enviar el correo electrónico para establecer la contraseña.',
+  'EMAIL NOT SENT': 'CORREO NO ENVIADO',
+  'Please enter {{field}}': 'Campo obligatorio: {{field}}',
+  'Please enter a valid Email': 'Introduce un correo electrónico válido',
+  'Minimum length: {{count}} characters': 'Longitud mínima: {{count}} caracteres',
+  'Password values do not match': 'Las contraseñas no coinciden',
+  'Show password': 'Mostrar contraseña',
+  'Hide password': 'Ocultar contraseña',
+  'Email language': 'Idioma de los correos',
+  'The language of the emails the user receives':
+    'El idioma de los correos electrónicos que recibe el usuario',
 };

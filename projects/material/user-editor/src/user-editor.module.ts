@@ -25,6 +25,7 @@ import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatDialogModule} from '@angular/material/dialog';
@@ -37,6 +38,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dino/core/auth';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
+import {TranslocoModule} from '@ngneat/transloco';
 
 import {UserEditor} from './user-editor';
 
@@ -47,6 +49,7 @@ import {UserEditor} from './user-editor';
         CommonModule,
         MatAutocompleteModule,
         MatButtonModule,
+        MatCheckboxModule,
         MatDatepickerModule,
         MatDialogModule,
         MatFormFieldModule,
@@ -58,6 +61,7 @@ import {UserEditor} from './user-editor';
         MatSnackBarModule,
         ReactiveFormsModule,
         RouterModule,
+        TranslocoModule,
     ],
     declarations: [UserEditor],
     exports: [UserEditor]

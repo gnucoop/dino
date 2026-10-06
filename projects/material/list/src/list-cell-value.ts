@@ -65,7 +65,7 @@ export class ListCellValue implements PipeTransform {
     if (!isNaN(dt.valueOf())) {
       return transformDateByLocale(dt, this._ts.getActiveLang(), 'shortDate');
     }
-    if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3,}.*$/.test(val)) {
+    if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?.*$/.test(val)) {
       dt = new Date(val);
       if (!isNaN(dt.valueOf())) {
         return transformDateByLocale(dt, this._ts.getActiveLang(), 'short');

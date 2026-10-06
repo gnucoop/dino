@@ -77,7 +77,7 @@ export type NHostSignupRequest = {
   /**
    * User displayed name options
    */
-  options: {displayName: string};
+  options: {displayName: string; locale?: string};
 };
 
 /**
