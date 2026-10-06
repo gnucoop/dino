@@ -30,7 +30,7 @@ import {
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthError, AuthService, PasswordMatch, showValidationErrors} from '@dino/core/auth';
+import {AuthError, AuthService, PasswordMatch, translatedValidationErrors} from '@dino/core/auth';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {map, startWith, switchMap, take, tap} from 'rxjs/operators';
 import {TranslocoService} from '@ngneat/transloco';
@@ -76,7 +76,7 @@ export class ResetPassword {
   /**
    * Displays the login/signup validation errors
    */
-  readonly showValErrors = showValidationErrors;
+  readonly showValErrors = translatedValidationErrors(this._ts);
   /**
    * True if the submit button for changing the password is disabled.
    */

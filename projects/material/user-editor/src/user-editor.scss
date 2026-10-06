@@ -7,6 +7,29 @@ dino-user-editor {
         }
     }
 
+    .dino-user-editor-container {
+        width: min(760px, 80vw);
+    }
+
+    .dino-user-editor-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+        @media (max-width: 600px) {
+            grid-template-columns: minmax(0, 1fr);
+        }
+        > .mat-mdc-outlined-button {
+            grid-column: 1;
+            justify-self: start;
+            margin: 0 25px 8px;
+        }
+    }
+
+    form > .mat-mdc-checkbox {
+        display: block;
+        padding: 0 25px;
+    }
+
     .mat-mdc-form-field {
         position: relative;
         flex: 1 1 auto;
@@ -36,11 +59,7 @@ dino-user-editor {
     .mat-mdc-dialog-content {
         form {
             position: relative;
-            max-height: 80vh;
-            display: flex;
-            flex-flow: row wrap;
-            justify-content: center;
-            overflow: hidden;
+            display: block;
             -ms-overflow-style: none;
             scrollbar-width: none;
             &::-webkit-scrollbar {
