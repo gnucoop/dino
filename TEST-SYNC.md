@@ -292,8 +292,10 @@ cambiato ruolo.
 
 ## 14. I gruppi dei form, offline ⚠️
 
-**Prima di iniziare** — Il server deve già avere il nuovo campo dei gruppi. Se non ce l'ha, la
-sincronizzazione dei form si ferma del tutto: è la prima cosa da escludere se questa prova fallisce.
+**Prima di iniziare** — Il server deve già avere il nuovo campo dei gruppi, leggibile da tutti e
+scrivibile da chi può modificare i form. Se manca il campo, la sincronizzazione dei form si ferma del
+tutto; se manca solo il permesso di scrittura, si fermano i salvataggi dei form, anche quelli che non
+toccano i gruppi. È la prima cosa da escludere se questa prova fallisce.
 
 **Cosa fare** — Aprire un form esistente in modifica, scheda **Gruppo**. Aggiungere un gruppo nuovo
 (per esempio "Salute", scrivendo il nome e scegliendo "Crea il gruppo") e uno già usato da un altro
