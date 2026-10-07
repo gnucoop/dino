@@ -114,6 +114,7 @@ export const UGA: Translation = {
   'Which items have the lowest values?': 'Which items have the lowest values?',
   'Send': 'Send',
   'pin': 'pin',
+  'Coordinates from': 'Coordinates from',
   'selected': 'selected',
   'Columns': 'Columns',
   'Reset columns': 'Reset columns',

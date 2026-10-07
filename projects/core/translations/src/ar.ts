@@ -362,6 +362,7 @@ export const AR: Translation = {
   'Which items have the lowest values?': 'ما العناصر ذات القيم الأدنى؟',
   'Send': 'إرسال',
   'pin': 'علامات',
+  'Coordinates from': 'الإحداثيات من',
   'selected': 'محدد',
   'Columns': 'أعمدة',
   'Reset columns': 'إعادة تعيين الأعمدة',

@@ -358,6 +358,7 @@ export const UKR: Translation = {
   'Which items have the lowest values?': 'Які елементи мають найнижчі значення?',
   'Send': 'Надіслати',
   'pin': 'позначки',
+  'Coordinates from': 'Координати з',
   'selected': 'вибрано',
   'Columns': 'Стовпці',
   'Reset columns': 'Скинути стовпці',

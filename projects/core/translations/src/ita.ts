@@ -395,6 +395,7 @@ export const ITA: Translation = {
   'Compare the activities by organization': 'Confronta le attività per organizzazione',
   'Which items have the lowest values?': 'Quali elementi hanno i valori più bassi?',
   'pin': 'pin',
+  'Coordinates from': 'Coordinate da',
   'selected': 'selezionati',
   'Columns': 'Colonne',
   'Reset columns': 'Ripristina le colonne',

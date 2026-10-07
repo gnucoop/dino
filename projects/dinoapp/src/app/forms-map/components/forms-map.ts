@@ -1,3 +1,4 @@
+import {AjfFieldType} from '@ajf/core/forms';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -30,7 +31,7 @@ import {ExportList} from '@dino/material/export-list';
 import {ListDataSource} from '@dino/material/list';
 import {SearchFiltersBar} from '@dino/material/search-filters-bar';
 import {RxDocument} from 'rxdb';
-import {combineLatest, Observable, of, Subject} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of, Subject} from 'rxjs';
 import {
   debounceTime,
   filter,
@@ -53,6 +54,38 @@ L.Icon.Default.prototype.options.shadowUrl = 'assets/icons/marker-shadow.png';
 
 interface LocationWithLatLon extends Location {
   latLon?: [number, number];
+}
+
+/**
+ * The pin source that places the pins by the location metric. Not null: mat-select treats an
+ * option with a null value as a reset and would show the select empty.
+ */
+const LOCATION_PIN_SOURCE = 'location_ref_id';
+
+/** A record together with the position its pin is placed at. */
+interface FormPin {
+  form: FormData;
+  latLon: [number, number];
+}
+
+/**
+ * Parses a `"lat,lon"` string — the format of both the location coordinates and the ajf
+ * geolocation field value — into a coordinate pair. Returns null for anything that is not a
+ * complete, in-range pair (ajf can save partial values such as `"45.1,"`).
+ */
+export function parseLatLon(value: unknown): [number, number] | null {
+  if (typeof value !== 'string' || !value.includes(',')) {
+    return null;
+  }
+  const parts = value.split(',').slice(0, 2).map(s => s.trim());
+  if (parts.some(s => s === '')) {
+    return null;
+  }
+  const [lat, lon] = parts.map(s => Number(s));
+  if (!isFinite(lat) || !isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) {
+    return null;
+  }
+  return [lat, lon];
 }
 
 function loadHeaders(schemaId: string): ListHeader<FormData>[] {
@@ -81,8 +114,16 @@ function filterHeaders(headers: ListHeader<FormData>[]): ListHeader<FormData>[] 
   ));
 }
 
-function markerPopup(form: FormData, dataHeaders: ListHeader<FormData>[]): string {
+function markerPopup(
+  pin: FormPin,
+  dataHeaders: ListHeader<FormData>[],
+  geoField: ListHeader<FormData> | null,
+): string {
+  const form = pin.form;
   let html = '<b>Location</b>: ' + form.data['location_ref_id'];
+  if (geoField != null) {
+    html = `<b>${geoField.label}</b>: ${pin.latLon.join(', ')}<br>` + html;
+  }
   for (const h of dataHeaders) {
     let val = form.data[h.column];
     if (val == null) {
@@ -122,6 +163,20 @@ export class FormsMapComponent implements AfterViewInit, OnDestroy {
 
   /** Number of plotted (geolocated) pins currently on the map. */
   pinCount = 0;
+
+  /**
+   * The geolocation fields of the schema the pins can be placed by, outside repeating slides
+   * (one record, one pin).
+   */
+  geoFields: ListHeader<FormData>[] = [];
+
+  readonly locationPinSource = LOCATION_PIN_SOURCE;
+
+  /**
+   * Where the pins come from: `LOCATION_PIN_SOURCE` for the location metric, else the name of
+   * a geolocation field.
+   */
+  readonly pinSource = new BehaviorSubject<string>(LOCATION_PIN_SOURCE);
 
   private _map?: L.Map;
   private _markers?: L.MarkerClusterGroup;
@@ -220,15 +275,9 @@ export class FormsMapComponent implements AfterViewInit, OnDestroy {
         map(locations =>
           locations.map(doc => {
             const loc = doc.toJSON() as LocationWithLatLon;
-            const coord = loc.coordinates as unknown as string;
-            if (typeof coord === 'string' && coord.includes(',')) {
-              const latLon = coord
-                .split(',')
-                .slice(0, 2)
-                .map(s => Number(s)) as [number, number];
-              if (!isNaN(latLon[0]) && !isNaN(latLon[1])) {
-                loc.latLon = latLon;
-              }
+            const latLon = parseLatLon(loc.coordinates);
+            if (latLon != null) {
+              loc.latLon = latLon;
             }
             return loc;
           }),
@@ -276,6 +325,9 @@ export class FormsMapComponent implements AfterViewInit, OnDestroy {
       .subscribe(([metricsTab, headers, schema]) => {
         this._metricsTab = metricsTab;
         this.headers = headers;
+        this.geoFields = (
+          schema == null ? [] : this._formSchemaManager.generateSchemaListHeaders(schema)
+        ).filter(h => h.fieldType === AjfFieldType.Geolocation && !h.repeatingSlideColumn);
         this.dataSource.dataHeaders = headers.filter(h => h.displayed);
 
         // IMPORTANT: subscribe to the marker pipeline BEFORE triggering filter
@@ -283,7 +335,7 @@ export class FormsMapComponent implements AfterViewInit, OnDestroy {
         // skip(1) that does not replay — it fires exactly once when the filters are
         // first initialized. A late subscriber would miss that initial emission and
         // the map would stay empty until the user changed a filter.
-        combineLatest([
+        const forms$ = combineLatest([
           // startWith an empty-filter query so the initial (unfiltered) set of pins is
           // always plotted, even before the hot queryString fires its first value.
           this._filtersService.queryString.pipe(startWith(this._emptyQueryString())),
@@ -306,15 +358,26 @@ export class FormsMapComponent implements AfterViewInit, OnDestroy {
               );
               return this._formDataManager.query(query).pipe(take(1));
             }),
-            takeUntil(this._destroy),
-          )
-          .subscribe(docs => {
-            const forms = docs
-              .map(doc => doc.toJSON() as FormData)
-              .map(form => this._resolveRefsAndLatLon(form))
-              .filter(form => form.data['latLon'] != null);
-            this.pinCount = forms.length;
-            this._plotMarkers(forms);
+            map(docs =>
+              docs.map(doc => this._resolveRefsAndLatLon(doc.toJSON() as FormData)),
+            ),
+          );
+        // Changing the pin source re-places the pins of the last query, without querying again.
+        combineLatest([forms$, this.pinSource])
+          .pipe(takeUntil(this._destroy))
+          .subscribe(([forms, source]) => {
+            const pins: FormPin[] = [];
+            for (const form of forms) {
+              const latLon =
+                source === LOCATION_PIN_SOURCE
+                  ? form.data['latLon']
+                  : parseLatLon(form.data[source]);
+              if (latLon != null) {
+                pins.push({form, latLon});
+              }
+            }
+            this.pinCount = pins.length;
+            this._plotMarkers(pins);
             this._cdr.markForCheck();
           });
 
@@ -457,14 +520,16 @@ export class FormsMapComponent implements AfterViewInit, OnDestroy {
     this._map.addLayer(this._markers);
   }
 
-  private _plotMarkers(forms: FormData[]): void {
+  private _plotMarkers(pins: FormPin[]): void {
     if (this._map == null) {
       return;
     }
+    const source = this.pinSource.value;
+    const geoField = this.geoFields.find(h => h.column === source) ?? null;
     const newMarkers = L.markerClusterGroup();
-    for (const f of forms) {
-      const m = L.marker(f.data['latLon']);
-      m.bindPopup(markerPopup(f, this.headers), {closeButton: false});
+    for (const pin of pins) {
+      const m = L.marker(pin.latLon);
+      m.bindPopup(markerPopup(pin, this.headers, geoField), {closeButton: false});
       newMarkers.addLayer(m);
     }
     if (this._markers != null) {
@@ -473,7 +538,7 @@ export class FormsMapComponent implements AfterViewInit, OnDestroy {
     this._map.addLayer(newMarkers);
     this._markers = newMarkers;
     this._map.invalidateSize();
-    if (forms.length > 0) {
+    if (pins.length > 0) {
       this._map.fitBounds(newMarkers.getBounds());
     }
   }

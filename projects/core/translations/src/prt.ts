@@ -389,6 +389,7 @@ export const PRT: Translation = {
   'Which items have the lowest values?': 'Que elementos têm os valores mais baixos?',
   'Send': 'Enviar',
   'pin': 'marcadores',
+  'Coordinates from': 'Coordenadas de',
   'selected': 'selecionados',
   'Columns': 'Colunas',
   'Reset columns': 'Repor as colunas',

@@ -391,6 +391,7 @@ export const ESP: Translation = {
   'Which items have the lowest values?': '¿Qué elementos tienen los valores más bajos?',
   'Send': 'Enviar',
   'pin': 'marcadores',
+  'Coordinates from': 'Coordenadas de',
   'selected': 'seleccionados',
   'Columns': 'Columnas',
   'Reset columns': 'Restablecer las columnas',

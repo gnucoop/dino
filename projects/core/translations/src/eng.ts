@@ -390,6 +390,7 @@ export const ENG: Translation = {
   'Compare the activities by organization': 'Compare the activities by organization',
   'Which items have the lowest values?': 'Which items have the lowest values?',
   'pin': 'pin',
+  'Coordinates from': 'Coordinates from',
   'selected': 'selected',
   'Columns': 'Columns',
   'Reset columns': 'Reset columns',

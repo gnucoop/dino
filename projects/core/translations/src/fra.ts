@@ -395,6 +395,7 @@ export const FRA: Translation = {
   'Which items have the lowest values?': 'Quels éléments ont les valeurs les plus basses ?',
   'Send': 'Envoyer',
   'pin': 'repères',
+  'Coordinates from': 'Coordonnées depuis',
   'selected': 'sélectionnés',
   'Columns': 'Colonnes',
   'Reset columns': 'Réinitialiser les colonnes',
