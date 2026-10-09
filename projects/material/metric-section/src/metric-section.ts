@@ -53,6 +53,7 @@ import {MetricDelete} from './metric-delete';
   styleUrls: ['metric-section.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MetricSection<T extends Metric = Metric> implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(SelectionList) list!: SelectionList;

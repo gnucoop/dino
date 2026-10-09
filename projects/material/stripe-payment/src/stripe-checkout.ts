@@ -48,6 +48,7 @@ import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from './stripe-payment-confi
   templateUrl: 'stripe-checkout.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class StripeCheckout implements OnDestroy {
   /**

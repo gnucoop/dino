@@ -79,6 +79,7 @@ export interface MetricDeleteDialogData<T extends Metric = Metric> {
   styleUrls: ['metric-delete.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MetricDelete<T extends Metric = Metric> implements OnInit, OnDestroy {
   /**

@@ -11,6 +11,7 @@ import {loadingSpinner, themedImagePath} from '../../themed-images';
   styleUrls: ['./edit-report.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class EditReportComponent {
   readonly lightSpinnerPath: string = loadingSpinner.light;

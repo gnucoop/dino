@@ -46,6 +46,7 @@ import {Breadcrumb, ParamBreadcrumb} from './breadcrumb';
   styleUrls: ['breadcrumbs.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class BreadCrumbs {
   /**

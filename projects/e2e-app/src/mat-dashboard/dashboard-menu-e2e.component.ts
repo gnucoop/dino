@@ -19,6 +19,7 @@ import {combineLatest, Observable} from 'rxjs';
   templateUrl: 'dashboard-menu-e2e.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MatDashboardMenuE2E implements OnInit {
   syncFinished: EventEmitter<void> = new EventEmitter<void>();

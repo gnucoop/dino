@@ -30,6 +30,7 @@ import {CompletionVector, DataChatQA, Mimetype, VectorMetadata} from './datachat
   templateUrl: './paragraph-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ParagraphDialogComponent {
   /**

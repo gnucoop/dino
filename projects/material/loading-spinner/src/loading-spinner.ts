@@ -33,6 +33,7 @@ import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@ang
   templateUrl: 'loading-spinner.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LoadingSpinner {
   @Input() spinnerImagePath: string | undefined;

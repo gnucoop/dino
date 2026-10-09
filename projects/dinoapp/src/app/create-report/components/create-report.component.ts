@@ -8,6 +8,7 @@ import * as conf from '../conf';
   styleUrls: ['./create-report.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class CreateReportComponent {
   readonly allowMetricCreationFor: string[] | undefined =

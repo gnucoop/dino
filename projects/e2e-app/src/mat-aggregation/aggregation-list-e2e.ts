@@ -13,6 +13,7 @@ import {additionalConfig} from '../mockconfig';
 @Component({
   selector: 'app-aggregation-list-e2e',
   templateUrl: 'aggregation-list-e2e.html',
+  standalone: false,
 })
 export class MatAggregationListE2E implements AfterViewInit, OnDestroy {
   @ViewChild(SelectionList) list!: SelectionList;

@@ -47,6 +47,7 @@ export type JsonTableData = {[key: string]: string} | {[key: string]: string}[];
   templateUrl: 'table-generator.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class TableGenerator implements OnDestroy {
   /**

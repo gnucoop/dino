@@ -7,6 +7,7 @@ import * as conf from '../conf';
   templateUrl: 'users.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class UsersComponent {
   readonly menuItems = conf.menuItems;

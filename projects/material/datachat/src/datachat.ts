@@ -130,6 +130,7 @@ const MAX_TABLE_ROWS = 50;
   templateUrl: 'datachat.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   /**

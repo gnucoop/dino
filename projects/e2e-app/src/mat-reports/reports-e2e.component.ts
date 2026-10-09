@@ -5,6 +5,7 @@ import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 @Component({
   selector: 'app-reports',
   templateUrl: 'reports-e2e.component.html',
+  standalone: false,
 })
 export class MatReportsE2E {
   constructor(

@@ -12,6 +12,7 @@ import * as conf from '../conf';
   styleUrls: ['./cases.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class CasesComponent {
   @ViewChild(MetricSection) section: MetricSection | undefined;

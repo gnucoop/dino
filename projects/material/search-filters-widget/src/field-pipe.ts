@@ -23,7 +23,7 @@ import {AjfNode} from '@ajf/core/forms';
 import {Pipe, PipeTransform} from '@angular/core';
 import {FilterItem} from '@dino/core/list';
 
-@Pipe({name: 'asFilterItem'})
+@Pipe({name: 'asFilterItem', standalone: false})
 export class NodeAsFilterItemPipe implements PipeTransform {
   transform(value: AjfNode): FilterItem {
     return value as FilterItem;

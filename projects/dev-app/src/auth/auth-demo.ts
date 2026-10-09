@@ -28,6 +28,7 @@ import {AuthService, Credentials} from '@dino/core/auth';
   selector: 'auth-demo.html',
   templateUrl: 'auth-demo.html',
   styleUrls: ['auth-demo.scss'],
+  standalone: false,
 })
 export class AuthDemo {
   loginResult = '';

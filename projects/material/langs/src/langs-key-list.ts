@@ -33,6 +33,7 @@ import {LangsFilter, LangsStore, TranslationKeyVm} from './langs-store';
   styleUrls: ['langs-key-list.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LangsKeyListComponent implements OnDestroy {
   readonly rows$: Observable<TranslationKeyVm[]> = this._store.visibleRows$;

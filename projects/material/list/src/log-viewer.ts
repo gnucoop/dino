@@ -38,6 +38,7 @@ import {deepCopy} from '@ajf/core/utils';
   templateUrl: 'log-viewer.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LogViewer {
   logs: Observable<Log[]>;

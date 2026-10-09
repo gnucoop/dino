@@ -136,6 +136,7 @@ function reformat(isoDate: string): string {
   templateUrl: 'edit-report.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class EditReport implements AfterViewInit {
   /**

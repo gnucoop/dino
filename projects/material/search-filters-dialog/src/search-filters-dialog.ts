@@ -56,6 +56,7 @@ import {catchError, map, take, withLatestFrom} from 'rxjs/operators';
   templateUrl: 'search-filters-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class SearchFiltersDialog implements OnInit, OnDestroy {
   /**

@@ -9,6 +9,7 @@ import {map} from 'rxjs/operators';
 @Component({
   selector: 'app-metrics',
   templateUrl: 'metrics-e2e.component.html',
+  standalone: false,
 })
 export class MatMetricsE2E {
   readonly metricItems: Observable<CollectItem[]>;

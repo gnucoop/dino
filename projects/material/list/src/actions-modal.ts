@@ -34,6 +34,7 @@ import {ListAction} from '@dino/core/list';
   templateUrl: 'actions-modal.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ActionsModal<T> {
   /**

@@ -144,6 +144,7 @@ const NARROW_QUERY = '(max-width: 759.98px)';
   styleUrls: ['collect.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class Collect implements OnDestroy {
   /**

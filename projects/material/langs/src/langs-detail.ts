@@ -48,6 +48,7 @@ export interface LangsDetailRow {
   styleUrls: ['langs-detail.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LangsDetailComponent implements OnDestroy {
   readonly selected$: Observable<TranslationKeyVm | null> = this._store.selected$;

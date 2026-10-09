@@ -3,6 +3,7 @@ import {ajfCustomFunctions} from '../ajf-custom-functions';
 @Component({
   selector: 'app-datachat',
   templateUrl: './datachat-e2e.component.html',
+  standalone: false,
 })
 export class DataChatE2E {
   ajfCustomFunctions = ajfCustomFunctions;

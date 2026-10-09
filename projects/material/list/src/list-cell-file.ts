@@ -49,7 +49,7 @@ export interface ListCellFileView {
 /**
  * Pipe that checks if a list column displays files
  */
-@Pipe({name: 'dinoListCellIsFile', pure: false})
+@Pipe({name: 'dinoListCellIsFile', pure: false, standalone: false})
 export class ListCellIsFile implements PipeTransform {
   constructor() {}
 
@@ -63,7 +63,7 @@ export class ListCellIsFile implements PipeTransform {
 /**
  * Builds the file view configuration (href, download, target and type) based on whether the file is an image, URL or base64 content.
  */
-@Pipe({name: 'dinoFileView', pure: true})
+@Pipe({name: 'dinoFileView', pure: true, standalone: false})
 export class ListCellFileViewPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
 
@@ -96,7 +96,7 @@ export class ListCellFileViewPipe implements PipeTransform {
 /**
  * Pipe that checks if a list cell has a deleted file as value
  */
-@Pipe({name: 'dinoListCellIsDeletedFile', pure: false})
+@Pipe({name: 'dinoListCellIsDeletedFile', pure: false, standalone: false})
 export class ListCellIsDeletedFile implements PipeTransform {
   constructor() {}
 
@@ -110,7 +110,7 @@ export class ListCellIsDeletedFile implements PipeTransform {
 /**
  * Pipe that checks if a list cell has a storage image url as content.
  */
-@Pipe({name: 'dinoListCellIsStorageImageUrl', pure: false})
+@Pipe({name: 'dinoListCellIsStorageImageUrl', pure: false, standalone: false})
 export class ListCellIsStorageImageUrl implements PipeTransform {
   constructor() {}
 
@@ -123,7 +123,7 @@ export class ListCellIsStorageImageUrl implements PipeTransform {
 /**
  * Pipe that returns the info of the file in the list cell
  */
-@Pipe({name: 'dinoListCellGetFile', pure: false})
+@Pipe({name: 'dinoListCellGetFile', pure: false, standalone: false})
 export class ListCellGetFile implements PipeTransform {
   constructor() {}
 
@@ -139,7 +139,7 @@ export class ListCellGetFile implements PipeTransform {
 /**
  * Pipe that returns the icon text descriptor of the file icon to be displayed in the cell
  */
-@Pipe({name: 'dinoListCellGetFileIcon', pure: false})
+@Pipe({name: 'dinoListCellGetFileIcon', pure: false, standalone: false})
 export class ListCellGetFileIcon implements PipeTransform {
   constructor() {}
 

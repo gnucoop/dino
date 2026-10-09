@@ -8,6 +8,7 @@ import {baseManifest} from './base-webmanifest';
   styleUrls: ['./dino.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class DinoComponent {
   title = 'dinoapp';

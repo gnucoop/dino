@@ -37,6 +37,7 @@ import {shareReplay, startWith} from 'rxjs/operators';
   styleUrls: ['theme-switch.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ThemeSwitch {
   /**

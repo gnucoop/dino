@@ -41,6 +41,7 @@ import {ListHeader} from '@dino/core/list';
   templateUrl: 'list-cell-component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ListCellComponent<T extends Model = Model> {
   /**

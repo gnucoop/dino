@@ -84,6 +84,7 @@ function markerPopup(form: FormData, dataHeaders: ListHeader<FormData>[]): strin
   styleUrls: ['forms-map-e2e.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MatFormsMapE2E implements AfterViewInit {
   readonly headers: ListHeader<FormData>[];

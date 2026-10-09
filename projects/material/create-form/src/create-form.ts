@@ -118,6 +118,7 @@ const UNIQUE_METRICS_CHECK_DEBOUNCE_MS = 300;
   templateUrl: 'create-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class CreateForm<T extends Model = Model> implements AfterViewInit, OnInit, OnDestroy {
   /**

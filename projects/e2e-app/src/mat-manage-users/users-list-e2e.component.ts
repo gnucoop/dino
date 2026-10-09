@@ -15,6 +15,7 @@ import {MatUsersEditorE2E} from './users-editor-e2e.component';
   templateUrl: 'users-list-e2e.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MatUsersListE2E implements OnInit {
   readonly headers: ListHeader<UserData>[] = [

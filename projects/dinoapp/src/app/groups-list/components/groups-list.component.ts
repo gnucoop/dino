@@ -11,6 +11,7 @@ import * as conf from '../conf';
   templateUrl: './groups-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class GroupsList {
   readonly headers: ListHeader<UserGroup>[] = conf.headers;

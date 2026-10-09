@@ -30,6 +30,7 @@ import {
 @Component({
   selector: 'app-forms-list-e2e',
   templateUrl: 'forms-list-e2e.html',
+  standalone: false,
 })
 export class MatFormsListE2E {
   @ViewChild(SelectionList) list!: SelectionList;

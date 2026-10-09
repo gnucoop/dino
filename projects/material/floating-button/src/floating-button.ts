@@ -33,6 +33,7 @@ import {ChangeDetectionStrategy, Component, Input, ViewEncapsulation} from '@ang
   styleUrls: ['floating-button.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class FloatingButton {
   /**

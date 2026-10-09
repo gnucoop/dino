@@ -11,6 +11,7 @@ import * as conf from '../conf';
   styleUrls: ['./areas.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class AreasComponent {
   @ViewChild(MetricSection) section: MetricSection|undefined;

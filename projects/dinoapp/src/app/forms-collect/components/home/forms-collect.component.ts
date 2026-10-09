@@ -7,6 +7,7 @@ import {environment} from 'src/environments/environment';
   styleUrls: ['./forms-collect.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class FormsCollectComponent {
   readonly secondaryMetricFieldsDisplayed: {

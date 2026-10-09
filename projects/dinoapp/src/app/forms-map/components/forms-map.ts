@@ -143,6 +143,7 @@ function markerPopup(
   styleUrls: ['forms-map.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class FormsMapComponent implements AfterViewInit, OnDestroy {
   @ViewChild(SearchFiltersBar) filtersBar?: SearchFiltersBar;

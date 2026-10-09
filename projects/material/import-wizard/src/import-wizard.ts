@@ -59,6 +59,7 @@ import {
   templateUrl: 'import-wizard.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ImportWizard implements OnDestroy, ErrorStateMatcher {
   /**

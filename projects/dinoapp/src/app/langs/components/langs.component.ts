@@ -7,6 +7,7 @@ import {ChangeDetectionStrategy, Component, ViewEncapsulation} from '@angular/co
   styleUrls: ['./langs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LangsComponent {
  

@@ -39,6 +39,7 @@ import {map, switchMap, take} from 'rxjs/operators';
   templateUrl: 'form-creator-hub.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class FormCreatorHub {
   /**
