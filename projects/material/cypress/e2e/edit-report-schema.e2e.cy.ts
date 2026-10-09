@@ -1,10 +1,10 @@
 describe('dino-edit-report-schema', () => {
   beforeEach(() => {
     cy.visit('/reports');
-    cy.get('mat-grid-tile')
+    cy.get('.dino-collect-card')
       .should('exist')
       .first()
-      .find('.dino-grid-action-icons button')
+      .find('.dino-collect-card-bar button')
       .first()
       .click();
   });

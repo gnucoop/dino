@@ -1,0 +1,51 @@
+<div class="dino-collect-share-head">
+  <span class="dino-collect-share-badge"><mat-icon>public</mat-icon></span>
+  <div class="dino-collect-share-title">
+    <h2>{{ 'Public link' | transloco }}</h2>
+    <div class="dino-collect-share-name">{{ data.label | transloco }}</div>
+  </div>
+  <button
+    mat-icon-button
+    mat-dialog-close
+    class="dino-collect-share-close"
+    [attr.aria-label]="'Close' | transloco"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+<div class="dino-collect-share-body">
+  <p>{{ 'Anyone with this link can fill in the form, without logging in.' | transloco }}</p>
+  <dino-form-metric-selector
+    class="dino-collect-share-metrics"
+    context="shareUrl"
+    [setDialogActRouteParams]="routeParams"
+    [hasOptionalMetrics]="data.hasOptionalMetrics"
+    [secondaryMetricFieldsDisplayed]="data.secondaryMetricFieldsDisplayed"
+  >
+    <div share-url-message>
+      {{
+        'Choose which metrics the Public Form Url will refer to, if any, then copy the Url into your Clipboard'
+          | transloco
+      }}
+    </div>
+  </dino-form-metric-selector>
+  <div class="dino-collect-share-row">
+    <mat-form-field class="dino-collect-share-url" subscriptSizing="dynamic">
+      <input matInput readonly [value]="url" (focus)="$any($event.target).select()" />
+    </mat-form-field>
+    <button
+      mat-flat-button
+      color="primary"
+      class="dino-collect-share-copy"
+      [disabled]="!valid"
+      (click)="copy()"
+    >
+      <mat-icon>{{ copied ? 'check' : 'content_copy' }}</mat-icon>
+      {{ (copied ? 'Copied' : 'Copy link') | transloco }}
+    </button>
+  </div>
+</div>
+<div class="dino-collect-share-foot">
+  <span>{{ 'To disable it, make the form private in the settings.' | transloco }}</span>
+  <a [href]="url" target="_blank" rel="noopener">{{ 'Open form' | transloco }} ↗</a>
+</div>

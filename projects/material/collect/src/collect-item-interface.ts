@@ -20,6 +20,8 @@
  *
  */
 
+import {FormSchemaGroup} from '@dino/core/forms';
+
 /**
  * Represents a single List of Forms with the same Form Schema, or a generic/mixed Item
  */
@@ -65,9 +67,19 @@ export interface CollectItem {
   shareUrl?: boolean;
 
   /**
-   * If true, a Map icon will be displayed on the item
+   * If true, the item is a public form, that anyone can fill in through its public link
    */
-  hasLocation?: boolean;
+  isPublic?: boolean;
+
+  /**
+   * The thematic groups the item belongs to
+   */
+  groups?: FormSchemaGroup[];
+
+  /**
+   * The last update timestamp of the item
+   */
+  updatedAt?: string;
 
   /**
    * If true, only one item with a given exact set of metrics can exist

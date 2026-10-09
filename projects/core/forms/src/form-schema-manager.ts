@@ -772,6 +772,7 @@ export class FormSchemaManager extends DataModelManager<FormSchema> {
           icon: schema.icon,
           form_status_ref_id: schema.form_status_ref_id,
           form_schema_metrics: schema.form_schema_metrics,
+          form_schema_groups: schema.form_schema_groups,
           visibility: schema.visibility,
           schema: schema.schema,
           form_schema_deps_ref_id: schema.form_schema_deps_ref_id,
