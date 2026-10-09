@@ -14,6 +14,7 @@ import {loadingSpinner, themedImagePath} from '../../../themed-images';
   styleUrls: ['./dashboard-report.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class DashboardReportComponent implements OnInit {
   favoriteReportId: string | null;

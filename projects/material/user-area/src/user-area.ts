@@ -104,6 +104,7 @@ const TUTORIAL_TAB: UserAreaTab = {
   templateUrl: 'user-area.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class UserArea implements OnDestroy {
   /**

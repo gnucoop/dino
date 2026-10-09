@@ -5,6 +5,7 @@ import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 @Component({
   selector: 'app-users',
   templateUrl: 'users-e2e.component.html',
+  standalone: false,
 })
 export class MatUsersE2E {
   readonly menuItems = [

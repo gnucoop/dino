@@ -98,6 +98,7 @@ export type FormDataView = 'table' | 'map' | 'ai';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   providers: [{provide: SearchFiltersComponent, useExisting: SearchFiltersBar}],
+  standalone: false,
 })
 export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, OnDestroy {
   /**

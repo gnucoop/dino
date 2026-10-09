@@ -11,6 +11,7 @@ import * as conf from '../conf';
   styleUrls: ['./organizations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class OrganizationsComponent {
   @ViewChild(MetricSection) section: MetricSection | undefined;

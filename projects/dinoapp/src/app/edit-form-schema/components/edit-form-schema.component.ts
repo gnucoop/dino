@@ -7,6 +7,7 @@ import {environment} from 'src/environments/environment';
   styleUrls: ['./edit-form-schema.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class EditFormSchemaComponent {
   readonly formConvUrl = environment.dataConfig.formconv_post_url;

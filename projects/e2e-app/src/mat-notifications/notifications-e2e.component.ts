@@ -18,6 +18,7 @@ import {map, Subscription} from 'rxjs';
   templateUrl: 'notifications-e2e.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MatNotificationsE2E implements OnDestroy, OnInit {
   readonly headers: ListHeader<Notification & {read?: boolean}>[] = [

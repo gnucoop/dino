@@ -172,6 +172,7 @@ const RELATIVE_TIME_UNITS: {unit: Intl.RelativeTimeFormatUnit; secondsInUnit: nu
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MainNav implements AfterViewInit, OnDestroy {
   @HostBinding('class.mat-typography') readonly matTypographyClass = true;

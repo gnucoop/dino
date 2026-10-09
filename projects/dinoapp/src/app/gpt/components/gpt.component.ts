@@ -12,6 +12,7 @@ import {
   styleUrls: ['./gpt.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class GptComponent {
   baseDataChatAPIurl = pandinoUrl;

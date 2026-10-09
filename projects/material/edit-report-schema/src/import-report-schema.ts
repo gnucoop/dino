@@ -39,6 +39,7 @@ import {HttpClient} from '@angular/common/http';
   templateUrl: 'import-report-schema.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ImportReportSchema {
   /**

@@ -52,6 +52,7 @@ export interface FormStatusChangerData {
   styleUrls: ['form-status-changer.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class FormStatusChanger implements OnDestroy, OnInit {
   /**

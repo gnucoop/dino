@@ -42,7 +42,7 @@ import {transformDateByLocale} from '@dino/core/langs';
  *
  * Returns an empty string when the element, header, or value is missing.
  */
-@Pipe({name: 'dinoListCellValue', pure: false})
+@Pipe({name: 'dinoListCellValue', pure: false, standalone: false})
 export class ListCellValue implements PipeTransform {
   constructor(private _ts: TranslocoService) {}
 

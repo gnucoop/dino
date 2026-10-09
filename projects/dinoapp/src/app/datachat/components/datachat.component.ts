@@ -15,6 +15,7 @@ import {acceptTermsContent, pandinoUrl} from '../conf';
   styleUrls: ['./datachat.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class DataChatComponent {
   ajfCustomFunctions = ajfCommonFunctions;

@@ -7,6 +7,7 @@ import {additionalConfig} from '../mockconfig';
 @Component({
   selector: 'app-cases',
   templateUrl: './cases-e2e.component.html',
+  standalone: false,
 })
 export class MatCasesE2E {
   @ViewChild(MetricSection) section!: MetricSection;

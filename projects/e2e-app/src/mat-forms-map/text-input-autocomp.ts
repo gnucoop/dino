@@ -6,6 +6,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input
   styleUrls: ['text-input-autocomp.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class TextInputAutocomp {
   @Input() label: string = '';

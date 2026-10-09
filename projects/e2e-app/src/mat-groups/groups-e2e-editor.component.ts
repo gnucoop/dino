@@ -55,6 +55,7 @@ export interface UserGroupDialogData {
   templateUrl: './groups-e2e-editor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MatGroupsEditorE2E implements OnDestroy, AfterViewInit {
   @ViewChild(MixedEditor) mixedEditor!: MixedEditor;

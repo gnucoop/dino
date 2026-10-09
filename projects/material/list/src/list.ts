@@ -149,6 +149,7 @@ const FIXED_COLUMNS: string[] = ['select', 'actions'];
       transition('expanded <=> void', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
+  standalone: false,
 })
 export class SelectionList<T extends Model = Model, U extends Model = Model>
   extends List<T, U>

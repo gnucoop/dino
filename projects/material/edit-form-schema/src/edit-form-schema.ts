@@ -131,6 +131,7 @@ export function uniqueGroupNames(control: AbstractControl): ValidationErrors | n
   templateUrl: 'edit-form-schema.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class EditFormSchema implements OnInit, OnDestroy {
   /**

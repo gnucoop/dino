@@ -62,6 +62,7 @@ interface UploadedFile {
   styleUrls: ['./langs-settings-dialog.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LangsSettingsDialog implements OnDestroy {
   private readonly _rows$: Observable<LangRow[]> = this._langSvc.langRows$.pipe(

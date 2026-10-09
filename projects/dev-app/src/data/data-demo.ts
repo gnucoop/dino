@@ -34,6 +34,7 @@ interface Todo extends Model {
   selector: 'data-demo.html',
   templateUrl: 'data-demo.html',
   styleUrls: ['data-demo.scss'],
+  standalone: false,
 })
 export class DataDemo {
   todos: Observable<Todo[]>;

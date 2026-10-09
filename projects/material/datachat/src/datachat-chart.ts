@@ -115,6 +115,7 @@ const CHART_INK: {light: string; dark: string} = {light: '#52514e', dark: '#c3c2
   templateUrl: 'datachat-chart.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class DataChatChart implements AfterViewInit, OnChanges, OnDestroy {
   /**

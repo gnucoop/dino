@@ -112,6 +112,7 @@ import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-servi
   templateUrl: 'create-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class CreateForm<T extends Model = Model> implements AfterViewInit, OnInit, OnDestroy {
   /**
