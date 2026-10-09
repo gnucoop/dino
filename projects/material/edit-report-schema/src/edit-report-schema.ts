@@ -78,6 +78,7 @@ import {ErrorHandlerMessageService} from '@dino/core/error-handler';
   templateUrl: 'edit-report-schema.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class EditReportSchema implements OnInit, OnDestroy {
   /**

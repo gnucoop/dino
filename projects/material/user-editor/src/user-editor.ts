@@ -92,6 +92,7 @@ export interface UserFormField {
   styleUrls: ['user-editor.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class UserEditor implements OnDestroy, OnInit {
   /**

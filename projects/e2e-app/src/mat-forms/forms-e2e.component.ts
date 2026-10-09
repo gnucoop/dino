@@ -6,6 +6,7 @@ import {additionalConfig} from '../mockconfig';
 @Component({
   selector: 'app-forms',
   templateUrl: 'forms-e2e.component.html',
+  standalone: false,
 })
 export class MatFormsE2E {
   readonly secondaryMetricFieldsDisplayed: {

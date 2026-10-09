@@ -29,6 +29,7 @@ import {Subscription} from 'rxjs';
   selector: 'theme-demo.html',
   templateUrl: 'theme-demo.html',
   styleUrls: ['theme-demo.scss'],
+  standalone: false,
 })
 export class ThemeDemo implements OnDestroy, OnInit {
   primaryColor = '';

@@ -44,6 +44,7 @@ import {Case, CaseManager} from '@dino/core/cases';
   templateUrl: './forms-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class FormsListComponent {
   @ViewChild(SelectionList) list: SelectionList | undefined;

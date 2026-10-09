@@ -19,6 +19,7 @@ import {headers} from '../conf';
   templateUrl: 'notifications-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class NotificationsListComponent implements OnDestroy, OnInit {
   readonly headers: ListHeader<Notification & {read?: boolean}>[] = headers;

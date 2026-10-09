@@ -22,7 +22,7 @@
 
 import {Directive, Input, TemplateRef} from '@angular/core';
 
-@Directive({selector: '[dinoListCell]'})
+@Directive({selector: '[dinoListCell]', standalone: false})
 export class ListCell {
   @Input('dinoListCell') column: string = '';
 

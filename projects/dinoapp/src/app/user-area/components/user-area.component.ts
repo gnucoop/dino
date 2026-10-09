@@ -14,6 +14,7 @@ import {loadingSpinner, themedImagePath} from '../../themed-images';
   styleUrls: ['./user-area.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class UserAreaComponent {
   readonly backupRestore: boolean = environment.dataConfig.backupRestore ?? false;

@@ -33,6 +33,7 @@ import {listCellFile} from './list-cell-file';
   templateUrl: 'image-preview.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ImagePreview {
   constructor(

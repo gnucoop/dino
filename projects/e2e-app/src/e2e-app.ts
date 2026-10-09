@@ -59,6 +59,7 @@ import {live, initializationScreenMaxDuration} from './mocks';
           `,
   ],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class E2eApp {
   constructor(

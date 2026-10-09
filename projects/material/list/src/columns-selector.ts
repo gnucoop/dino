@@ -45,6 +45,7 @@ import {map, startWith, take} from 'rxjs/operators';
   templateUrl: 'columns-selector.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ColumnsSelector<T> implements OnInit {
   /**

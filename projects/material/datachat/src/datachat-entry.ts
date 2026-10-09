@@ -54,6 +54,7 @@ const MAX_FEEDBACK_ANSWER_LENGTH = 2000;
   templateUrl: 'datachat-entry.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class DataChatEntry implements OnDestroy {
   /**

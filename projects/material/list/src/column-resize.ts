@@ -69,7 +69,7 @@ export interface ColumnResizeEvent {
  * column should be: the list binds the width of every cell of the column, so
  * that a single writer decides it.
  */
-@Directive({selector: '[dinoColumnResize]'})
+@Directive({selector: '[dinoColumnResize]', standalone: false})
 export class ColumnResize implements OnInit, OnDestroy {
   /**
    * The name of the column the header cell belongs to

@@ -4,6 +4,7 @@ import {ActionTrigger} from '@dino/core/data';
 @Component({
   selector: 'app-edit-public-form',
   templateUrl: './edit-public-form-e2e.component.html',
+  standalone: false,
 })
 export class MatEditPublicFormE2E {
   editPublicFormAction(formData: any) {

@@ -60,6 +60,7 @@ import {TranslocoService} from '@ajf/core/transloco';
   templateUrl: 'create-report.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
   /**

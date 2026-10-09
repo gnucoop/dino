@@ -102,6 +102,7 @@ enum EditorTab {
   templateUrl: 'edit-form-schema.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class EditFormSchema implements OnInit, OnDestroy {
   /**

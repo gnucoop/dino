@@ -10,6 +10,7 @@ import {AjfReportInstance} from '@ajf/core/reports';
   styleUrls: ['dashboard-report-e2e.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MatDashboardReportE2E implements OnInit {
   favoriteReportId: string | null;

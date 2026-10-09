@@ -10,6 +10,7 @@ import * as conf from '../conf';
   styleUrls: ['./create-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class CreateFormComponent {
   readonly manager: FormDataManager;

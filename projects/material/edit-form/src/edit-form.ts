@@ -114,6 +114,7 @@ import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
   templateUrl: 'edit-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit, OnDestroy {
   /**

@@ -22,7 +22,7 @@
 
 import {Pipe, PipeTransform} from '@angular/core';
 
-@Pipe({name: 'dinoObjectAsString', pure: false})
+@Pipe({name: 'dinoObjectAsString', pure: false, standalone: false})
 export class ObjectAsStringPipe implements PipeTransform {
   transform(value: any): string {
     if (value == null) {

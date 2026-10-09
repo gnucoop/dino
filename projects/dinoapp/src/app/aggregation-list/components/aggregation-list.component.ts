@@ -34,6 +34,7 @@ import * as conf from '../conf';
   templateUrl: './aggregation-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class AggregationListComponent implements OnDestroy, AfterViewInit {
   @ViewChild(SelectionList) list: SelectionList | undefined;

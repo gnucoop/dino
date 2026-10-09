@@ -22,7 +22,7 @@
 
 import {Pipe, PipeTransform} from '@angular/core';
 
-@Pipe({name: 'isFalseOrNull'})
+@Pipe({name: 'isFalseOrNull', standalone: false})
 export class IsFalseOrNullPipe implements PipeTransform {
   transform(value: boolean | null): boolean {
     return value == null || value === false;

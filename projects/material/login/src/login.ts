@@ -51,6 +51,7 @@ import {ActionTrigger, ActionTriggerData, localDataOwners} from '@dino/core/data
   styleUrls: ['login.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class Login extends LoginComponent implements OnDestroy {
   nhost: NhostClient | null = null;
