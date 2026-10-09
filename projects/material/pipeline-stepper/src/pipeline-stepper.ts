@@ -333,7 +333,7 @@ export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDest
       }),
     );
 
-    this.stepper?._animationDone.pipe(take(1)).subscribe(() => {
+    this.stepper?.animationDone.pipe(take(1)).subscribe(() => {
       this._scrollOnTheRight();
     });
   }
