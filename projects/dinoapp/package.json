@@ -2,7 +2,7 @@
   "name": "dinoapp",
   "version": "18.1.0",
   "engines": {
-    "node": "^18.19.1 || ^20.11.1 || ^22.0.0"
+    "node": "^22.22.3 || ^24.15.0"
   },
   "scripts": {
     "ng": "ng",
@@ -19,17 +19,17 @@
     "@ajf/core": "^18.5.1",
     "@ajf/material": "^18.5.1",
     "@ajf/icons": "1.0.0",
-    "@angular/animations": "^18.2.13",
-    "@angular/cdk": "^18.2.14",
-    "@angular/common": "^18.2.13",
-    "@angular/compiler": "^18.2.13",
-    "@angular/core": "^18.2.13",
-    "@angular/forms": "^18.2.13",
-    "@angular/material": "^18.2.14",
-    "@angular/platform-browser": "^18.2.13",
-    "@angular/platform-browser-dynamic": "^18.2.13",
-    "@angular/router": "^18.2.13",
-    "@angular/service-worker": "^18.2.13",
+    "@angular/animations": "^19.2.0",
+    "@angular/cdk": "^19.2.0",
+    "@angular/common": "^19.2.0",
+    "@angular/compiler": "^19.2.0",
+    "@angular/core": "^19.2.0",
+    "@angular/forms": "^19.2.0",
+    "@angular/material": "^19.2.0",
+    "@angular/platform-browser": "^19.2.0",
+    "@angular/platform-browser-dynamic": "^19.2.0",
+    "@angular/router": "^19.2.0",
+    "@angular/service-worker": "^19.2.0",
     "@apollo/client": "^3.13.1",
     "@capacitor/android": "^5.0.0",
     "@capacitor/core": "^5.0.0",
@@ -80,12 +80,12 @@
     "tslib": "^2.3.0",
     "uuid": "^8.3.2",
     "xlsx": "^0.18.3",
-    "zone.js": "~0.14.0"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^18.2.14",
-    "@angular/cli": "^18.2.14",
-    "@angular/compiler-cli": "^18.2.13",
+    "@angular-devkit/build-angular": "^19.2.0",
+    "@angular/cli": "^19.2.0",
+    "@angular/compiler-cli": "^19.2.0",
     "@capacitor/cli": "^5.0.0",
     "@eslint/js": "^9.21.0",
     "@nhost/nhost-js": "^3.0.5",
@@ -111,7 +111,7 @@
     "ngx-device-detector": "^7.0.0",
     "ngx-mat-select-search": "^8.0.0",
     "svg-pan-zoom": "^3.6.1",
-    "typescript": "~5.5.4",
+    "typescript": "~5.8.0",
     "typescript-eslint": "^8.25.0"
   }
 }
