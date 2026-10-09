@@ -6,6 +6,7 @@ import {MetricSection} from '@dino/material/metric-section';
 @Component({
   selector: 'app-locations',
   templateUrl: './locations-e2e.component.html',
+  standalone: false,
 })
 export class MatLocationsE2E {
   @ViewChild(MetricSection) section!: MetricSection;

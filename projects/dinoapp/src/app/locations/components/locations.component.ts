@@ -11,6 +11,7 @@ import * as conf from '../conf';
   styleUrls: ['./locations.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LocationsComponent {
   @ViewChild(MetricSection) section: MetricSection | undefined;

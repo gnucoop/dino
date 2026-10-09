@@ -9,6 +9,7 @@ import {MatGroupsEditorE2E} from './groups-e2e-editor.component';
 @Component({
   selector: 'app-groups-list',
   templateUrl: './groups-e2e-list.component.html',
+  standalone: false,
 })
 export class MatGroupsListE2E implements OnInit {
   readonly headers: ListHeader<UserGroup>[] = [

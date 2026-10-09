@@ -89,6 +89,7 @@ export type SessionDialogResult = 'logout' | 'end-session' | undefined;
   styleUrls: ['session-dialog.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class SessionDialog implements OnDestroy {
   /**

@@ -13,6 +13,7 @@ import {environment} from 'src/environments/environment';
   templateUrl: './import-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ImportFormPageComponent {
   readonly formSchemaId: string | null =

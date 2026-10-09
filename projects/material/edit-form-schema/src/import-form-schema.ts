@@ -45,6 +45,7 @@ import {map, shareReplay, take} from 'rxjs/operators';
   templateUrl: 'import-form-schema.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ImportFormSchema {
   /**

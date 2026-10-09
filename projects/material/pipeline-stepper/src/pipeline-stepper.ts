@@ -50,6 +50,7 @@ const sliderWaitFrames = 120;
   styleUrls: ['pipeline-stepper.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class StepperComponent implements AfterViewInit, AfterViewChecked, OnDestroy {
   @Output() position: EventEmitter<number> = new EventEmitter<number>();

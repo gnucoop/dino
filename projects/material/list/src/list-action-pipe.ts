@@ -27,7 +27,7 @@ import {ListAction} from '@dino/core/list';
 /**
  * Pipe that cast a row element as an array of ListActions
  */
-@Pipe({name: 'dinoAsListCellActions', pure: false})
+@Pipe({name: 'dinoAsListCellActions', pure: false, standalone: false})
 export class AsListCellActionsPipe implements PipeTransform {
   constructor() {}
 

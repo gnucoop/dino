@@ -11,6 +11,7 @@ import * as conf from '../conf';
   styleUrls: ['./projects.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ProjectsComponent {
   @ViewChild(MetricSection) section: MetricSection | undefined;

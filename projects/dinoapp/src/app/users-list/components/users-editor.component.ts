@@ -8,6 +8,7 @@ import {ActionsService} from 'src/app/actions.service';
   templateUrl: './users-editor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class UsersEditor {
   constructor(private _actionService: ActionsService) {}

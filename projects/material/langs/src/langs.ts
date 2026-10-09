@@ -39,6 +39,7 @@ import {LangsStore} from './langs-store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   providers: [LangsStore],
+  standalone: false,
 })
 export class LangsComponent implements OnDestroy {
   readonly loading$: Observable<boolean>;

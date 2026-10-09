@@ -16,6 +16,7 @@ import {headerLogo, loadingSpinner, logoMark, themedImagePath} from '../../theme
   styleUrls: ['./main-nav.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MainNavComponent {
   customLanguages = conf.availableLangs;

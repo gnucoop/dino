@@ -112,6 +112,7 @@ const FIELD_TYPE_LABELS: {[fieldType: string]: string} = {
   templateUrl: 'audio-recorder.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class AudioRecorder implements OnDestroy {
   isLoadingFile = false;

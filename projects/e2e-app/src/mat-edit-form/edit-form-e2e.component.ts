@@ -10,6 +10,7 @@ import {additionalConfig} from '../mockconfig';
 @Component({
   selector: 'app-edit-form',
   templateUrl: './edit-form-e2e.component.html',
+  standalone: false,
 })
 export class MatEditFormE2E {
   readonly manager: FormDataManager;

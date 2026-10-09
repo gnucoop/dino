@@ -82,6 +82,7 @@ const isFieldInstance = (instance: AjfNodeInstance): instance is AjfFieldInstanc
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [AjfFormRendererService],
+  standalone: false,
 })
 export class SearchFiltersWidget implements OnInit, AfterViewInit, OnDestroy {
   /**

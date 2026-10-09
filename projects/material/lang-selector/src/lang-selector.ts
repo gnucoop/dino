@@ -35,6 +35,7 @@ import {LangService} from './lang.service';
   templateUrl: 'lang-selector.html',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class LangSelector implements AfterViewInit {
   /**

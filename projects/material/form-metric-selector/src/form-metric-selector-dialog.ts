@@ -57,6 +57,7 @@ import {takeUntil} from 'rxjs/operators';
   templateUrl: 'form-metric-selector-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class FormMetricSelectorDialog implements AfterViewInit, OnDestroy {
   /**

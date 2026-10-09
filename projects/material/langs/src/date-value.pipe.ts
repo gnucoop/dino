@@ -28,7 +28,7 @@ import {parse, parseISO} from 'date-fns';
 /**
  * If the value is a date, this pipe formats the date according to the locale, otherwise it returns the initial value.
  */
-@Pipe({name: 'dinoDateValue', pure: false})
+@Pipe({name: 'dinoDateValue', pure: false, standalone: false})
 export class DateValue implements PipeTransform {
   constructor(private _ts: TranslocoService) {}
 

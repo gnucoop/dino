@@ -9,6 +9,7 @@ import {environment} from '../../../environments/environment';
   styleUrls: ['./edit-public-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class EditPublicFormComponent {
   /**

@@ -113,6 +113,7 @@ export type ExportValueFormat = 'default' | 'data_analysis' | 'separate_columns'
   styleUrls: ['export-list.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ExportList implements OnDestroy {
   disableExport$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);

@@ -89,6 +89,7 @@ interface RelationshipsPayload {
   styleUrls: ['form-deps-editor.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class FormDepsEditor implements OnInit, OnDestroy {
   /**

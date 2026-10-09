@@ -5,6 +5,7 @@ import {additionalConfig} from '../mockconfig';
 @Component({
   selector: 'app-create-report-data',
   templateUrl: './create-report-data-e2e.component.html',
+  standalone: false,
 })
 export class MatCreateReportDataE2E {
   readonly manager: ReportDataManager;

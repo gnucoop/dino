@@ -43,6 +43,7 @@ import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
   styleUrls: ['image-capture.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ImageCapture implements AfterViewInit, OnDestroy {
   @Input() videoWidth = 640;

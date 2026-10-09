@@ -141,6 +141,7 @@ interface MetricInfoInRows {
   templateUrl: 'import-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ImportForm implements OnInit, OnDestroy {
   /**

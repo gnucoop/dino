@@ -60,6 +60,7 @@ interface CategoryTab extends CategoryMeta {
   styleUrls: ['./group-editor-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class GroupEditorPage implements OnDestroy {
   /** Ordered category definitions; only those with a populated pool get a tab. */

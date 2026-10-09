@@ -19,6 +19,7 @@ import {initializationScreenMaxDuration} from '../mocks';
           `,
   ],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MatMainE2E {
   pkg = require('../../../../package.json');

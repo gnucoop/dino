@@ -37,6 +37,7 @@ import {ProjectManager} from '@dino/core/projects';
   templateUrl: 'metric-import-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MetricImportPageComponent {
   /**

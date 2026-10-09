@@ -47,6 +47,7 @@ import {MixedEditorItem} from './mixed-editor-item';
   styleUrls: ['mixed-editor.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MixedEditor implements AfterViewInit {
   /**

@@ -44,6 +44,7 @@ import {TokensService} from './tokens.service';
   templateUrl: 'stripe-checkout-landing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class StripeCheckoutLanding {
   /**

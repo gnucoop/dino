@@ -13,6 +13,7 @@ import {ActionTrigger} from '@dino/core/data';
 @Component({
   selector: 'app-login-e2e',
   templateUrl: 'login-e2e.html',
+  standalone: false,
 })
 export class MatLoginE2E implements OnInit, AfterViewInit {
   dynamicConfig: boolean = additionalConfig.dynamicConfiguration;

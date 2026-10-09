@@ -107,6 +107,7 @@ export interface FormMetricSelectorField extends MetricFormField {
   templateUrl: 'form-metric-selector.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class FormMetricSelector implements OnDestroy, AfterViewInit {
   /**

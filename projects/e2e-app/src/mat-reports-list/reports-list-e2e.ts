@@ -15,6 +15,7 @@ import {TranslocoService} from '@ajf/core/transloco';
 @Component({
   selector: 'app-reports-list-e2e',
   templateUrl: 'reports-list-e2e.html',
+  standalone: false,
 })
 export class MatReportsListE2E {
   @ViewChild(SelectionList) list!: SelectionList;

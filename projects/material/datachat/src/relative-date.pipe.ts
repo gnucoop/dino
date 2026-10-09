@@ -29,7 +29,7 @@ import {differenceInCalendarDays} from 'date-fns';
  * 'Today', 'Yesterday', '3 days ago', 'Last week', or the localized short date
  * for anything older.
  */
-@Pipe({name: 'dinoRelativeDate', pure: false})
+@Pipe({name: 'dinoRelativeDate', pure: false, standalone: false})
 export class RelativeDatePipe implements PipeTransform {
   constructor(private _ts: TranslocoService) {}
 

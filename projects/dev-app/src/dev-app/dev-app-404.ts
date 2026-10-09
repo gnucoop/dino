@@ -29,5 +29,6 @@ import {Component} from '@angular/core';
     <a mat-raised-button routerLink="/">Go back to the home page</a>
   `,
   host: {'class': 'mat-typography'},
+  standalone: false,
 })
 export class DevApp404 {}

@@ -44,6 +44,7 @@ import {catchError, map} from 'rxjs/operators';
   templateUrl: 'search-filters-chips.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class SearchFiltersChips implements OnInit {
   /**

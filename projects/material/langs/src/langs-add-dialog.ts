@@ -44,6 +44,7 @@ export interface LangsAddRowVm {
   styleUrls: ['./langs-add-dialog.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LangsAddDialog {
   readonly form: UntypedFormGroup;

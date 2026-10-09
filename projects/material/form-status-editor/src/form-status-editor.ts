@@ -35,6 +35,7 @@ export interface FormStatusEditorData {
   styleUrls: ['form-status-editor.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class FormStatusEditor implements OnDestroy {
   /**

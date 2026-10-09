@@ -4,6 +4,7 @@ import {PANDINO_SERVICE_CONFIG, PandinoConfig} from '@dino/core/data';
 @Component({
   selector: 'app-gpt',
   templateUrl: './gpt-e2e.component.html',
+  standalone: false,
 })
 export class GptE2E {
   baseDataChatAPIurl = 'http://127.0.0.1:5000';

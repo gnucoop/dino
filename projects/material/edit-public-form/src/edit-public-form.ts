@@ -83,6 +83,7 @@ const retryBtn = 'TRY AGAIN';
   styleUrls: ['edit-public-form.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class EditPublicForm implements AfterViewChecked, OnDestroy {
   /**

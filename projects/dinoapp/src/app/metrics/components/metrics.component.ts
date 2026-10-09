@@ -11,6 +11,7 @@ import {map} from 'rxjs/operators';
   templateUrl: 'metrics.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MetricsComponent {
   readonly metricItems: Observable<CollectItem[]>;

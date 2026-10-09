@@ -29,6 +29,7 @@ import {MatDialogRef} from '@angular/material/dialog';
   styleUrls: ['./langs-confirm-dialog.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LangsConfirmDialog {
   constructor(public _dialogRef: MatDialogRef<LangsConfirmDialog>) {}

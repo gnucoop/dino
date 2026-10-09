@@ -44,6 +44,7 @@ import {TranslocoService} from '@ngneat/transloco';
   templateUrl: 'reset-password.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ResetPassword {
   readonly invalidTicket: Observable<boolean>;

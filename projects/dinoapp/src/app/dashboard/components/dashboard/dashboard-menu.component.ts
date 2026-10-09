@@ -13,6 +13,7 @@ import {adminItems, adminRoles, collectItems, metricItem} from '../../conf';
   styleUrls: ['./dashboard-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class DashboardMenuComponent implements OnInit {
   collectItems: Observable<CollectItem[]>;

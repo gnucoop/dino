@@ -33,6 +33,7 @@ import {NhostClient} from '@nhost/nhost-js';
   styleUrls: ['login-oauth.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LoginOauth {
   /**

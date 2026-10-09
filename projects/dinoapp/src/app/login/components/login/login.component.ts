@@ -31,6 +31,7 @@ import {appVersion, availableLangs} from 'src/app/main-nav/conf';
   styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   dynamicConfig: boolean = conf.dynamicConfiguration;

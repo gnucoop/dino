@@ -43,6 +43,7 @@ import {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class LangsFileUploader {
   @Output() readonly errors: EventEmitter<string> = new EventEmitter<string>();

@@ -150,6 +150,7 @@ export interface ParentMetric {
   styleUrls: ['metric-editor.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestroy {
   /**

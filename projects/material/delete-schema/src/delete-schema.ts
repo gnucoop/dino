@@ -59,6 +59,7 @@ export interface DeleteSchemaDialogData {
   styleUrls: ['delete-schema.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class DeleteSchema implements OnDestroy {
   /**

@@ -111,6 +111,7 @@ interface MetricInfoInRows {
   styleUrls: ['metric-import.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class MetricImport implements OnDestroy {
   /**

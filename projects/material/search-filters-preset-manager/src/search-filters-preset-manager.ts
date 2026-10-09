@@ -43,6 +43,7 @@ import {catchError, map, shareReplay, startWith, take, withLatestFrom} from 'rxj
   templateUrl: 'search-filters-preset-manager.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class SearchFiltersPresetManager implements OnDestroy, OnInit {
   presetData: Observable<any> = obsOf({});

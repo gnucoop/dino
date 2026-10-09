@@ -18,6 +18,7 @@ import * as conf from '../conf';
   styleUrls: ['./reports-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ReportsListComponent {
   @ViewChild(SelectionList) list: SelectionList | undefined;
