@@ -243,8 +243,8 @@ body {
   // The snackbar styles are injected at runtime by the component and read these
   // tokens, which the theme sets on html: overriding them here is what recolors
   // the action label. The declarations below cover the surface and the message.
-  --mdc-snackbar-container-color: #{mat-css-vars.mat-css-color-primary(500)};
-  --mdc-snackbar-supporting-text-color: #fff;
+  --mat-snackbar-container-color: #{mat-css-vars.mat-css-color-primary(500)};
+  --mat-snackbar-supporting-text-color: #fff;
   --mat-snack-bar-button-color: #fff;
 
   .mdc-snackbar__surface {

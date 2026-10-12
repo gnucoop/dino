@@ -8,7 +8,7 @@ dino-table-generator {
     border-radius: 5px;
     background-color: transparent;
     .mat-mdc-header-row {
-      background-color: var(--mdc-filled-text-field-container-color);
+      background-color: var(--mat-form-field-filled-container-color);
       .mat-mdc-header-cell {
         min-width: 150px;
       }
