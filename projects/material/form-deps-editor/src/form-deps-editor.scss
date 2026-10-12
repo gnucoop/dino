@@ -172,7 +172,7 @@ dino-form-deps-editor {
   }
 
   .dino-error {
-    color: var(--mdc-filled-text-field-error-label-text-color, var(--mat-app-error));
+    color: var(--mat-form-field-filled-error-label-text-color, var(--mat-app-error));
     font-size: 11px;
     padding: 0 4px 4px;
   }
