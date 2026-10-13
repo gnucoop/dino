@@ -26,8 +26,7 @@ import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MetricsService, Model} from '@dino/core/data';
 import {TranslocoService} from '@ngneat/transloco';
-import {RxJsonSchema, isRxDocument} from 'rxdb';
-import {TopLevelProperty} from 'rxdb/dist/types/types/rx-schema';
+import {RxJsonSchema, TopLevelProperty, isRxDocument} from 'rxdb';
 import {
   BehaviorSubject,
   combineLatest,
