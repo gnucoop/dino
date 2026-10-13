@@ -40,6 +40,93 @@ h2.subtitle {
   margin-top: 20px;
 }
 
+dino-edit-report-schema {
+  .dino-ers-groups-sub {
+    margin: 0 0 12px;
+    opacity: 0.7;
+  }
+
+  .dino-ers-groups-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .dino-ers-groups-picker {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .dino-ers-group-row {
+    display: grid;
+    grid-template-columns: 112px minmax(160px, 1fr) minmax(200px, 2fr) 40px;
+    gap: 0 12px;
+    align-items: start;
+
+    @media only screen and (max-width: 599px) {
+      grid-template-columns: 112px 1fr 40px;
+
+      .dino-ers-group-desc {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+    }
+
+    .mat-mdc-form-field {
+      width: 100%;
+    }
+
+    .dino-ers-group-remove {
+      margin-top: 8px;
+    }
+  }
+
+  .dino-ers-groups-empty {
+    margin: 0 0 8px;
+    opacity: 0.7;
+    font-size: 13px;
+  }
+
+  .dino-ers-groups-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 8px 0 0;
+    opacity: 0.7;
+    font-size: 12.5px;
+
+    .mat-icon {
+      flex: 0 0 18px;
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.dino-ers-group-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.mat-mdc-select-panel.dino-ers-group-colors {
+  min-width: 112px;
+
+  .mat-mdc-option {
+    min-height: 40px;
+    justify-content: center;
+
+    .mdc-list-item__primary-text {
+      display: flex;
+      justify-content: center;
+      margin: 0;
+    }
+  }
+}
+
 /* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
 /* TODO(mdc-migration): The following rule targets internal classes of autocomplete that may no longer apply for the MDC version. */
 .mat-autocomplete-panel {

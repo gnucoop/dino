@@ -1,5 +1,6 @@
 import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {UntypedFormGroup} from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -77,5 +78,48 @@ describe('Edit ReportSchema', () => {
     fixtureEditReportSchema.detectChanges();
 
     expect(editReportSchema).toBeTruthy();
+  });
+
+  describe('groups', () => {
+    let fgroup: UntypedFormGroup;
+
+    beforeEach(async () => {
+      await fixtureEditReportSchema.whenStable();
+      fixtureEditReportSchema.detectChanges();
+      editReportSchema.formGroup.subscribe(fg => (fgroup = fg));
+    });
+
+    it('should store the assigned groups trimmed and without the empty ones', () => {
+      editReportSchema.addGroup(fgroup, {
+        kind: 'existing',
+        group: {name: ' Finance ', description: ' Budget ', color: '#4fd1d9'},
+      });
+      editReportSchema.addGroup(fgroup, {kind: 'existing', group: {name: 'M&E', description: ''}});
+      editReportSchema.addGroup(fgroup, {kind: 'existing', group: {name: '  '}});
+
+      expect((editReportSchema as any)._groupsValue(fgroup)).toEqual([
+        {name: 'Finance', description: 'Budget', color: '#4fd1d9'},
+        {name: 'M&E', color: '#a3abb5'},
+      ]);
+    });
+
+    it('should give a new group a color', () => {
+      editReportSchema.addGroup(fgroup, {kind: 'create', name: 'Finance'});
+      const group = editReportSchema.groupsArray(fgroup).at(0).value;
+      expect(group.name).toBe('Finance');
+      expect(editReportSchema.groupColors).toContain(group.color);
+    });
+
+    it('should reject two groups with the same name', () => {
+      editReportSchema.addGroup(fgroup, {kind: 'existing', group: {name: 'Finance'}});
+      expect(editReportSchema.groupsArray(fgroup).valid).toBeTrue();
+
+      editReportSchema.addGroup(fgroup, {kind: 'create', name: 'finance '});
+      expect(editReportSchema.groupsArray(fgroup).hasError('duplicateGroup')).toBeTrue();
+      expect(fgroup.valid).toBeFalse();
+
+      editReportSchema.removeGroup(fgroup, 1);
+      expect(editReportSchema.groupsArray(fgroup).valid).toBeTrue();
+    });
   });
 });
