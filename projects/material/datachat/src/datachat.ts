@@ -373,12 +373,12 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   private _nodesVisibility: Observable<NodeVisibility[]>;
 
   /**
-   * Http client used to download the exports, bypassing the interceptors.
-   * The export endpoint answers 400 when its agent is gone, and JWTInterceptor
-   * reads any 400 as an expired token: it would refresh the auth token, replay
-   * the request and possibly log the user out.
+   * Http client used for every DataChat API call, bypassing the interceptors.
+   * The API authenticates with the API key, not with the Dino token, and answers
+   * 400 when its agent is not active: JWTInterceptor reads any 400 as an expired
+   * token, and would refresh the auth token and replay the request for nothing.
    */
-  private readonly _exportHttp: HttpClient;
+  private readonly _http: HttpClient;
 
   /**
    * If present, terms of use for GPT have been accepted
@@ -427,7 +427,6 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     @Optional() @Inject(STRIPE_PAYMENT_CONFIG) readonly config: StripePaymentConfig | null,
     private _route: ActivatedRoute,
     private _auth: AuthService,
-    private _http: HttpClient,
     private _udm: UserDataManager,
     private _ugm: UserGroupManager,
     private _ehms: ErrorHandlerMessageService,
@@ -447,7 +446,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     private _cdr: ChangeDetectorRef,
     httpBackend: HttpBackend,
   ) {
-    this._exportHttp = new HttpClient(httpBackend);
+    this._http = new HttpClient(httpBackend);
     this.conversations = this._session.conversations;
     this.activeConversation = this._session.activeConversation;
     // The sidebar is closed by default on small screens, until the User
@@ -897,8 +896,8 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   private _previewInfoFromResponse(response: DataChatResponsePayload): Partial<DataChatQA> {
     return {
       truncated: response.truncated === true,
-      totalRows: response.total_rows ?? undefined,
-      totalColumns: response.total_columns ?? undefined,
+      totalRows: response.result_rows ?? response.total_rows ?? undefined,
+      totalColumns: response.result_columns ?? response.total_columns ?? undefined,
       previewRows: response.preview_rows ?? undefined,
       previewColumns: this._previewColumnsCount(response.value),
       downloadUrl: response.download_url ?? undefined,
@@ -981,7 +980,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
         switchMap(activeUserData => {
           if (!activeUserData || !this.apiKey.value) return obsOf(null);
           const headers = {'X-API-KEY': this.apiKey.value, 'X-USER-EMAIL': activeUserData.email};
-          return this._exportHttp.get(this._exportUrl(url), {headers, responseType: 'blob'});
+          return this._http.get(this._exportUrl(url), {headers, responseType: 'blob'});
         }),
         take(1),
       )

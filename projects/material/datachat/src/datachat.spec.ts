@@ -172,8 +172,8 @@ describe('Data Chat', () => {
           {city: 'c0', n: 0},
           {city: 'c1', n: 1},
         ],
-        total_rows: 340,
-        total_columns: 2,
+        result_rows: 340,
+        result_columns: 2,
         preview_rows: 20,
         truncated: true,
         download_url: '/datachat/export/bf80bb41d8214522b0d38bca61afbd26',
@@ -194,8 +194,8 @@ describe('Data Chat', () => {
       const info = previewInfo({
         type: 'dataframe',
         value: [{city: 'Roma', n: 1}],
-        total_rows: 2,
-        total_columns: 2,
+        result_rows: 2,
+        result_columns: 2,
         preview_rows: 2,
         truncated: false,
         download_url: null,
@@ -211,7 +211,7 @@ describe('Data Chat', () => {
       const info = previewInfo({
         type: 'dataframe',
         value: [{city: 'Roma'}],
-        total_rows: 500,
+        result_rows: 500,
         preview_rows: 20,
         truncated: false,
       });
@@ -223,7 +223,7 @@ describe('Data Chat', () => {
       const info = previewInfo({
         type: 'dataframe',
         value: [{txt: 'ottimo servizio', sentiment: 'positive', score: 0.95}],
-        total_columns: 14,
+        result_columns: 14,
       });
 
       expect(info.previewColumns).toEqual(3);
@@ -321,7 +321,7 @@ describe('Data Chat', () => {
       const info = previewInfo({
         type: 'dataframe',
         value: [{programma: 'INTELLIGENZA ARTIFICIALE', media: 3.573}],
-        total_rows: 8,
+        result_rows: 8,
         truncated: false,
         charts: [chartSpec('Soddisfazione media')],
       });
