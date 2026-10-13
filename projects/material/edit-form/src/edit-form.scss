@@ -104,7 +104,7 @@ dino-edit-form {
   }
   // Only the step on screen: Material hides the others with `height: 0`, and a
   // height of ours here would be specific enough to override that.
-  .mat-horizontal-stepper-content:not(.mat-horizontal-stepper-content-inactive) {
+  .mat-horizontal-stepper-content.mat-horizontal-stepper-content-current {
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
