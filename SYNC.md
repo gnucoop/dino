@@ -451,7 +451,9 @@ including the documents that never touch the field. The reverse is harmless: an 
 not name the field, so it neither reads nor overwrites it. `form_schema.form_schema_groups` (form
 schema v5, a nullable `jsonb`) is the latest case: the column, its select permission for every role
 including `anonymous` and `public`, and its insert and update permission for every role that writes
-`form_schema`, have to be deployed before the client.
+`form_schema`, have to be deployed before the client. `report_schema.report_schema_groups` (report
+schema v2, same shape) followed: there only the `user` role reads and writes `report_schema`, and it
+needs all three permissions on the column.
 
 **The token lives in two places.** A running replication carries the token it was created with, while
 the auth checks read `localStorage`. They cannot diverge in normal use, but a second tab can do it: a
