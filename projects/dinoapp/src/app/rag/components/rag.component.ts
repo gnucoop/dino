@@ -102,6 +102,7 @@ export class RagComponent {
       data.append('file', file);
       data.append('namespace', this.namespace);
       data.append('url', resp.filePublicUrl);
+      data.append('client', 'dino');
 
       try {
         const response = await fetch(storeEndpoint, {body: data, method: 'post'});
