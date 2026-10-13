@@ -12382,19 +12382,19 @@ ngx-quill@26.0.0:
   dependencies:
     tslib "^2.3.0"
 
-ngx-ui-tour-core@13.0.0:
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-ui-tour-core/-/ngx-ui-tour-core-13.0.0.tgz#11195fdaa0d9e74703ef8017a6f17f1732567293"
-  integrity sha512-svtp3zMoOnkGPL6eBKtJX3gsIir8aJzVg5KfSKNVO4ZMHGgh+MK55WfvmX8juv3gSJMBCMZta5b/7gjEn2g/Iw==
+ngx-ui-tour-core@15.0.0:
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-ui-tour-core/-/ngx-ui-tour-core-15.0.0.tgz#969a85ea5de535b25d50ba635161f36af2cf6c6a"
+  integrity sha512-ECFU+aELgXpltveC7rtoQn72bzhmQB/bpqPUcfr2G+WjT2nUPMsbRRDbK5RfngslM0cNl5JJ1N0Z/KR39FJ7oA==
   dependencies:
     tslib "^2.0.0"
 
-ngx-ui-tour-md-menu@13.0.0:
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-ui-tour-md-menu/-/ngx-ui-tour-md-menu-13.0.0.tgz#21780906688eac59df38852cb0548f59844ed31b"
-  integrity sha512-y1TcPTEHkmqRTgHDKRHty++Sqxag8QRH0BvIsU3LLucZryx48TpzskW8URsARC7MdgGmskg6Ep3cqAgtJysa/A==
+ngx-ui-tour-md-menu@15.0.3:
+  version "15.0.3"
+  resolved "https://registry.yarnpkg.com/ngx-ui-tour-md-menu/-/ngx-ui-tour-md-menu-15.0.3.tgz#1d38df7eb74001674e123dc1b5b5355829ebeb0d"
+  integrity sha512-uKgBJcjcRPK15GYa4igd4pTKtTJdBne536fpf/V8jy18co6BLyRMxhTYGYTczijtrCSiUlZoZtmfpcOjknK7nA==
   dependencies:
-    ngx-ui-tour-core "13.0.0"
+    ngx-ui-tour-core "15.0.0"
     tslib "^2.0.0"
 
 nkeys.js@1.1.0:

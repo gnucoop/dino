@@ -21,7 +21,6 @@
  */
 
 import {Pipe, PipeTransform} from '@angular/core';
-import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {Model} from '@dino/core/data';
 
 /**
@@ -39,7 +38,7 @@ export type listCellFile = {
 };
 
 export interface ListCellFileView {
-  href: string | SafeUrl;
+  href: string;
   download: boolean;
   targetBlank: boolean;
   isImage: boolean;
@@ -65,8 +64,6 @@ export class ListCellIsFile implements PipeTransform {
  */
 @Pipe({name: 'dinoFileView', pure: true, standalone: false})
 export class ListCellFileViewPipe implements PipeTransform {
-  constructor(private sanitizer: DomSanitizer) {}
-
   transform<T extends Model = Model>(element: T | {[key: string]: any} | string): ListCellFileView {
     if (!element || typeof element !== 'object') {
       return {href: '', download: false, targetBlank: false, isImage: false, isAudio: false};
@@ -77,11 +74,13 @@ export class ListCellFileViewPipe implements PipeTransform {
     const isAudio = elemObj['type']?.includes('audio') ?? false;
     const isUrl = !!elemObj['url'];
 
-    let href: string | SafeUrl = '';
+    // A plain string: Angular no longer treats audio[src] as a URL context (since 19.2/20
+    // patches), so a SafeUrl bound there is stringified. a[href] still sanitizes the string.
+    let href = '';
     if (isUrl) {
       href = elemObj['url']!;
     } else if (elemObj['content']) {
-      href = this.sanitizer.bypassSecurityTrustUrl(elemObj['content']);
+      href = elemObj['content'];
     }
     return {
       href,

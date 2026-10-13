@@ -29,7 +29,6 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {AudioRecorderService} from './audio-recorder.service';
-import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {filter, take} from 'rxjs/operators';
@@ -130,7 +129,11 @@ export class AudioRecorder implements OnDestroy {
    * The microphone input levels of the last seconds, drawn while recording.
    */
   audioLevels: Observable<number[]>;
-  blobUrl: BehaviorSubject<SafeUrl | null> = new BehaviorSubject<SafeUrl | null>(null);
+  /**
+   * Object URL of the loaded file. A plain string: Angular no longer treats source[src] as a
+   * URL context (since 19.2/20 patches), so a SafeUrl bound there is stringified, not unwrapped.
+   */
+  blobUrl: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   blob: BehaviorSubject<TranscriptionFile | null> = new BehaviorSubject<TranscriptionFile | null>(
     null,
   );
@@ -165,7 +168,6 @@ export class AudioRecorder implements OnDestroy {
     private _data: {formSchema: FormSchema; exampleData: FormSchemaExampleData},
     private _dialogRef: MatDialogRef<AudioRecorder>,
     private _audioRecorderService: AudioRecorderService,
-    private _sanitizer: DomSanitizer,
     private _snackBar: MatSnackBar,
     private _ts: TranslocoService,
   ) {
@@ -188,7 +190,7 @@ export class AudioRecorder implements OnDestroy {
       .subscribe(data => {
         if (data == null) return;
         this.blob.next(data);
-        this.blobUrl.next(this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(data)));
+        this.blobUrl.next(URL.createObjectURL(data));
       });
 
     if (this._data.exampleData) {
@@ -218,7 +220,7 @@ export class AudioRecorder implements OnDestroy {
         return;
       }
       this.blob.next(file);
-      this.blobUrl.next(this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file)));
+      this.blobUrl.next(URL.createObjectURL(file));
     } finally {
       this.isLoadingFile = false;
     }
@@ -235,7 +237,7 @@ export class AudioRecorder implements OnDestroy {
       return;
     }
     this.blob.next(file);
-    this.blobUrl.next(this._sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file)));
+    this.blobUrl.next(URL.createObjectURL(file));
   }
 
   /**
