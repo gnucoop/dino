@@ -314,6 +314,27 @@ accende sulla collection dei form.
 
 ---
 
+## 15. I gruppi dei report, offline ⚠️
+
+**Prima di iniziare** — Come per la prova 14, il server deve già avere il campo dei gruppi dei report,
+leggibile e scrivibile da chi può modificare i report: se manca, la sincronizzazione dei report si
+ferma del tutto, o si fermano tutti i loro salvataggi.
+
+**Cosa fare** — Aprire un report esistente in modifica, sezione **Gruppi** sotto i campi del report.
+Aggiungere un gruppo nuovo (per esempio "Finanza") e salvare. Poi **staccare la rete**, aprire un
+secondo report, assegnargli lo stesso gruppo e uno nuovo, salvare. Tornare nella pagina Report.
+
+**Cosa deve succedere** — Offline, la pagina Report mostra subito i report nelle sezioni dei loro
+gruppi, e quelli senza gruppo in "Senza gruppo"; i gruppi dei report non compaiono tra quelli proposti
+per i form, e viceversa. Riattaccare la rete e aspettare la sincronizzazione: su un **secondo
+dispositivo** i gruppi dei due report sono quelli salvati.
+
+**È un bug se** — dopo il ritorno online un report perde i suoi gruppi; se rigenerando l'auto-report
+di un form (salvando il form con "Genera report") il report perde i gruppi che aveva; oppure se il
+badge di sync si accende sulla collection dei report.
+
+---
+
 ## Se compare "i dati sono corrotti"
 
 Non è una prova da provocare, è una situazione da riconoscere. Se il server rifiuta dei documenti — di

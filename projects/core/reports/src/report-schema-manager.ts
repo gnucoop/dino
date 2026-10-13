@@ -147,6 +147,7 @@ export class ReportSchemaManager extends DataModelManager<ReportSchema> {
           form_schema_ids: schema.form_schema_ids,
           label: schema.label,
           icon: schema.icon,
+          report_schema_groups: schema.report_schema_groups,
           schema: schema.schema,
           is_deleted: true,
           _deleted: true,

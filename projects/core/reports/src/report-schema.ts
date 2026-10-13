@@ -22,6 +22,7 @@
 
 import {AjfReport} from '@ajf/core/reports';
 import {Model} from '@dino/core/data';
+import {FormSchemaGroup} from '@dino/core/forms';
 import {MigrationStrategies, RxDocument} from 'rxdb';
 
 /**
@@ -56,6 +57,12 @@ export interface ReportSchema extends Model {
   icon?: string;
 
   /**
+   * The thematic groups the report schema belongs to. They have the same shape as the
+   * groups of the form schemas, but make a catalogue of their own.
+   */
+  report_schema_groups?: FormSchemaGroup[];
+
+  /**
    * JSON definition of the Ajf report schema.
    * It must be valid against the [non-scrict
    * version](https://ajf.rocks/schemas/ajf-report-schema.json).
@@ -64,10 +71,11 @@ export interface ReportSchema extends Model {
   schema: Partial<AjfReport>;
 }
 
-export const VERSION = 1;
+export const VERSION = 2;
 
 export const migrationStrategies: MigrationStrategies = {
   1: (doc: RxDocument) => {
     return {...doc, required_metrics: []};
   },
+  2: (doc: RxDocument<ReportSchema>) => doc,
 };

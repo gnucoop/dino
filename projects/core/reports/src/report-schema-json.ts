@@ -82,6 +82,27 @@ export const schema = {
       'description': 'The report schema icon identifier.',
       'maxLength': 200,
     },
+    'report_schema_groups': {
+      'type': 'array',
+      'items': {
+        'type': 'object',
+        'properties': {
+          'name': {
+            'type': 'string',
+            'maxLength': 200,
+          },
+          'description': {
+            'type': 'string',
+          },
+          'color': {
+            'type': 'string',
+            'maxLength': 20,
+          },
+        },
+        'required': ['name'],
+      },
+      'description': 'The thematic groups the report schema belongs to.',
+    },
     'schema': {
       'type': 'object',
       'properties': {
@@ -127,5 +148,5 @@ export const schema = {
   'title': 'ReportSchema',
   'indexes': ['created_at', 'updated_at'],
   'primaryKey': 'id',
-  'version': 1,
+  'version': 2,
 } as RxJsonSchema<ReportSchema>;
