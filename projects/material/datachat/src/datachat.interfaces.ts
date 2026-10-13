@@ -165,9 +165,17 @@ export interface DataChatResponsePayload {
   /**
    * Rows of the complete result
    */
-  total_rows?: number | null;
+  result_rows?: number | null;
   /**
    * Columns of the complete result
+   */
+  result_columns?: number | null;
+  /**
+   * Former name of 'result_rows', still read as a fallback
+   */
+  total_rows?: number | null;
+  /**
+   * Former name of 'result_columns', still read as a fallback
    */
   total_columns?: number | null;
   /**
