@@ -36,12 +36,27 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
+import {
+  AbstractControl,
+  UntypedFormArray,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  UntypedFormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ActiveMetric, DataQueryOptions, InsertModel, MetricsService} from '@dino/core/data';
-import {FormSchema, FormSchemaManager} from '@dino/core/forms';
+import {
+  FORM_SCHEMA_GROUP_COLORS,
+  FormSchema,
+  FormSchemaGroup,
+  formSchemaGroupKey,
+  formSchemaGroupsCatalogue,
+  FormSchemaManager,
+} from '@dino/core/forms';
 import {ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {IconsService} from '@dino/material/icons-service';
 import {format} from 'date-fns';
@@ -67,6 +82,24 @@ import {
 
 import {ImportReportSchema} from './import-report-schema';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
+
+/**
+ * An option of the group picker: a group already used by some report schema, or a new one
+ * to create with the typed name.
+ */
+export type ReportGroupOption =
+  | {kind: 'existing'; group: FormSchemaGroup}
+  | {kind: 'create'; name: string};
+
+/**
+ * Rejects two groups with the same name, compared trimmed and case-insensitively.
+ */
+export function uniqueReportGroupNames(control: AbstractControl): ValidationErrors | null {
+  const keys = ((control.value ?? []) as FormSchemaGroup[])
+    .map(group => formSchemaGroupKey(group?.name))
+    .filter(key => key.length > 0);
+  return new Set(keys).size === keys.length ? null : {duplicateGroup: true};
+}
 
 /**
  * The Report Schema Editor component.
@@ -99,6 +132,23 @@ export class EditReportSchema implements OnInit, OnDestroy {
    * Form group for editing the Report Schema attributes
    */
   readonly formGroup: Observable<UntypedFormGroup>;
+
+  /**
+   * The colors a group can take.
+   */
+  readonly groupColors = FORM_SCHEMA_GROUP_COLORS;
+
+  /**
+   * The text typed in the group picker. It is not part of the form group: it only
+   * searches the groups to add.
+   */
+  readonly groupSearchCtrl = new UntypedFormControl('');
+
+  /**
+   * The options of the group picker: the known groups not assigned yet that match the
+   * search, and the new group to create when the search names none of them.
+   */
+  readonly groupOptions: Observable<ReportGroupOption[]>;
 
   /**
    * The Report schema id
@@ -228,9 +278,51 @@ export class EditReportSchema implements OnInit, OnDestroy {
           required_metrics: [
             rs && rs.required_metrics && rs.required_metrics.length ? rs.required_metrics : [],
           ],
+          groups: this._formBuilder.array(
+            (rs?.report_schema_groups ?? []).map(group => this._groupControl(group)),
+            {validators: uniqueReportGroupNames},
+          ),
         }),
       ),
       shareReplay(1),
+    );
+
+    // The report groups make a catalogue of their own, separate from the form groups.
+    const groupCatalogue = this._reportSchemaManager.list().pipe(
+      map(docs =>
+        formSchemaGroupsCatalogue(
+          docs
+            .filter(doc => doc != null)
+            .map(doc => ({
+              form_schema_groups: doc.report_schema_groups,
+              updated_at: doc.updated_at,
+            })),
+        ),
+      ),
+    );
+    const assignedGroups = this.formGroup.pipe(
+      switchMap(fg => {
+        const groups = this.groupsArray(fg);
+        return groups.valueChanges.pipe(startWith(groups.value)) as Observable<FormSchemaGroup[]>;
+      }),
+    );
+    const groupSearch = this.groupSearchCtrl.valueChanges.pipe(
+      startWith(''),
+      map(value => (typeof value === 'string' ? value : '')),
+    );
+    this.groupOptions = combineLatest([groupCatalogue, assignedGroups, groupSearch]).pipe(
+      map(([catalogue, assigned, search]) => {
+        const assignedKeys = assigned.map(group => formSchemaGroupKey(group?.name));
+        const key = formSchemaGroupKey(search);
+        const existing: ReportGroupOption[] = catalogue
+          .filter(group => !assignedKeys.includes(formSchemaGroupKey(group.name)))
+          .filter(group => formSchemaGroupKey(group.name).includes(key))
+          .map(group => ({kind: 'existing', group}));
+        const known = [...assignedKeys, ...catalogue.map(g => formSchemaGroupKey(g.name))];
+        const create: ReportGroupOption[] =
+          key.length > 0 && !known.includes(key) ? [{kind: 'create', name: search.trim()}] : [];
+        return [...create, ...existing];
+      }),
     );
 
     this._saveSub = this._saveEvt
@@ -259,6 +351,7 @@ export class EditReportSchema implements OnInit, OnDestroy {
             label: formGroup.get('label')?.value,
             icon: formGroup.get('icon')?.value,
             required_metrics: formGroup.get('required_metrics')?.value,
+            report_schema_groups: this._groupsValue(formGroup),
             created_at: format(new Date(), 'yyyy-MM-dd'),
           };
           if (reportSchema == null) {
@@ -337,6 +430,71 @@ export class EditReportSchema implements OnInit, OnDestroy {
         );
       }),
     );
+  }
+
+  /**
+   * The groups assigned to the report schema, in the editor's form group.
+   */
+  groupsArray(formGroup: UntypedFormGroup): UntypedFormArray {
+    return formGroup.get('groups') as UntypedFormArray;
+  }
+
+  /**
+   * Assigns a group picked from the group picker. A known group comes with its color and
+   * description; a new one takes the first color the other groups of this report schema
+   * do not use.
+   */
+  addGroup(formGroup: UntypedFormGroup, option: ReportGroupOption): void {
+    const groups = this.groupsArray(formGroup);
+    if (option.kind === 'existing') {
+      groups.push(this._groupControl(option.group));
+    } else {
+      const used = (groups.value as FormSchemaGroup[]).map(group => group.color);
+      const color =
+        this.groupColors.find(c => !used.includes(c)) ??
+        this.groupColors[groups.length % this.groupColors.length];
+      groups.push(this._groupControl({name: option.name, color}));
+    }
+    groups.markAsDirty();
+    this.groupSearchCtrl.setValue('');
+  }
+
+  /**
+   * Removes a group from the report schema.
+   */
+  removeGroup(formGroup: UntypedFormGroup, index: number): void {
+    const groups = this.groupsArray(formGroup);
+    groups.removeAt(index);
+    groups.markAsDirty();
+  }
+
+  /**
+   * The label of a group picker option, once picked: the input is cleared instead.
+   */
+  groupOptionLabel(): string {
+    return '';
+  }
+
+  private _groupControl(group: FormSchemaGroup): UntypedFormGroup {
+    return this._formBuilder.group({
+      name: [group.name ?? '', [Validators.required, Validators.maxLength(200)]],
+      description: [group.description ?? ''],
+      color: [group.color ?? this.groupColors[this.groupColors.length - 1]],
+    });
+  }
+
+  /**
+   * The groups to store: trimmed, without the empty fields and the unnamed groups.
+   */
+  private _groupsValue(formGroup: UntypedFormGroup): FormSchemaGroup[] {
+    const groups = (this.groupsArray(formGroup)?.value ?? []) as FormSchemaGroup[];
+    return groups
+      .map(group => ({
+        name: (group.name ?? '').trim(),
+        ...(group.description?.trim() ? {description: group.description.trim()} : {}),
+        ...(group.color ? {color: group.color} : {}),
+      }))
+      .filter(group => group.name.length > 0);
   }
 
   /**

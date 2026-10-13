@@ -326,9 +326,9 @@ export class Collect implements OnDestroy {
                     ),
                   isPublic,
                   groups:
-                    'form_schema_groups' in document
-                      ? (document as RxDocument<FormSchema>).form_schema_groups ?? undefined
-                      : undefined,
+                    (isCollect === 'reports'
+                      ? (document as RxDocument<ReportSchema>).report_schema_groups
+                      : (document as RxDocument<FormSchema>).form_schema_groups) ?? undefined,
                   updatedAt: document.updated_at,
                   unique:
                     'uniqueMetricsSet' in document.schema && document.schema.uniqueMetricsSet
@@ -392,8 +392,8 @@ export class Collect implements OnDestroy {
       narrow$,
     ]).pipe(
       map(([all, searched, type, selected, query, viewChoice, narrow]) => {
-        const grouped = type === 'forms';
-        // A selection can outlive its group, when the last form of the group leaves it.
+        const grouped = type !== 'custom';
+        // A selection can outlive its group, when the last schema of the group leaves it.
         const groups = grouped ? buildGroups(all) : [];
         selected = selected.filter(id => groups.some(group => group.id === id));
         const visible = grouped ? filterByGroups(searched, selected) : searched;

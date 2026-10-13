@@ -75,7 +75,12 @@
     </mat-chip-listbox>
     <span class="dino-collect-spacer"></span>
     <span class="dino-collect-counter"
-      >{{ '{{shown}} of {{total}} forms' | transloco: {shown: vm.shown, total: vm.total} }}</span
+      >{{
+        (getCollectType === 'reports'
+          ? '{{shown}} of {{total}} reports'
+          : '{{shown}} of {{total}} forms'
+        ) | transloco: {shown: vm.shown, total: vm.total}
+      }}</span
     >
   </div>
 
@@ -97,7 +102,10 @@
           <div class="dino-collect-section-title">
             <h2>{{ group.kind === 'group' ? group.name : (group.name | transloco) }}</h2>
             <span class="dino-collect-pill"
-              >{{ '{{count}} forms' | transloco: {count: section.entries.length} }}</span
+              >{{
+                (getCollectType === 'reports' ? '{{count}} reports' : '{{count}} forms')
+                  | transloco: {count: section.entries.length}
+              }}</span
             >
             <span
               *ngIf="group.kind === 'public'"
@@ -270,7 +278,12 @@
 
     <div class="dino-no-items-message" *ngIf="vm.sections.length === 0">
       <p *ngIf="vm.total > 0 && vm.hasFilter; else noItems">
-        {{ 'No form matches the active filters.' | transloco }}
+        {{
+          (getCollectType === 'reports'
+            ? 'No report matches the active filters.'
+            : 'No form matches the active filters.'
+          ) | transloco
+        }}
       </p>
       <ng-template #noItems>
         <h1 *ngIf="noItemsMessage | async as message">{{ message | transloco }}</h1>

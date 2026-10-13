@@ -4,7 +4,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {DATA_SERVICE_CONFIG, DataServiceConfig, PermissionContextService} from '@dino/core/data';
 import {FormSchemaManager, FormsModule} from '@dino/core/forms';
-import {ReportsModule} from '@dino/core/reports';
+import {ReportSchemaManager, ReportsModule} from '@dino/core/reports';
 import {DinoTranslationsModule} from '@dino/core/translations';
 import {UsersModule} from '@dino/core/users';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
@@ -239,6 +239,33 @@ describe('Collect with groups', () => {
       ]),
     delete: (_id: string) => of(null),
   };
+  const groupedReportsMock = {
+    list: () =>
+      of([
+        {
+          id: 'rs1',
+          name: 'monthly',
+          label: 'Monthly',
+          icon: 'star',
+          report_schema_groups: [{name: 'Finance', color: '#7fb2f5'}],
+          schema: {},
+          collection: {name: 'report_schema'},
+          created_at: '',
+          updated_at: '',
+        },
+        {
+          id: 'rs2',
+          name: 'yearly',
+          label: 'Yearly',
+          icon: 'star',
+          schema: {},
+          collection: {name: 'report_schema'},
+          created_at: '',
+          updated_at: '',
+        },
+      ]),
+    delete: (_id: string) => of(null),
+  };
   let fixture: ComponentFixture<Collect>;
   let collect: Collect;
 
@@ -250,6 +277,7 @@ describe('Collect with groups', () => {
       providers: [
         {provide: AuthService, useValue: authServiceMock},
         {provide: FormSchemaManager, useValue: groupedFormsMock},
+        {provide: ReportSchemaManager, useValue: groupedReportsMock},
         {provide: PermissionContextService, useValue: pcsMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
@@ -302,6 +330,17 @@ describe('Collect with groups', () => {
     collect.selectGroups([]);
     el = await render();
     expect(el.querySelectorAll('.dino-collect-section').length).toBe(4);
+  });
+
+  it('should group the reports by their own groups', async () => {
+    collect.collectType = 'reports';
+    const el = await render();
+    expect(texts(el, '.dino-collect-section-head h2')).toEqual(['Finance', 'Ungrouped']);
+    // The test translations leave a missing key as it is, placeholder included.
+    expect(texts(el, '.dino-collect-section-head .dino-collect-pill')).toEqual([
+      '{{count}} reports',
+      '{{count}} reports',
+    ]);
   });
 
   it('should clear the selection when the All chip is picked', () => {
