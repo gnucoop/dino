@@ -199,6 +199,7 @@ export class TokensService {
         'X-USER-EMAIL': userInfo.email,
         'X-AUTH-TOKEN': authToken,
         'X-GRAPHQL-URL': graphqlUrl,
+        'X-CLIENT': 'dino',
       };
       return this._http.post<CheckPandinoUserResponse | null>(
         `${this._pandinoConfig.pandinoUrl}/checkpandinouser`,
