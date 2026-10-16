@@ -21,34 +21,61 @@
  */
 
 import {AbstractControl} from '@angular/forms';
+import {HashMap, TranslocoService} from '@ngneat/transloco';
 
 /**
- * Display the User Editor form validation errors
+ * Translates a key, replacing the `{{param}}` placeholders with the given params.
+ */
+export type ValidationErrorsTranslate = (key: string, params?: HashMap) => string;
+
+/**
+ * Fills the `{{param}}` placeholders of a key without translating it.
+ */
+const untranslated: ValidationErrorsTranslate = (key, params) =>
+  key.replace(/{{\s*(\w+)\s*}}/g, (match, name) => (params?.[name] ?? match).toString());
+
+/**
+ * Display the form validation errors of a field
  * @param formControl The formgroup control to be checked
- * @param placeholder The field placeholder
+ * @param placeholder The field label, as a translation key
+ * @param translate Translates the messages and the label; without it they stay in English
  * @returns The error message to be displayed
  */
 export function showValidationErrors(
   formControl: AbstractControl | null,
   placeholder: string | null,
+  translate: ValidationErrorsTranslate = untranslated,
 ): string {
   if (formControl == null || placeholder == null) {
     return '';
   }
   let errorMessages: string[] = [];
   if (formControl.hasError('required')) {
-    errorMessages.push(`Please enter ${placeholder}`);
+    errorMessages.push(translate('Please enter {{field}}', {field: translate(placeholder)}));
   }
   if (formControl.hasError('email')) {
-    errorMessages.push(`Please enter a valid Email`);
+    errorMessages.push(translate('Please enter a valid Email'));
   }
   if (formControl.hasError('minlength')) {
     errorMessages.push(
-      `Minimum length: ${formControl.getError('minlength').requiredLength} characters`,
+      translate('Minimum length: {{count}} characters', {
+        count: formControl.getError('minlength').requiredLength,
+      }),
     );
   }
   if (formControl.hasError('password_not_matching')) {
-    errorMessages.push(`Password values do not match`);
+    errorMessages.push(translate('Password values do not match'));
   }
-  return errorMessages.toString().replace(',', ', ');
+  return errorMessages.join(', ');
+}
+
+/**
+ * @param ts The service the messages are translated with
+ * @returns `showValidationErrors` with the messages translated in the active language
+ */
+export function translatedValidationErrors(
+  ts: TranslocoService,
+): (formControl: AbstractControl | null, placeholder: string | null) => string {
+  return (formControl, placeholder) =>
+    showValidationErrors(formControl, placeholder, (key, params) => ts.translate(key, params));
 }
