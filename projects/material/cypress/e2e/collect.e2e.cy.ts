@@ -49,10 +49,10 @@ describe('dino reports collect', {retries: {runMode: 1, openMode: 0}}, () => {
     cy.url().should('contain', 'reports').should('contain', 'schema').should('contain', 'edit');
   });
 
-  it('should have no group tag bar', () => {
+  it('should show the group tag bar', () => {
     cy.get('.dino-collect-card').should('exist');
-    cy.get('.dino-collect-tagbar').should('not.exist');
-    cy.get('.dino-collect-section-head').should('not.exist');
+    cy.get('.dino-collect-tagbar').should('exist');
+    cy.get('.dino-collect-section-head').should('exist');
   });
 });
 
@@ -219,7 +219,7 @@ describe('dino forms collect - action buttons', {retries: {runMode: 1, openMode:
     cy.get('.dino-collect-status-public').should('exist');
     clickCardAction('share');
     cy.get('dino-collect-share-dialog').should('exist');
-    cy.get('dino-collect-share-dialog input').invoke('val').should('contain', '/f/');
+    cy.get('dino-collect-share-dialog .dino-collect-share-url input').invoke('val').should('contain', '/f/');
     cy.get('dino-collect-share-dialog .dino-collect-share-close').click();
     cy.get('dino-collect-share-dialog').should('not.exist');
   });
