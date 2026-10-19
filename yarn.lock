@@ -9,10 +9,24 @@
   dependencies:
     tslib "^2.3.0"
 
+"@ajf/calendars@^18.5.3":
+  version "18.5.3"
+  resolved "https://registry.yarnpkg.com/@ajf/calendars/-/calendars-18.5.3.tgz#9bb73f2c15f5244261271faa15e7395beb851f61"
+  integrity sha512-WPvTcVEAa0DFaz/ZjMssXGsrcquj9axj0IwbvTvvrZri2JqqwQfhYuPfjU+hne14aYHtykqdvCrGHlEPlb0y+A==
+  dependencies:
+    tslib "^2.3.0"
+
 "@ajf/core@^18.5.1":
   version "18.5.1"
   resolved "https://registry.yarnpkg.com/@ajf/core/-/core-18.5.1.tgz#a71a352fa613b76e2973a66ab523b59bd86049ae"
   integrity sha512-oKEDFtNVD4l3M6+iPKMugIRKGe5m7TYSoEKNWpQ8eCOcFrsTRXKDuuUg1ds98fK3lc3lHVbUnWrZ3K78iytf7A==
+  dependencies:
+    tslib "^2.3.0"
+
+"@ajf/core@^18.5.3":
+  version "18.5.3"
+  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-18.5.3.tgz#c0298338e7d0b1df518a8eaa94e0e5e155c5edfd"
+  integrity sha512-AJ3OMIv2yqUWnvSuHwjpDI0ffB66j8XP+lvhXECljDUm//2RYlaaf+7mE9zFGAsICVxph5OR8mIAYvvA3ii7VA==
   dependencies:
     tslib "^2.3.0"
 
@@ -25,6 +39,13 @@
   version "18.5.1"
   resolved "https://registry.yarnpkg.com/@ajf/material/-/material-18.5.1.tgz#6ad1cd23882476c5a32cb71f524fbedf512eb4f6"
   integrity sha512-2rvGmng7oEkRNej9gbPrgETnt5rHXLUOyXF7Gl7vDFiI3RrGDzIKXl5UL2W6AjILr1sFnqmSNoqMOBK7B0VOgw==
+  dependencies:
+    tslib "^2.3.0"
+
+"@ajf/material@^18.5.3":
+  version "18.5.3"
+  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-18.5.3.tgz#954304039cc31829a4a0ceb63f5ee6416aa3fdd4"
+  integrity sha512-0dYWXfXzbm7YC3SXT3x0i7SbbMKaueOQyiaCd7KbYDvAywvO28LPxVBprk5fldNkzHPnP5bTWyO0nvnAezzIvA==
   dependencies:
     tslib "^2.3.0"
 
