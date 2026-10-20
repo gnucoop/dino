@@ -59,7 +59,7 @@ export function collectAge(timestamp: string | null | undefined, now = new Date(
   return {date};
 }
 
-@Pipe({name: 'dinoCollectAge'})
+@Pipe({name: 'dinoCollectAge', standalone: false})
 export class CollectAgePipe implements PipeTransform {
   transform(timestamp: string | null | undefined): CollectAge | null {
     return collectAge(timestamp);

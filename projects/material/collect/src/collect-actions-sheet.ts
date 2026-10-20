@@ -39,6 +39,7 @@ export type CollectAction = 'share' | 'edit' | 'delete';
   templateUrl: 'collect-actions-sheet.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class CollectActionsSheet {
   constructor(
