@@ -26,10 +26,15 @@ import {Inject, Injectable, isDevMode} from '@angular/core';
 import {AuthService, AuthServiceConfig, AUTH_SERVICE_CONFIG} from '@dino/core/auth';
 import {BehaviorSubject, Observable, of as obsOf, timer} from 'rxjs';
 import {catchError, map, retry, switchMap} from 'rxjs/operators';
-import {StorageUploadResponse} from './file-upload-response';
+import {StorageUploadBatchResponse, StorageUploadResponse} from './file-upload-response';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 
 export const storageEndpoint = '/files';
+
+/**
+ * The body of an upload response, in the format of any Storage version
+ */
+type UploadResponseBody = StorageUploadResponse | StorageUploadBatchResponse;
 
 /**
  * Service that can upload files on cloud
@@ -77,8 +82,10 @@ export class FileUploadService {
             : {Authorization: `Bearer ${this._authService.getAuthToken()}`};
 
         const formData = new FormData();
-        formData.append('file', file);
-        return this._httpClient.post<StorageUploadResponse>(url, formData, {headers}).pipe(
+        // 'file[]' is the multipart field every Storage version reads: the
+        // legacy 'file' one has been dropped by the newer versions.
+        formData.append('file[]', file);
+        return this._httpClient.post<UploadResponseBody>(url, formData, {headers}).pipe(
           retry({
             count: 3,
             delay: (error, retryCount) => {
@@ -88,7 +95,10 @@ export class FileUploadService {
               throw error;
             },
           }),
-          map(res => {
+          map(body => {
+            // Depending on the Storage version, the uploaded file comes alone
+            // or inside 'processedFiles'.
+            const res = body != null && 'processedFiles' in body ? body.processedFiles[0] : body;
             if (res != null) {
               const filePublicUrl = url + '/' + res.id;
               return {...res, filePublicUrl} as StorageUploadResponse;
