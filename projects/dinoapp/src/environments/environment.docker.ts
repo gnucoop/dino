@@ -82,7 +82,7 @@ export const environment: DinoEnvironment = {
     'stripePaymentModule': false,
   },
   pandinoConfig: {
-    pandinoUrl: 'http://localhost:5000',
+    pandinoUrl: '__MAUI_URL__',
     pandinoGptNamespaces: ['Dino'],
   },
   'stripePaymentConfig': {
