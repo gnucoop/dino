@@ -19,5 +19,6 @@ find /usr/share/nginx/html -type f -name "*.js" -exec sed -i "s|__AUTH_URL__|$AU
 find /usr/share/nginx/html -type f -name "*.js" -exec sed -i "s|__SYNC_GRAPHQL_URL__|$SYNC_GRAPHQL_URL|g" {} +
 find /usr/share/nginx/html -type f -name "*.js" -exec sed -i "s|__WS_URL__|$WS_URL|g" {} +
 find /usr/share/nginx/html -type f -name "*.js" -exec sed -i "s|__INSTANCE_NAME__|$INSTANCE_NAME|g" {} +
+find /usr/share/nginx/html -type f -name "*.js" -exec sed -i "s|__MAUI_URL__|$MAUI_URL|g" {} +
 
 echo "Iniezione completata con successo! Passo il controllo a Nginx..."

@@ -143,6 +143,7 @@ docker run -p 8080:80 \
   -e SYNC_GRAPHQL_URL="https://your-hasura-host/v1/graphql" \
   -e WS_URL="wss://your-hasura-host/v1/graphql" \
   -e INSTANCE_NAME="your_instance" \
+  -e MAUI_URL="https://your-maui-host" \
   dinoapp
 ```
 
@@ -152,6 +153,7 @@ docker run -p 8080:80 \
 | `SYNC_GRAPHQL_URL` |          | GraphQL endpoint used for data synchronization |
 | `WS_URL`           |          | WebSocket endpoint for GraphQL subscriptions   |
 | `INSTANCE_NAME`    |          | Name of the Dino instance                      |
+| `MAUI_URL`         |          | Maui (Pandino) API base URL for AI features    |
 
 Official images are published to Docker Hub as [`devgnucoop/dinoapp`](https://hub.docker.com/r/devgnucoop/dinoapp).
 
@@ -161,6 +163,10 @@ Official images are published to Docker Hub as [`devgnucoop/dinoapp`](https://hu
 
 - **User documentation** is generated with MkDocs and lives in [`dino-doc/`](dino-doc/). See [`dino-doc/README.md`](dino-doc/README.md) for the generation workflow.
 - **Contributor and coding guidelines** are described in [`AGENTS.md`](AGENTS.md).
+
+## AI Contributions
+
+While some commits list AI assistants as co-authors, all code is written, reviewed, and fully managed under human supervision by Gnucoop developers.
 
 ---
 
