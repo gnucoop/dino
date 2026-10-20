@@ -1250,7 +1250,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
         key.startsWith('filters_') ||
         key === 'dino_new_version_ready' ||
         key === 'pandas_dino_api_key' ||
-        key === 'dino_gpt_terms_accepted'
+        key === 'pandas_dino_api_key_accept_terms'
       ) {
         localStorage.removeItem(key);
       }
