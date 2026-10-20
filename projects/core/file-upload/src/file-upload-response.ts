@@ -84,3 +84,13 @@ export interface StorageUploadResponse {
    */
   error?: any;
 }
+
+/**
+ * Nhost Storage Upload api response, listing the uploaded files
+ */
+export interface StorageUploadBatchResponse {
+  /**
+   * The uploaded files, in the order they were sent
+   */
+  processedFiles: StorageUploadResponse[];
+}
