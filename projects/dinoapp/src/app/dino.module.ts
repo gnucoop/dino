@@ -5,7 +5,6 @@ import {APP_INITIALIZER, ErrorHandler, inject, isDevMode, NgModule, Optional} fr
 import {MatNativeDateModule, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MAT_PAGINATOR_DEFAULT_OPTIONS} from '@angular/material/paginator';
-import {MAT_SELECT_SCROLL_STRATEGY_PROVIDER} from '@angular/material/select';
 import {BrowserModule, DomSanitizer} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AreaManager, AreasModule as DinoAreasModule} from '@dino/core/areas';
@@ -338,7 +337,6 @@ export function provideMatDateLocale(ts: TranslocoService) {
     },
     FiltersService,
     {provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true},
-    MAT_SELECT_SCROLL_STRATEGY_PROVIDER,
     {
       provide: MAT_PAGINATOR_DEFAULT_OPTIONS,
       useValue: {
