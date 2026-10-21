@@ -54,6 +54,10 @@ module.exports = tseslint.config(
         },
       ],
       '@angular-eslint/no-output-native': 0,
+      // Recommended since angular-eslint 19-21: the standalone and inject() conversions are
+      // out of scope for the Angular upgrade and are not planned yet.
+      '@angular-eslint/prefer-standalone': 'off',
+      '@angular-eslint/prefer-inject': 'off',
       'object-curly-spacing': ['error', 'never'],
       'no-case-declarations': 'off',
       'no-useless-escape': 'off',
@@ -85,6 +89,9 @@ module.exports = tseslint.config(
       '@angular-eslint/template/label-has-associated-control': 'off',
       '@angular-eslint/template/no-autofocus': 'off',
       '@angular-eslint/template/elements-content': 'off',
+      // Recommended since angular-eslint 21: the templates keep *ngIf/*ngFor until a
+      // control flow migration is planned.
+      '@angular-eslint/template/prefer-control-flow': 'off',
     },
   },
 );
