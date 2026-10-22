@@ -1,3 +1,4 @@
+import type {Mock} from 'vitest';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TRANSLATIONS_CONFIG, TranslationsConfig} from '@dino/core/translations';
@@ -15,14 +16,14 @@ const defaultLanguageConfig: TranslationsConfig = {
 };
 
 describe('SessionDialog', () => {
-  let closeSpy: jasmine.Spy;
+  let closeSpy: Mock;
 
   const render = (
     kind: SessionDialogKind,
     deleteBlocked?: Observable<SessionDeleteBlock>,
   ): ComponentFixture<SessionDialog> => {
     const data: SessionDialogData = {kind, deleteBlocked};
-    closeSpy = jasmine.createSpy('close');
+    closeSpy = vi.fn();
     TestBed.configureTestingModule({
       imports: [MainNavModule],
       providers: [
@@ -67,7 +68,7 @@ describe('SessionDialog', () => {
       '.dino-session-dialog-keep-button',
     );
 
-    expect(deleteButton.disabled).toBeTrue();
+    expect(deleteButton.disabled).toBe(true);
     expect(
       fixture.nativeElement.querySelector('.dino-session-dialog-delete-blocked'),
     ).not.toBeNull();
@@ -75,13 +76,13 @@ describe('SessionDialog', () => {
     fixture.componentInstance.respond('logout');
     expect(closeSpy).not.toHaveBeenCalled();
     // Keeping the data deletes nothing, so it is the way out a stuck sync must not take away.
-    expect(keepButton.disabled).toBeFalse();
+    expect(keepButton.disabled).toBe(false);
     keepButton.click();
     expect(closeSpy).toHaveBeenCalledWith('end-session');
 
     block.next(null);
     fixture.detectChanges();
-    expect(deleteButton.disabled).toBeFalse();
+    expect(deleteButton.disabled).toBe(false);
     expect(fixture.nativeElement.querySelector('.dino-session-dialog-delete-blocked')).toBeNull();
     deleteButton.click();
     expect(closeSpy).toHaveBeenCalledWith('logout');
@@ -92,10 +93,10 @@ describe('SessionDialog', () => {
 
     expect(
       fixture.nativeElement.querySelector('.dino-session-dialog-logout-button').disabled,
-    ).toBeTrue();
+    ).toBe(true);
     expect(
       fixture.nativeElement.querySelector('.dino-session-dialog-keep-button').disabled,
-    ).toBeFalse();
+    ).toBe(false);
   });
 
   it('offers, on an expired session, the login page or nothing at all', () => {

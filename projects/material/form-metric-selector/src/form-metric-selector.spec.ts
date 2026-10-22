@@ -119,7 +119,7 @@ describe('Form Metric Selector', () => {
 
   it('should call "_getReadonlyFields" method whenever Metric Dialog gets opened', async () => {
     await fixtureFormMetricSelector.whenStable();
-    const getReadOnlyFieldsSpy = spyOn<any>(formMetricSelector, '_getReadonlyFields').and.callThrough();
+    const getReadOnlyFieldsSpy = vi.spyOn(formMetricSelector as any, '_getReadonlyFields');
     fixtureFormMetricSelector.detectChanges();
 
     formMetricSelector.openCreateMetricDialog(new Event('click'), 'case');

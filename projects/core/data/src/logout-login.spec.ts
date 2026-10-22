@@ -134,20 +134,20 @@ describe('Data service - logout followed by an immediate login', () => {
 
   it('creates a working database again when the login happens while the teardown is still running', async () => {
     authService.login();
-    await expectAsync(
+    await expect(
       firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1))),
-    ).toBeResolvedTo(true);
+    ).resolves.toEqual(true);
 
     // Logout, then log back in without waiting for destroyAllCollections().
     await firstValueFrom(authService.logout());
     authService.login();
 
-    await expectAsync(
+    await expect(
       firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1))),
-    ).toBeResolvedTo(true);
-    await expectAsync(
+    ).resolves.toEqual(true);
+    await expect(
       firstValueFrom(dataService.find({collectionName: collectionRequest.name}).pipe(take(1))),
-    ).toBeResolvedTo([]);
+    ).resolves.toEqual([]);
   });
 
   it('does not report a pending initialization once the session is torn down', async () => {
@@ -164,7 +164,7 @@ describe('Data service - logout followed by an immediate login', () => {
 
     // The main nav shows the full screen initialization spinner while this
     // reports false, so a logout must not leave it on false.
-    expect(reported[reported.length - 1]).toBeTrue();
+    expect(reported[reported.length - 1]).toBe(true);
   });
 
   it('removes the local database even when a replication cancellation never settles', async () => {
@@ -182,21 +182,21 @@ describe('Data service - logout followed by an immediate login', () => {
         stateReceivedSub: {unsubscribe: () => {}},
       },
     });
-    const consoleWarn = spyOn(console, 'warn');
+    const consoleWarn = vi.spyOn(console, 'warn').mockReturnValue(undefined as any);
 
     // The removal is the only thing that clears the schema hashes stored in the
     // internal store, so it must not depend on the cancellation: a database
     // surviving the logout makes a schema conflict (rxdb DB6) permanent, with
     // neither a new login nor a reload able to recover it.
-    await expectAsync(firstValueFrom(dataService.destroyAllCollections())).toBeResolvedTo([
+    await expect(firstValueFrom(dataService.destroyAllCollections())).resolves.toEqual([
       collectionRequest.name,
     ]);
     expect(consoleWarn).toHaveBeenCalled();
 
     authService.login();
-    await expectAsync(
+    await expect(
       firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1))),
-    ).toBeResolvedTo(true);
+    ).resolves.toEqual(true);
   }, 20000); // Deliberately waits for the real cap on the cancellation wait.
 
   it('tears the database down even when no collection was ever registered', async () => {
@@ -206,14 +206,14 @@ describe('Data service - logout followed by an immediate login', () => {
     // initialization.
     await firstValueFrom(dataService.exportDatabase());
 
-    await expectAsync(firstValueFrom(dataService.destroyAllCollections())).toBeResolved();
+    await expect(firstValueFrom(dataService.destroyAllCollections())).resolves.not.toThrow();
 
     // The database name must be free again, otherwise no later login in this
     // page session can get a database at all.
     authService.login();
-    await expectAsync(
+    await expect(
       firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1))),
-    ).toBeResolvedTo(true);
+    ).resolves.toEqual(true);
   });
 });
 
@@ -312,10 +312,10 @@ describe('Data service - session ended without a logout', () => {
     // from their stored checkpoint, which is what pushes the backlog.
     authService.login('user_1');
     await awaitNewDatabase(previousDb);
-    await expectAsync(
+    await expect(
       firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1))),
-    ).toBeResolvedTo(true);
-    await expectAsync(storedNames()).toBeResolvedTo(['collected_offline']);
+    ).resolves.toEqual(true);
+    await expect(storedNames()).resolves.toEqual(['collected_offline']);
   });
 
   it('re-registers the collections after a session end, with no new createCollection call', async () => {
@@ -333,7 +333,7 @@ describe('Data service - session ended without a logout', () => {
     // Writing is the proof: it needs the collection registered on the database
     // this session is using. The registration stream used to be cut by the end
     // of the session, and the collection was then absent until a page reload.
-    await expectAsync(insertDoc('after_relogin')).toBeResolved();
+    await expect(insertDoc('after_relogin')).resolves.not.toThrow();
     registration.unsubscribe();
   });
 
@@ -375,8 +375,8 @@ describe('Data service - session ended without a logout', () => {
     );
 
     await awaitNewDatabase(previousDb);
-    await expectAsync(registration).toBeResolvedTo(true);
-    await expectAsync(storedNames()).toBeResolvedTo(['collected_offline']);
+    await expect(registration).resolves.toEqual(true);
+    await expect(storedNames()).resolves.toEqual(['collected_offline']);
 
     // And the registered collection is the one of the database in use. A
     // re-registration is dropped as a duplicate by name, so a stale entry
@@ -393,7 +393,7 @@ describe('Data service - session ended without a logout', () => {
     authService.login('user_1');
     await firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1)));
     await insertDoc('data_of_user_1');
-    await expectAsync(storedNames()).toBeResolvedTo(['data_of_user_1']);
+    await expect(storedNames()).resolves.toEqual(['data_of_user_1']);
 
     const previousDb = dataService.dbToken.value;
     endSessionFromSync();
@@ -402,9 +402,9 @@ describe('Data service - session ended without a logout', () => {
     authService.login('user_2');
     await awaitNewDatabase(previousDb);
 
-    await expectAsync(
+    await expect(
       firstValueFrom(dataService.createCollection(collectionRequest).pipe(take(1))),
-    ).toBeResolvedTo(true);
-    await expectAsync(storedNames()).toBeResolvedTo([]);
+    ).resolves.toEqual(true);
+    await expect(storedNames()).resolves.toEqual([]);
   });
 });

@@ -32,23 +32,28 @@ describe('Import Wizard', () => {
     wizard.fields = fields;
   });
 
-  it('should read the file and build one mapping per column', done => {
-    fixture.detectChanges();
-    wizard.onExcelfileSelected({target: {files: [new Blob([csv], {type: 'text/csv'})]}});
-    // The FileReader is asynchronous: wait for the mappings instead of a fixed delay
-    const check = (tries: number): void => {
-      if (!wizard.columnMappings.length && tries > 0) {
-        setTimeout(() => check(tries - 1), 10);
-        return;
-      }
-      expect(wizard.columnMappings.map(m => m.column)).toEqual(['district', 'sub_county', 'notes']);
-      // A column named like a field is prefilled, the others are left to the user
-      expect(wizard.columnMappings.map(m => m.field)).toEqual(['district', 'sub_county', null]);
-      expect(wizard.step).toBe(2);
-      done();
-    };
-    check(100);
-  });
+  it('should read the file and build one mapping per column', () =>
+    new Promise<void>(done => {
+      fixture.detectChanges();
+      wizard.onExcelfileSelected({target: {files: [new Blob([csv], {type: 'text/csv'})]}});
+      // The FileReader is asynchronous: wait for the mappings instead of a fixed delay
+      const check = (tries: number): void => {
+        if (!wizard.columnMappings.length && tries > 0) {
+          setTimeout(() => check(tries - 1), 10);
+          return;
+        }
+        expect(wizard.columnMappings.map(m => m.column)).toEqual([
+          'district',
+          'sub_county',
+          'notes',
+        ]);
+        // A column named like a field is prefilled, the others are left to the user
+        expect(wizard.columnMappings.map(m => m.field)).toEqual(['district', 'sub_county', null]);
+        expect(wizard.step).toBe(2);
+        done();
+      };
+      check(100);
+    }));
 
   it('should prefill a column whose name matches a field', async () => {
     await fixture.whenStable();
@@ -66,7 +71,7 @@ describe('Import Wizard', () => {
   it('should not allow the import when a field is mapped by more than one column', async () => {
     await fixture.whenStable();
     fixture.detectChanges();
-    const applySpy = jasmine.createSpy('apply');
+    const applySpy = vi.fn();
     wizard.apply.subscribe(applySpy);
     (wizard as any)._file = new Blob([csv], {type: 'text/csv'});
     wizard.columnMappings = [
@@ -113,7 +118,7 @@ describe('Import Wizard', () => {
   it('should show the result step as soon as the host sets an outcome', async () => {
     await fixture.whenStable();
     fixture.detectChanges();
-    const closedSpy = jasmine.createSpy('closed');
+    const closedSpy = vi.fn();
     wizard.closed.subscribe(closedSpy);
     wizard.outcome = {
       status: 'success',

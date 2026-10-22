@@ -30,7 +30,7 @@ describe('FormSchema', () => {
 
   it('should have a migration strategy for every version', () => {
     for (let version = 1; version <= VERSION; version++) {
-      expect(migrationStrategies[version]).withContext(`version ${version}`).toBeDefined();
+      expect(migrationStrategies[version], `version ${version}`).toBeDefined();
     }
   });
 

@@ -85,7 +85,7 @@ describe('Form Creator Hub', () => {
 
   it('should select a schema id the component, then close the dialog returning the chosen schema id', async () => {
     await fixtureFormCreatorHub.whenStable();
-    const dialogCloseSpy = spyOn(dialogRef, 'close').and.callThrough();
+    const dialogCloseSpy = vi.spyOn(dialogRef, 'close');
     fixtureFormCreatorHub.detectChanges();
 
     const toggleSchemaEvent = {value: 'schema_id'} as unknown as MatButtonToggleChange;

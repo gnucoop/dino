@@ -127,79 +127,84 @@ describe('metric import utils', () => {
   });
 
   describe('importMetricTree', () => {
-    it('should create a multi level tree one level per pass, whatever the order is', done => {
-      const {manager, calls} = managerMock();
-      const metrics: ImportableMetric[] = [
-        {name: 'C', parent_id: null, parent_name: 'B'},
-        {name: 'B', parent_id: null, parent_name: 'A'},
-      ];
-      importMetricTree(manager, metrics, [{id: 'a', name: 'A'}]).subscribe(res => {
-        expect(calls.length).toBe(2);
-        expect(calls[0].map(m => m['name'])).toEqual(['B']);
-        expect(calls[1].map(m => m['name'])).toEqual(['C']);
-        expect(res.success.map(m => (m as any).name)).toEqual(['B', 'C']);
-        expect(res.deferred).toEqual([]);
-        expect(metrics[1]['parent_id']).toBe('a');
-        expect(metrics[0]['parent_id']).toBe('id-1-0');
-        done();
-      });
-    });
+    it('should create a multi level tree one level per pass, whatever the order is', () =>
+      new Promise<void>(done => {
+        const {manager, calls} = managerMock();
+        const metrics: ImportableMetric[] = [
+          {name: 'C', parent_id: null, parent_name: 'B'},
+          {name: 'B', parent_id: null, parent_name: 'A'},
+        ];
+        importMetricTree(manager, metrics, [{id: 'a', name: 'A'}]).subscribe(res => {
+          expect(calls.length).toBe(2);
+          expect(calls[0].map(m => m['name'])).toEqual(['B']);
+          expect(calls[1].map(m => m['name'])).toEqual(['C']);
+          expect(res.success.map(m => (m as any).name)).toEqual(['B', 'C']);
+          expect(res.deferred).toEqual([]);
+          expect(metrics[1]['parent_id']).toBe('a');
+          expect(metrics[0]['parent_id']).toBe('id-1-0');
+          done();
+        });
+      }));
 
-    it('should stop on a cycle instead of recurring forever', done => {
-      const {manager, calls} = managerMock();
-      const metrics = [
-        {name: 'A', parent_id: null, parent_name: 'B'},
-        {name: 'B', parent_id: null, parent_name: 'A'},
-      ];
-      importMetricTree(manager, metrics, []).subscribe(res => {
-        expect(calls.length).toBe(0);
-        expect(res.success).toEqual([]);
-        expect(res.deferred.length).toBe(2);
-        done();
-      });
-    });
+    it('should stop on a cycle instead of recurring forever', () =>
+      new Promise<void>(done => {
+        const {manager, calls} = managerMock();
+        const metrics = [
+          {name: 'A', parent_id: null, parent_name: 'B'},
+          {name: 'B', parent_id: null, parent_name: 'A'},
+        ];
+        importMetricTree(manager, metrics, []).subscribe(res => {
+          expect(calls.length).toBe(0);
+          expect(res.success).toEqual([]);
+          expect(res.deferred.length).toBe(2);
+          done();
+        });
+      }));
 
-    it('should report the metrics whose parent does not exist', done => {
-      const {manager} = managerMock();
-      const metrics = [
-        {name: 'Child', parent_id: null, parent_name: 'Root'},
-        {name: 'Orphan', parent_id: null, parent_name: 'Missing'},
-      ];
-      importMetricTree(manager, metrics, [{id: 'r', name: 'Root'}]).subscribe(res => {
-        expect(res.success.length).toBe(1);
-        expect(res.deferred.map(m => m['name'])).toEqual(['Orphan']);
-        done();
-      });
-    });
+    it('should report the metrics whose parent does not exist', () =>
+      new Promise<void>(done => {
+        const {manager} = managerMock();
+        const metrics = [
+          {name: 'Child', parent_id: null, parent_name: 'Root'},
+          {name: 'Orphan', parent_id: null, parent_name: 'Missing'},
+        ];
+        importMetricTree(manager, metrics, [{id: 'r', name: 'Root'}]).subscribe(res => {
+          expect(res.success.length).toBe(1);
+          expect(res.deferred.map(m => m['name'])).toEqual(['Orphan']);
+          done();
+        });
+      }));
 
-    it('should not create the children when a level fails', done => {
-      const {manager, calls} = managerMock(true);
-      const metrics = [
-        {name: 'B', parent_id: null, parent_name: 'A'},
-        {name: 'C', parent_id: null, parent_name: 'B'},
-      ];
-      importMetricTree(manager, metrics, [{id: 'a', name: 'A'}]).subscribe(res => {
-        expect(calls.length).toBe(1);
-        expect(res.error.length).toBe(1);
-        expect(res.deferred.map(m => m['name'])).toEqual(['C']);
-        done();
-      });
-    });
+    it('should not create the children when a level fails', () =>
+      new Promise<void>(done => {
+        const {manager, calls} = managerMock(true);
+        const metrics = [
+          {name: 'B', parent_id: null, parent_name: 'A'},
+          {name: 'C', parent_id: null, parent_name: 'B'},
+        ];
+        importMetricTree(manager, metrics, [{id: 'a', name: 'A'}]).subscribe(res => {
+          expect(calls.length).toBe(1);
+          expect(res.error.length).toBe(1);
+          expect(res.deferred.map(m => m['name'])).toEqual(['C']);
+          done();
+        });
+      }));
 
-    it('should call onCreated once per level', done => {
-      const {manager} = managerMock();
-      const created: string[][] = [];
-      const metrics = [
-        {name: 'B', parent_id: null, parent_name: 'A'},
-        {name: 'C', parent_id: null, parent_name: 'B'},
-      ];
-      importMetricTree(manager, metrics, [{id: 'a', name: 'A'}], {
-        onCreated: docs => created.push(docs.map(d => (d as any).name)),
-      }).subscribe(() => {
-        expect(created).toEqual([['B'], ['C']]);
-        done();
-      });
-    });
+    it('should call onCreated once per level', () =>
+      new Promise<void>(done => {
+        const {manager} = managerMock();
+        const created: string[][] = [];
+        const metrics = [
+          {name: 'B', parent_id: null, parent_name: 'A'},
+          {name: 'C', parent_id: null, parent_name: 'B'},
+        ];
+        importMetricTree(manager, metrics, [{id: 'a', name: 'A'}], {
+          onCreated: docs => created.push(docs.map(d => (d as any).name)),
+        }).subscribe(() => {
+          expect(created).toEqual([['B'], ['C']]);
+          done();
+        });
+      }));
   });
 
   describe('formatMetricNamesMessage', () => {

@@ -1,4 +1,3 @@
-import {fakeAsync, tick} from '@angular/core/testing';
 import {concat, defer, of as obsOf, throwError} from 'rxjs';
 
 import {boundedRetry} from './bounded-retry';
@@ -15,21 +14,27 @@ function failingSource(counter: {attempts: number}) {
 }
 
 describe('boundedRetry', () => {
-  it('should retry the configured number of times and then rethrow', fakeAsync(() => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('should retry the configured number of times and then rethrow', () => {
+    vi.useFakeTimers();
     const counter = {attempts: 0};
     let error: any = null;
 
     failingSource(counter)
       .pipe(boundedRetry({count: 3, delay: 100}))
       .subscribe({error: err => (error = err)});
-    tick(300);
+    vi.advanceTimersByTime(300);
 
     // One initial attempt plus three retries.
     expect(counter.attempts).toBe(4);
     expect(error?.message).toBe('nope');
-  }));
+  });
 
-  it('should wait the configured delay between attempts', fakeAsync(() => {
+  it('should wait the configured delay between attempts', () => {
+    vi.useFakeTimers();
     const counter = {attempts: 0};
 
     failingSource(counter)
@@ -37,15 +42,16 @@ describe('boundedRetry', () => {
       .subscribe({error: () => {}});
 
     expect(counter.attempts).toBe(1);
-    tick(999);
+    vi.advanceTimersByTime(999);
     expect(counter.attempts).toBe(1);
-    tick(1);
+    vi.advanceTimersByTime(1);
     expect(counter.attempts).toBe(2);
-    tick(1000);
+    vi.advanceTimersByTime(1000);
     expect(counter.attempts).toBe(3);
-  }));
+  });
 
-  it('should stop retrying as soon as an attempt succeeds', fakeAsync(() => {
+  it('should stop retrying as soon as an attempt succeeds', () => {
+    vi.useFakeTimers();
     let attempts = 0;
     const values: string[] = [];
 
@@ -55,13 +61,14 @@ describe('boundedRetry', () => {
     })
       .pipe(boundedRetry<string>({count: 5, delay: 100}))
       .subscribe(v => values.push(v));
-    tick(200);
+    vi.advanceTimersByTime(200);
 
     expect(attempts).toBe(3);
     expect(values).toEqual(['ok']);
-  }));
+  });
 
-  it('should reset the attempt budget after a successful emission', fakeAsync(() => {
+  it('should reset the attempt budget after a successful emission', () => {
+    vi.useFakeTimers();
     let attempts = 0;
     const values: number[] = [];
 
@@ -73,14 +80,15 @@ describe('boundedRetry', () => {
     })
       .pipe(boundedRetry<number>({count: 1, delay: 100}))
       .subscribe({next: v => values.push(v), error: () => {}});
-    tick(500);
+    vi.advanceTimersByTime(500);
     sub.unsubscribe();
 
     expect(attempts).toBeGreaterThan(2);
     expect(values.length).toBeGreaterThan(2);
-  }));
+  });
 
-  it('should not retry a source that never fails', fakeAsync(() => {
+  it('should not retry a source that never fails', () => {
+    vi.useFakeTimers();
     let attempts = 0;
     const values: string[] = [];
 
@@ -90,9 +98,9 @@ describe('boundedRetry', () => {
     })
       .pipe(boundedRetry<string>())
       .subscribe(v => values.push(v));
-    tick(0);
+    vi.advanceTimersByTime(0);
 
     expect(attempts).toBe(1);
     expect(values).toEqual(['ok']);
-  }));
+  });
 });

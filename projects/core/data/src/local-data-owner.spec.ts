@@ -49,8 +49,8 @@ describe('local data owner', () => {
 
     const owners = localDataOwners();
 
-    expect(owners).toContain(OWNER_A);
-    expect(owners).toContain(OWNER_B);
+    expect(owners).toContainEqual(OWNER_A);
+    expect(owners).toContainEqual(OWNER_B);
   });
 
   it('forgets an owner as soon as its record is removed', () => {
@@ -58,6 +58,6 @@ describe('local data owner', () => {
     removeLocalDataOwner('db_a');
 
     expect(localDataOwner('db_a')).toBeNull();
-    expect(localDataOwners()).not.toContain(OWNER_A);
+    expect(localDataOwners()).not.toContainEqual(OWNER_A);
   });
 });

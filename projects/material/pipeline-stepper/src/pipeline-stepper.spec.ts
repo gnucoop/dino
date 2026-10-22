@@ -98,7 +98,7 @@ describe('Stepper Component', () => {
   });
 
   it('should return Pipeline Steps and their correct state from the provided Form Statuses', async () => {
-    const spyStepsFromStatuses = spyOn(stepper, 'getStepsFromFormStatuses').and.callThrough();
+    const spyStepsFromStatuses = vi.spyOn(stepper, 'getStepsFromFormStatuses');
 
     await fixtureStepper.whenStable();
     fixtureStepper.detectChanges();

@@ -110,7 +110,7 @@ describe('Import FormSchema', () => {
     fixtureImportFormSchema.detectChanges();
 
     const excelEvt = {target: {files: ['excelFile']}};
-    const setConvStatusSpy = spyOn<any>(importFormSchema, '_setConvStatus').and.callThrough();
+    const setConvStatusSpy = vi.spyOn(importFormSchema as any, '_setConvStatus');
 
     importFormSchema.onExcelfileSelected(excelEvt);
 

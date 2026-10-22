@@ -146,7 +146,7 @@ describe('FormSchemaManager', () => {
     expect(additionalFilters.length).toEqual(1);
     expect(additionalFilters[0]).not.toBeNull();
     expect(additionalFilters[0].label).toEqual('Name');
-    expect(additionalFilters[0].isAdditionalFilter).toBeTrue();
+    expect(additionalFilters[0].isAdditionalFilter).toBe(true);
   });
 
   it('should correctly evaluate Relevant Permissions', () => {

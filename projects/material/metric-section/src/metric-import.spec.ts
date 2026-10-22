@@ -107,9 +107,8 @@ describe('Metric Import', () => {
   it('should report a row missing a required field with its file row number', () => {
     // No dictionary is loaded in the tests: interpolate the params by hand, so
     // the assertion can check which fields were reported
-    spyOn((metricImport as any)._ts, 'translate').and.callFake(
-      (key: string, params?: {[k: string]: any}) =>
-        params ? key.replace(/{{(\w+)}}/g, (_m: string, p: string) => `${params[p]}`) : key,
+    vi.spyOn((metricImport as any)._ts, 'translate').mockImplementation((key: any, params?: any) =>
+      params ? key.replace(/{{(\w+)}}/g, (_m: string, p: string) => `${params[p]}`) : key,
     );
     const info = (metricImport as any)._getMetricsToBeCreated([
       {name: 'Root', code: 'c1'},

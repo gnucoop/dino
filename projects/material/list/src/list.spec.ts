@@ -60,7 +60,10 @@ class AUIServiceStub {
 
 class FiltersServiceStub {
   availableBasicFilterLabels: string[] = ['testFilter', 'otherFilter'];
-  filterErrorEvt: EventEmitter<{text: string; msg: string}> = new EventEmitter<{
+  filterErrorEvt: EventEmitter<{
+    text: string;
+    msg: string;
+  }> = new EventEmitter<{
     text: string;
     msg: string;
   }>();
@@ -99,8 +102,8 @@ describe('List', () => {
   });
 
   it('should create a List component and load a default empty filter preset', async () => {
-    const spyLoadPreset = spyOn(filterService, 'loadPreset').and.callThrough();
-    const spyFillDataSource = spyOn<any>(list, '_fillDataSource').and.callThrough();
+    const spyLoadPreset = vi.spyOn(filterService, 'loadPreset');
+    const spyFillDataSource = vi.spyOn(list as any, '_fillDataSource');
 
     await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
@@ -116,7 +119,7 @@ describe('List', () => {
   });
 
   it('should assign a SearchFiltersComponent and correctly initalize the list', async () => {
-    const spyInitList = spyOn<any>(list, '_initList').and.callThrough();
+    const spyInitList = vi.spyOn(list as any, '_initList');
 
     await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
@@ -131,7 +134,7 @@ describe('List', () => {
   });
 
   it('should add a basic filter to the FiltersService basic filters list', async () => {
-    const spyAddBasic = spyOn(filterService, 'addBasicFilter').and.callThrough();
+    const spyAddBasic = vi.spyOn(filterService, 'addBasicFilter');
 
     await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;

@@ -112,14 +112,14 @@ describe('Edit ReportSchema', () => {
 
     it('should reject two groups with the same name', () => {
       editReportSchema.addGroup(fgroup, {kind: 'existing', group: {name: 'Finance'}});
-      expect(editReportSchema.groupsArray(fgroup).valid).toBeTrue();
+      expect(editReportSchema.groupsArray(fgroup).valid).toBe(true);
 
       editReportSchema.addGroup(fgroup, {kind: 'create', name: 'finance '});
-      expect(editReportSchema.groupsArray(fgroup).hasError('duplicateGroup')).toBeTrue();
-      expect(fgroup.valid).toBeFalse();
+      expect(editReportSchema.groupsArray(fgroup).hasError('duplicateGroup')).toBe(true);
+      expect(fgroup.valid).toBe(false);
 
       editReportSchema.removeGroup(fgroup, 1);
-      expect(editReportSchema.groupsArray(fgroup).valid).toBeTrue();
+      expect(editReportSchema.groupsArray(fgroup).valid).toBe(true);
     });
   });
 });

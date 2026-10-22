@@ -1,5 +1,6 @@
+import type {Mock} from 'vitest';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
-import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {BehaviorSubject, firstValueFrom, of as obsOf} from 'rxjs';
 import {take} from 'rxjs/operators';
 
@@ -74,14 +75,14 @@ describe('AuthService', () => {
 
   it('should login successfully with correct credentials', async () => {
     const authStatus = () => firstValueFrom(authService.authenticated.pipe(take(1)));
-    await expectAsync(authStatus()).toBeResolvedTo({auth: false, evt: 'no auth token'});
+    await expect(authStatus()).resolves.toEqual({auth: false, evt: 'no auth token'});
     authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
     expect(req.request.method).toBe('POST');
     req.flush(loginResponse);
-    await expectAsync(authStatus()).toBeResolvedTo({auth: true, evt: 'login'});
+    await expect(authStatus()).resolves.toEqual({auth: true, evt: 'login'});
   });
 
   it('should fail logging in with bad credentials', () => {
@@ -205,10 +206,10 @@ describe('logged in', () => {
 
   it('should logout successfully', async () => {
     const authStatus = () => firstValueFrom(authService.authenticated.pipe(take(1)));
-    await expectAsync(authStatus()).toBeResolvedTo({auth: true, evt: 'init'});
+    await expect(authStatus()).resolves.toEqual({auth: true, evt: 'init'});
     return authService.logout().subscribe(async res => {
       expect(res).toBeDefined();
-      await expectAsync(authStatus()).toBeResolvedTo({auth: false, evt: 'logout'});
+      await expect(authStatus()).resolves.toEqual({auth: false, evt: 'logout'});
     });
   });
 
@@ -443,12 +444,12 @@ describe('custom local storage keys - logged in', () => {
 describe('custom storage functions', () => {
   let authService: AuthService;
   let httpMock: HttpTestingController;
-  let storeAuthTokenSpy: jasmine.Spy<(_token: string) => {}>;
-  let storeRefreshTokenSpy: jasmine.Spy<(_token: string) => {}>;
-  let storeUserInfoSpy: jasmine.Spy<(_user: any) => {}>;
-  let retrieveAuthTokenSpy: jasmine.Spy<() => {}>;
-  let retrieveRefreshTokenSpy: jasmine.Spy<() => {}>;
-  let retrieveUserInfoSpy: jasmine.Spy<() => {}>;
+  let storeAuthTokenSpy: Mock;
+  let storeRefreshTokenSpy: Mock;
+  let storeUserInfoSpy: Mock;
+  let retrieveAuthTokenSpy: Mock;
+  let retrieveRefreshTokenSpy: Mock;
+  let retrieveUserInfoSpy: Mock;
 
   beforeEach(() => {
     const userDefinedStore = {
@@ -459,12 +460,24 @@ describe('custom storage functions', () => {
       retrieveRefreshToken: () => {},
       retrieveUserInfo: () => {},
     };
-    storeAuthTokenSpy = spyOn(userDefinedStore, 'storeAuthToken');
-    storeRefreshTokenSpy = spyOn(userDefinedStore, 'storeRefreshToken');
-    storeUserInfoSpy = spyOn(userDefinedStore, 'storeUserInfo');
-    retrieveAuthTokenSpy = spyOn(userDefinedStore, 'retrieveAuthToken');
-    retrieveRefreshTokenSpy = spyOn(userDefinedStore, 'retrieveRefreshToken');
-    retrieveUserInfoSpy = spyOn(userDefinedStore, 'retrieveUserInfo');
+    storeAuthTokenSpy = vi
+      .spyOn(userDefinedStore, 'storeAuthToken')
+      .mockReturnValue(undefined as any);
+    storeRefreshTokenSpy = vi
+      .spyOn(userDefinedStore, 'storeRefreshToken')
+      .mockReturnValue(undefined as any);
+    storeUserInfoSpy = vi
+      .spyOn(userDefinedStore, 'storeUserInfo')
+      .mockReturnValue(undefined as any);
+    retrieveAuthTokenSpy = vi
+      .spyOn(userDefinedStore, 'retrieveAuthToken')
+      .mockReturnValue(undefined as any);
+    retrieveRefreshTokenSpy = vi
+      .spyOn(userDefinedStore, 'retrieveRefreshToken')
+      .mockReturnValue(undefined as any);
+    retrieveUserInfoSpy = vi
+      .spyOn(userDefinedStore, 'retrieveUserInfo')
+      .mockReturnValue(undefined as any);
 
     TestBed.configureTestingModule({
       imports: [],
@@ -514,7 +527,7 @@ describe('custom storage functions', () => {
     expect(storeRefreshTokenSpy).toHaveBeenCalledTimes(1);
     // Counted from here on: the service reads the refresh token on its own too,
     // to tell an expired access token apart from a session that is over.
-    retrieveRefreshTokenSpy.calls.reset();
+    retrieveRefreshTokenSpy.mockClear();
     authService.getRefreshToken();
     expect(retrieveRefreshTokenSpy).toHaveBeenCalledTimes(1);
   });
@@ -536,9 +549,9 @@ describe('custom storage functions', () => {
 describe('custom storage functions - logged in', () => {
   let authService: AuthService;
   let httpMock: HttpTestingController;
-  let storeAuthTokenSpy: jasmine.Spy<(_token: string) => {}>;
-  let storeRefreshTokenSpy: jasmine.Spy<(_token: string) => {}>;
-  let storeUserInfoSpy: jasmine.Spy<(_user: any) => {}>;
+  let storeAuthTokenSpy: Mock;
+  let storeRefreshTokenSpy: Mock;
+  let storeUserInfoSpy: Mock;
 
   beforeEach(() => {
     const userDefinedStore = {
@@ -546,9 +559,15 @@ describe('custom storage functions - logged in', () => {
       storeRefreshToken: (_token: string) => {},
       storeUserInfo: (_user: any) => {},
     };
-    storeAuthTokenSpy = spyOn(userDefinedStore, 'storeAuthToken');
-    storeRefreshTokenSpy = spyOn(userDefinedStore, 'storeRefreshToken');
-    storeUserInfoSpy = spyOn(userDefinedStore, 'storeUserInfo');
+    storeAuthTokenSpy = vi
+      .spyOn(userDefinedStore, 'storeAuthToken')
+      .mockReturnValue(undefined as any);
+    storeRefreshTokenSpy = vi
+      .spyOn(userDefinedStore, 'storeRefreshToken')
+      .mockReturnValue(undefined as any);
+    storeUserInfoSpy = vi
+      .spyOn(userDefinedStore, 'storeUserInfo')
+      .mockReturnValue(undefined as any);
 
     TestBed.configureTestingModule({
       imports: [],
@@ -619,6 +638,10 @@ describe('custom storage functions - logged in', () => {
 // session runs to expiry with no timer at all, leaving the refresh to the
 // reactive paths only.
 describe('pre-emptive refresh while offline', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   let authService: AuthService;
   let httpMock: HttpTestingController;
 
@@ -636,8 +659,8 @@ describe('pre-emptive refresh while offline', () => {
   const pendingTimer = (): unknown => (authService as any)._preemptiveRefreshTimeout;
 
   /**
-   * Discards the armed timer: `fakeAsync` fails a test that ends with a pending
-   * one, and a pending timer is exactly what these tests assert.
+   * Discards the armed timer, so that it does not outlive the test: a pending timer
+   * is exactly what these tests assert.
    */
   const clearPendingTimer = (): void => (authService as any)._clearPreemptiveRefresh();
 
@@ -666,8 +689,9 @@ describe('pre-emptive refresh while offline', () => {
     localStorage.removeItem('dino_refresh_token');
   });
 
-  it('re-arms the pre-emptive refresh when the refresh could not run', fakeAsync(() => {
-    // Injected inside the fake async zone, so that the timer armed by the
+  it('re-arms the pre-emptive refresh when the refresh could not run', () => {
+    vi.useFakeTimers();
+    // Injected once the fake timers are on, so that the timer armed by the
     // constructor is a fake one too.
     authService = TestBed.inject(AuthService);
     // The timer armed at construction is the one about to be consumed.
@@ -682,24 +706,25 @@ describe('pre-emptive refresh while offline', () => {
     // ...and the timer is armed again instead of being lost for the session.
     expect(pendingTimer()).not.toBeNull();
     clearPendingTimer();
-  }));
+  });
 
-  it('re-arms it with the longer offline floor, instead of retrying every few seconds', fakeAsync(() => {
+  it('re-arms it with the longer offline floor, instead of retrying every few seconds', () => {
+    vi.useFakeTimers();
     authService = TestBed.inject(AuthService);
     authService.refreshToken().subscribe();
-    const refreshSpy = spyOn(authService, 'refreshToken').and.callThrough();
+    const refreshSpy = vi.spyOn(authService, 'refreshToken');
 
     // The regular floor is 10s: reusing it here would poll for as long as the
     // connection is missing.
-    tick(59999);
+    vi.advanceTimersByTime(59999);
     expect(refreshSpy).not.toHaveBeenCalled();
 
-    tick(1);
+    vi.advanceTimersByTime(1);
     expect(refreshSpy).toHaveBeenCalledTimes(1);
     // Still offline: the retry re-arms in turn.
     expect(pendingTimer()).not.toBeNull();
     clearPendingTimer();
-  }));
+  });
 });
 
 // A session the app gives up on must not go through a logout: the data service

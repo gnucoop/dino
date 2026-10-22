@@ -28,7 +28,7 @@ describe('Searchfilters Chips. Displays all active filters as MatChips, allowing
   });
 
   it('should emit the excludeFilter event', () => {
-    const spyExcludeFilter = spyOn<any>(chips.excludeFilter, 'emit').and.callThrough();
+    const spyExcludeFilter = vi.spyOn(chips.excludeFilter as any, 'emit');
     chips.removeFilterItem(fakeFilter);
     fixture.detectChanges();
 

@@ -57,7 +57,12 @@ const userDataManagerMock = {
 } as unknown as UserDataManager;
 
 const formDataManagerMock = {
-  bulkCreate: (_: any[]): Observable<{success: any[]; error: any[]}> => {
+  bulkCreate: (
+    _: any[],
+  ): Observable<{
+    success: any[];
+    error: any[];
+  }> => {
     return of({success: [], error: []});
   },
 };
@@ -69,7 +74,11 @@ const formStatusManagerMock = {
 };
 
 const metricServiceManagerMock = {
-  activeMetrics: new BehaviorSubject<{metricName: string}[]>([{metricName: 'project'}]),
+  activeMetrics: new BehaviorSubject<
+    {
+      metricName: string;
+    }[]
+  >([{metricName: 'project'}]),
 };
 
 /**
@@ -162,7 +171,7 @@ describe('Import Forms', () => {
   it('should start the import forms process with the mapped columns', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-    const spyProcessData = spyOn<any>(importForm, '_processData').and.callThrough();
+    const spyProcessData = vi.spyOn(importForm as any, '_processData');
     importForm.onApply({
       rows: [{district: 'lamwo', project_id: 'b4f2598e'}],
       mappings: [
@@ -171,7 +180,7 @@ describe('Import Forms', () => {
       ],
     });
     expect(spyProcessData).toHaveBeenCalledTimes(1);
-    const mappedRows = spyProcessData.calls.mostRecent().args[0];
+    const mappedRows = vi.mocked(spyProcessData).mock.lastCall![0];
     expect(mappedRows).toEqual([{district: 'lamwo', project_id: 'b4f2598e'}]);
   });
 
@@ -192,9 +201,9 @@ describe('Import Forms', () => {
   it('should create a metric parent defined by a later row of the same file', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
-      of({success: forms, error: []}),
-    );
+    const bulkSpy = vi
+      .spyOn(formDataManagerMock, 'bulkCreate')
+      .mockImplementation((forms: any[]) => of({success: forms, error: []}));
     const rows = [
       {project_name: 'Child', project_parent_name: 'Parent', project_code: 'c2'},
       {project_name: 'Parent', project_code: 'c1'},
@@ -208,7 +217,7 @@ describe('Import Forms', () => {
     expect(projectBulkCalls[1].map(m => m['name'])).toEqual(['Child']);
     expect(projectBulkCalls[1][0]['parent_id']).toBe('project-1-0');
 
-    const forms = bulkSpy.calls.mostRecent().args[0];
+    const forms = vi.mocked(bulkSpy).mock.lastCall![0];
     expect(forms.length).toBe(2);
     expect(forms[0].project_ref_id).toBe('project-2-0');
     expect(forms[1].project_ref_id).toBe('project-1-0');
@@ -217,9 +226,9 @@ describe('Import Forms', () => {
   it('should reuse a metric created by a previous row as parent, with the reuse flag on', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
-      of({success: forms, error: []}),
-    );
+    const bulkSpy = vi
+      .spyOn(formDataManagerMock, 'bulkCreate')
+      .mockImplementation((forms: any[]) => of({success: forms, error: []}));
     importForm.reuseMetricName.setValue(true);
     (importForm as any)._metricMustBeUnique = true;
     // Neither metric exists yet: the parent of the second row is the metric
@@ -240,7 +249,7 @@ describe('Import Forms', () => {
     expect(importForm.outcome!.status).toBe('success');
     expect(importForm.outcome!.warnings).toEqual([]);
 
-    const forms = bulkSpy.calls.mostRecent().args[0];
+    const forms = vi.mocked(bulkSpy).mock.lastCall![0];
     expect(forms[0].project_ref_id).toBe('project-1-0');
     expect(forms[1].project_ref_id).toBe('project-2-0');
   });
@@ -260,9 +269,9 @@ describe('Import Forms', () => {
   it('should not import a row whose metric could not be created', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
-      of({success: forms, error: []}),
-    );
+    const bulkSpy = vi
+      .spyOn(formDataManagerMock, 'bulkCreate')
+      .mockImplementation((forms: any[]) => of({success: forms, error: []}));
     const rows = [
       {project_name: 'Alpha', project_code: 'c1'},
       {project_name: 'Child', project_parent_name: 'Missing', project_code: 'c2'},
@@ -274,7 +283,7 @@ describe('Import Forms', () => {
     expect(projectBulkCalls.length).toBe(1);
     expect(projectBulkCalls[0].map(m => m['name'])).toEqual(['Alpha']);
     // Only the row whose metric exists is imported: no form data with an empty metric
-    const forms = bulkSpy.calls.mostRecent().args[0];
+    const forms = vi.mocked(bulkSpy).mock.lastCall![0];
     expect(forms.length).toBe(1);
     expect(forms[0].project_ref_id).toBe('project-1-0');
     // One row out of the two of the file made it: a partial import, not a success
@@ -325,10 +334,10 @@ describe('Import Forms', () => {
   it('should show the result step also when everything is imported', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-    spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
+    vi.spyOn(formDataManagerMock, 'bulkCreate').mockImplementation((forms: any[]) =>
       of({success: forms, error: []}),
     );
-    const importedSpy = jasmine.createSpy('imported');
+    const importedSpy = vi.fn();
     importForm.imported.subscribe(importedSpy);
     const rows = [{project_name: 'Alpha', project_code: 'c1'}];
     const info = (importForm as any)._getMetricsToBeCreated(rows, ['project']);
@@ -348,9 +357,9 @@ describe('Import Forms', () => {
   it('should not import anything when no row can be linked to its metric', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
-      of({success: forms, error: []}),
-    );
+    const bulkSpy = vi
+      .spyOn(formDataManagerMock, 'bulkCreate')
+      .mockImplementation((forms: any[]) => of({success: forms, error: []}));
     const rows = [{project_name: 'Child', project_parent_name: 'Missing', project_code: 'c2'}];
     const info = (importForm as any)._getMetricsToBeCreated(rows, ['project']);
     (importForm as any)._importFormDataRows(rows, info, false, []);
@@ -366,9 +375,9 @@ describe('Import Forms', () => {
   it('should still import a row that names no metric at all', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
-      of({success: forms, error: []}),
-    );
+    const bulkSpy = vi
+      .spyOn(formDataManagerMock, 'bulkCreate')
+      .mockImplementation((forms: any[]) => of({success: forms, error: []}));
     (importForm as any)._importFormData(
       [{district: 'lamwo'}],
       ['project'],
@@ -377,7 +386,7 @@ describe('Import Forms', () => {
       null,
       [],
     );
-    const forms = bulkSpy.calls.mostRecent().args[0];
+    const forms = vi.mocked(bulkSpy).mock.lastCall![0];
     expect(forms.length).toBe(1);
     expect(forms[0].project_ref_id).toBeNull();
   });
@@ -385,9 +394,9 @@ describe('Import Forms', () => {
   it('should import the dinoinvalid column as a boolean flag', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
-      of({success: forms, error: []}),
-    );
+    const bulkSpy = vi
+      .spyOn(formDataManagerMock, 'bulkCreate')
+      .mockImplementation((forms: any[]) => of({success: forms, error: []}));
     (importForm as any)._importFormData(
       [
         {dinoinvalid: 'TRUE', district: 'lamwo'},
@@ -400,7 +409,7 @@ describe('Import Forms', () => {
       null,
       [],
     );
-    const forms = bulkSpy.calls.mostRecent().args[0];
+    const forms = vi.mocked(bulkSpy).mock.lastCall![0];
     expect(forms[0].data).toEqual({dinoinvalid: true, district: 'lamwo'});
     // Like the form editors, the flag is written only when the record is invalid
     expect(forms[1].data).toEqual({district: 'arua'});
@@ -410,9 +419,9 @@ describe('Import Forms', () => {
   it('should ignore the metrics not declared by the form schema', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-    const bulkSpy = spyOn(formDataManagerMock, 'bulkCreate').and.callFake((forms: any[]) =>
-      of({success: forms, error: []}),
-    );
+    const bulkSpy = vi
+      .spyOn(formDataManagerMock, 'bulkCreate')
+      .mockImplementation((forms: any[]) => of({success: forms, error: []}));
     (importForm as any)._schemaMetrics = [];
     expect((importForm as any)._activeMetrics).toEqual([]);
     (importForm as any)._importFormData(
@@ -423,14 +432,14 @@ describe('Import Forms', () => {
       null,
       [],
     );
-    expect(bulkSpy.calls.mostRecent().args[0][0].project_ref_id).toBeNull();
+    expect(vi.mocked(bulkSpy).mock.lastCall![0][0].project_ref_id).toBeNull();
   });
 
   it('should build the mappable fields from the form schema', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
     // No dictionary is loaded in the tests: keep the key as the translation
-    spyOn((importForm as any)._ts, 'translate').and.callFake((key: string) => key);
+    vi.spyOn((importForm as any)._ts, 'translate').mockImplementation((key: any) => key);
     (importForm as any)._fieldLabels = {district: '<b>District</b> of residence'};
     (importForm as any)._tableFields = {
       myTable__0__1: {

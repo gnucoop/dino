@@ -89,7 +89,7 @@ describe('Search filters Bar', () => {
 
   it('should save a preset in the localStorage', () => {
     fixturePresetManager.detectChanges();
-    const spySetItem = spyOn(Storage.prototype, 'setItem').and.callThrough();
+    const spySetItem = vi.spyOn(Storage.prototype, 'setItem');
 
     presetManager.presetControl.setValue('test_preset');
     presetManager.savePreset();
@@ -101,7 +101,7 @@ describe('Search filters Bar', () => {
 
   it('should NOT save a nameless preset in the localStorage', () => {
     fixturePresetManager.detectChanges();
-    const spySetItem = spyOn(Storage.prototype, 'setItem').and.callThrough();
+    const spySetItem = vi.spyOn(Storage.prototype, 'setItem');
 
     presetManager.presetControl.setValue('');
     presetManager.savePreset();
@@ -111,8 +111,8 @@ describe('Search filters Bar', () => {
 
   it('should retrieve a preset from the localStorage and ask the FilterService to load it', () => {
     fixturePresetManager.detectChanges();
-    const spyGetItem = spyOn(Storage.prototype, 'getItem').and.callThrough();
-    const spyFtsLoad = spyOn(fts, 'loadPreset').and.callThrough();
+    const spyGetItem = vi.spyOn(Storage.prototype, 'getItem');
+    const spyFtsLoad = vi.spyOn(fts, 'loadPreset');
 
     presetManager.presetControl.setValue('test_preset');
     presetManager.savePreset();
@@ -127,8 +127,8 @@ describe('Search filters Bar', () => {
 
   it('should NOT try to retrieve a non existing preset', () => {
     fixturePresetManager.detectChanges();
-    const spyGetItem = spyOn(Storage.prototype, 'getItem').and.callThrough();
-    const spyFtsLoad = spyOn(fts, 'loadPreset').and.callThrough();
+    const spyGetItem = vi.spyOn(Storage.prototype, 'getItem');
+    const spyFtsLoad = vi.spyOn(fts, 'loadPreset');
 
     presetManager.presetControl.setValue('test_preset');
     presetManager.savePreset();

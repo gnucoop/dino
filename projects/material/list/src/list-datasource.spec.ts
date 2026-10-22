@@ -180,7 +180,7 @@ describe('ListDataSource', () => {
   });
 
   it('should create a Mango Query from an encoded queryString', async () => {
-    const spyQueryResults = spyOn(dataSource, 'getQueryResults').and.callThrough();
+    const spyQueryResults = vi.spyOn(dataSource, 'getQueryResults');
 
     const permissionContext = await firstValueFrom(dummyManager.permissionContext);
     const query = dataSource.queryDM(fakeFiltersPreset, permissionContext, true);
@@ -200,7 +200,7 @@ describe('ListDataSource', () => {
   });
 
   it('should query the dataModelManager', () => {
-    const spyDmQuery = spyOn(dummyManager, 'query').and.callThrough();
+    const spyDmQuery = vi.spyOn(dummyManager, 'query');
     const mangoQuery: DataQueryOptions = {selector: {name: {$regex: 'it'}}};
 
     dataSource.getQueryResults(mangoQuery);
@@ -227,7 +227,7 @@ describe('ListDataSource', () => {
   });
 
   it('should call the dataModelManager bulkDelete', () => {
-    const spyDmDelete = spyOn(dummyManager, 'bulkDelete').and.callThrough();
+    const spyDmDelete = vi.spyOn(dummyManager, 'bulkDelete');
     const items = [{name: 'item', id: '', created_at: '', updated_at: ''}];
 
     dataSource.deleteAction(items);
@@ -236,7 +236,7 @@ describe('ListDataSource', () => {
   });
 
   it('should call the dataModelManager create', () => {
-    const spyDmCreate = spyOn(dummyManager, 'create').and.callThrough();
+    const spyDmCreate = vi.spyOn(dummyManager, 'create');
     const item = {
       name: 'item',
       filter_a: 'hey',
