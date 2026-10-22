@@ -1,3 +1,4 @@
+import type {Mock} from 'vitest';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -100,15 +101,15 @@ describe('Main', () => {
   let main: MainNav;
   let authService: AuthService;
   let dataService: DataService;
-  let openSpy: jasmine.Spy;
+  let openSpy: Mock;
 
   /**
    * Answers the next session dialog with `choice`, without opening anything.
    * @param choice What the user is supposed to have decided
    * @returns The spy on the dialog, to assert what was asked
    */
-  const answerDialog = (choice: SessionDialogResult): jasmine.Spy => {
-    openSpy = spyOn(main.dialog, 'open').and.returnValue({
+  const answerDialog = (choice: SessionDialogResult): Mock => {
+    openSpy = vi.spyOn(main.dialog, 'open').mockReturnValue({
       afterClosed: () => of(choice),
     } as MatDialogRef<unknown>);
     return openSpy;
@@ -118,7 +119,7 @@ describe('Main', () => {
    * @returns The `kind` the dialog was opened with.
    */
   const askedAbout = (): string | undefined =>
-    (openSpy.calls.mostRecent()?.args[1] as MatDialogConfig<SessionDialogData> | undefined)?.data
+    (vi.mocked(openSpy).mock.lastCall?.[1] as MatDialogConfig<SessionDialogData> | undefined)?.data
       ?.kind;
 
   beforeEach(() => {
@@ -150,8 +151,8 @@ describe('Main', () => {
   });
 
   it('should ask the authservice to log the user out, then open a snackbar message', async () => {
-    let logoutSpy = spyOn(authService, 'logout').and.callThrough();
-    let snackbarSpy = spyOn(main.snackbar, 'open').and.callThrough();
+    let logoutSpy = vi.spyOn(authService, 'logout');
+    let snackbarSpy = vi.spyOn(main.snackbar, 'open');
 
     fixtureMain.detectChanges();
     answerDialog('logout');
@@ -163,8 +164,8 @@ describe('Main', () => {
   });
 
   it('does not touch the session when the logout question is cancelled', () => {
-    const logoutSpy = spyOn(authService, 'logout').and.callThrough();
-    const endSessionSpy = spyOn(authService, 'endSession');
+    const logoutSpy = vi.spyOn(authService, 'logout');
+    const endSessionSpy = vi.spyOn(authService, 'endSession').mockReturnValue(undefined as any);
 
     fixtureMain.detectChanges();
     answerDialog(undefined);
@@ -179,9 +180,11 @@ describe('Main', () => {
   });
 
   it('ends the session and keeps the data when the user chooses so on logout', () => {
-    const logoutSpy = spyOn(authService, 'logout').and.callThrough();
-    const endSessionSpy = spyOn(authService, 'endSession');
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const logoutSpy = vi.spyOn(authService, 'logout');
+    const endSessionSpy = vi.spyOn(authService, 'endSession').mockReturnValue(undefined as any);
+    const navigateSpy = vi
+      .spyOn(TestBed.inject(Router), 'navigate')
+      .mockReturnValue(undefined as any);
 
     fixtureMain.detectChanges();
     answerDialog('end-session');
@@ -196,9 +199,9 @@ describe('Main', () => {
   });
 
   it('explains a refused push instead of syncing, and leaves the session alone', () => {
-    spyOnProperty(dataService, 'abandonedCollections', 'get').and.returnValue(['form_data']);
-    const runSyncSpy = spyOn(dataService, 'runSync');
-    const endSessionSpy = spyOn(authService, 'endSession');
+    vi.spyOn(dataService, 'abandonedCollections', 'get').mockReturnValue(['form_data']);
+    const runSyncSpy = vi.spyOn(dataService, 'runSync').mockReturnValue(undefined as any);
+    const endSessionSpy = vi.spyOn(authService, 'endSession').mockReturnValue(undefined as any);
     // Both problems at once: the message about refused data still wins, because a
     // login cannot fix it and a logout would destroy the data to be exported.
     dataService.problemSyncing.next(['form_data', 'authentication']);
@@ -214,10 +217,10 @@ describe('Main', () => {
   });
 
   it('retries the token before asking anything, and syncs when it works', () => {
-    spyOn(authService, 'refreshToken').and.returnValue(of(true));
-    spyOn(authService, 'hasValidAuthToken').and.returnValue(true);
-    const runSyncSpy = spyOn(dataService, 'runSync');
-    const dialogSpy = spyOn(main.dialog, 'open');
+    vi.spyOn(authService, 'refreshToken').mockReturnValue(of(true));
+    vi.spyOn(authService, 'hasValidAuthToken').mockReturnValue(true);
+    const runSyncSpy = vi.spyOn(dataService, 'runSync').mockReturnValue(undefined as any);
+    const dialogSpy = vi.spyOn(main.dialog, 'open').mockReturnValue(undefined as any);
     dataService.problemSyncing.next(['authentication']);
 
     fixtureMain.detectChanges();
@@ -232,8 +235,10 @@ describe('Main', () => {
   });
 
   it('asks before sending the user to the login page, and postpones on request', () => {
-    const endSessionSpy = spyOn(authService, 'endSession');
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const endSessionSpy = vi.spyOn(authService, 'endSession').mockReturnValue(undefined as any);
+    const navigateSpy = vi
+      .spyOn(TestBed.inject(Router), 'navigate')
+      .mockReturnValue(undefined as any);
     dataService.problemSyncing.next(['authentication']);
 
     fixtureMain.detectChanges();
@@ -248,8 +253,10 @@ describe('Main', () => {
   });
 
   it('ends the session and goes to the login page when the user accepts', () => {
-    const endSessionSpy = spyOn(authService, 'endSession');
-    const navigateSpy = spyOn(TestBed.inject(Router), 'navigate');
+    const endSessionSpy = vi.spyOn(authService, 'endSession').mockReturnValue(undefined as any);
+    const navigateSpy = vi
+      .spyOn(TestBed.inject(Router), 'navigate')
+      .mockReturnValue(undefined as any);
     dataService.problemSyncing.next(['authentication']);
 
     fixtureMain.detectChanges();
@@ -264,8 +271,8 @@ describe('Main', () => {
   });
 
   it('just syncs when there is no problem to explain', () => {
-    const runSyncSpy = spyOn(dataService, 'runSync');
-    const dialogSpy = spyOn(main.dialog, 'open');
+    const runSyncSpy = vi.spyOn(dataService, 'runSync').mockReturnValue(undefined as any);
+    const dialogSpy = vi.spyOn(main.dialog, 'open').mockReturnValue(undefined as any);
 
     fixtureMain.detectChanges();
 

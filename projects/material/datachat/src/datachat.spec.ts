@@ -1,3 +1,4 @@
+import type {Mock} from 'vitest';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DataChatModule} from './datachat.module';
@@ -151,7 +152,7 @@ describe('Data Chat', () => {
   it('should add a chat question to the chat history', async () => {
     await fixtureDataChat.whenStable();
     fixtureDataChat.detectChanges();
-    let addHistorySpy = spyOn<any>(dataChat, '_addToHistory').and.callThrough();
+    let addHistorySpy = vi.spyOn(dataChat as any, '_addToHistory');
 
     dataChat.chat('test_question');
     await fixtureDataChat.whenStable();
@@ -180,7 +181,7 @@ describe('Data Chat', () => {
         download_filename: 'cities.csv',
       });
 
-      expect(info.truncated).toBeTrue();
+      expect(info.truncated).toBe(true);
       expect(info.totalRows).toEqual(340);
       expect(info.totalColumns).toEqual(2);
       expect(info.previewRows).toEqual(20);
@@ -202,7 +203,7 @@ describe('Data Chat', () => {
         download_filename: null,
       });
 
-      expect(info.truncated).toBeFalse();
+      expect(info.truncated).toBe(false);
       expect(info.downloadUrl).toBeUndefined();
       expect(info.downloadFilename).toBeUndefined();
     });
@@ -216,7 +217,7 @@ describe('Data Chat', () => {
         truncated: false,
       });
 
-      expect(info.truncated).toBeFalse();
+      expect(info.truncated).toBe(false);
     });
 
     it('should count the columns actually displayed', () => {
@@ -241,7 +242,7 @@ describe('Data Chat', () => {
       });
 
       expect(info.note).toEqual(note);
-      expect(info.truncated).toBeFalse();
+      expect(info.truncated).toBe(false);
     });
 
     it('should map an export of a text answer', () => {
@@ -260,7 +261,7 @@ describe('Data Chat', () => {
     it('should default to no preview info for a plain text answer', () => {
       const info = previewInfo({type: 'str', value: 'Questo dataset contiene...'});
 
-      expect(info.truncated).toBeFalse();
+      expect(info.truncated).toBe(false);
       expect(info.totalRows).toBeUndefined();
       expect(info.downloadUrl).toBeUndefined();
       expect(info.note).toBeUndefined();
@@ -296,8 +297,8 @@ describe('Data Chat', () => {
       fixtureDataChat.detectChanges();
       dataChat.baseDataChatAPIurl = 'http://127.0.0.1:5000';
       dataChat.apiKey.next('key_code');
-      spyOn<any>(dataChat, '_ensureAgent').and.returnValue(of(true));
-      spyOn<any>(dataChat['_udm'], 'getActiveUserData').and.returnValue(
+      vi.spyOn(dataChat as any, '_ensureAgent').mockReturnValue(of(true));
+      vi.spyOn(dataChat['_udm'] as any, 'getActiveUserData').mockReturnValue(
         of({email: 'test@test.com'}),
       );
 
@@ -383,15 +384,15 @@ describe('Data Chat', () => {
 
   describe('export download', () => {
     const exportPath = '/datachat/export/bf80bb41d8214522b0d38bca61afbd26';
-    let snackBarSpy: jasmine.Spy;
+    let snackBarSpy: Mock;
 
     beforeEach(() => {
       dataChat.baseDataChatAPIurl = 'http://127.0.0.1:5000/';
       dataChat.apiKey.next('key_code');
-      spyOn<any>((dataChat as any)._udm, 'getActiveUserData').and.returnValue(
+      vi.spyOn((dataChat as any)._udm as any, 'getActiveUserData').mockReturnValue(
         of({email: 'test@test.com'}),
       );
-      snackBarSpy = spyOn(TestBed.inject(MatSnackBar), 'open');
+      snackBarSpy = vi.spyOn(TestBed.inject(MatSnackBar), 'open').mockReturnValue(undefined as any);
     });
 
     it('should request the export with the api key and user email headers', () => {
@@ -408,7 +409,10 @@ describe('Data Chat', () => {
     });
 
     it('should emit the downloaded file', () => {
-      let downloaded: {blob: Blob; filename: string} | null = null;
+      let downloaded: {
+        blob: Blob;
+        filename: string;
+      } | null = null;
       dataChat.exportDownload.subscribe(evt => (downloaded = evt));
 
       dataChat.downloadExport(exportPath, 'cities.csv');
@@ -433,9 +437,9 @@ describe('Data Chat', () => {
           statusText: 'Not Found',
         });
 
-      expect(emitted).toBeFalse();
+      expect(emitted).toBe(false);
       expect(snackBarSpy).toHaveBeenCalled();
-      expect(snackBarSpy.calls.mostRecent().args[0]).toContain('no longer available');
+      expect(vi.mocked(snackBarSpy).mock.lastCall![0]).toContain('no longer available');
     });
 
     it('should explain an ended chat session on 400', () => {
@@ -447,7 +451,7 @@ describe('Data Chat', () => {
           statusText: 'Bad Request',
         });
 
-      expect(snackBarSpy.calls.mostRecent().args[0]).toContain('chat session has ended');
+      expect(vi.mocked(snackBarSpy).mock.lastCall![0]).toContain('chat session has ended');
     });
 
     it('should not parse the html body of a 403', () => {

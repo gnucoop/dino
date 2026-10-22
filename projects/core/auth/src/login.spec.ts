@@ -1,3 +1,4 @@
+import type {Mock} from 'vitest';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {ChangeDetectorRef, EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
@@ -55,10 +56,10 @@ describe('LoginComponent', () => {
   let ts: TranslocoService;
   let cdr: ChangeDetectorRef;
   let loginFeatComp: LoginFeatComp;
-  let spyLogin: jasmine.Spy;
-  let spyPostLogin: jasmine.Spy;
+  let spyLogin: Mock;
+  let spyPostLogin: Mock;
   let routerSpy = {
-    navigateByUrl: jasmine.createSpy('navigateByUrl'),
+    navigateByUrl: vi.fn(),
   };
 
   beforeEach(() => {
@@ -81,8 +82,8 @@ describe('LoginComponent', () => {
     snackBar = TestBed.inject(MatSnackBar);
     ts = TestBed.inject(TranslocoService);
     loginFeatComp = new LoginFeatComp(authService, router, fb, cdr, snackBar, ts);
-    spyLogin = spyOn(authService, 'login').and.callThrough();
-    spyPostLogin = spyOn(loginFeatComp, 'setLoginResult').and.callThrough();
+    spyLogin = vi.spyOn(authService, 'login');
+    spyPostLogin = vi.spyOn(loginFeatComp, 'setLoginResult');
   });
 
   afterEach(() => {
@@ -124,12 +125,12 @@ describe('LoginComponent', () => {
     loginFeatComp.login();
     await Promise.resolve();
     expect(spyLogin).toHaveBeenCalledWith(formValue);
-    expect(loginFeatComp.loginError.error).toBeTrue();
+    expect(loginFeatComp.loginError.error).toBe(true);
     authServiceMock.loginSuccess = true;
   });
 
   it('should attempt to signup a new user', async () => {
-    const spySignup = spyOn(authService, 'signupNHost').and.callThrough();
+    const spySignup = vi.spyOn(authService, 'signupNHost');
     const signupFormValue = {
       full_name: 'New User',
       email: 'new@mail.io',

@@ -6,7 +6,7 @@
     "outDir": "../../out-tsc/core-spec",
     "types": [
       "echarts",
-      "jasmine"
+      "vitest/globals"
     ],
     "paths": {
       "@dino/core": ["."],
@@ -16,7 +16,7 @@
     }
   },
   "files": [
-    "src/test.ts"
+    "../../vitest-setup.ts"
   ],
   "include": [
     "**/*.spec.ts",

@@ -162,7 +162,7 @@ describe('Data Chat Entry', () => {
       ],
     };
 
-    expect(entry.canCopy).toBeTrue();
+    expect(entry.canCopy).toBe(true);
     expect(entry.answerText).toEqual(
       'txt\tsentiment\nottimo servizio\tpositive\nmai piu\t',
     );
@@ -203,8 +203,8 @@ describe('Data Chat Entry', () => {
   });
 
   it('should detect dropped columns only when some are missing', () => {
-    expect(entry.hasDroppedColumns(truncatedTable)).toBeTrue();
-    expect(entry.hasDroppedColumns(completeTable)).toBeFalse();
-    expect(entry.hasDroppedColumns({truncated: true})).toBeFalse();
+    expect(entry.hasDroppedColumns(truncatedTable)).toBe(true);
+    expect(entry.hasDroppedColumns(completeTable)).toBe(false);
+    expect(entry.hasDroppedColumns({truncated: true})).toBe(false);
   });
 });

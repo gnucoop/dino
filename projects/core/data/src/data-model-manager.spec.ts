@@ -209,7 +209,7 @@ describe('Data Model Manager - CRUD methods', () => {
 
   it('should create a new object in the database', async () => {
     const object = {name: 'exampleDummy', created_at: currentDate};
-    const createSpy = spyOn(ageAuthPermission, 'canCreate').and.callThrough();
+    const createSpy = vi.spyOn(ageAuthPermission, 'canCreate');
     const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     expect(insertedDummy).not.toBeNull();
     expect(insertedDummy!.name).toBe('exampleDummy');
@@ -222,7 +222,7 @@ describe('Data Model Manager - CRUD methods', () => {
     const getObject = await firstValueFrom(dummyManager!.get(insertedDummy!.id).pipe(take(1)));
     expect(getObject).not.toBeNull();
     expect(getObject!.name).toEqual(insertedDummy!.name);
-    expect({name: getObject!.name}).toEqual(jasmine.objectContaining({name: object.name}));
+    expect({name: getObject!.name}).toEqual(expect.objectContaining({name: object.name}));
   });
 
   it('should create a bulk of objects in the database', async () => {
@@ -297,7 +297,7 @@ describe('Data Model Manager - CRUD methods', () => {
 
   it('should remove an existing object from the database', async () => {
     const object = {name: 'testDummy', author: 'user@dino.gnu', created_at: currentDate};
-    const deleteSpy = spyOn(ageAuthPermission, 'canDelete').and.callThrough();
+    const deleteSpy = vi.spyOn(ageAuthPermission, 'canDelete');
     const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     const deletedObject = await firstValueFrom(
       dummyManager!.delete(insertedDummy!.id).pipe(take(1)),
@@ -310,7 +310,7 @@ describe('Data Model Manager - CRUD methods', () => {
 
   it('should update an existing object from the database', async () => {
     const object = {name: 'newDummy', created_at: currentDate};
-    const modifySpy = spyOn(ageAuthPermission, 'canModify').and.callThrough();
+    const modifySpy = vi.spyOn(ageAuthPermission, 'canModify');
     const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     const updObject = {
       id: insertedDummy!.id,
@@ -322,13 +322,13 @@ describe('Data Model Manager - CRUD methods', () => {
     const getObject = await firstValueFrom(dummyManager!.get(updObject.id).pipe(take(1)));
     expect(getObject).not.toBeNull();
     expect(getObject!.name).toEqual('upDummy');
-    expect(getObject!).not.toEqual(jasmine.objectContaining(object));
+    expect(getObject!).not.toEqual(expect.objectContaining(object));
     expect(modifySpy).toHaveBeenCalled();
   });
 
   it('should patch an existing object from the database', async () => {
     const object = {name: 'newDummy', created_at: currentDate};
-    const modifySpy = spyOn(ageAuthPermission, 'canModify').and.callThrough();
+    const modifySpy = vi.spyOn(ageAuthPermission, 'canModify');
     const insertedDummy = await firstValueFrom(dummyManager!.create(object).pipe(take(1)));
     const objectToPatch = {
       id: insertedDummy!.id,
@@ -338,7 +338,7 @@ describe('Data Model Manager - CRUD methods', () => {
     const getObject = await firstValueFrom(dummyManager!.get(objectToPatch.id).pipe(take(1)));
     expect(getObject).not.toBeNull();
     expect(getObject!.name).toEqual('patchedDummy');
-    expect(getObject!).not.toEqual(jasmine.objectContaining(object));
+    expect(getObject!).not.toEqual(expect.objectContaining(object));
     expect(modifySpy).toHaveBeenCalled();
   });
 });

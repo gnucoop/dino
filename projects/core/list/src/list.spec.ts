@@ -104,7 +104,7 @@ describe('Core ListComponent', () => {
   });
 
   it('should retrieve and call the correct Action Handler method name', () => {
-    const spyAction = spyOn(listFeatComp, 'deleteAction').and.callThrough();
+    const spyAction = vi.spyOn(listFeatComp, 'deleteAction');
     const action: ListAction = {actionType: 'delete', askConfirm: true};
     listFeatComp.processAction(action, dummySelection);
 

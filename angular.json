@@ -24,12 +24,23 @@
           },
           "defaultConfiguration": "production"
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+        "test-build": {
+          "builder": "@angular/build:application",
           "options": {
-            "main": "projects/core/src/test.ts",
+            "outputPath": "dist/test-build/core",
             "tsConfig": "projects/core/tsconfig.spec.json",
-            "karmaConfig": "projects/core/karma.conf.js"
+            "polyfills": ["zone.js"],
+            "inlineStyleLanguage": "scss"
+          }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "buildTarget": "core:test-build",
+            "tsConfig": "projects/core/tsconfig.spec.json",
+            "runner": "vitest",
+            "runnerConfig": true,
+            "setupFiles": ["vitest-setup.ts"]
           }
         },
         "lint": {
@@ -107,12 +118,23 @@
           },
           "defaultConfiguration": "production"
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+        "test-build": {
+          "builder": "@angular/build:application",
           "options": {
-            "main": "projects/material/src/test.ts",
+            "outputPath": "dist/test-build/material",
             "tsConfig": "projects/material/tsconfig.spec.json",
-            "karmaConfig": "projects/material/karma.conf.js"
+            "polyfills": ["zone.js"],
+            "inlineStyleLanguage": "scss"
+          }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "buildTarget": "material:test-build",
+            "tsConfig": "projects/material/tsconfig.spec.json",
+            "runner": "vitest",
+            "runnerConfig": true,
+            "setupFiles": ["vitest-setup.ts"]
           }
         },
         "lint": {
@@ -575,30 +597,23 @@
             "buildTarget": "dinoapp:build"
           }
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+        "test-build": {
+          "builder": "@angular/build:application",
           "options": {
-            "main": "projects/dinoapp/src/test.ts",
-            "polyfills": "projects/dinoapp/src/polyfills.ts",
+            "outputPath": "dist/test-build/dinoapp",
             "tsConfig": "projects/dinoapp/tsconfig.spec.json",
-            "karmaConfig": "projects/dinoapp/karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/dinoapp/src/favicon.ico",
-              "projects/dinoapp/src/assets",
-              {
-                "glob": "**/*",
-                "input": "./node_modules/leaflet/dist/images",
-                "output": "leaflet/"
-              },
-              "projects/dinoapp/src/manifest.webmanifest"
-            ],
-            "styles": [
-              "node_modules/flag-icon-css/css/flag-icons.min.css",
-              "node_modules/leaflet/dist/leaflet.css",
-              "projects/dinoapp/src/styles.scss"
-            ],
-            "scripts": []
+            "polyfills": ["zone.js"],
+            "inlineStyleLanguage": "scss"
+          }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "buildTarget": "dinoapp:test-build",
+            "tsConfig": "projects/dinoapp/tsconfig.spec.json",
+            "runner": "vitest",
+            "runnerConfig": true,
+            "setupFiles": ["vitest-setup.ts"]
           }
         },
         "lint": {

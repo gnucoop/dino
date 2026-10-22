@@ -46,7 +46,7 @@ describe('Search filters widget', () => {
   });
 
   it('should correctly create and setup a Widget component', async () => {
-    const spySetup = spyOn<any>(widgetComponent, '_setupWidget').and.callThrough();
+    const spySetup = vi.spyOn(widgetComponent as any, '_setupWidget');
 
     await fixtureWidget.whenStable();
     widgetComponent.filterItemData = fakeFilterItem;
@@ -78,7 +78,7 @@ describe('Search filters widget', () => {
     const button = fixtureWidget.debugElement.query(
       By.css('.dino-create-filter-button'),
     ).nativeElement;
-    expect(button.disabled).toBeTrue();
+    expect(button.disabled).toBe(true);
 
     const input = fixtureWidget.debugElement.query(By.css('input')).nativeElement;
     input.value = 'test';
@@ -87,7 +87,7 @@ describe('Search filters widget', () => {
     await fixtureWidget.whenStable();
     fixtureWidget.detectChanges();
 
-    expect(button.disabled).toBeFalse();
+    expect(button.disabled).toBe(false);
   });
 
   it('should return the appropriate operators relative to the ajfFieldType', () => {

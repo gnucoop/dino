@@ -99,21 +99,21 @@ describe('Config service', () => {
 
   it('should not have any configuration set', async () => {
     const confSet = configService.configurationSet.pipe(take(1)).toPromise();
-    await expectAsync(confSet).toBeResolvedTo(null);
+    await expect(confSet).resolves.toEqual(null);
   });
 
   it('should make an http call to the url provided in he configservice config', async () => {
     const getConfigs = configService.getConfigs().toPromise();
     const req = httpMock.expectOne(configServiceConfig.apiUrl);
     req.flush(null);
-    await expectAsync(getConfigs).toBeResolvedTo(null);
+    await expect(getConfigs).resolves.toEqual(null);
   });
 
   it('should call the setup function to transform the instances data', async () => {
     const getConfigs = configService.getConfigs(setupFn).toPromise();
     const req = httpMock.expectOne(configServiceConfig.apiUrl);
     req.flush(instances);
-    await expectAsync(getConfigs).not.toBeResolvedTo(null);
+    await expect(getConfigs).resolves.not.toEqual(null);
 
     const returnedConfigs = await getConfigs;
 

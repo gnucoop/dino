@@ -58,8 +58,8 @@ describe('Search filters Bar', () => {
   });
 
   it('should initialize the filters onInit', () => {
-    const spyInitFilters = spyOn(bar, 'initFilters').and.callThrough();
-    const spyFtsInit = spyOn(fts, 'initializeFilters').and.callThrough();
+    const spyInitFilters = vi.spyOn(bar, 'initFilters');
+    const spyFtsInit = vi.spyOn(fts, 'initializeFilters');
     fixtureBar.detectChanges();
 
     expect(spyInitFilters).toHaveBeenCalled();
@@ -67,8 +67,8 @@ describe('Search filters Bar', () => {
   });
 
   it('should open a dialog and reset the temporary filters', () => {
-    const spyFtsResetTemp = spyOn(fts, 'resetTemporaryFilters').and.callThrough();
-    const spyOpenDialog = spyOn(bar.dialog, 'open').and.callThrough();
+    const spyFtsResetTemp = vi.spyOn(fts, 'resetTemporaryFilters');
+    const spyOpenDialog = vi.spyOn(bar.dialog, 'open');
     fixtureBar.detectChanges();
 
     bar.openFiltersDialog();
@@ -79,7 +79,7 @@ describe('Search filters Bar', () => {
 
   it('should ask the FilterService to remove a FilterItem from a list', () => {
     fixtureBar.detectChanges();
-    const spyRemoveFilter = spyOn(fts, 'removeFilter').and.callThrough();
+    const spyRemoveFilter = vi.spyOn(fts, 'removeFilter');
 
     bar.removeFilter(fakeFilters[0], 'basic');
 

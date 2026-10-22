@@ -76,7 +76,9 @@ function legacyDeps(): FormSchemaDeps {
 class FormSchemaDepsManagerMock {
   doc: FormSchemaDeps | null = null;
 
-  get(_id: string): Observable<{toJSON: () => FormSchemaDeps} | null> {
+  get(_id: string): Observable<{
+    toJSON: () => FormSchemaDeps;
+  } | null> {
     return of(this.doc == null ? null : {toJSON: () => this.doc as FormSchemaDeps});
   }
 
@@ -84,7 +86,11 @@ class FormSchemaDepsManagerMock {
     return of({});
   }
 
-  create(_deps: FormSchemaDeps): Observable<{toJSON: () => {id: string}}> {
+  create(_deps: FormSchemaDeps): Observable<{
+    toJSON: () => {
+      id: string;
+    };
+  }> {
     return of({toJSON: () => ({id: 'deps-new'})});
   }
 }
@@ -121,7 +127,7 @@ describe('FormDepsEditor relationships persistence', () => {
   // that stores identical content.
   it('skips the write when the relationships are untouched since loading', async () => {
     setUp(storedDeps());
-    const updateSpy = spyOn(fsd, 'update').and.callThrough();
+    const updateSpy = vi.spyOn(fsd, 'update');
 
     const result = await new Promise(resolve => editor.persistRelationships().subscribe(resolve));
 
@@ -131,7 +137,7 @@ describe('FormDepsEditor relationships persistence', () => {
 
   it('writes and returns the existing id once a relationship row changes', async () => {
     setUp(storedDeps());
-    const updateSpy = spyOn(fsd, 'update').and.callThrough();
+    const updateSpy = vi.spyOn(fsd, 'update');
 
     editor.dataSource.data[0].fields_to_update = ['field_a', 'field_b'];
 
@@ -143,7 +149,7 @@ describe('FormDepsEditor relationships persistence', () => {
 
   it('writes when a metric row changes', async () => {
     setUp(storedDeps());
-    const updateSpy = spyOn(fsd, 'update').and.callThrough();
+    const updateSpy = vi.spyOn(fsd, 'update');
 
     editor.addMetricRow();
     editor.metricDataSource.data[editor.metricDataSource.data.length - 1].metric_name = 'project';
@@ -159,7 +165,7 @@ describe('FormDepsEditor relationships persistence', () => {
     editor.dataSource.data[0].fields_to_update = ['field_a', 'field_b'];
     await new Promise(resolve => editor.persistRelationships().subscribe(resolve));
 
-    const updateSpy = spyOn(fsd, 'update').and.callThrough();
+    const updateSpy = vi.spyOn(fsd, 'update');
     const result = await new Promise(resolve => editor.persistRelationships().subscribe(resolve));
 
     expect(updateSpy).not.toHaveBeenCalled();
@@ -171,7 +177,7 @@ describe('FormDepsEditor relationships persistence', () => {
   // match what was loaded.
   it('writes an in-memory legacy conversion even when nothing else changed', async () => {
     setUp(legacyDeps());
-    const updateSpy = spyOn(fsd, 'update').and.callThrough();
+    const updateSpy = vi.spyOn(fsd, 'update');
 
     const result = await new Promise(resolve => editor.persistRelationships().subscribe(resolve));
 
@@ -181,7 +187,7 @@ describe('FormDepsEditor relationships persistence', () => {
 
   it('creates nothing when there is no document and nothing to persist', async () => {
     setUp(null, {...formSchema, form_schema_deps_ref_id: null} as unknown as FormSchema);
-    const createSpy = spyOn(fsd, 'create').and.callThrough();
+    const createSpy = vi.spyOn(fsd, 'create');
 
     const result = await new Promise(resolve => editor.persistRelationships().subscribe(resolve));
 
@@ -191,7 +197,7 @@ describe('FormDepsEditor relationships persistence', () => {
 
   it('creates a document and returns its id for the first relationships', async () => {
     setUp(null, {...formSchema, form_schema_deps_ref_id: null} as unknown as FormSchema);
-    const createSpy = spyOn(fsd, 'create').and.callThrough();
+    const createSpy = vi.spyOn(fsd, 'create');
 
     editor.addRow();
     editor.dataSource.data[0].form_schema_ref_id = 'schema-2';
@@ -205,7 +211,7 @@ describe('FormDepsEditor relationships persistence', () => {
 
   it('reports a failed write as null', async () => {
     setUp(storedDeps());
-    spyOn(fsd, 'update').and.returnValue(of(null));
+    vi.spyOn(fsd, 'update').mockReturnValue(of(null));
 
     editor.dataSource.data[0].fields_to_update = ['field_a', 'field_b'];
 

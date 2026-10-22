@@ -264,7 +264,7 @@ describe('pushQueryBuilder', () => {
       } as RxReplicationWriteToMasterRow<RxDocumentData<Model>>,
     ];
     const dummyModifier = {modifier: (d: any) => d};
-    const modifierSpy = spyOn(dummyModifier, 'modifier').and.callThrough();
+    const modifierSpy = vi.spyOn(dummyModifier, 'modifier');
     const pushQuery =
       ` mutation InsertModel1($docs: [model1_insert_input!]!) { ` +
       `insert_model1( objects: $docs, on_conflict: ` +
