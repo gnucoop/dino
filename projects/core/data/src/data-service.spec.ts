@@ -1,3 +1,4 @@
+import type {Mock} from 'vitest';
 import {EventEmitter} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
@@ -106,28 +107,28 @@ describe('Data service', () => {
   it('should create and destroy a collection from a valid schema', async () => {
     const collection = {name: 'dummy', collection: {schema: dummySchema}};
     const created = dataService.createCollection(collection).pipe(take(1)).toPromise();
-    await expectAsync(created).toBeResolvedTo(true);
+    await expect(created).resolves.toEqual(true);
     const deleted = dataService.destroyCollection(collection.name).pipe(take(1)).toPromise();
-    await expectAsync(deleted).toBeResolvedTo(true);
+    await expect(deleted).resolves.toEqual(true);
   });
 
   it('should throw an exception when trying to destroy an unexisting collection', async () => {
-    await expectAsync(
+    await expect(
       firstValueFrom(dataService.destroyCollection('collection').pipe(take(1))),
-    ).toBeRejectedWithError();
+    ).rejects.toThrowError();
   });
 
   it('should report a collection that could not be created', async () => {
-    const consoleError = spyOn(console, 'error');
+    const consoleError = vi.spyOn(console, 'error').mockReturnValue(undefined as any);
     // A primary key that no property declares: rxdb rejects the collection.
     const broken = {
       name: 'broken',
       collection: {schema: {...dummySchema, primaryKey: 'not_a_property'}},
     };
 
-    await expectAsync(
+    await expect(
       firstValueFrom(dataService.createCollection(broken).pipe(take(1))),
-    ).toBeResolvedTo(false);
+    ).resolves.toEqual(false);
 
     // The failure used to be silent outside dev mode, leaving a collection
     // that never syncs with nothing to diagnose it by.
@@ -176,7 +177,7 @@ describe('Data service - CRUD methods', () => {
     const getObject = await firstValueFrom(dataService.get<DummyModel>(getParams).pipe(take(1)));
     expect(getObject).not.toBeNull();
     expect(getObject!._data.name).toEqual(inserted!._data.name);
-    expect({name: getObject!._data.name}).toEqual(jasmine.objectContaining({name: object.name}));
+    expect({name: getObject!._data.name}).toEqual(expect.objectContaining({name: object.name}));
   });
 
   it('should create a new object when upserting an unexisting object', async () => {
@@ -187,7 +188,7 @@ describe('Data service - CRUD methods', () => {
     const getObject = await firstValueFrom(dataService.get<DummyModel>(getParams).pipe(take(1)));
     expect(getObject).not.toBeNull();
     expect(getObject!._data.name).toEqual(inserted!._data.name);
-    expect(getObject!._data).toEqual(jasmine.objectContaining(object));
+    expect(getObject!._data).toEqual(expect.objectContaining(object));
   });
 
   it('should overwrite the old object when upserting an existing object', async () => {
@@ -201,7 +202,7 @@ describe('Data service - CRUD methods', () => {
     const getObject = await firstValueFrom(dataService.get<DummyModel>(getParams).pipe(take(1)));
     expect(getObject).not.toBeNull();
     expect(getObject!._data).toEqual(updated!._data);
-    expect(getObject!._data).toEqual(jasmine.objectContaining(object2));
+    expect(getObject!._data).toEqual(expect.objectContaining(object2));
   });
 
   it('should bulk insert new objects in the database', async () => {
@@ -473,7 +474,7 @@ describe('Data service - restore ordering with active sync', () => {
     ['form_schema', 'form_data'].forEach(name => {
       const coll = db.collections[name];
       const original = coll.bulkUpsert.bind(coll);
-      spyOn(coll, 'bulkUpsert').and.callFake((docs: any) => {
+      vi.spyOn(coll, 'bulkUpsert').mockImplementation((docs: any) => {
         order.push(`${prefix}${name}`);
         return original(docs);
       });
@@ -506,7 +507,7 @@ describe('Data service - restore ordering with active sync', () => {
     const order: string[] = [];
     await recordBulkUpsertOrder(order);
     // Neutralize the in-sync wait so this test focuses purely on write ordering.
-    spyOn(dataService as any, '_awaitCollectionsInSync').and.returnValue(Promise.resolve());
+    vi.spyOn(dataService as any, '_awaitCollectionsInSync').mockReturnValue(Promise.resolve());
 
     const imported = firstValueFrom(dataService.dbImportedEvent.pipe(take(1)));
     dataService.importDatabase(dumpBlob());
@@ -521,7 +522,7 @@ describe('Data service - restore ordering with active sync', () => {
     await recordBulkUpsertOrder(order, 'write:');
 
     // Force the "online" signal so the gating branch is deterministic.
-    spyOnProperty((dataService as any)._nss, 'isOnline$', 'get').and.returnValue(obsOf(true));
+    vi.spyOn((dataService as any)._nss, 'isOnline$', 'get').mockReturnValue(obsOf(true));
 
     // Simulate an active sync for the prerequisite collection so the gating runs.
     const activeSyncs = (dataService as any)._activeSyncs;
@@ -539,12 +540,12 @@ describe('Data service - restore ordering with active sync', () => {
     };
     activeSyncs.next(current);
 
-    const awaitSpy = spyOn(dataService as any, '_awaitCollectionsInSync').and.callFake(
-      (names: string[]) => {
+    const awaitSpy = vi
+      .spyOn(dataService as any, '_awaitCollectionsInSync')
+      .mockImplementation((names: any) => {
         order.push(`await:${names.join(',')}`);
         return Promise.resolve();
-      },
-    );
+      });
 
     const imported = firstValueFrom(dataService.dbImportedEvent.pipe(take(1)));
     dataService.importDatabase(dumpBlob());
@@ -553,7 +554,7 @@ describe('Data service - restore ordering with active sync', () => {
     // The referenced collection is pushed, then we wait for it to be in sync, then
     // the owned data is written.
     expect(order).toEqual(['write:form_schema', 'await:form_schema', 'write:form_data']);
-    expect(awaitSpy).toHaveBeenCalledWith(['form_schema'], jasmine.any(Number));
+    expect(awaitSpy).toHaveBeenCalledWith(['form_schema'], expect.any(Number));
   });
 
   it('does not wait for in-sync when no sync is active (backendless/offline)', async () => {
@@ -561,9 +562,9 @@ describe('Data service - restore ordering with active sync', () => {
     await recordBulkUpsertOrder(order, 'write:');
     // No active sync is registered for the prerequisite.
     (dataService as any)._activeSyncs.next({});
-    const awaitSpy = spyOn(dataService as any, '_awaitCollectionsInSync').and.returnValue(
-      Promise.resolve(),
-    );
+    const awaitSpy = vi
+      .spyOn(dataService as any, '_awaitCollectionsInSync')
+      .mockReturnValue(Promise.resolve());
 
     const imported = firstValueFrom(dataService.dbImportedEvent.pipe(take(1)));
     dataService.importDatabase(dumpBlob());
@@ -615,16 +616,16 @@ describe('Data service - pre-sync token refresh failures', () => {
 
   let dataService: DataService;
   let refreshOutcome: boolean;
-  let logoutSpy: jasmine.Spy;
-  let endSessionSpy: jasmine.Spy;
-  let navigateSpy: jasmine.Spy;
+  let logoutSpy: Mock;
+  let endSessionSpy: Mock;
+  let navigateSpy: Mock;
   let tokenRefreshedEvt: EventEmitter<void>;
 
   beforeEach(() => {
     refreshOutcome = false;
-    logoutSpy = jasmine.createSpy('logout').and.returnValue(obsOf(true));
-    endSessionSpy = jasmine.createSpy('endSession');
-    navigateSpy = jasmine.createSpy('navigate');
+    logoutSpy = vi.fn().mockReturnValue(obsOf(true));
+    endSessionSpy = vi.fn();
+    navigateSpy = vi.fn();
     tokenRefreshedEvt = new EventEmitter<void>();
     const authMock = {
       authenticated: obsOf({auth: true, evt: 'init'}),
@@ -650,7 +651,7 @@ describe('Data service - pre-sync token refresh failures', () => {
     });
     dataService = TestBed.inject(DataService);
 
-    spyOnProperty((dataService as any)._nss, 'isOnline$', 'get').and.returnValue(obsOf(true));
+    vi.spyOn((dataService as any)._nss, 'isOnline$', 'get').mockReturnValue(obsOf(true));
     // An active sync whose state activity emits right away, so that `isSyncing`
     // - and therefore the runSync subscription - fires synchronously.
     (dataService as any)._activeSyncs.next({
@@ -735,7 +736,7 @@ describe('Data service - pre-sync token refresh failures', () => {
 
     // It used to keep turning, saying "working on it" next to a badge saying the
     // opposite.
-    await expectAsync(firstValueFrom(dataService.isSyncing.pipe(take(1)))).toBeResolvedTo(false);
+    await expect(firstValueFrom(dataService.isSyncing.pipe(take(1)))).resolves.toEqual(false);
   });
 
   it('reports the spinner off when nothing is replicating', async () => {
@@ -743,11 +744,13 @@ describe('Data service - pre-sync token refresh failures', () => {
 
     // `combineLatest([])` completes without emitting, so whoever rendered this
     // kept the last value it had ever seen - true, forever.
-    await expectAsync(firstValueFrom(dataService.isSyncing.pipe(take(1)))).toBeResolvedTo(false);
+    await expect(firstValueFrom(dataService.isSyncing.pipe(take(1)))).resolves.toEqual(false);
   });
 
   it('reports a collection given up on once, and keeps its badge when it starts again', async () => {
-    const reportSpy = spyOn(dataService as any, '_reportSyncError');
+    const reportSpy = vi
+      .spyOn(dataService as any, '_reportSyncError')
+      .mockReturnValue(undefined as any);
 
     dataService.couldNotSyncEvt.emit({
       collection: 'dummy',
@@ -845,7 +848,7 @@ describe('Data service - full sync cycle', () => {
   };
 
   let dataService: DataService;
-  let reSyncSpies: {[collection: string]: jasmine.Spy};
+  let reSyncSpies: {[collection: string]: Mock};
 
   beforeEach(() => {
     const authMock = {
@@ -870,11 +873,11 @@ describe('Data service - full sync cycle', () => {
     });
     dataService = TestBed.inject(DataService);
 
-    spyOnProperty((dataService as any)._nss, 'isOnline$', 'get').and.returnValue(obsOf(true));
+    vi.spyOn((dataService as any)._nss, 'isOnline$', 'get').mockReturnValue(obsOf(true));
     reSyncSpies = {};
     const activeSyncs: {[collection: string]: unknown} = {};
     ['form_schema', 'form_data'].forEach(name => {
-      reSyncSpies[name] = jasmine.createSpy(`reSync:${name}`);
+      reSyncSpies[name] = vi.fn();
       activeSyncs[name] = {
         // `awaitInSync` never resolves on purpose: the cycle completion is
         // irrelevant here and would only fire a timer after the test has ended.
@@ -910,7 +913,9 @@ describe('Data service - full sync cycle', () => {
   });
 
   it('rebuilds a replication rxdb has stopped, instead of asking it to resync', () => {
-    const rebuild = spyOn(dataService as any, '_rebuildCollectionSync');
+    const rebuild = vi
+      .spyOn(dataService as any, '_rebuildCollectionSync')
+      .mockReturnValue(undefined as any);
     const activeSyncs = (dataService as any)._activeSyncs.value;
     activeSyncs['form_data'].state.isStopped = () => true;
 
@@ -938,7 +943,7 @@ describe('Data service - single-flight pre-sync refresh', () => {
   };
 
   let dataService: DataService;
-  let endSessionSpy: jasmine.Spy;
+  let endSessionSpy: Mock;
   let pending: Subject<boolean> | null;
   let refreshCalls: number;
 
@@ -953,7 +958,7 @@ describe('Data service - single-flight pre-sync refresh', () => {
   beforeEach(() => {
     pending = null;
     refreshCalls = 0;
-    endSessionSpy = jasmine.createSpy('endSession');
+    endSessionSpy = vi.fn();
     const authMock = {
       authenticated: obsOf({auth: true, evt: 'init'}),
       authConfig: authServiceConfig,
@@ -987,7 +992,7 @@ describe('Data service - single-flight pre-sync refresh', () => {
     });
     dataService = TestBed.inject(DataService);
 
-    spyOnProperty((dataService as any)._nss, 'isOnline$', 'get').and.returnValue(obsOf(true));
+    vi.spyOn((dataService as any)._nss, 'isOnline$', 'get').mockReturnValue(obsOf(true));
     (dataService as any)._activeSyncs.next({
       dummy: {
         state: {
@@ -1112,9 +1117,7 @@ describe('Data service - awaiting the first pull', () => {
       ],
     });
     dataService = TestBed.inject(DataService);
-    spyOnProperty((dataService as any)._nss, 'isOnline$', 'get').and.returnValue(
-      online.asObservable(),
-    );
+    vi.spyOn((dataService as any)._nss, 'isOnline$', 'get').mockReturnValue(online.asObservable());
   });
 
   it('resolves at once offline, without waiting for any replication', async () => {
@@ -1123,21 +1126,21 @@ describe('Data service - awaiting the first pull', () => {
     // permissions. Nothing is registered here, so a wait would never end.
     online.next(false);
 
-    await expectAsync(
+    await expect(
       firstValueFrom(dataService.awaitFirstPull(['user_group'], 50)),
-    ).toBeResolved();
+    ).resolves.not.toThrow();
   });
 
   it('resolves at once on a backendless instance', async () => {
     (dataService as any)._dataConfig.value.syncOptions.backendless = true;
 
-    await expectAsync(
+    await expect(
       firstValueFrom(dataService.awaitFirstPull(['user_group'], 50)),
-    ).toBeResolved();
+    ).resolves.not.toThrow();
   });
 
   it('resolves at once when asked for no collections', async () => {
-    await expectAsync(firstValueFrom(dataService.awaitFirstPull([], 50))).toBeResolved();
+    await expect(firstValueFrom(dataService.awaitFirstPull([], 50))).resolves.not.toThrow();
   });
 
   it('waits for a replication that does not exist yet, instead of ignoring it', async () => {
@@ -1155,15 +1158,15 @@ describe('Data service - awaiting the first pull', () => {
 
     // Nothing registered yet: it must still be waiting.
     await Promise.resolve();
-    expect(settled).toBeFalse();
+    expect(settled).toBe(false);
 
     registerSync('user_group', () => inSync);
     await Promise.resolve();
-    expect(settled).toBeFalse();
+    expect(settled).toBe(false);
 
     reachInSync();
     await waited;
-    expect(settled).toBeTrue();
+    expect(settled).toBe(true);
   });
 
   it('waits for every collection it was given, not just the first', async () => {
@@ -1178,23 +1181,25 @@ describe('Data service - awaiting the first pull', () => {
     registerSync('user_data', () => Promise.resolve(true));
     registerSync('user_group', () => second);
     await Promise.resolve();
-    expect(settled).toBeFalse();
+    expect(settled).toBe(false);
 
     reachSecond();
     await waited;
-    expect(settled).toBeTrue();
+    expect(settled).toBe(true);
   });
 
   it('resolves anyway when the cap expires, and reports it', async () => {
     // Recoverable by design - the caller proceeds on local data, as it did
     // before this existed - but the session is then running on permissions that
     // may be a session old, so it must not pass in silence.
-    const reported = spyOn(dataService as any, '_reportFirstPullTimeout');
+    const reported = vi
+      .spyOn(dataService as any, '_reportFirstPullTimeout')
+      .mockReturnValue(undefined as any);
     registerSync('user_group', () => new Promise<true>(() => {}));
 
-    await expectAsync(
+    await expect(
       firstValueFrom(dataService.awaitFirstPull(['user_group'], 30)),
-    ).toBeResolved();
+    ).resolves.not.toThrow();
     expect(reported).toHaveBeenCalledWith(['user_group'], 30);
   });
 
@@ -1204,8 +1209,8 @@ describe('Data service - awaiting the first pull', () => {
     // asked, not that the login must wait for it.
     registerSync('user_group', () => Promise.reject(new Error('no internal state')));
 
-    await expectAsync(
+    await expect(
       firstValueFrom(dataService.awaitFirstPull(['user_group'], 5000)),
-    ).toBeResolved();
+    ).resolves.not.toThrow();
   });
 });

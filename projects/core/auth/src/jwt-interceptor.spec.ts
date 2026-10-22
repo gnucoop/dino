@@ -68,14 +68,14 @@ describe(`JWTInterceptor`, () => {
       const jwtInterceptor = interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
       expect(jwtInterceptor).toBeDefined();
 
-      let isLoginSpy = spyOn<any>(jwtInterceptor, '_isAllowedRequest').and.callThrough();
-      let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
+      let isLoginSpy = vi.spyOn(jwtInterceptor as any, '_isAllowedRequest');
+      let refreshSpy = vi.spyOn(jwtInterceptor.handleRefreshEvt as any, 'emit');
 
       // No token is stored, so the refresh cannot succeed and the failure is
       // surfaced to the caller instead of being swallowed into a null response.
       let errored = false;
       http.post('http://test-auth-backend/data', {}).subscribe({
-        next: () => fail('the request should not succeed'),
+        next: () => expect.unreachable('the request should not succeed'),
         error: () => (errored = true),
       });
       const req = httpMock.expectOne('http://test-auth-backend/data');
@@ -94,11 +94,11 @@ describe(`JWTInterceptor`, () => {
       const jwtInterceptor = interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
       expect(jwtInterceptor).toBeDefined();
 
-      let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
+      let refreshSpy = vi.spyOn(jwtInterceptor.handleRefreshEvt as any, 'emit');
 
       let errored = false;
       http.post('http://test-auth-backend/data', {}).subscribe({
-        next: () => fail('the request should not succeed'),
+        next: () => expect.unreachable('the request should not succeed'),
         error: () => (errored = true),
       });
       const req = httpMock.expectOne('http://test-auth-backend/data');
@@ -115,8 +115,8 @@ describe(`JWTInterceptor`, () => {
       const jwtInterceptor = interceptors.find(i => i instanceof JWTInterceptor) as JWTInterceptor;
       expect(jwtInterceptor).toBeDefined();
 
-      let isLoginSpy = spyOn<any>(jwtInterceptor, '_isAllowedRequest').and.callThrough();
-      let refreshSpy = spyOn<any>(jwtInterceptor.handleRefreshEvt, 'emit').and.callThrough();
+      let isLoginSpy = vi.spyOn(jwtInterceptor as any, '_isAllowedRequest');
+      let refreshSpy = vi.spyOn(jwtInterceptor.handleRefreshEvt as any, 'emit');
 
       http.post('http://test-auth-backend/data', {}).subscribe(res => {
         expect(res).toBeDefined();
@@ -154,7 +154,9 @@ describe(`JWTInterceptor`, () => {
         const jwtInterceptor = interceptors.find(
           i => i instanceof JWTInterceptor,
         ) as JWTInterceptor;
-        const endSessionSpy = spyOn<any>((jwtInterceptor as any)._endSessionEvt, 'emit');
+        const endSessionSpy = vi
+          .spyOn((jwtInterceptor as any)._endSessionEvt, 'emit')
+          .mockReturnValue(undefined as any);
 
         http.post('http://test-auth-backend/data', {}).subscribe({
           next: () => {},
@@ -182,7 +184,9 @@ describe(`JWTInterceptor`, () => {
         const jwtInterceptor = interceptors.find(
           i => i instanceof JWTInterceptor,
         ) as JWTInterceptor;
-        const endSessionSpy = spyOn<any>((jwtInterceptor as any)._endSessionEvt, 'emit');
+        const endSessionSpy = vi
+          .spyOn((jwtInterceptor as any)._endSessionEvt, 'emit')
+          .mockReturnValue(undefined as any);
 
         window.dispatchEvent(new Event('offline'));
         window.dispatchEvent(new Event('online'));
@@ -212,9 +216,9 @@ describe(`JWTInterceptor`, () => {
         router: Router,
       ) => {
         expect(interceptors.find(i => i instanceof JWTInterceptor)).toBeDefined();
-        const endSessionSpy = spyOn(authService, 'endSession');
-        const logoutSpy = spyOn(authService, 'logout');
-        const navigateSpy = spyOn(router, 'navigate');
+        const endSessionSpy = vi.spyOn(authService, 'endSession').mockReturnValue(undefined as any);
+        const logoutSpy = vi.spyOn(authService, 'logout').mockReturnValue(undefined as any);
+        const navigateSpy = vi.spyOn(router, 'navigate').mockReturnValue(undefined as any);
 
         // First round: the only allowed attempt is spent and its refresh fails.
         http.post('http://test-auth-backend/data', {}).subscribe({

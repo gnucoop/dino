@@ -1,3 +1,4 @@
+import type {Mock} from 'vitest';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {map, take} from 'rxjs/operators';
@@ -78,14 +79,14 @@ describe('AuthService', () => {
           take(1),
         ),
       );
-    await expectAsync(authStatus()).toBeResolvedTo(false);
+    await expect(authStatus()).resolves.toEqual(false);
     authService.login({email: 'test@dino.io', password: 'test'}).subscribe(res => {
       expect(res).toBeDefined();
     });
     const req = httpMock.expectOne('http://test-auth-backend/api/login');
     expect(req.request.method).toBe('POST');
     req.flush(loginResponse);
-    await expectAsync(authStatus()).toBeResolvedTo(true);
+    await expect(authStatus()).resolves.toEqual(true);
   });
 
   it('should fail logging in with bad credentials', () => {
@@ -215,10 +216,10 @@ describe('logged in', () => {
           take(1),
         ),
       );
-    await expectAsync(authStatus()).toBeResolvedTo(true);
+    await expect(authStatus()).resolves.toEqual(true);
     return authService.logout().subscribe(async res => {
       expect(res).toBeDefined();
-      await expectAsync(authStatus()).toBeResolvedTo(false);
+      await expect(authStatus()).resolves.toEqual(false);
     });
   });
 
@@ -453,12 +454,12 @@ describe('custom local storage keys - logged in', () => {
 describe('custom storage functions', () => {
   let authService: AuthService;
   let httpMock: HttpTestingController;
-  let storeAuthTokenSpy: jasmine.Spy<(_token: string) => {}>;
-  let storeRefreshTokenSpy: jasmine.Spy<(_token: string) => {}>;
-  let storeUserInfoSpy: jasmine.Spy<(_user: any) => {}>;
-  let retrieveAuthTokenSpy: jasmine.Spy<() => {}>;
-  let retrieveRefreshTokenSpy: jasmine.Spy<() => {}>;
-  let retrieveUserInfoSpy: jasmine.Spy<() => {}>;
+  let storeAuthTokenSpy: Mock;
+  let storeRefreshTokenSpy: Mock;
+  let storeUserInfoSpy: Mock;
+  let retrieveAuthTokenSpy: Mock;
+  let retrieveRefreshTokenSpy: Mock;
+  let retrieveUserInfoSpy: Mock;
 
   beforeEach(() => {
     const userDefinedStore = {
@@ -469,12 +470,24 @@ describe('custom storage functions', () => {
       retrieveRefreshToken: () => {},
       retrieveUserInfo: () => {},
     };
-    storeAuthTokenSpy = spyOn(userDefinedStore, 'storeAuthToken');
-    storeRefreshTokenSpy = spyOn(userDefinedStore, 'storeRefreshToken');
-    storeUserInfoSpy = spyOn(userDefinedStore, 'storeUserInfo');
-    retrieveAuthTokenSpy = spyOn(userDefinedStore, 'retrieveAuthToken');
-    retrieveRefreshTokenSpy = spyOn(userDefinedStore, 'retrieveRefreshToken');
-    retrieveUserInfoSpy = spyOn(userDefinedStore, 'retrieveUserInfo');
+    storeAuthTokenSpy = vi
+      .spyOn(userDefinedStore, 'storeAuthToken')
+      .mockReturnValue(undefined as any);
+    storeRefreshTokenSpy = vi
+      .spyOn(userDefinedStore, 'storeRefreshToken')
+      .mockReturnValue(undefined as any);
+    storeUserInfoSpy = vi
+      .spyOn(userDefinedStore, 'storeUserInfo')
+      .mockReturnValue(undefined as any);
+    retrieveAuthTokenSpy = vi
+      .spyOn(userDefinedStore, 'retrieveAuthToken')
+      .mockReturnValue(undefined as any);
+    retrieveRefreshTokenSpy = vi
+      .spyOn(userDefinedStore, 'retrieveRefreshToken')
+      .mockReturnValue(undefined as any);
+    retrieveUserInfoSpy = vi
+      .spyOn(userDefinedStore, 'retrieveUserInfo')
+      .mockReturnValue(undefined as any);
 
     TestBed.configureTestingModule({
       imports: [],
@@ -524,7 +537,7 @@ describe('custom storage functions', () => {
     expect(storeRefreshTokenSpy).toHaveBeenCalledTimes(1);
     // Counted from here on: the service reads the refresh token on its own too,
     // to tell an expired access token apart from a session that is over.
-    retrieveRefreshTokenSpy.calls.reset();
+    retrieveRefreshTokenSpy.mockClear();
     authService.getRefreshToken();
     expect(retrieveRefreshTokenSpy).toHaveBeenCalledTimes(1);
   });
@@ -546,9 +559,9 @@ describe('custom storage functions', () => {
 describe('custom storage functions - logged in', () => {
   let authService: AuthService;
   let httpMock: HttpTestingController;
-  let storeAuthTokenSpy: jasmine.Spy<(_token: string) => {}>;
-  let storeRefreshTokenSpy: jasmine.Spy<(_token: string) => {}>;
-  let storeUserInfoSpy: jasmine.Spy<(_user: any) => {}>;
+  let storeAuthTokenSpy: Mock;
+  let storeRefreshTokenSpy: Mock;
+  let storeUserInfoSpy: Mock;
 
   beforeEach(() => {
     const userDefinedStore = {
@@ -556,9 +569,15 @@ describe('custom storage functions - logged in', () => {
       storeRefreshToken: (_token: string) => {},
       storeUserInfo: (_user: any) => {},
     };
-    storeAuthTokenSpy = spyOn(userDefinedStore, 'storeAuthToken');
-    storeRefreshTokenSpy = spyOn(userDefinedStore, 'storeRefreshToken');
-    storeUserInfoSpy = spyOn(userDefinedStore, 'storeUserInfo');
+    storeAuthTokenSpy = vi
+      .spyOn(userDefinedStore, 'storeAuthToken')
+      .mockReturnValue(undefined as any);
+    storeRefreshTokenSpy = vi
+      .spyOn(userDefinedStore, 'storeRefreshToken')
+      .mockReturnValue(undefined as any);
+    storeUserInfoSpy = vi
+      .spyOn(userDefinedStore, 'storeUserInfo')
+      .mockReturnValue(undefined as any);
 
     TestBed.configureTestingModule({
       imports: [],

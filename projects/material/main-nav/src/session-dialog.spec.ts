@@ -1,3 +1,4 @@
+import type {Mock} from 'vitest';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TRANSLATIONS_CONFIG, TranslationsConfig} from '@dino/core/translations';
@@ -8,11 +9,11 @@ const defaultLanguageConfig: TranslationsConfig = {
 };
 
 describe('SessionDialog', () => {
-  let closeSpy: jasmine.Spy;
+  let closeSpy: Mock;
 
   const render = (kind: SessionDialogKind): ComponentFixture<SessionDialog> => {
     const data: SessionDialogData = {kind};
-    closeSpy = jasmine.createSpy('close');
+    closeSpy = vi.fn();
     TestBed.configureTestingModule({
       imports: [MainNavModule],
       providers: [

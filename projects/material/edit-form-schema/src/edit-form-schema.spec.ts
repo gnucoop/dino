@@ -97,7 +97,7 @@ describe('Edit FormSchema', () => {
 
   it('should call the FormSchemaManager create method', async () => {
     await fixtureEditFormSchema.whenStable();
-    const createFormSchemaSpy = spyOn(fsm, 'create').and.callThrough();
+    const createFormSchemaSpy = vi.spyOn(fsm, 'create');
     fixtureEditFormSchema.detectChanges();
 
     editFormSchema.save();
@@ -146,7 +146,7 @@ describe('Edit FormSchema', () => {
     });
 
     it('should save the assigned groups, trimmed and without the empty ones', () => {
-      const createFormSchemaSpy = spyOn(fsm, 'create').and.callThrough();
+      const createFormSchemaSpy = vi.spyOn(fsm, 'create');
       editFormSchema.addGroup(fgroup, {
         kind: 'existing',
         group: {name: ' Health ', description: ' Follow-ups ', color: '#4fd1d9'},
@@ -158,7 +158,7 @@ describe('Edit FormSchema', () => {
 
       editFormSchema.save();
 
-      const patch = createFormSchemaSpy.calls.mostRecent().args[0];
+      const patch = vi.mocked(createFormSchemaSpy).mock.lastCall![0];
       expect(patch.form_schema_groups).toEqual([
         {name: 'Health', description: 'Follow-ups', color: '#4fd1d9'},
         {name: 'M&E', color: '#a3abb5'},
@@ -174,14 +174,14 @@ describe('Edit FormSchema', () => {
 
     it('should reject two groups with the same name', () => {
       editFormSchema.addGroup(fgroup, {kind: 'existing', group: {name: 'Health'}});
-      expect(editFormSchema.groupsArray(fgroup).valid).toBeTrue();
+      expect(editFormSchema.groupsArray(fgroup).valid).toBe(true);
 
       editFormSchema.addGroup(fgroup, {kind: 'create', name: 'health '});
-      expect(editFormSchema.groupsArray(fgroup).hasError('duplicateGroup')).toBeTrue();
-      expect(fgroup.valid).toBeFalse();
+      expect(editFormSchema.groupsArray(fgroup).hasError('duplicateGroup')).toBe(true);
+      expect(fgroup.valid).toBe(false);
 
       editFormSchema.removeGroup(fgroup, 1);
-      expect(editFormSchema.groupsArray(fgroup).valid).toBeTrue();
+      expect(editFormSchema.groupsArray(fgroup).valid).toBe(true);
     });
   });
 
@@ -191,7 +191,7 @@ describe('Edit FormSchema', () => {
   // save payload reads.
   it('should keep Generate Report readable and non-blocking while locked', async () => {
     await fixtureEditFormSchema.whenStable();
-    const createFormSchemaSpy = spyOn(fsm, 'create').and.callThrough();
+    const createFormSchemaSpy = vi.spyOn(fsm, 'create');
     fixtureEditFormSchema.detectChanges();
 
     let fgroup!: UntypedFormGroup;
@@ -230,13 +230,13 @@ describe('Edit FormSchema', () => {
     }
 
     it('writes the schema before updating an existing relationships document', async () => {
-      spyOn(deps, 'pendingWrite').and.returnValue(of('update' as const));
+      vi.spyOn(deps, 'pendingWrite').mockReturnValue(of('update' as const));
       const order: string[] = [];
-      spyOn(fsm, 'create').and.callFake(() => {
+      vi.spyOn(fsm, 'create').mockImplementation(() => {
         order.push('schema');
         return of(savedDoc());
       });
-      spyOn(deps, 'persistRelationships').and.callFake(() => {
+      vi.spyOn(deps, 'persistRelationships').mockImplementation(() => {
         order.push('deps');
         return of('deps-1');
       });
@@ -249,9 +249,9 @@ describe('Edit FormSchema', () => {
     });
 
     it('does not touch the relationships when there is nothing to write', async () => {
-      spyOn(deps, 'pendingWrite').and.returnValue(of('none' as const));
-      spyOn(fsm, 'create').and.returnValue(of(savedDoc()));
-      const persistSpy = spyOn(deps, 'persistRelationships').and.callThrough();
+      vi.spyOn(deps, 'pendingWrite').mockReturnValue(of('none' as const));
+      vi.spyOn(fsm, 'create').mockReturnValue(of(savedDoc()));
+      const persistSpy = vi.spyOn(deps, 'persistRelationships');
 
       editFormSchema.save();
 
@@ -259,23 +259,23 @@ describe('Edit FormSchema', () => {
     });
 
     it('creates the relationships document first and folds its id into the schema', async () => {
-      spyOn(deps, 'pendingWrite').and.returnValue(of('create' as const));
-      spyOn(deps, 'persistRelationships').and.returnValue(of('deps-new'));
-      const createSpy = spyOn(fsm, 'create').and.returnValue(of(savedDoc()));
-      const discardSpy = spyOn(deps, 'discardCreated').and.returnValue(of(null));
+      vi.spyOn(deps, 'pendingWrite').mockReturnValue(of('create' as const));
+      vi.spyOn(deps, 'persistRelationships').mockReturnValue(of('deps-new'));
+      const createSpy = vi.spyOn(fsm, 'create').mockReturnValue(of(savedDoc()));
+      const discardSpy = vi.spyOn(deps, 'discardCreated').mockReturnValue(of(null));
 
       editFormSchema.save();
 
       // Creating is the one case the schema write depends on: it needs the new id.
-      expect(createSpy.calls.mostRecent().args[0].form_schema_deps_ref_id).toBe('deps-new');
+      expect(vi.mocked(createSpy).mock.lastCall![0].form_schema_deps_ref_id).toBe('deps-new');
       expect(discardSpy).not.toHaveBeenCalled();
     });
 
     it('discards a just-created relationships document when the schema write fails', async () => {
-      spyOn(deps, 'pendingWrite').and.returnValue(of('create' as const));
-      spyOn(deps, 'persistRelationships').and.returnValue(of('deps-new'));
-      spyOn(fsm, 'create').and.returnValue(of(null));
-      const discardSpy = spyOn(deps, 'discardCreated').and.returnValue(of(null));
+      vi.spyOn(deps, 'pendingWrite').mockReturnValue(of('create' as const));
+      vi.spyOn(deps, 'persistRelationships').mockReturnValue(of('deps-new'));
+      vi.spyOn(fsm, 'create').mockReturnValue(of(null));
+      const discardSpy = vi.spyOn(deps, 'discardCreated').mockReturnValue(of(null));
 
       editFormSchema.save();
 
@@ -285,17 +285,19 @@ describe('Edit FormSchema', () => {
     });
 
     it('reports a saved schema whose relationships failed, without leaving the page', async () => {
-      spyOn(deps, 'pendingWrite').and.returnValue(of('update' as const));
-      spyOn(fsm, 'create').and.returnValue(of(savedDoc()));
-      spyOn(deps, 'persistRelationships').and.returnValue(of(null));
-      const snackSpy = spyOn(snackbar, 'open').and.callThrough();
-      const navigateSpy = spyOn(TestBed.inject(Router), 'navigateByUrl');
+      vi.spyOn(deps, 'pendingWrite').mockReturnValue(of('update' as const));
+      vi.spyOn(fsm, 'create').mockReturnValue(of(savedDoc()));
+      vi.spyOn(deps, 'persistRelationships').mockReturnValue(of(null));
+      const snackSpy = vi.spyOn(snackbar, 'open');
+      const navigateSpy = vi
+        .spyOn(TestBed.inject(Router), 'navigateByUrl')
+        .mockReturnValue(undefined as any);
 
       editFormSchema.save();
 
       // Saying "nothing was saved" would be a lie, and navigating away is the only
       // thing that would actually lose the rows still held by the tables.
-      expect(snackSpy.calls.mostRecent().args[0]).toContain('relationships were not');
+      expect(vi.mocked(snackSpy).mock.lastCall![0]).toContain('relationships were not');
       expect(navigateSpy).not.toHaveBeenCalled();
       expect(editFormSchema.isSaving).toBe(false);
     });

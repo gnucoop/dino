@@ -203,7 +203,7 @@ describe('Data Chat Chart', () => {
 
   it('should destroy the chart when the component is destroyed', async () => {
     await draw(barSpec);
-    const destroySpy = spyOn((chart as any)._chart, 'destroy').and.callThrough();
+    const destroySpy = vi.spyOn((chart as any)._chart, 'destroy');
 
     fixture.destroy();
 

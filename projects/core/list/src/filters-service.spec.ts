@@ -1,5 +1,5 @@
 import {AjfFieldType} from '@ajf/core/forms';
-import {fakeAsync, flush, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -76,6 +76,10 @@ const fakeActivatedRoute = {
 } as unknown as ActivatedRoute;
 
 describe('FiltersService', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   let fts: FiltersService;
 
   beforeEach(() => {
@@ -91,22 +95,23 @@ describe('FiltersService', () => {
     fts = TestBed.inject(FiltersService);
   });
 
-  it('should initialize the basic filters formGroup, triggering the preset loading', fakeAsync(() => {
-    const spyResetTempFilters = spyOn(fts, 'resetTemporaryFilters').and.callThrough();
-    const spyLoadPresetEvent = spyOn<any>(fts.loadPresetEvent, 'emit').and.callThrough();
+  it('should initialize the basic filters formGroup, triggering the preset loading', () => {
+    vi.useFakeTimers();
+    const spyResetTempFilters = vi.spyOn(fts, 'resetTemporaryFilters');
+    const spyLoadPresetEvent = vi.spyOn(fts.loadPresetEvent as any, 'emit');
 
     fts.initializeFilters([fakeFormGroup]);
-    flush();
+    vi.runAllTimers();
 
     expect(spyLoadPresetEvent).toHaveBeenCalledWith(true);
     expect(spyResetTempFilters).toHaveBeenCalled();
-  }));
+  });
 
   it('should add a filterItem to the selected list', () => {
     const item: FilterItem = {name: 'test_filter', fieldType: AjfFieldType.String};
 
     fts.addFilter(item, 'basic');
-    expectAsync(fts.basicFilters.toPromise()).toBeResolvedTo([item]);
+    expect(fts.basicFilters.value).toEqual([item]);
   });
 
   it('should remove a filterItem from the selected list', () => {
@@ -158,9 +163,9 @@ describe('FiltersService', () => {
   });
 
   it('should load a filters preset and update the filters lists', () => {
-    const spyBasicNext = spyOn(fts.basicFilters, 'next').and.callThrough();
-    const spyadditionalNext = spyOn(fts.additionalFilters, 'next').and.callThrough();
-    const spyResetTemporary = spyOn(fts, 'resetTemporaryFilters').and.callThrough();
+    const spyBasicNext = vi.spyOn(fts.basicFilters, 'next');
+    const spyadditionalNext = vi.spyOn(fts.additionalFilters, 'next');
+    const spyResetTemporary = vi.spyOn(fts, 'resetTemporaryFilters');
 
     fts.initializeFilters([fakeFormGroup]);
     fts.loadPreset(fakeFiltersPreset_b);
@@ -168,13 +173,13 @@ describe('FiltersService', () => {
     expect(spyBasicNext).toHaveBeenCalled();
     expect(spyadditionalNext).toHaveBeenCalled();
     expect(spyResetTemporary).toHaveBeenCalled();
-    expectAsync(fts.basicFilters.toPromise()).toBeResolvedTo([fakeFilters_b[0]]);
+    expect(fts.basicFilters.value).toEqual([fakeFilters_b[0]]);
     expect(fts.additionalFilters.value).toEqual([fakeFilters_b[1], fakeFilters_b[2]]);
     expect(fts.temporaryFilters.value).toEqual(fts.additionalFilters.value);
   });
 
   it('should create a list of filterGroups from a RxJsonSchema of a model', () => {
-    const spyPropToFilterItem = spyOn<any>(fts, '_propToFilterItem').and.callThrough();
+    const spyPropToFilterItem = vi.spyOn(fts as any, '_propToFilterItem');
 
     fts.generateModelFilters(dummySchema);
 
@@ -245,25 +250,25 @@ describe('FiltersService filters memory', () => {
   it('should apply the stored filters when the url carries none', () => {
     localStorage.setItem(storageKey, fakeFiltersPreset_b);
     fts.storageKey = storageKey;
-    const spyLoadPreset = spyOn(fts, 'loadPreset').and.callThrough();
-    const spyNavigate = spyOn(router, 'navigate').and.callThrough();
+    const spyLoadPreset = vi.spyOn(fts, 'loadPreset');
+    const spyNavigate = vi.spyOn(router, 'navigate');
 
     fts.initializeFilters([fakeFormGroup]);
 
     expect(spyLoadPreset).toHaveBeenCalledWith(fakeFiltersPreset_b);
     /* The filters are put back in the url, without adding an entry to the history */
     expect(spyNavigate).toHaveBeenCalled();
-    expect(spyNavigate.calls.mostRecent().args[1]?.queryParams).toEqual({
+    expect(vi.mocked(spyNavigate).mock.lastCall![1]?.queryParams).toEqual({
       'filters': fakeFiltersPreset_b,
     });
-    expect(spyNavigate.calls.mostRecent().args[1]?.replaceUrl).toBeTrue();
+    expect(vi.mocked(spyNavigate).mock.lastCall![1]?.replaceUrl).toBe(true);
   });
 
   it('should let the filters of the url win over the stored ones', () => {
     localStorage.setItem(storageKey, fakeFiltersPreset_b);
     fts.storageKey = storageKey;
     queryParams.next({'filters': fakeFiltersPreset});
-    const spyLoadPreset = spyOn(fts, 'loadPreset').and.callThrough();
+    const spyLoadPreset = vi.spyOn(fts, 'loadPreset');
 
     fts.initializeFilters([fakeFormGroup]);
 
@@ -273,7 +278,7 @@ describe('FiltersService filters memory', () => {
   it('should drop a stored value it cannot read', () => {
     localStorage.setItem(storageKey, 'not a filters preset');
     fts.storageKey = storageKey;
-    const spyLoadPreset = spyOn(fts, 'loadPreset').and.callThrough();
+    const spyLoadPreset = vi.spyOn(fts, 'loadPreset');
 
     fts.initializeFilters([fakeFormGroup]);
 

@@ -127,7 +127,7 @@ describe('Collect', () => {
   });
 
   it('should search for all Form Schemas', async () => {
-    let collectTypeSpy = spyOn(fsm, 'list').and.callThrough();
+    let collectTypeSpy = vi.spyOn(fsm, 'list');
 
     await fixtureCollect.whenStable();
     fixtureCollect.detectChanges();
@@ -374,12 +374,12 @@ describe('Collect with groups', () => {
 
   it('should still delete through the DeleteSchema dialog', () => {
     const dialog = TestBed.inject(MatDialog);
-    const open = spyOn(dialog, 'open').and.returnValue({afterClosed: () => of('fs2')} as any);
-    const del = spyOn(groupedFormsMock, 'delete').and.callThrough();
+    const open = vi.spyOn(dialog, 'open').mockReturnValue({afterClosed: () => of('fs2')} as any);
+    const del = vi.spyOn(groupedFormsMock, 'delete');
 
     collect.openDeleteSchemaDialog('fs2');
 
-    expect(open.calls.mostRecent().args[0]).toBe(DeleteSchema);
+    expect(vi.mocked(open).mock.lastCall![0]).toBe(DeleteSchema);
     expect(del).toHaveBeenCalledWith('fs2');
   });
 });

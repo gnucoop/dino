@@ -1,4 +1,3 @@
-import {fakeAsync, tick} from '@angular/core/testing';
 import {Dic, LangManager, LangRow} from '@dino/core/langs';
 import {BehaviorSubject, Observable, timer} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -35,8 +34,12 @@ describe('LangsStore', () => {
   let langSvc: LangManagerStub;
   let store: LangsStore;
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   // The store is built by every test, and not once by beforeEach, so that the
-  // timers of its debounces belong to the zone of the test that ticks them.
+  // timers of its debounces are created after the test has switched to fake timers.
   function createStore(): void {
     langSvc = new LangManagerStub();
     store = new LangsStore(langSvc as unknown as LangManager);
@@ -69,26 +72,28 @@ describe('LangsStore', () => {
     expect(res[1].status).toBe('ok');
   });
 
-  it('should search the key and every translation', fakeAsync(() => {
+  it('should search the key and every translation', () => {
+    vi.useFakeTimers();
     createStore();
     store.setQuery('accetta');
-    tick(250);
+    vi.advanceTimersByTime(250);
     expect(rows(store.visibleRows$).map(r => r.key)).toEqual(['Accept']);
 
     store.setQuery('add');
-    tick(250);
+    vi.advanceTimersByTime(250);
     expect(rows(store.visibleRows$).map(r => r.key)).toEqual(['Add New']);
-  }));
+  });
 
-  it('should combine the search with the untranslated filter', fakeAsync(() => {
+  it('should combine the search with the untranslated filter', () => {
+    vi.useFakeTimers();
     createStore();
     store.setFilter('missing');
     expect(rows(store.visibleRows$).map(r => r.key)).toEqual(['Add New']);
 
     store.setQuery('accept');
-    tick(250);
+    vi.advanceTimersByTime(250);
     expect(rows(store.visibleRows$)).toEqual([]);
-  }));
+  });
 
   it('should select the first visible key when nothing is selected', () => {
     let selected: TranslationKeyVm | null = null;
@@ -97,58 +102,63 @@ describe('LangsStore', () => {
     sub.unsubscribe();
   });
 
-  it('should debounce the edits of a key into a single update', fakeAsync(() => {
+  it('should debounce the edits of a key into a single update', () => {
+    vi.useFakeTimers();
     store.setValue('Add New', 'ITA', 'Agg');
-    tick(200);
+    vi.advanceTimersByTime(200);
     store.setValue('Add New', 'ITA', 'Aggiungi');
-    tick(200);
+    vi.advanceTimersByTime(200);
     expect(langSvc.updateLangCalls.length).toBe(0);
 
-    tick(500);
+    vi.advanceTimersByTime(500);
     expect(langSvc.updateLangCalls.length).toBe(1);
     expect(langSvc.updateLangCalls[0]).toEqual({updates: {ITA: 'Aggiungi'}, key: 'Add New'});
-    tick(UPDATE_DURATION);
-  }));
+    vi.advanceTimersByTime(UPDATE_DURATION);
+  });
 
-  it('should send the edits of every language of a key together', fakeAsync(() => {
+  it('should send the edits of every language of a key together', () => {
+    vi.useFakeTimers();
     store.setValue('Add New', 'ITA', 'Aggiungi');
     store.setValue('Add New', 'ENG', 'Add new');
-    tick(500);
+    vi.advanceTimersByTime(500);
     expect(langSvc.updateLangCalls.length).toBe(1);
     expect(langSvc.updateLangCalls[0].updates).toEqual({ITA: 'Aggiungi', ENG: 'Add new'});
-    tick(UPDATE_DURATION);
-  }));
+    vi.advanceTimersByTime(UPDATE_DURATION);
+  });
 
-  it('should never run two updates at the same time', fakeAsync(() => {
+  it('should never run two updates at the same time', () => {
+    vi.useFakeTimers();
     store.setValue('Add New', 'ITA', 'Aggiungi');
     store.setValue('Accept', 'ITA', 'Accetto');
-    tick(500);
+    vi.advanceTimersByTime(500);
 
     // Both debounces elapsed, but only the first update started.
     expect(langSvc.updateLangCalls.length).toBe(1);
-    tick(UPDATE_DURATION);
+    vi.advanceTimersByTime(UPDATE_DURATION);
     expect(langSvc.updateLangCalls.length).toBe(2);
     expect(langSvc.maxRunning).toBe(1);
-    tick(UPDATE_DURATION);
-  }));
+    vi.advanceTimersByTime(UPDATE_DURATION);
+  });
 
-  it('should report the state of a save', fakeAsync(() => {
+  it('should report the state of a save', () => {
+    vi.useFakeTimers();
     const states: string[] = [];
     const sub = store.saveStates$.subscribe(s => states.push(s['Add New'] ?? 'none'));
 
     store.setValue('Add New', 'ITA', 'Aggiungi');
-    tick(500);
-    tick(UPDATE_DURATION);
+    vi.advanceTimersByTime(500);
+    vi.advanceTimersByTime(UPDATE_DURATION);
 
     expect(states).toContain('saving');
     expect(states[states.length - 1]).toBe('saved');
     sub.unsubscribe();
-  }));
+  });
 
-  it('should drop the edits already carried by the reloaded rows', fakeAsync(() => {
+  it('should drop the edits already carried by the reloaded rows', () => {
+    vi.useFakeTimers();
     store.setValue('Add New', 'ITA', 'Aggiungi');
-    tick(500);
-    tick(UPDATE_DURATION);
+    vi.advanceTimersByTime(500);
+    vi.advanceTimersByTime(UPDATE_DURATION);
 
     langSvc.langRows$.next([
       {key: 'Accept', ENG: 'Accept', ITA: 'Accetta'},
@@ -159,7 +169,7 @@ describe('LangsStore', () => {
     store.edits$.subscribe(e => (edits = e)).unsubscribe();
     expect(edits).toEqual({});
     expect(rows(store.rows$)[1].values['ITA']).toBe('Aggiungi');
-  }));
+  });
 
   it('should keep the edits that the reloaded rows do not carry yet', () => {
     store.setValue('Add New', 'ITA', 'Aggiungi');

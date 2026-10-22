@@ -102,7 +102,7 @@ describe('User Data Manager', () => {
   });
 
   it('should retrieve the user model by its UUID', async () => {
-    const getSpy = spyOn(userDataManager, 'query').and.returnValue(obsOf([dummyUserData]));
+    const getSpy = vi.spyOn(userDataManager, 'query').mockReturnValue(obsOf([dummyUserData]));
     await firstValueFrom(userDataManager.getActiveUserData());
     const expectedQuerySelector = {selector: {user_auth_ref_id: {$eq: dummyUser.id}}};
     expect(getSpy).toHaveBeenCalledTimes(1);
@@ -128,7 +128,7 @@ describe('User Group Manager', () => {
   });
 
   it('should retrieve the active user groups', async () => {
-    const querySpy = spyOn(userGroupManager, 'query').and.callThrough();
+    const querySpy = vi.spyOn(userGroupManager, 'query');
     await firstValueFrom(userGroupManager.getActiveUserGroups().pipe(take(1)));
     const expectedQuerySelector = {selector: {id: {$in: dummyUserData.user_group_ids}}};
     expect(querySpy).toHaveBeenCalledTimes(1);

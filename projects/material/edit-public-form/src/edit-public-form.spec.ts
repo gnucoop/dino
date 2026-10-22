@@ -135,8 +135,8 @@ describe('Edit Public Form', () => {
 
   it('should call the Ajf Form Renderer "getFormValue" method, and the OnlineFormDataManager "create" method', async () => {
     await fixtureEditPublicForm.whenStable();
-    const ajfFrsGetFormValueSpy = spyOn(ajfFrs, 'getFormValue').and.callThrough();
-    const odmCreateSpy = spyOn(odm, 'create').and.callThrough();
+    const ajfFrsGetFormValueSpy = vi.spyOn(ajfFrs, 'getFormValue');
+    const odmCreateSpy = vi.spyOn(odm, 'create');
     const mockFormValue = {
       user_data_ref_id: '',
       form_schema_ref_id: 'id',

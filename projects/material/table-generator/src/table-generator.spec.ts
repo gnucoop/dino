@@ -28,7 +28,7 @@ describe('Table Generator', () => {
     await fixtureTableGenerator.whenStable();
     fixtureTableGenerator.detectChanges();
 
-    let handleDataSpy = spyOn<any>(tableGenerator, '_handleData').and.callThrough();
+    let handleDataSpy = vi.spyOn(tableGenerator as any, '_handleData');
 
     let csv = [
       '"1","val1","val2","val3","val4"',

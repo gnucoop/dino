@@ -166,11 +166,11 @@ describe('Export Forms', () => {
   it('should start the export csv forms process', async () => {
     await fixtureImportForm.whenStable();
     fixtureImportForm.detectChanges();
-    const spyExportCsv = spyOn<any>(exportForm, '_buildCsv').and.callFake(() => {});
+    const spyExportCsv = vi.spyOn(exportForm as any, '_buildCsv').mockImplementation(() => {});
 
     const selectedFields = testAjfSchema.nodes[0].nodes as unknown[] as AjfField[];
-    spyOn<any>(exportForm, '_getSelectedFields').and.callFake(() => selectedFields);
-    spyOn<any>(exportForm, '_getSectionFields').and.callFake(() => selectedFields);
+    vi.spyOn(exportForm as any, '_getSelectedFields').mockImplementation(() => selectedFields);
+    vi.spyOn(exportForm as any, '_getSectionFields').mockImplementation(() => selectedFields);
 
     exportForm.data = formData;
     exportForm.export();

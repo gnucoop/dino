@@ -80,7 +80,7 @@ describe('Search filters dialog', () => {
     fixtureDialog.detectChanges();
 
     await fixtureDialog.whenStable();
-    const spyRefClose = spyOn(dialog.dialogRef, 'close').and.callThrough();
+    const spyRefClose = vi.spyOn(dialog.dialogRef, 'close');
 
     dialog.closeDialog();
     expect(spyRefClose).toHaveBeenCalledWith({search: false});
@@ -94,7 +94,7 @@ describe('Search filters dialog', () => {
 
   it('should ask the FilterService to add a FilterItem to the list of the chosen FilterListType', () => {
     fixtureDialog.detectChanges();
-    const spyAddFilter = spyOn(fts, 'addFilter').and.callThrough();
+    const spyAddFilter = vi.spyOn(fts, 'addFilter');
 
     dialog.addFilter(fakeFilters[0], 'temporary');
 
@@ -103,7 +103,7 @@ describe('Search filters dialog', () => {
 
   it('should not ask the FilterService to add a FilterItem with empty or null value ', () => {
     fixtureDialog.detectChanges();
-    const spyAddFilter = spyOn(fts, 'addFilter').and.callThrough();
+    const spyAddFilter = vi.spyOn(fts, 'addFilter');
 
     dialog.addFilter(fakeFilters[1], 'temporary');
 
@@ -112,7 +112,7 @@ describe('Search filters dialog', () => {
 
   it('should ask the FilterService to remove a FilterItem from a list', () => {
     fixtureDialog.detectChanges();
-    const spyRemoveFilter = spyOn(fts, 'removeFilter').and.callThrough();
+    const spyRemoveFilter = vi.spyOn(fts, 'removeFilter');
 
     dialog.removeFilter(fakeFilters[0], 'temporary');
 
