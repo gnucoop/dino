@@ -593,9 +593,12 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     });
 
     this._fts.clearAdditionalBasicFilters();
-    this._selectionChangedSub = this.selection.changed.subscribe(() =>
-      this.emitSelectionChangedEvt.emit(this.getSelection()),
-    );
+    // The selection also changes from code (a delete confirmed in a dialog deselects
+    // the rows), not only from this template's events: refresh the view either way.
+    this._selectionChangedSub = this.selection.changed.subscribe(() => {
+      this._cdr.markForCheck();
+      this.emitSelectionChangedEvt.emit(this.getSelection());
+    });
   }
 
   /**

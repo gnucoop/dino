@@ -1419,5 +1419,8 @@ export class EditReport implements AfterViewInit {
         shareReplay(1),
       );
     }
+    // reportMetrics and isReportMetricsSelectorValid are bound in the template, which has
+    // already been checked once with their initial values: refresh it with the new streams.
+    this._cdr.markForCheck();
   }
 }
