@@ -807,6 +807,12 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
     if (this._metricManagers[metricType] == null) {
       return;
     }
+    // Created before the options arrive, so the template subscribes to it once and is
+    // notified by the async pipe: a subject assigned later would change the binding
+    // without anyone telling the view.
+    this.formMetricsOptions[metricType] ??= new BehaviorSubject<
+      RxDocument<Metric & {level?: number}, {}>[]
+    >([]);
     let mtOptSource = combineLatest([
       this._metricManagers[metricType]!.query({
         selector: {is_deleted: {$ne: true}},
@@ -922,11 +928,7 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
           parentIds,
         );
       }
-      this.formMetricsOptions[metricType]
-        ? this.formMetricsOptions[metricType].next(organizedMetricOptions)
-        : (this.formMetricsOptions[metricType] = new BehaviorSubject<
-            RxDocument<Metric & {level?: number}, {}>[]
-          >(organizedMetricOptions));
+      this.formMetricsOptions[metricType].next(organizedMetricOptions);
 
       if (organizedMetricOptions.length === 1 && !this._hasOptionalMetrics.value) {
         const firstMetric = organizedMetricOptions[0];
