@@ -29,7 +29,6 @@
           "options": {
             "outputPath": "dist/test-build/core",
             "tsConfig": "projects/core/tsconfig.spec.json",
-            "polyfills": ["zone.js"],
             "inlineStyleLanguage": "scss"
           }
         },
@@ -123,7 +122,6 @@
           "options": {
             "outputPath": "dist/test-build/material",
             "tsConfig": "projects/material/tsconfig.spec.json",
-            "polyfills": ["zone.js"],
             "inlineStyleLanguage": "scss"
           }
         },
@@ -602,7 +600,6 @@
           "options": {
             "outputPath": "dist/test-build/dinoapp",
             "tsConfig": "projects/dinoapp/tsconfig.spec.json",
-            "polyfills": ["zone.js"],
             "inlineStyleLanguage": "scss"
           }
         },
