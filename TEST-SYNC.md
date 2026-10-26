@@ -348,7 +348,9 @@ database dall'area utente** (Backup and Restore → Backup Data), pannello visib
 solo dove la funzione di backup è attiva — se l'operatore sul campo non è amministratore, l'export lo
 fa qualcun altro da quel dispositivo. Se al click compare *"Il backup non può ancora essere creato:
 alcuni dati sono ancora in caricamento"*, il file non è stato scaricato: si aspetta qualche secondo e si
-riprova, senza uscire. Il logout è l'unica via d'uscita e cancella i dati: va fatto
+riprova, senza uscire. Se invece compare *"È in corso una sincronizzazione"*, il file è stato scaricato
+ma può contenere solo una parte dei dati: si aspetta che la rotellina si fermi e si scarica di nuovo.
+Il logout è l'unica via d'uscita e cancella i dati: va fatto
 **dopo** l'export, e solo dopo che un amministratore ha guardato il file. Il messaggio non nomina il
 documento colpevole: quello si trova nell'errore in console o su Sentry.
 

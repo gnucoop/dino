@@ -920,4 +920,6 @@ export const ITA: Translation = {
   'The backup cannot be created yet: some data is still loading. Try again in a moment.':
     'Il backup non può ancora essere creato: alcuni dati sono ancora in caricamento. Riprova tra un momento.',
   'The backup could not be created': 'Non è stato possibile creare il backup',
+  'A sync is in progress: this backup holds only the data downloaded so far.':
+    'È in corso una sincronizzazione: questo backup contiene solo i dati scaricati finora.',
 };
