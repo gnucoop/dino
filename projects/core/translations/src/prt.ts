@@ -906,4 +906,6 @@ export const PRT: Translation = {
   'The backup cannot be created yet: some data is still loading. Try again in a moment.':
     'O backup ainda não pode ser criado: alguns dados ainda estão sendo carregados. Tente novamente em instantes.',
   'The backup could not be created': 'Não foi possível criar o backup',
+  'A sync is in progress: this backup holds only the data downloaded so far.':
+    'Há uma sincronização em andamento: este backup contém apenas os dados baixados até agora.',
 };

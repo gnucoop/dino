@@ -944,4 +944,6 @@ export const UKR: Translation = {
   'The backup cannot be created yet: some data is still loading. Try again in a moment.':
     'Резервну копію ще не можна створити: деякі дані ще завантажуються. Спробуйте ще раз за мить.',
   'The backup could not be created': 'Не вдалося створити резервну копію',
+  'A sync is in progress: this backup holds only the data downloaded so far.':
+    'Триває синхронізація: ця резервна копія містить лише дані, завантажені на цей момент.',
 };

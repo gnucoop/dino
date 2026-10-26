@@ -1032,4 +1032,6 @@ export const AR: Translation = {
   'The backup cannot be created yet: some data is still loading. Try again in a moment.':
     'لا يمكن إنشاء النسخة الاحتياطية بعد: لا تزال بعض البيانات قيد التحميل. حاول مرة أخرى بعد لحظة.',
   'The backup could not be created': 'تعذّر إنشاء النسخة الاحتياطية',
+  'A sync is in progress: this backup holds only the data downloaded so far.':
+    'هناك مزامنة قيد التنفيذ: تحتوي هذه النسخة الاحتياطية على البيانات التي تم تنزيلها حتى الآن فقط.',
 };

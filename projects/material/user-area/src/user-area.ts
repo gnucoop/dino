@@ -36,7 +36,7 @@ import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthError, AuthService, PasswordMatch, translatedValidationErrors} from '@dino/core/auth';
 import {UserData, UserDataManager, UserGroupManager} from '@dino/core/users';
-import {BehaviorSubject, Observable, of as obsOf, Subject} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subject} from 'rxjs';
 import {
   finalize,
   map,
@@ -440,15 +440,31 @@ export class UserArea implements OnDestroy {
             );
             return obsOf(null);
           }
-          return this._ds.exportDatabase();
+          // Whether the sync is running is read together with the export: the backup
+          // is the local data as it is, and while the sync runs it may hold only part
+          // of the data.
+          return combineLatest([this._ds.exportDatabase(), this._ds.isSyncing.pipe(take(1))]);
         }),
         finalize(() => this.preparingBackup.next(false)),
         takeUntil(this._mainUnsubscribe),
       )
       .subscribe({
-        next: blob => {
-          if (blob != null) {
-            this._saveBackup(blob);
+        next: result => {
+          if (result == null) {
+            return;
+          }
+          const [blob, syncing] = result;
+          this._saveBackup(blob);
+          // Handed over all the same: a partial backup beats none, and waiting for the
+          // sync could mean waiting for the network.
+          if (syncing) {
+            this._snackBar.open(
+              this._ts.translate(
+                'A sync is in progress: this backup holds only the data downloaded so far.',
+              ),
+              'OK',
+              {duration: 10000},
+            );
           }
         },
         error: () =>

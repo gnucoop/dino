@@ -904,4 +904,6 @@ export const ENG: Translation = {
   'The backup cannot be created yet: some data is still loading. Try again in a moment.':
     'The backup cannot be created yet: some data is still loading. Try again in a moment.',
   'The backup could not be created': 'The backup could not be created',
+  'A sync is in progress: this backup holds only the data downloaded so far.':
+    'A sync is in progress: this backup holds only the data downloaded so far.',
 };
