@@ -913,4 +913,8 @@ export const FRA: Translation = {
     'La session DINO-AI est terminée : posez à nouveau la question pour en démarrer une nouvelle',
   'The DINO-AI session has ended: reload the page to start a new one':
     'La session DINO-AI est terminée : rechargez la page pour en démarrer une nouvelle',
+  'Preparing backup...': 'Préparation de la sauvegarde...',
+  'The backup cannot be created yet: some data is still loading. Try again in a moment.':
+    'La sauvegarde ne peut pas encore être créée : certaines données sont encore en cours de chargement. Réessayez dans un instant.',
+  'The backup could not be created': 'La sauvegarde n’a pas pu être créée',
 };

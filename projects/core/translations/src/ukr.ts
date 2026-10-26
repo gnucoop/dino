@@ -940,4 +940,8 @@ export const UKR: Translation = {
     'Сеанс DINO-AI завершено: поставте запитання ще раз, щоб розпочати новий',
   'The DINO-AI session has ended: reload the page to start a new one':
     'Сеанс DINO-AI завершено: перезавантажте сторінку, щоб розпочати новий',
+  'Preparing backup...': 'Підготовка резервної копії...',
+  'The backup cannot be created yet: some data is still loading. Try again in a moment.':
+    'Резервну копію ще не можна створити: деякі дані ще завантажуються. Спробуйте ще раз за мить.',
+  'The backup could not be created': 'Не вдалося створити резервну копію',
 };

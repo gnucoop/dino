@@ -268,13 +268,15 @@
     <ng-container *ngIf="(processing|async) === false; else restoringTemplate">
       <div class="dino-user-area-block dino-user-area-block-inline">
         <span class="dino-user-area-block-label">{{'Backup Data'|transloco}}</span>
-        <a
+        <button
           mat-raised-button
           color="primary"
-          [href]="dbDownloadUrl|async"
-          [download]="'dino_db_export.json'"
-          >{{'Download backup'|transloco}}</a
+          type="button"
+          [disabled]="preparingBackup|async"
+          (click)="downloadBackup()"
         >
+          {{((preparingBackup|async) ? 'Preparing backup...' : 'Download backup')|transloco}}
+        </button>
       </div>
 
       <div class="dino-user-area-block">
