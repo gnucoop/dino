@@ -309,6 +309,34 @@ describe('Data service - backup/restore', () => {
     names.forEach(name => expect(BACKUP_DATA_COLLECTIONS).toContain(name));
   });
 
+  it('should wait for a requested backup collection before a backup', async () => {
+    const reportDataColl = {name: 'report_data', collection: {schema: dummySchema}};
+    // Requested, as a manager does when it is built, but not created yet.
+    const creation = dataService.createCollection(reportDataColl);
+    let missing: string[] | null = null;
+    const sub = dataService.waitForBackupCollections(5000).subscribe(names => (missing = names));
+    await new Promise(resolve => setTimeout(resolve, 50));
+    expect(missing).toBeNull();
+
+    await firstValueFrom(creation.pipe(take(1)));
+    expect(missing as string[] | null).toEqual([]);
+    sub.unsubscribe();
+    await firstValueFrom(dataService.destroyCollection('report_data').pipe(take(1)));
+  });
+
+  it('should name the backup collections still missing when the wait ends', async () => {
+    dataService.createCollection({name: 'report_data', collection: {schema: dummySchema}});
+    const missing = await firstValueFrom(dataService.waitForBackupCollections(50));
+    expect(missing).toEqual(['report_data']);
+  });
+
+  it('should not wait for the backup collections nobody asked for', async () => {
+    // Only form_data among the backup collections was requested in this suite: the
+    // others belong, as far as this test is concerned, to disabled modules.
+    const missing = await firstValueFrom(dataService.waitForBackupCollections(5000));
+    expect(missing).toEqual([]);
+  });
+
   it('should reassign user_data_ref_id to the importing user on restore', async () => {
     const dump = {
       collections: [
