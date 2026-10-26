@@ -48,7 +48,6 @@ describe('Search filters widget', () => {
   it('should correctly create and setup a Widget component', async () => {
     const spySetup = vi.spyOn(widgetComponent as any, '_setupWidget');
 
-    await fixtureWidget.whenStable();
     widgetComponent.filterItemData = fakeFilterItem;
     fixtureWidget.detectChanges();
 
@@ -58,7 +57,6 @@ describe('Search filters widget', () => {
   });
 
   it('should render the single ajf field of the filter', async () => {
-    await fixtureWidget.whenStable();
     widgetComponent.filterItemData = fakeFilterItem;
     fixtureWidget.detectChanges();
     await fixtureWidget.whenStable();
@@ -69,7 +67,6 @@ describe('Search filters widget', () => {
   });
 
   it('should keep the create filter button disabled until a value is set', async () => {
-    await fixtureWidget.whenStable();
     widgetComponent.filterItemData = fakeFilterItem;
     fixtureWidget.detectChanges();
     await fixtureWidget.whenStable();

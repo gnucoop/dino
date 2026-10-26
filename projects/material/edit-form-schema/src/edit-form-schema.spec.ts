@@ -71,7 +71,9 @@ describe('Edit FormSchema', () => {
       imports: [
         BrowserAnimationsModule,
         EditFormSchemaModule,
-        RouterTestingModule,
+        // A successful save navigates back to the list: without the route the navigation
+        // is rejected, and nothing in the tests handles the rejection.
+        RouterTestingModule.withRoutes([{path: 'forms', children: []}]),
         MatDialogModule,
       ],
       providers: [

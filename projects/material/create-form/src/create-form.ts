@@ -70,6 +70,7 @@ import {NetworkStatusService} from '@dino/core/auth';
 import {FileUploadService, StorageUploadResponse} from '@dino/core/file-upload';
 
 import {
+  asapScheduler,
   BehaviorSubject,
   combineLatest,
   Observable,
@@ -84,6 +85,7 @@ import {
   distinctUntilChanged,
   filter,
   map,
+  observeOn,
   shareReplay,
   startWith,
   switchMap,
@@ -709,6 +711,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
         }
         return this.formMetricsSelectorComponent.changes.pipe(
           map((comps: QueryList<FormMetricSelector>) => comps.first),
+          // The query emits while this view is being checked: what follows from it
+          // (the stored data, the selector validity) must reach the template in a new pass.
+          observeOn(asapScheduler),
         );
       }),
     );

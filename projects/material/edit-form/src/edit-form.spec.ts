@@ -75,7 +75,6 @@ describe('Edit Form', () => {
   });
 
   it('should create the component', async () => {
-    await fixtureEditForm.whenStable();
     editForm.dataModelManager = fsm as unknown as DataModelManager<Model>;
     fixtureEditForm.detectChanges();
 

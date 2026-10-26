@@ -105,8 +105,8 @@ describe('List', () => {
     const spyLoadPreset = vi.spyOn(filterService, 'loadPreset');
     const spyFillDataSource = vi.spyOn(list as any, '_fillDataSource');
 
-    await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
+    list.dataSource.data = [];
     list.dataSource.customSort = new BehaviorSubject<MatSort | null>(null);
     list.dataSource.customPaginator = new BehaviorSubject<MatPaginator | null>(null);
     list.dataSource.actionErrorEvt = new EventEmitter<Error>();
@@ -121,8 +121,8 @@ describe('List', () => {
   it('should assign a SearchFiltersComponent and correctly initalize the list', async () => {
     const spyInitList = vi.spyOn(list as any, '_initList');
 
-    await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
+    list.dataSource.data = [];
     list.dataSource.customSort = new BehaviorSubject<MatSort | null>(null);
     list.dataSource.customPaginator = new BehaviorSubject<MatPaginator | null>(null);
     list.dataSource.actionErrorEvt = new EventEmitter<Error>();
@@ -136,8 +136,8 @@ describe('List', () => {
   it('should add a basic filter to the FiltersService basic filters list', async () => {
     const spyAddBasic = vi.spyOn(filterService, 'addBasicFilter');
 
-    await fixtureList.whenStable();
     list.dataSource = [] as unknown as ListDataSource;
+    list.dataSource.data = [];
     list.dataSource.customSort = new BehaviorSubject<MatSort | null>(null);
     list.dataSource.customPaginator = new BehaviorSubject<MatPaginator | null>(null);
     list.dataSource.actionErrorEvt = new EventEmitter<Error>();
