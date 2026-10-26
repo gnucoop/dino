@@ -346,7 +346,9 @@ sessione.
 **Come comportarsi**: la sessione viene tenuta aperta di proposito perché si possa **esportare il
 database dall'area utente** (Backup and Restore → Backup Data), pannello visibile agli amministratori e
 solo dove la funzione di backup è attiva — se l'operatore sul campo non è amministratore, l'export lo
-fa qualcun altro da quel dispositivo. Il logout è l'unica via d'uscita e cancella i dati: va fatto
+fa qualcun altro da quel dispositivo. Se al click compare *"Il backup non può ancora essere creato:
+alcuni dati sono ancora in caricamento"*, il file non è stato scaricato: si aspetta qualche secondo e si
+riprova, senza uscire. Il logout è l'unica via d'uscita e cancella i dati: va fatto
 **dopo** l'export, e solo dopo che un amministratore ha guardato il file. Il messaggio non nomina il
 documento colpevole: quello si trova nell'errore in console o su Sentry.
 

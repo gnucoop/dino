@@ -37,13 +37,21 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {AuthError, AuthService, PasswordMatch, translatedValidationErrors} from '@dino/core/auth';
 import {UserData, UserDataManager, UserGroupManager} from '@dino/core/users';
 import {BehaviorSubject, Observable, of as obsOf, Subject} from 'rxjs';
-import {map, shareReplay, startWith, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {
+  finalize,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import {TranslocoService} from '@ngneat/transloco';
 import {buildInitials, DinoTheme, ThemeService} from '@dino/material/core';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {AdminUserInteractionsService} from '@dino/material/user-interactions';
 import {DataService} from '@dino/core/data';
-import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {ListAction} from '@dino/core/list';
 import {Router} from '@angular/router';
 import {
@@ -53,6 +61,16 @@ import {
 } from '@dino/material/stripe-payment';
 import {UserAreaPanelType, UserAreaTab} from './user-area-panel-type';
 import {UI_TOUR_SERVICE_CONFIG, UITourConfig, UITourService} from '@dino/material/ui-tour-service';
+
+/**
+ * How long a backup waits for the collections still being created before giving up
+ */
+const BACKUP_COLLECTIONS_MAX_WAIT = 30000;
+
+/**
+ * The name of a downloaded backup file
+ */
+const BACKUP_FILE_NAME = 'dino_db_export.json';
 
 /**
  * The tabs, in the order they are shown. Password, AI and DINO Theme are always
@@ -260,9 +278,9 @@ export class UserArea implements OnDestroy {
   themePresetOptions: Observable<string[]>;
 
   /**
-   * Sanitized db export blob
+   * True while a backup is being prepared
    */
-  dbDownloadUrl: Observable<SafeUrl | null>;
+  readonly preparingBackup: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
    * The selected file
@@ -286,7 +304,6 @@ export class UserArea implements OnDestroy {
     private _snackBar: MatSnackBar,
     private _ds: DataService,
     private _ts: TranslocoService,
-    private _sanitizer: DomSanitizer,
     private _aui: AdminUserInteractionsService,
     private _tokensService: TokensService,
     private _router: Router,
@@ -300,7 +317,6 @@ export class UserArea implements OnDestroy {
       switchMap(roles => this._userGroupManager.isActiveUserAdmin(roles)),
       shareReplay(1),
     );
-    this.dbDownloadUrl = obsOf(null);
     this.userData = this._udm.getActiveUserData();
     this.userInitials = this.userData.pipe(
       map(userData => (userData?.full_name ? buildInitials(userData.full_name) : null)),
@@ -390,26 +406,69 @@ export class UserArea implements OnDestroy {
         this._router.navigateByUrl('/', {replaceUrl: true});
       }
     });
-
-    this._exportDatabase();
   }
 
   /**
-   * Exports the Db instance content to a json file
+   * Exports the Db instance content to a json file and downloads it.
+   * The dump is taken at click time, not when the page opens, so that it holds the
+   * data as it is now. It is not taken at all while some backup collections are
+   * still being created, as after a direct page load: the file would hold almost
+   * nothing and still look like a successful backup.
    */
-  private _exportDatabase(): void {
-    this.dbDownloadUrl = this.isAdmin.pipe(
-      switchMap(isAdmin => {
-        if (!isAdmin) {
-          return obsOf(null);
-        }
-        return this._ds
-          .exportDatabase()
-          .pipe(
-            map(blob => this._sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(blob))),
-          );
-      }),
-    );
+  downloadBackup(): void {
+    if (this.preparingBackup.value) {
+      return;
+    }
+    this.preparingBackup.next(true);
+    this.isAdmin
+      .pipe(
+        take(1),
+        switchMap(isAdmin =>
+          isAdmin ? this._ds.waitForBackupCollections(BACKUP_COLLECTIONS_MAX_WAIT) : obsOf(null),
+        ),
+        switchMap(missing => {
+          if (missing == null) {
+            return obsOf(null);
+          }
+          if (missing.length > 0) {
+            this._snackBar.open(
+              this._ts.translate(
+                'The backup cannot be created yet: some data is still loading. Try again in a moment.',
+              ),
+              'OK',
+              {duration: 10000},
+            );
+            return obsOf(null);
+          }
+          return this._ds.exportDatabase();
+        }),
+        finalize(() => this.preparingBackup.next(false)),
+        takeUntil(this._mainUnsubscribe),
+      )
+      .subscribe({
+        next: blob => {
+          if (blob != null) {
+            this._saveBackup(blob);
+          }
+        },
+        error: () =>
+          this._snackBar.open(this._ts.translate('The backup could not be created'), 'OK', {
+            duration: 10000,
+          }),
+      });
+  }
+
+  /**
+   * Hands a backup file to the browser as a download.
+   * @param blob The backup file
+   */
+  private _saveBackup(blob: Blob): void {
+    const objectUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = BACKUP_FILE_NAME;
+    link.click();
+    setTimeout(() => window.URL.revokeObjectURL(objectUrl));
   }
 
   /**

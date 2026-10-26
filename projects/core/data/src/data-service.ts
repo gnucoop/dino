@@ -409,6 +409,13 @@ export class DataService implements IDataService {
   >([]);
 
   /**
+   * The names of the collections the application asked for through createCollection,
+   * whether or not they are registered yet. It tells a backup collection that is still
+   * being created from one whose module is disabled, which never exists.
+   */
+  private _requestedCollections: Set<string> = new Set();
+
+  /**
    * The auth token currently stored, added to the request headers.
    */
   private _currentToken: string | null = null;
@@ -1015,6 +1022,7 @@ export class DataService implements IDataService {
     params: DataCreateCollectionRequest,
     pullQueryContextChecks?: PullQueryContextChecks,
   ): Observable<boolean> {
+    this._requestedCollections.add(params.name);
     return this.dbToken.pipe(
       filter(tkn => tkn != null),
       distinctUntilChanged(),
@@ -1368,6 +1376,33 @@ export class DataService implements IDataService {
       this._wsClient.dispose();
       this._wsClient = null;
     }
+  }
+
+  /**
+   * Waits until every backup collection the application asked for is registered on the
+   * database. After a direct page load the contextual collections, form_data among them,
+   * are created only once the permission context is complete: a dump taken before then
+   * holds almost nothing, and looks like a successful backup.
+   * @param maxWaitMs How long to wait for the missing collections
+   * @returns The names of the backup collections still missing when the wait ended,
+   *   empty when they are all registered
+   */
+  waitForBackupCollections(maxWaitMs: number): Observable<string[]> {
+    const missing = (registered: RegisteredCollection[]): string[] =>
+      BACKUP_DATA_COLLECTIONS.filter(
+        name =>
+          this._requestedCollections.has(name) &&
+          !registered.some(coll => coll.collection.name === name),
+      );
+    return this._registeredCollections.pipe(
+      map(missing),
+      filter(names => names.length === 0),
+      take(1),
+      timeout({
+        first: maxWaitMs,
+        with: () => obsOf(missing(this._registeredCollections.value)),
+      }),
+    );
   }
 
   /**

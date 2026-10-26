@@ -553,4 +553,8 @@ export const UGA: Translation = {
     'The DINO-AI session has ended: ask the question again to start a new one',
   'The DINO-AI session has ended: reload the page to start a new one':
     'The DINO-AI session has ended: reload the page to start a new one',
+  'Preparing backup...': 'Preparing backup...',
+  'The backup cannot be created yet: some data is still loading. Try again in a moment.':
+    'The backup cannot be created yet: some data is still loading. Try again in a moment.',
+  'The backup could not be created': 'The backup could not be created',
 };

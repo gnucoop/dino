@@ -902,4 +902,8 @@ export const PRT: Translation = {
     'A sessão DINO-AI terminou: faça a pergunta novamente para iniciar uma nova',
   'The DINO-AI session has ended: reload the page to start a new one':
     'A sessão DINO-AI terminou: recarregue a página para iniciar uma nova',
+  'Preparing backup...': 'Preparando o backup...',
+  'The backup cannot be created yet: some data is still loading. Try again in a moment.':
+    'O backup ainda não pode ser criado: alguns dados ainda estão sendo carregados. Tente novamente em instantes.',
+  'The backup could not be created': 'Não foi possível criar o backup',
 };

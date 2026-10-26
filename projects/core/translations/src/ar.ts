@@ -1028,4 +1028,8 @@ export const AR: Translation = {
     'انتهت جلسة DINO-AI: أعد طرح السؤال لبدء جلسة جديدة',
   'The DINO-AI session has ended: reload the page to start a new one':
     'انتهت جلسة DINO-AI: أعد تحميل الصفحة لبدء جلسة جديدة',
+  'Preparing backup...': 'جارٍ تحضير النسخة الاحتياطية...',
+  'The backup cannot be created yet: some data is still loading. Try again in a moment.':
+    'لا يمكن إنشاء النسخة الاحتياطية بعد: لا تزال بعض البيانات قيد التحميل. حاول مرة أخرى بعد لحظة.',
+  'The backup could not be created': 'تعذّر إنشاء النسخة الاحتياطية',
 };
