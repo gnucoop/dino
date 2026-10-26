@@ -212,6 +212,28 @@ export interface DataChatApiResponse {
   response: DataChatResponsePayload;
   explanation?: string | null;
   log_id?: string | number | null;
+  /**
+   * The Maui conversation the question has been remembered in, only for the
+   * requests sent with memory. Absent when the question did not start nor
+   * continue a conversation, i.e. when it was not remembered.
+   */
+  conversation_id?: string | null;
+}
+
+/**
+ * The body of a DataChat question
+ */
+export interface DataChatRequest {
+  chat: string;
+  /**
+   * True to answer the question in the context of the previous ones
+   */
+  memory?: boolean;
+  /**
+   * The Maui conversation to continue. Allowed only with memory, and omitted
+   * to start a new one.
+   */
+  conversation_id?: string;
 }
 
 export interface ComponentData {

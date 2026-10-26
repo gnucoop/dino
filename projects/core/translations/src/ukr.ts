@@ -930,4 +930,14 @@ export const UKR: Translation = {
   'Hide password': 'Приховати пароль',
   'Email language': 'Мова листів',
   'The language of the emails the user receives': 'Мова листів, які отримує користувач',
+  'The context of this chat has been lost: ask the question again, including what it refers to':
+    'Контекст цього чату втрачено: поставте запитання ще раз, вказавши, до чого воно стосується',
+  'Another question is being answered: wait for its answer and try again':
+    'Інше запитання очікує на відповідь: дочекайтеся відповіді та спробуйте ще раз',
+  'Too many open chats: this one goes on without memory of the previous questions':
+    "Забагато відкритих чатів: цей продовжується без пам'яті про попередні запитання",
+  'The DINO-AI session has ended: ask the question again to start a new one':
+    'Сеанс DINO-AI завершено: поставте запитання ще раз, щоб розпочати новий',
+  'The DINO-AI session has ended: reload the page to start a new one':
+    'Сеанс DINO-AI завершено: перезавантажте сторінку, щоб розпочати новий',
 };

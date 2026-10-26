@@ -890,4 +890,14 @@ export const ENG: Translation = {
   'Hide password': 'Hide password',
   'Email language': 'Email language',
   'The language of the emails the user receives': 'The language of the emails the user receives',
+  'The context of this chat has been lost: ask the question again, including what it refers to':
+    'The context of this chat has been lost: ask the question again, including what it refers to',
+  'Another question is being answered: wait for its answer and try again':
+    'Another question is being answered: wait for its answer and try again',
+  'Too many open chats: this one goes on without memory of the previous questions':
+    'Too many open chats: this one goes on without memory of the previous questions',
+  'The DINO-AI session has ended: ask the question again to start a new one':
+    'The DINO-AI session has ended: ask the question again to start a new one',
+  'The DINO-AI session has ended: reload the page to start a new one':
+    'The DINO-AI session has ended: reload the page to start a new one',
 };

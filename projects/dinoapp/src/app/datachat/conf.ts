@@ -1,6 +1,7 @@
 import {environment} from 'src/environments/environment';
 
 export const pandinoUrl = environment.pandinoConfig.pandinoUrl;
+export const dataChatMemory = environment.pandinoConfig.dataChatMemory ?? true;
 export const acceptTermsContent = `
   <h2>Condizioni di utilizzo del servizio DinoAi</h2>
   <p>

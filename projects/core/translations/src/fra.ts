@@ -903,4 +903,14 @@ export const FRA: Translation = {
   'Hide password': 'Masquer le mot de passe',
   'Email language': 'Langue des e-mails',
   'The language of the emails the user receives': "La langue des e-mails que l'utilisateur reçoit",
+  'The context of this chat has been lost: ask the question again, including what it refers to':
+    'Le contexte de cette discussion a été perdu : posez à nouveau la question en précisant ce à quoi elle se réfère',
+  'Another question is being answered: wait for its answer and try again':
+    'Une autre question attend sa réponse : attendez sa réponse et réessayez',
+  'Too many open chats: this one goes on without memory of the previous questions':
+    'Trop de discussions ouvertes : celle-ci continue sans mémoire des questions précédentes',
+  'The DINO-AI session has ended: ask the question again to start a new one':
+    'La session DINO-AI est terminée : posez à nouveau la question pour en démarrer une nouvelle',
+  'The DINO-AI session has ended: reload the page to start a new one':
+    'La session DINO-AI est terminée : rechargez la page pour en démarrer une nouvelle',
 };

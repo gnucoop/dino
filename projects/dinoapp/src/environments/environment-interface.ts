@@ -370,6 +370,11 @@ export interface PandinoConfig {
    * Namespaces available to Completion Chat
    */
   pandinoGptNamespaces: string[];
+  /**
+   * If false, every DataChat question is answered on its own, without the
+   * context of the previous questions of its chat. Defaults to true.
+   */
+  dataChatMemory?: boolean;
 }
 
 /**

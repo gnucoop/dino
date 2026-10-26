@@ -892,4 +892,14 @@ export const PRT: Translation = {
   'Hide password': 'Ocultar senha',
   'Email language': 'Idioma dos e-mails',
   'The language of the emails the user receives': 'O idioma dos e-mails que o usuário recebe',
+  'The context of this chat has been lost: ask the question again, including what it refers to':
+    'O contexto deste chat foi perdido: faça a pergunta novamente, indicando a que ela se refere',
+  'Another question is being answered: wait for its answer and try again':
+    'Outra pergunta está aguardando resposta: aguarde a resposta e tente novamente',
+  'Too many open chats: this one goes on without memory of the previous questions':
+    'Muitos chats abertos: este continua sem memória das perguntas anteriores',
+  'The DINO-AI session has ended: ask the question again to start a new one':
+    'A sessão DINO-AI terminou: faça a pergunta novamente para iniciar uma nova',
+  'The DINO-AI session has ended: reload the page to start a new one':
+    'A sessão DINO-AI terminou: recarregue a página para iniciar uma nova',
 };
