@@ -20,7 +20,6 @@
     "ng": "ng",
     "build": "scripts/build.mjs",
     "build-docs-content": "scripts/build-docs.mjs",
-    "dev-app": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng serve dev-app",
     "test": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng test",
     "test:ci": "ng test --watch=false",
     "test:ci:core": "ng test core --watch=false",
@@ -113,8 +112,7 @@
     "stream-browserify": "^3.0.0",
     "tslib": "^2.3.0",
     "uuid": "^8.3.2",
-    "xlsx": "^0.18.3",
-    "zone.js": "~0.15.0"
+    "xlsx": "^0.18.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^21.2.0",
