@@ -76,8 +76,6 @@ dino/
 │   │   ├── search-filters-*/   # Search & filter components
 │   │   └── user-area/          # User profile area
 │   │
-│   ├── dev-app/                # Development application
-│   ├── e2e-app/                # E2E test application
 │   └── dino-examples/          # Example components
 │
 ├── tools/                      # Build tools
@@ -159,11 +157,8 @@ All source files must include the AGPL-3.0 license header:
 # Install dependencies (ALWAYS use yarn, NOT npm)
 yarn install
 
-# Serve development app (localhost:4200)
-yarn dev-app
-
-# Serve E2E test app
-yarn e2e-app
+# Serve the Dino application (localhost:4200)
+yarn dinoapp
 ```
 
 ### Building
