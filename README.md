@@ -49,7 +49,6 @@ dino/
 │   ├── core/          # @dino/core — data, auth, sync, forms, reports, metrics…
 │   ├── material/      # @dino/material — UI components built on Angular Material
 │   ├── dinoapp/       # The Dino application
-│   ├── dev-app/       # Development playground app
 │   └── dino-examples/ # Example components
 ├── dino-doc/          # User-facing documentation (MkDocs)
 ├── docker/            # Production Docker image (Nginx)
@@ -77,9 +76,6 @@ yarn install
 ```bash
 # Serve the Dino application
 yarn dinoapp
-
-# Serve the development playground app
-yarn dev-app
 ```
 
 The app is served on [http://localhost:4200](http://localhost:4200).
