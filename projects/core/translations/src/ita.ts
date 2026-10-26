@@ -906,4 +906,14 @@ export const ITA: Translation = {
   'Hide password': 'Nascondi password',
   'Email language': 'Lingua delle email',
   'The language of the emails the user receives': "La lingua delle email che l'utente riceve",
+  'The context of this chat has been lost: ask the question again, including what it refers to':
+    'Il contesto di questa chat è andato perso: rifai la domanda indicando a cosa si riferisce',
+  'Another question is being answered: wait for its answer and try again':
+    "Un'altra domanda è in attesa di risposta: attendi la risposta e riprova",
+  'Too many open chats: this one goes on without memory of the previous questions':
+    'Troppe chat aperte: questa prosegue senza memoria delle domande precedenti',
+  'The DINO-AI session has ended: ask the question again to start a new one':
+    'La sessione DINO-AI è terminata: rifai la domanda per avviarne una nuova',
+  'The DINO-AI session has ended: reload the page to start a new one':
+    'La sessione DINO-AI è terminata: ricarica la pagina per avviarne una nuova',
 };

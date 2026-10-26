@@ -98,7 +98,8 @@
                   (keydown)="chatPromptText = chatPrompt.value"
                   (keyup.enter)="sendPrompt(chatPrompt)"></textarea>
               </mat-form-field>
-              <button mat-flat-button color="primary" class="dino-chat-send" (click)="sendPrompt(chatPrompt)">
+              <button mat-flat-button color="primary" class="dino-chat-send" [disabled]="isAnswering|async"
+                (click)="sendPrompt(chatPrompt)">
                 <mat-icon>send</mat-icon>
                 <span>{{'Send'|transloco}}</span>
               </button>
@@ -116,7 +117,8 @@
               </button>
             </header>
 
-            <button mat-flat-button color="primary" class="dino-datachat-new" (click)="newConversation()">
+            <button mat-flat-button color="primary" class="dino-datachat-new" [disabled]="isAnswering|async"
+              (click)="newConversation()">
               <mat-icon>add</mat-icon>
               <span>{{'New chat'|transloco}}</span>
             </button>

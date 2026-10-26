@@ -7,7 +7,7 @@ import write_blob from 'capacitor-blob-writer';
 import {from} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {ajfCommonFunctions} from '../../../ajf-functions/ajf-functions.common';
-import {acceptTermsContent, pandinoUrl} from '../conf';
+import {acceptTermsContent, dataChatMemory, pandinoUrl} from '../conf';
 
 @Component({
   selector: 'dinoapp-datachat',
@@ -23,12 +23,15 @@ export class DataChatComponent {
   startEndpoint = 'startdatachat';
   endEndpoint = 'enddatachat';
   dataChatEndpoint = 'datachat';
+  closeConversationEndpoint = 'datachat/conversation/close';
   endpointUrls = {
     validateEndpoint: this.validateEndpoint,
     startEndpoint: this.startEndpoint,
     endEndpoint: this.endEndpoint,
     dataChatEndpoint: this.dataChatEndpoint,
+    closeConversationEndpoint: this.closeConversationEndpoint,
   };
+  dataChatMemory = dataChatMemory;
   acceptTermsContent = acceptTermsContent;
 
   constructor(private _snackBar: MatSnackBar, private _ts: TranslocoService) {}

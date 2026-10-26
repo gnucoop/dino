@@ -125,6 +125,14 @@ export class DataChatSessionService {
    */
   private _saveTimeout: ReturnType<typeof setTimeout> | null = null;
 
+  /**
+   * The Maui conversation ids, by Dino conversation id, of the conversations
+   * held in memory by the live agent. They are valid only as long as that
+   * agent lives, so they are never stored: a conversation resumed on another
+   * agent starts over on Maui, without the context of its previous questions.
+   */
+  private _mauiConversations: Map<string, string> = new Map();
+
   constructor(
     private _http: HttpClient,
     private _router: Router,
@@ -176,6 +184,7 @@ export class DataChatSessionService {
   endSession(): void {
     const session = this._live;
     this._live = null;
+    this._mauiConversations.clear();
     if (session == null) {
       return;
     }
@@ -199,6 +208,45 @@ export class DataChatSessionService {
           }
         },
       });
+  }
+
+  /**
+   * Forgets the live agent without destroying it: to be used when the API
+   * reports that the agent does not exist anymore.
+   */
+  discardSession(): void {
+    this._live = null;
+    this._mauiConversations.clear();
+  }
+
+  /**
+   * Returns the Maui conversation id of a conversation, if the live agent
+   * holds its memory.
+   * @param id The Dino conversation id
+   */
+  mauiConversationId(id: string): string | null {
+    return this._mauiConversations.get(id) ?? null;
+  }
+
+  /**
+   * Sets, or clears, the Maui conversation id of a conversation.
+   * @param id The Dino conversation id
+   * @param mauiId The Maui conversation id, or null when there is none
+   */
+  setMauiConversationId(id: string, mauiId: string | null): void {
+    if (mauiId != null) {
+      this._mauiConversations.set(id, mauiId);
+    } else {
+      this._mauiConversations.delete(id);
+    }
+  }
+
+  /**
+   * Forgets every Maui conversation id, i.e. when the agent holding them
+   * has been destroyed.
+   */
+  clearMauiConversations(): void {
+    this._mauiConversations.clear();
   }
 
   /**
@@ -261,6 +309,7 @@ export class DataChatSessionService {
    */
   async removeConversation(id: string): Promise<DataChatQA[]> {
     this._cancelPendingSave();
+    this._mauiConversations.delete(id);
     await this._store.remove(id);
     const conversations = this._scope != null ? await this._store.list(this._scope) : [];
     this.conversations.next(conversations);

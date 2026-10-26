@@ -47,10 +47,20 @@ import {
   DataChatApiResponse,
   DataChatChartSpec,
   DataChatQA,
+  DataChatRequest,
   DataChatResponsePayload,
 } from './datachat.interfaces';
 import {HttpBackend, HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {catchError, map, shareReplay, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {
+  catchError,
+  finalize,
+  map,
+  shareReplay,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {
   BehaviorSubject,
@@ -60,6 +70,7 @@ import {
   of as obsOf,
   Subject,
   Subscription,
+  throwError,
 } from 'rxjs';
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {TranslocoService} from '@ajf/core/transloco';
@@ -142,6 +153,14 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   isCommunicating: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
+   * True while a datachat question is waiting for its answer. The API answers
+   * one question at a time per agent, and the answer belongs to the
+   * conversation it was asked in: until it arrives no other question can be
+   * sent, and the active conversation cannot be changed.
+   */
+  readonly isAnswering: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
    * True if there is no data associated with the schema
    */
   noData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -201,7 +220,14 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     completionChatEndpoint?: string;
     startEndpoint?: string;
     endEndpoint?: string;
+    closeConversationEndpoint?: string;
   };
+
+  /**
+   * If true, every datachat question is answered in the context of the
+   * previous questions of its conversation, as long as the agent lives.
+   */
+  @Input() memory = false;
 
   /**
    * The Custom loading spinner image path
@@ -614,6 +640,9 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * Activates a new, empty conversation.
    */
   newConversation(): void {
+    if (this.isAnswering.value) {
+      return;
+    }
     this.history = this._session.newConversation();
     this._cdr.detectChanges();
   }
@@ -640,7 +669,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * @param conversation The conversation to display
    */
   openConversation(conversation: DataChatConversation): void {
-    if (conversation.id === this.activeConversation.value?.id) {
+    if (conversation.id === this.activeConversation.value?.id || this.isAnswering.value) {
       return;
     }
     this._session.openConversation(conversation.id).then(messages => {
@@ -659,6 +688,15 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    */
   deleteConversation(conversation: DataChatConversation, evt: Event): void {
     evt.stopPropagation();
+    if (this.isAnswering.value) {
+      return;
+    }
+    // The memory of the conversation is released on Maui too: each agent can
+    // hold a limited number of conversations.
+    const mauiId = this._session.mauiConversationId(conversation.id);
+    if (mauiId != null) {
+      this._closeMauiConversation(mauiId);
+    }
     this._session.removeConversation(conversation.id).then(messages => {
       this.history = messages;
       this._cdr.detectChanges();
@@ -782,6 +820,11 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * @param text The chat message sent
    */
   dataChat(text: string): void {
+    if (this.isAnswering.value) {
+      return;
+    }
+    this.isAnswering.next(true);
+    const conversationId = this.activeConversation.value?.id ?? null;
     this._addToHistory({question: text});
     this._addToHistory({
       componentData: {component: MatProgressBar, inputs: {mode: 'indeterminate'}},
@@ -797,9 +840,10 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           const url = `${this.baseDataChatAPIurl}/${
             this.endpointUrls?.dataChatEndpoint ?? 'datachat'
           }`;
-          return this._http.post<DataChatApiResponse>(url, {'chat': text}, {headers});
+          return this._askQuestion(url, headers, text, conversationId);
         }),
         take(1),
+        finalize(() => this.isAnswering.next(false)),
       )
       .subscribe({
         next: res => {
@@ -807,6 +851,11 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
             console.log(res);
           }
           this._removeLastFromHistory();
+          if (res && this.memory && conversationId != null) {
+            // The conversation goes on in the Maui conversation the answer
+            // names, or starts over when it names none.
+            this._session.setMauiConversationId(conversationId, res.conversation_id ?? null);
+          }
           if (res) {
             // The question is kept on every answer entry too - hidden by
             // noPrompt - so that the feedback request can quote it.
@@ -860,7 +909,9 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           }
         },
         error: err => {
-          if (err && err.error && err.error.error === 'Not enough tokens') {
+          this._removeLastFromHistory();
+          const errorCode = err?.error?.error;
+          if (errorCode === 'Not enough tokens') {
             this.noTokens.next(true);
             this.isLoading.next(false);
             this._snackBar.open(
@@ -870,6 +921,28 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
               'OOPS!',
               {duration: 10000},
             );
+          } else if (errorCode === 'conversation_not_found') {
+            // The agent does not remember the conversation anymore: the next
+            // question starts a new one, without the previous context.
+            if (conversationId != null) {
+              this._session.setMauiConversationId(conversationId, null);
+            }
+            this._addToHistory({
+              error: this._ts.translate(
+                'The context of this chat has been lost: ask the question again, including what it refers to',
+              ),
+              noPrompt: true,
+            });
+          } else if (errorCode === 'session_busy') {
+            this._snackBar.open(
+              this._ts.translate(
+                'Another question is being answered: wait for its answer and try again',
+              ),
+              'OK',
+              {duration: 10000},
+            );
+          } else if (err?.status === 400 && errorCode === 'Agent not active for this Api Key') {
+            this._discardAgent();
           } else {
             if (isDevMode()) {
               console.log(err);
@@ -880,8 +953,104 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
               );
             }
           }
+        },
+      });
+  }
 
-          this._removeLastFromHistory();
+  /**
+   * Sends a question to the API 'datachat' endpoint, within the Maui
+   * conversation of the given conversation when the memory is enabled.
+   * When the agent cannot hold one more conversation the question is sent
+   * again without memory: being the first of its conversation, it has no
+   * context to lose.
+   * @param url The 'datachat' endpoint url
+   * @param headers The request headers
+   * @param text The question
+   * @param conversationId The id of the conversation the question belongs to
+   */
+  private _askQuestion(
+    url: string,
+    headers: {[header: string]: string},
+    text: string,
+    conversationId: string | null,
+  ): Observable<DataChatApiResponse> {
+    const body: DataChatRequest = {chat: text};
+    if (this.memory && conversationId != null) {
+      body.memory = true;
+      const mauiId = this._session.mauiConversationId(conversationId);
+      if (mauiId != null) {
+        body.conversation_id = mauiId;
+      }
+    }
+    return this._http.post<DataChatApiResponse>(url, body, {headers}).pipe(
+      catchError((err: HttpErrorResponse) => {
+        if (
+          body.memory &&
+          err.status === 409 &&
+          err.error?.error === 'conversation_limit_reached'
+        ) {
+          this._snackBar.open(
+            this._ts.translate(
+              'Too many open chats: this one goes on without memory of the previous questions',
+            ),
+            'OK',
+            {duration: 10000},
+          );
+          return this._http.post<DataChatApiResponse>(url, {chat: text}, {headers});
+        }
+        return throwError(() => err);
+      }),
+    );
+  }
+
+  /**
+   * Forgets an agent the API reports as no longer active, together with the
+   * conversations it remembered, so that the next question creates a new one.
+   * An agent inherited from a previous visit has no exported data to create
+   * a new one from: in that case the page must be reloaded.
+   */
+  private _discardAgent(): void {
+    const canRecreate = this._exporter != null;
+    this._agentAlive = false;
+    this._agentReady = false;
+    this._session.discardSession();
+    this._addToHistory({
+      error: this._ts.translate(
+        canRecreate
+          ? 'The DINO-AI session has ended: ask the question again to start a new one'
+          : 'The DINO-AI session has ended: reload the page to start a new one',
+      ),
+      noPrompt: true,
+    });
+  }
+
+  /**
+   * Releases the memory of a conversation on Maui. The outcome is not relevant:
+   * either way the conversation is no longer remembered.
+   * @param mauiId The Maui conversation id
+   */
+  private _closeMauiConversation(mauiId: string): void {
+    const apiKey = this.apiKey.value;
+    if (!this.baseDataChatAPIurl || apiKey == null) {
+      return;
+    }
+    const headers = {'X-API-KEY': apiKey, 'X-USER-EMAIL': this._agentUser?.email ?? ''};
+    const url = `${this.baseDataChatAPIurl}/${
+      this.endpointUrls?.closeConversationEndpoint ?? 'datachat/conversation/close'
+    }`;
+    this._http
+      .post<any>(url, {conversation_id: mauiId}, {headers})
+      .pipe(take(1))
+      .subscribe({
+        next: res => {
+          if (isDevMode()) {
+            console.log(res);
+          }
+        },
+        error: err => {
+          if (isDevMode()) {
+            console.log(err);
+          }
         },
       });
   }
@@ -1253,7 +1422,17 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
         formData.append('file', exportedFile);
         const currentLang = this._ts.getActiveLang();
         formData.append('lang', currentLang);
-        return this._http.post<any>(url, formData, {headers});
+        // The API reuses the agent of the api key when one is alive, ignoring
+        // the new file and keeping its conversations: one left behind by a
+        // reload, or by another form, would answer on the wrong data. It is
+        // destroyed first; its absence is not an error.
+        const endUrl = `${this.baseDataChatAPIurl}/${
+          this.endpointUrls?.endEndpoint ?? 'enddatachat'
+        }`;
+        return this._http.post<any>(endUrl, {}, {headers}).pipe(
+          catchError(() => obsOf(null)),
+          switchMap(() => this._http.post<any>(url, formData, {headers})),
+        );
       }),
       take(1),
       map(res => {
@@ -1343,6 +1522,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       'X-USER-EMAIL': this._agentUser?.email ?? '',
     };
     const url = `${this.baseDataChatAPIurl}/${this.endpointUrls?.endEndpoint ?? 'enddatachat'}`;
+    this._session.clearMauiConversations();
     this._http
       .post<any>(url, {}, {headers})
       .pipe(take(1))

@@ -1018,4 +1018,14 @@ export const AR: Translation = {
   'Email language': 'لغة البريد الإلكتروني',
   'The language of the emails the user receives':
     'لغة رسائل البريد الإلكتروني التي يتلقاها المستخدم',
+  'The context of this chat has been lost: ask the question again, including what it refers to':
+    'فُقد سياق هذه المحادثة: أعد طرح السؤال مع توضيح ما يشير إليه',
+  'Another question is being answered: wait for its answer and try again':
+    'هناك سؤال آخر بانتظار الإجابة: انتظر الإجابة وحاول مرة أخرى',
+  'Too many open chats: this one goes on without memory of the previous questions':
+    'عدد كبير جدًا من المحادثات المفتوحة: تستمر هذه المحادثة دون ذاكرة للأسئلة السابقة',
+  'The DINO-AI session has ended: ask the question again to start a new one':
+    'انتهت جلسة DINO-AI: أعد طرح السؤال لبدء جلسة جديدة',
+  'The DINO-AI session has ended: reload the page to start a new one':
+    'انتهت جلسة DINO-AI: أعد تحميل الصفحة لبدء جلسة جديدة',
 };

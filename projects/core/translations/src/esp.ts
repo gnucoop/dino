@@ -894,4 +894,14 @@ export const ESP: Translation = {
   'Email language': 'Idioma de los correos',
   'The language of the emails the user receives':
     'El idioma de los correos electrónicos que recibe el usuario',
+  'The context of this chat has been lost: ask the question again, including what it refers to':
+    'Se ha perdido el contexto de este chat: vuelve a hacer la pregunta indicando a qué se refiere',
+  'Another question is being answered: wait for its answer and try again':
+    'Otra pregunta está esperando respuesta: espera su respuesta e inténtalo de nuevo',
+  'Too many open chats: this one goes on without memory of the previous questions':
+    'Demasiados chats abiertos: este continúa sin memoria de las preguntas anteriores',
+  'The DINO-AI session has ended: ask the question again to start a new one':
+    'La sesión de DINO-AI ha terminado: vuelve a hacer la pregunta para iniciar una nueva',
+  'The DINO-AI session has ended: reload the page to start a new one':
+    'La sesión de DINO-AI ha terminado: recarga la página para iniciar una nueva',
 };
