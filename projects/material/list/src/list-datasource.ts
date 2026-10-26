@@ -58,6 +58,7 @@ import {
   map,
   shareReplay,
   skipWhile,
+  startWith,
   switchMap,
   take,
   takeUntil,
@@ -205,7 +206,13 @@ export class ListDataSource<
   /**
    * The count of the docs resulting by the current query.
    */
-  private _dataResultsCount: Observable<number | null> = obsOf(null);
+  private _dataResultsCountQuery = new BehaviorSubject<Observable<number | null>>(obsOf(null));
+  // One stream for the whole life of the data source, fed with each new query's count: an
+  // observable replaced at every query would leave the bound views on the previous one,
+  // since nothing tells them to read the property again. Null while a new count is computed.
+  private _dataResultsCount: Observable<number | null> = this._dataResultsCountQuery.pipe(
+    switchMap(count => count.pipe(startWith(null))),
+  );
   get dataResultsCount(): Observable<number | null> {
     return this._dataResultsCount;
   }
@@ -412,18 +419,20 @@ export class ListDataSource<
           ),
         );
 
-        this._dataResultsCount = this._getQueryResultsCount(
-          this.queryDM(
-            res.queryString,
-            res.permissionContext,
-            false,
-            res.addSchema,
-            null,
-            null,
-            res.dataHeaders,
-            true,
-          ),
-        ).pipe(shareReplay(1));
+        this._dataResultsCountQuery.next(
+          this._getQueryResultsCount(
+            this.queryDM(
+              res.queryString,
+              res.permissionContext,
+              false,
+              res.addSchema,
+              null,
+              null,
+              res.dataHeaders,
+              true,
+            ),
+          ).pipe(shareReplay(1)),
+        );
 
         this._allItemsQueryObs = this._getQueryResultsObs(
           this.queryDM(

@@ -94,7 +94,6 @@ describe('Create Form', () => {
   });
 
   it('should create the component', async () => {
-    await fixtureCreateForm.whenStable();
     createForm.dataModelManager = fsm as unknown as DataModelManager<Model>;
     fixtureCreateForm.detectChanges();
 
@@ -103,7 +102,6 @@ describe('Create Form', () => {
   });
 
   it('should call the save event and then the "getFilesInForm" method of uploadService with action "draft"', async () => {
-    await fixtureCreateForm.whenStable();
     createForm.dataModelManager = fsm as unknown as DataModelManager<Model>;
     const saveDraftUploadSpy = vi.spyOn(createForm.uploadService, 'getFilesInForm');
     fixtureCreateForm.detectChanges();

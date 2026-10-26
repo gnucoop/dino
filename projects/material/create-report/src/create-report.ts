@@ -41,8 +41,23 @@ import {MetricsService, PermissionContextService} from '@dino/core/data';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
 import {UserDataManager} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
-import {BehaviorSubject, combineLatest, Observable, of as obsOf, Subscription} from 'rxjs';
-import {filter, map, shareReplay, startWith, switchMap, withLatestFrom} from 'rxjs/operators';
+import {
+  asapScheduler,
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  of as obsOf,
+  Subscription,
+} from 'rxjs';
+import {
+  filter,
+  map,
+  observeOn,
+  shareReplay,
+  startWith,
+  switchMap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import {format} from 'date-fns';
 import {FormStatus, FormStatusManager} from '@dino/core/forms';
 import {TokensService} from '@dino/material/stripe-payment';
@@ -218,6 +233,9 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
         }
         return this.formMetricsSelectorComponent.changes.pipe(
           map((comps: QueryList<FormMetricSelector>) => comps.first),
+          // The query emits while this view is being checked: what follows from it
+          // (the selector validity) must reach the template in a new pass.
+          observeOn(asapScheduler),
         );
       }),
     );

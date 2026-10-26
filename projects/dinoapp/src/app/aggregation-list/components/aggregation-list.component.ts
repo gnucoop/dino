@@ -1,10 +1,10 @@
 import {openFormPdf, AjfForm} from '@ajf/core/forms';
 import {TranslocoService} from '@ajf/core/transloco';
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   OnDestroy,
+  OnInit,
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
@@ -36,7 +36,7 @@ import * as conf from '../conf';
   encapsulation: ViewEncapsulation.None,
   standalone: false,
 })
-export class AggregationListComponent implements OnDestroy, AfterViewInit {
+export class AggregationListComponent implements OnDestroy, OnInit {
   @ViewChild(SelectionList) list: SelectionList | undefined;
 
   /**
@@ -213,7 +213,9 @@ export class AggregationListComponent implements OnDestroy, AfterViewInit {
     }
     this.formSchemaId.next(evt.form_schema_ref_id);
   }
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
+    // Set before the first check: emitted after the view, the headers changed a binding
+    // the view had already checked.
     this.headers.next([...conf.headers, ...this.formSchemaManager.generateMetricsHeaders()]);
   }
   ngOnDestroy() {
