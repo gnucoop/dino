@@ -111,6 +111,11 @@ export class SearchFiltersWidget implements OnInit, AfterViewInit, OnDestroy {
   readonly fieldInstance: Observable<AjfFieldInstance | undefined>;
 
   /**
+   * The field instance last rendered: the nodes tree does not replay it to a late subscriber
+   */
+  private _fieldInstance: AjfFieldInstance | undefined;
+
+  /**
    * Event emitted when the "create filter" button is clicked
    */
   private _createFilter: EventEmitter<void> = new EventEmitter<void>();
@@ -179,6 +184,7 @@ export class SearchFiltersWidget implements OnInit, AfterViewInit, OnDestroy {
     this.formGroup = rendererService.formGroup;
     this.fieldInstance = rendererService.nodesTree.pipe(
       map(slides => (slides.length ? slides[0].flatNodes.find(isFieldInstance) : undefined)),
+      tap(field => (this._fieldInstance = field)),
     );
   }
 
@@ -396,11 +402,7 @@ export class SearchFiltersWidget implements OnInit, AfterViewInit, OnDestroy {
     this.formGroup
       .pipe(
         tap(fg => {
-          if (fg) {
-            for (let key in fg.controls) {
-              fg.controls[key].setValue(null, {emitEvent: false});
-            }
-          }
+          this._clearControls(fg);
           this._operatorValue.next(
             DEFAULT_OPERATORS[this.filterItemData?.fieldType ?? AjfFieldType.String],
           );
@@ -414,13 +416,22 @@ export class SearchFiltersWidget implements OnInit, AfterViewInit, OnDestroy {
    * Sets the widget value to null
    */
   private _setNullValue(): void {
-    this.formGroup.pipe(take(1)).subscribe(fg => {
-      if (fg) {
-        for (let key in fg.controls) {
-          fg.controls[key].setValue(null, {emitEvent: false});
-        }
-      }
-    });
+    this.formGroup.pipe(take(1)).subscribe(fg => this._clearControls(fg));
+  }
+
+  /**
+   * Empties the widget controls without emitting their value changes, then wakes up the
+   * field: it is OnPush and learns of a change only through valueChanges or its instance.
+   * @param fg The widget FormGroup
+   */
+  private _clearControls(fg: UntypedFormGroup | null): void {
+    if (fg == null) {
+      return;
+    }
+    for (let key in fg.controls) {
+      fg.controls[key].setValue(null, {emitEvent: false});
+    }
+    this._fieldInstance?.updatedEvt.emit();
   }
 
   ngOnDestroy() {

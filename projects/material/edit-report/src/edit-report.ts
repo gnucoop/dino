@@ -77,6 +77,7 @@ import {UserData} from '@dino/core/users';
 import {FormMetricSelector} from '@dino/material/form-metric-selector';
 import {RxDocument} from 'rxdb';
 import {
+  asapScheduler,
   BehaviorSubject,
   combineLatest,
   forkJoin,
@@ -91,6 +92,7 @@ import {
   delay,
   filter,
   map,
+  observeOn,
   retryWhen,
   shareReplay,
   startWith,
@@ -1316,6 +1318,9 @@ export class EditReport implements AfterViewInit {
           }
           return this.reportMetricsSelectorComponent.changes.pipe(
             map((comps: QueryList<FormMetricSelector>) => comps.first),
+            // The query emits while this view is being checked: what follows from it
+            // (the metrics string, the form data) must reach the template in a new pass.
+            observeOn(asapScheduler),
           );
         }),
       );
