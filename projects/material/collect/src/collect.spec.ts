@@ -8,7 +8,7 @@ import {ReportSchemaManager, ReportsModule} from '@dino/core/reports';
 import {DinoTranslationsModule} from '@dino/core/translations';
 import {UsersModule} from '@dino/core/users';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
-import {BehaviorSubject, of} from 'rxjs';
+import {BehaviorSubject, NEVER, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 import {ALL_GROUPS_CHIP, Collect, CollectModule} from './public_api';
@@ -59,6 +59,7 @@ const authServiceMock = {
 } as unknown as AuthService;
 
 const formSchemaManagerMock = {
+  collectionChanged: NEVER,
   list: () => {
     return of([
       {
@@ -199,6 +200,7 @@ describe('Collect', () => {
 describe('Collect with groups', () => {
   const narrow = new BehaviorSubject<boolean>(false);
   const groupedFormsMock = {
+    collectionChanged: NEVER,
     list: () =>
       of([
         {
@@ -240,6 +242,7 @@ describe('Collect with groups', () => {
     delete: (_id: string) => of(null),
   };
   const groupedReportsMock = {
+    collectionChanged: NEVER,
     list: () =>
       of([
         {
