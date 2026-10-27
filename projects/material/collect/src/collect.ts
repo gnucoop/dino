@@ -42,6 +42,7 @@ import {
   combineLatest,
   Observable,
   of as obsOf,
+  Subject,
   Subscription,
   throwError,
 } from 'rxjs';
@@ -54,6 +55,8 @@ import {
   startWith,
   switchMap,
   take,
+  takeUntil,
+  throttleTime,
 } from 'rxjs/operators';
 import {CollectItem} from './collect-item-interface';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
@@ -259,6 +262,7 @@ export class Collect implements OnDestroy {
    * Subscribes to the value returned by the Delete Schema MatDialog on its closing event
    */
   private _deleteSchemaDialogSub: Subscription = Subscription.EMPTY;
+  private _destroyed = new Subject<void>();
 
   /**
    * A reference to the MatDialog that contains the DeleteSchema component
@@ -299,7 +303,17 @@ export class Collect implements OnDestroy {
             result = this._fs.list();
             this.displayAddButton = this._createAllowed('form_schema');
           }
-          return result.pipe(
+          // `list()` is a one-shot read: without this the page keeps the empty snapshot taken
+          // before the first pull and never shows the schemas that arrive with it.
+          const snapshot = result;
+          const changed =
+            isCollect === 'reports' ? this._rs.collectionChanged : this._fs.collectionChanged;
+          // The shareReplay below never lets go of its source: stop listening when the page goes.
+          return changed.pipe(
+            takeUntil(this._destroyed),
+            throttleTime(100, undefined, {leading: true, trailing: true}),
+            startWith(null),
+            switchMap(() => snapshot),
             map(docs => {
               let collectItems: CollectItem[] = [];
               for (let document of docs.filter(dcm => dcm != null)) {
@@ -595,5 +609,7 @@ export class Collect implements OnDestroy {
 
   ngOnDestroy(): void {
     this._deleteSchemaDialogSub.unsubscribe();
+    this._destroyed.next();
+    this._destroyed.complete();
   }
 }
