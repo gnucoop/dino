@@ -125,6 +125,9 @@
         <div
           *ngFor="let entry of section.entries"
           class="dino-collect-card"
+          role="link"
+          (keydown.enter)="openFromKeyboard($event)"
+          (keydown.space)="openFromKeyboard($event)"
           [class.dino-collect-card-actions]="entry.item.editable || entry.item.shareUrl"
           [routerLink]="entry.item.url ? entry.item.url : ['/' + getCollectType, entry.item.schemaId ? entry.item.schemaId : entry.item.name]"
           [tourAnchor]="uiServiceConfig ? entry.item.name : ''"
@@ -192,6 +195,9 @@
         <div
           *ngFor="let entry of section.entries"
           class="dino-collect-row"
+          role="link"
+          (keydown.enter)="openFromKeyboard($event)"
+          (keydown.space)="openFromKeyboard($event)"
           [routerLink]="entry.item.url ? entry.item.url : ['/' + getCollectType, entry.item.schemaId ? entry.item.schemaId : entry.item.name]"
           [tourAnchor]="uiServiceConfig ? entry.item.name : ''"
         >

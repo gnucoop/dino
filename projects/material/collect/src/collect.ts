@@ -455,6 +455,18 @@ export class Collect implements OnDestroy {
   }
 
   /**
+   * Opens a card or a row from the keyboard: RouterLink on a non-anchor element makes it focusable
+   * but only answers clicks. Keys pressed on the buttons inside are left to them.
+   */
+  openFromKeyboard(event: Event): void {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+    event.preventDefault();
+    (event.currentTarget as HTMLElement).click();
+  }
+
+  /**
    * Opens the actions of an item in a bottom sheet, for narrow screens.
    */
   openActions(item: CollectItem): void {
