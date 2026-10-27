@@ -120,8 +120,8 @@ export const ESP: Translation = {
   'End the session and keep the data': 'Cerrar la sesión y mantener los datos',
   'Cancel': 'Cancelar',
   'Session expired': 'Sesión caducada',
-  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
-    'La sincronización está detenida y no se pueden guardar más datos hasta un nuevo inicio de sesión. ¿Quieres cerrar la sesión, manteniendo los datos en este dispositivo, e ir a la página de inicio de sesión?',
+  'The sync is stopped until a new login. The data you enter keeps being saved on this device and will be sent after the login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    'La sincronización está detenida hasta un nuevo inicio de sesión. Los datos que introduzcas se siguen guardando en este dispositivo y se enviarán después del inicio de sesión. ¿Quieres cerrar la sesión, manteniendo los datos en este dispositivo, e ir a la página de inicio de sesión?',
   'Go to the login page': 'Ir a la página de inicio de sesión',
   'Later': 'Más tarde',
   'The data cannot be saved': 'Los datos no se pueden guardar',

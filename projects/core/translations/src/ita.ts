@@ -120,8 +120,8 @@ export const ITA: Translation = {
   'End the session and keep the data': 'Chiudi la sessione e mantieni i dati',
   'Cancel': 'Annulla',
   'Session expired': 'Sessione scaduta',
-  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
-    'La sincronizzazione è ferma e non è più possibile salvare i dati fino a un nuovo accesso. Vuoi chiudere la sessione, mantenendo i dati su questo dispositivo, e andare alla pagina di accesso?',
+  'The sync is stopped until a new login. The data you enter keeps being saved on this device and will be sent after the login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    "La sincronizzazione è ferma fino a un nuovo accesso. I dati che inserisci continuano a essere salvati su questo dispositivo e verranno inviati dopo l'accesso. Vuoi chiudere la sessione, mantenendo i dati su questo dispositivo, e andare alla pagina di accesso?",
   'Go to the login page': 'Vai alla pagina di accesso',
   'Later': 'Più tardi',
   'The data cannot be saved': 'I dati non possono essere salvati',

@@ -116,8 +116,8 @@ export const AR: Translation = {
   'End the session and keep the data': 'إغلاق الجلسة والإبقاء على البيانات',
   'Cancel': 'إلغاء',
   'Session expired': 'انتهت صلاحية الجلسة',
-  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
-    'المزامنة متوقفة ولا يمكن حفظ أي بيانات حتى تسجيل دخول جديد. هل تريد إغلاق الجلسة، مع الإبقاء على البيانات على هذا الجهاز، والانتقال إلى صفحة تسجيل الدخول؟',
+  'The sync is stopped until a new login. The data you enter keeps being saved on this device and will be sent after the login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    'المزامنة متوقفة حتى تسجيل دخول جديد. تستمر البيانات التي تدخلها في الحفظ على هذا الجهاز وسيتم إرسالها بعد تسجيل الدخول. هل تريد إغلاق الجلسة، مع الإبقاء على البيانات على هذا الجهاز، والانتقال إلى صفحة تسجيل الدخول؟',
   'Go to the login page': 'الانتقال إلى صفحة تسجيل الدخول',
   'Later': 'لاحقاً',
   'The data cannot be saved': 'لا يمكن حفظ البيانات',

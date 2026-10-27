@@ -115,8 +115,8 @@ export const UGA: Translation = {
   'End the session and keep the data': 'End the session and keep the data',
   'Cancel': 'Cancel',
   'Session expired': 'Session expired',
-  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
-    'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?',
+  'The sync is stopped until a new login. The data you enter keeps being saved on this device and will be sent after the login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    'The sync is stopped until a new login. The data you enter keeps being saved on this device and will be sent after the login. Do you want to end the session, keeping the data on this device, and go to the login page?',
   'Go to the login page': 'Go to the login page',
   'Later': 'Later',
   'The data cannot be saved': 'The data cannot be saved',

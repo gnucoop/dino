@@ -120,8 +120,8 @@ export const PRT: Translation = {
   'End the session and keep the data': 'Encerrar a sessão e manter os dados',
   'Cancel': 'Cancelar',
   'Session expired': 'Sessão expirada',
-  'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
-    'A sincronização está parada e não é mais possível salvar dados até um novo acesso. Quer encerrar a sessão, mantendo os dados neste dispositivo, e ir para a página de acesso?',
+  'The sync is stopped until a new login. The data you enter keeps being saved on this device and will be sent after the login. Do you want to end the session, keeping the data on this device, and go to the login page?':
+    'A sincronização está parada até um novo acesso. Os dados que você inserir continuam sendo salvos neste dispositivo e serão enviados após o acesso. Quer encerrar a sessão, mantendo os dados neste dispositivo, e ir para a página de acesso?',
   'Go to the login page': 'Ir para a página de acesso',
   'Later': 'Mais tarde',
   'The data cannot be saved': 'Os dados não podem ser salvos',
