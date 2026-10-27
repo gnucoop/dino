@@ -643,19 +643,46 @@ export class MetricEditor<T extends Metric = Metric> implements OnInit, OnDestro
       map(([parent, parentOptions]) => {
         if (parent != null && typeof parent === 'string') {
           const parentName = parent.toLowerCase();
+          const excluded = this._selfAndDescendantIds(parentOptions);
           return parentOptions.filter(option => {
             return (
               option.parent_name.toLowerCase().includes(parentName) &&
               this.metricForm != null &&
-              option.parent_name != this.data.metricItem?.name &&
-              (option.parent_parent_id == null ||
-                option.parent_parent_id != this.data.metricItem?.id)
+              !excluded.has(option.parent_id!)
             );
           });
         }
         return [];
       }),
     );
+  }
+
+  /**
+   * Collects the id of the edited metric and of all its descendants: none of them can become its
+   * parent, or the hierarchy would be stored with a loop.
+   * @param options Every metric, as parent options
+   * @returns The ids that cannot be chosen as parent
+   */
+  private _selfAndDescendantIds(options: ParentMetric[]): Set<string> {
+    const ids = new Set<string>();
+    const selfId = this.data.metricItem?.id;
+    if (selfId == null) {
+      return ids;
+    }
+    ids.add(selfId);
+    // The set doubles as the visited list, so a loop already in the data cannot make this spin.
+    let added = true;
+    while (added) {
+      added = false;
+      for (const option of options) {
+        const id = option.parent_id!;
+        if (option.parent_parent_id != null && ids.has(option.parent_parent_id) && !ids.has(id)) {
+          ids.add(id);
+          added = true;
+        }
+      }
+    }
+    return ids;
   }
 
   /**
