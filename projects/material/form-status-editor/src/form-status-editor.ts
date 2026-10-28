@@ -1,16 +1,24 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Inject,
   OnDestroy,
   ViewEncapsulation,
 } from '@angular/core';
-import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
+import {
+  AbstractControl,
+  AsyncValidatorFn,
+  UntypedFormControl,
+  UntypedFormGroup,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {FormStatus, FormStatusManager} from '@dino/core/forms';
 import {RxDocument} from 'rxdb';
-import {Observable, Subscription, switchMap} from 'rxjs';
+import {finalize, map, Observable, Subscription, switchMap, take, timer} from 'rxjs';
 
 /**
  * Represents data to be passed to the Form Status editor
@@ -49,6 +57,11 @@ export class FormStatusEditor implements OnDestroy {
   statusColor: string;
 
   /**
+   * True while the Form Status is being saved: a second click would create it twice.
+   */
+  saving: boolean = false;
+
+  /**
    * Emits when a Form Status is created or edited.
    */
   private _saveEvt: EventEmitter<FormStatus> = new EventEmitter<FormStatus>();
@@ -62,11 +75,16 @@ export class FormStatusEditor implements OnDestroy {
     public dialogRef: MatDialogRef<FormStatusEditor>,
     @Inject(MAT_DIALOG_DATA) public data: FormStatusEditorData,
     private _fstm: FormStatusManager,
+    private _cdr: ChangeDetectorRef,
   ) {
     this.statusColor = data.statusItem?.color ?? '#ffffff';
 
     const group: {[key: string]: UntypedFormControl} = {};
-    group['name'] = new UntypedFormControl(data.statusItem?.name ?? null, Validators.required);
+    group['name'] = new UntypedFormControl(
+      data.statusItem?.name ?? null,
+      Validators.required,
+      this._nameCheck(data.statusItem?.name),
+    );
     group['label'] = new UntypedFormControl(data.statusItem?.label ?? null, Validators.required);
     group['status_level'] = new UntypedFormControl(
       data.statusItem?.status_level ?? null,
@@ -113,8 +131,27 @@ export class FormStatusEditor implements OnDestroy {
       if (this.data.statusAction === 'Edit' && this.data.statusItem) {
         obj.id = this.data.statusItem?.id;
       }
+      this.saving = true;
       this._saveEvt.emit(obj);
     }
+  }
+
+  /**
+   * Fails when another Form Status already has the name: the server rejects a duplicate
+   * name, and the status would stay on the device only.
+   * @param currentName The name of the edited status, which may keep it
+   */
+  private _nameCheck(currentName?: string): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> =>
+      timer(300).pipe(
+        switchMap(() => this._fstm.query({selector: {name: {$eq: control.value}}})),
+        take(1),
+        map(docs => (docs.some(doc => doc.name !== currentName) ? {incorrect: true} : null)),
+        finalize(() => {
+          control.markAsTouched();
+          this._cdr.markForCheck();
+        }),
+      );
   }
 
   /**
