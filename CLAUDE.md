@@ -21,6 +21,7 @@ behaviour changes.
 
 - Code comments and JSDoc **in English**, whatever the language of the conversation.
 - Commits: conventional-commit subject, and a body explaining *why*, not what the diff already shows.
+  Never add a `Co-Authored-By` trailer or any other AI attribution line, to commits or pull requests.
 - New translation keys go in **all** the locale files under `projects/core/translations/src`
   (`ar, eng, esp, fra, ita, prt, uga, ukr`), keyed by the full English string.
 - Never stage `projects/dinoapp/src/environments/environment.ts` or `RELEASE.md`: they carry local
