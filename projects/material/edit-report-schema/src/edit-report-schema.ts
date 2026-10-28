@@ -189,6 +189,12 @@ export class EditReportSchema implements OnInit, OnDestroy {
   readonly saveAllowed: Observable<boolean>;
 
   /**
+   * True once there is a schema to save: the stored one when editing, or an imported XLSForm.
+   * A new Report Schema cannot be written by hand, only imported.
+   */
+  readonly hasSchema: Observable<boolean>;
+
+  /**
    * Emitted when the Form Schema is saved
    */
   private _saveEvt: EventEmitter<void> = new EventEmitter<void>();
@@ -259,6 +265,10 @@ export class EditReportSchema implements OnInit, OnDestroy {
       }),
       switchMap(schema => schema as Observable<ReportSchema>),
       shareReplay(1),
+    );
+
+    this.hasSchema = combineLatest([this._reportSchema, this._importedReportSchema]).pipe(
+      map(([reportSchema, imported]) => reportSchema != null || imported != null),
     );
 
     this.availableMetrics = this._metricService.activeMetrics;
