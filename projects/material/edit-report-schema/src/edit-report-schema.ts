@@ -48,7 +48,13 @@ import {
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ActiveMetric, DataQueryOptions, InsertModel, MetricsService} from '@dino/core/data';
+import {
+  ActiveMetric,
+  DataQueryOptions,
+  InsertModel,
+  MetricsService,
+  PermissionContextService,
+} from '@dino/core/data';
 import {
   FORM_SCHEMA_GROUP_COLORS,
   FormSchema,
@@ -176,6 +182,13 @@ export class EditReportSchema implements OnInit, OnDestroy {
     new BehaviorSubject<AjfReport | null>(null);
 
   /**
+   * True if the active user may save this Report Schema: create it when it is new, edit it
+   * otherwise. Same checks as the add button and the edit flag on the reports page, which the
+   * builder's URL can bypass.
+   */
+  readonly saveAllowed: Observable<boolean>;
+
+  /**
    * Emitted when the Form Schema is saved
    */
   private _saveEvt: EventEmitter<void> = new EventEmitter<void>();
@@ -209,10 +222,24 @@ export class EditReportSchema implements OnInit, OnDestroy {
     private _translocoService: TranslocoService,
     private _fs: FormSchemaManager,
     private _ehms: ErrorHandlerMessageService,
+    private _pcs: PermissionContextService,
   ) {
     this._reportSchemaId = this._route.params.pipe(
       map(params => params['report_schema_id']),
       shareReplay(1),
+    );
+
+    this.saveAllowed = this._reportSchemaId.pipe(
+      switchMap(id =>
+        id == null
+          ? this._pcs
+              .getAllowedActions('report_schema', 'all')
+              .pipe(map(actions => actions.includes('create')))
+          : this._pcs.permissionContext.pipe(
+              map(context => this._pcs.checkPermission(id, 'report_schema', 'edit', context)),
+            ),
+      ),
+      catchError(() => obsOf(false)),
     );
 
     this._reportSchema = this._reportSchemaId.pipe(
