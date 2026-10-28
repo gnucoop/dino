@@ -27,6 +27,7 @@ import {
   DataModelManager,
   DataQueryOptions,
   DataService,
+  PermissionContext,
   PermissionContextService,
 } from '@dino/core/data';
 import {RxDocument} from 'rxdb';
@@ -36,6 +37,23 @@ import {delay, map, switchMap, withLatestFrom} from 'rxjs/operators';
 import {Notification} from './notification';
 import {schema} from './notification-json';
 import {NotificationModule} from './notification.module';
+
+/**
+ * Keeps the notifications addressed to everyone or to the active user. The context has no
+ * `user_data` before it is loaded and after a reset (logout, failed token refresh): only the
+ * notifications addressed to everyone are kept then.
+ */
+function filterByRecipient<T extends {recipients: string[]}>(
+  notifications: T[],
+  context: PermissionContext,
+): T[] {
+  const userDataId = context.user_data?.['id'];
+  return notifications.filter(
+    notification =>
+      notification.recipients.includes('all') ||
+      (userDataId != null && notification.recipients.includes(userDataId)),
+  );
+}
 
 /**
  * Service that manages Notifications
@@ -60,13 +78,7 @@ export class NotificationManager extends DataModelManager<Notification> {
   override list(options?: DataListOptions): Observable<RxDocument<Notification, {}>[]> {
     return super.list(options).pipe(
       withLatestFrom(this.permissionContext),
-      map(([notifications, context]) =>
-        notifications.filter(
-          notification =>
-            notification.recipients.includes('all') ||
-            notification.recipients.includes(context.user_data['id']),
-        ),
-      ),
+      map(([notifications, context]) => filterByRecipient(notifications, context)),
     );
   }
 
@@ -78,13 +90,7 @@ export class NotificationManager extends DataModelManager<Notification> {
   override query(options: DataQueryOptions): Observable<RxDocument<Notification, {}>[]> {
     return super.query(options).pipe(
       withLatestFrom(this.permissionContext),
-      map(([notifications, context]) =>
-        notifications.filter(
-          notification =>
-            notification.recipients.includes('all') ||
-            notification.recipients.includes(context.user_data['id']),
-        ),
-      ),
+      map(([notifications, context]) => filterByRecipient(notifications, context)),
     );
   }
 
