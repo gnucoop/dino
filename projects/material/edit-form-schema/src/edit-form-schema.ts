@@ -45,7 +45,7 @@ import {
 import {MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ActiveMetric, InsertModel, MetricsService} from '@dino/core/data';
+import {ActiveMetric, InsertModel, MetricsService, PermissionContextService} from '@dino/core/data';
 import {
   FORM_SCHEMA_GROUP_COLORS,
   FormSchema,
@@ -256,6 +256,13 @@ export class EditFormSchema implements OnInit, OnDestroy {
   isAjfFormSchemaValid: boolean = true;
 
   /**
+   * True if the active user may save this Form Schema: create it when it is new, edit it
+   * otherwise. Same checks as the add button and the edit flag on the forms page, which the
+   * builder's URL can bypass.
+   */
+  readonly saveAllowed: Observable<boolean>;
+
+  /**
    * Emits when an Auto Report Schema should be generated
    */
   private _autoReportSchemaGenerationEvt: EventEmitter<{
@@ -329,10 +336,24 @@ export class EditFormSchema implements OnInit, OnDestroy {
     private _ehms: ErrorHandlerMessageService,
     private _ts: TranslocoService,
     private _lm: LangManager,
+    private _pcs: PermissionContextService,
   ) {
     this._formSchemaId = this._route.params.pipe(
       map(params => params['form_schema_id']),
       shareReplay(1),
+    );
+
+    this.saveAllowed = this._formSchemaId.pipe(
+      switchMap(id =>
+        id == null
+          ? this._pcs
+              .getAllowedActions('form_schema', 'all')
+              .pipe(map(actions => actions.includes('create')))
+          : this._pcs.permissionContext.pipe(
+              map(context => this._pcs.checkPermission(id, 'form_schema', 'edit', context)),
+            ),
+      ),
+      catchError(() => obsOf(false)),
     );
 
     // Default tab: Settings when creating a new Form Schema, Build when editing.
