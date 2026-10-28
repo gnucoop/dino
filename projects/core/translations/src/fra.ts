@@ -932,4 +932,7 @@ export const FRA: Translation = {
     'Une synchronisation est en cours : cette sauvegarde ne contient que les données téléchargées jusqu’à présent.',
   'Preparing the data to analyze: with many records it can take a minute or more...':
     'Préparation des données à analyser : avec de nombreux enregistrements, cela peut prendre une minute ou plus...',
+  'This form is not available on this device':
+    "Ce formulaire n'est pas disponible sur cet appareil",
+  'This report is not available on this device': "Ce rapport n'est pas disponible sur cet appareil",
 };

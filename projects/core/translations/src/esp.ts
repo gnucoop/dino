@@ -923,4 +923,8 @@ export const ESP: Translation = {
     'Hay una sincronización en curso: esta copia de seguridad contiene solo los datos descargados hasta ahora.',
   'Preparing the data to analyze: with many records it can take a minute or more...':
     'Preparando los datos para analizar: con muchos registros puede tardar un minuto o más...',
+  'This form is not available on this device':
+    'Este formulario no está disponible en este dispositivo',
+  'This report is not available on this device':
+    'Este informe no está disponible en este dispositivo',
 };

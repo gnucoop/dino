@@ -359,7 +359,7 @@
 
     <ng-container *ngIf="selection.selected.length === 1; else bulkActionsTpl">
       <button
-        *ngFor="let action of listRowActions"
+        *ngFor="let action of listRowActions; trackBy: trackByActionType"
         mat-button
         class="dino-selection-action"
         [color]="action.actionType === 'delete' ? 'warn' : 'primary'"

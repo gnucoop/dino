@@ -919,4 +919,6 @@ export const ENG: Translation = {
     'A sync is in progress: this backup holds only the data downloaded so far.',
   'Preparing the data to analyze: with many records it can take a minute or more...':
     'Preparing the data to analyze: with many records it can take a minute or more...',
+  'This form is not available on this device': 'This form is not available on this device',
+  'This report is not available on this device': 'This report is not available on this device',
 };

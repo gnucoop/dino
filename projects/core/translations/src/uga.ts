@@ -572,4 +572,6 @@ export const UGA: Translation = {
     'Document saved. You are offline: the files cannot be uploaded.',
   'Preparing the data to analyze: with many records it can take a minute or more...':
     'Preparing the data to analyze: with many records it can take a minute or more...',
+  'This form is not available on this device': 'This form is not available on this device',
+  'This report is not available on this device': 'This report is not available on this device',
 };

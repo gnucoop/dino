@@ -934,4 +934,8 @@ export const ITA: Translation = {
     'È in corso una sincronizzazione: questo backup contiene solo i dati scaricati finora.',
   'Preparing the data to analyze: with many records it can take a minute or more...':
     'Preparazione dei dati da analizzare: con molti record può richiedere un minuto o più...',
+  'This form is not available on this device':
+    'Questo form non è disponibile su questo dispositivo',
+  'This report is not available on this device':
+    'Questo report non è disponibile su questo dispositivo',
 };

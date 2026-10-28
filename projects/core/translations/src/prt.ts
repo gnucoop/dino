@@ -921,4 +921,8 @@ export const PRT: Translation = {
     'Há uma sincronização em andamento: este backup contém apenas os dados baixados até agora.',
   'Preparing the data to analyze: with many records it can take a minute or more...':
     'Preparando os dados para analisar: com muitos registos pode demorar um minuto ou mais...',
+  'This form is not available on this device':
+    'Este formulário não está disponível neste dispositivo',
+  'This report is not available on this device':
+    'Este relatório não está disponível neste dispositivo',
 };
