@@ -242,6 +242,12 @@ dino-search-filters-bar {
   gap: 8px;
   padding: 12px 20px 20px;
 
+  .mat-mdc-form-field-icon-suffix .mat-icon.mat-primary {
+    @include mat-css-vars.mat-css-dark-theme-global {
+      color: mat-css-vars.mat-css-color-primary(200);
+    }
+  }
+
   .mat-icon {
     cursor: pointer;
   }
@@ -278,6 +284,9 @@ dino-search-filters-bar {
     .mat-button-toggle-checked {
       background: mat-css-vars.mat-css-color-primary(500, 0.12);
       color: mat-css-vars.mat-css-color-primary(500);
+      @include mat-css-vars.mat-css-dark-theme-global {
+        color: mat-css-vars.mat-css-color-primary(200);
+      }
     }
     .mat-button-toggle-button {
       height: 40px;

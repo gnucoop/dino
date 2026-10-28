@@ -14,7 +14,7 @@
         overflow-y: scroll;
         -ms-overflow-style: none;
         scrollbar-width: none;
-        padding-top: 20px;
+        padding-top: 12px;
         &::-webkit-scrollbar {
             display: none;
         }
@@ -23,6 +23,7 @@
 
 .dino-selector-actions {
     display: flex;
+    margin-top: 16px;
     flex-flow: row wrap;
     align-items: center;
     gap: 8px;
