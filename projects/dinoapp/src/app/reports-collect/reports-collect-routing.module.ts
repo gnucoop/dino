@@ -29,10 +29,14 @@ const routes: Routes = [
         },
       },
       {
+        // Editing a report instance is not supported: the URL is kept, but opens the view.
         path: 'edit',
         loadChildren: () =>
           import('../edit-report/edit-report.module').then(m => m.EditReportModule),
-        data: {breadcrumbs: [{label: ':report_schema_id', parametrical: true}, {label: 'Edit'}]},
+        data: {
+          isView: true,
+          breadcrumbs: [{label: ':report_schema_id', parametrical: true}, {label: 'View'}],
+        },
       },
       {
         path: 'create',
