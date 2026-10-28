@@ -7,20 +7,20 @@
     </mat-dialog-content>
     <mat-dialog-actions class="dino-session-dialog-actions">
       <button
-        class="dino-session-dialog-logout-button"
-        mat-raised-button
-        color="warn"
-        (click)="respond('logout')"
-      >
-        {{'Log out and delete the data'|transloco}}
-      </button>
-      <button
         class="dino-session-dialog-keep-button"
         mat-raised-button
         color="primary"
         (click)="respond('end-session')"
       >
-        {{'End the session and keep the data'|transloco}}
+        {{'End the session and keep the local data'|transloco}}
+      </button>
+      <button
+        class="dino-session-dialog-logout-button"
+        mat-raised-button
+        color="warn"
+        (click)="respond('logout')"
+      >
+        {{'Log out and delete the local data'|transloco}}
       </button>
       <button class="dino-session-dialog-cancel-button" mat-button (click)="respond(undefined)">
         {{'Cancel'|transloco}}
