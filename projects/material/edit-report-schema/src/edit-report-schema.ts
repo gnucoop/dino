@@ -385,7 +385,7 @@ export class EditReportSchema implements OnInit, OnDestroy {
           const reportPatch: InsertModel<ReportSchema> = {
             schema: schema,
             form_schema_ids: form_schema_ids,
-            name: formGroup.get('name')?.value,
+            name: formGroup.get('name')?.value?.trim(),
             label: formGroup.get('label')?.value,
             icon: formGroup.get('icon')?.value,
             required_metrics: formGroup.get('required_metrics')?.value,

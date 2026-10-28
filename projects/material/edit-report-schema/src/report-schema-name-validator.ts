@@ -23,7 +23,7 @@ import {ChangeDetectorRef, Injectable} from '@angular/core';
 import {AbstractControl, AsyncValidatorFn, ValidationErrors} from '@angular/forms';
 import {DataModelManager} from '@dino/core/data';
 import {ReportSchema} from '@dino/core/reports';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {debounceTime, finalize, map, take} from 'rxjs/operators';
 
 /**
@@ -49,12 +49,16 @@ export class ReportSchemaNameMatchValidator<T extends ReportSchema = ReportSchem
     currentName?: string,
   ): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
-      return manager.query({selector: {name: {$eq: control.value}}}).pipe(
+      // Names are compared trimmed and case-insensitively: "Dup Name" and " dup name "
+      // look like the same form to a user.
+      const name = normalizeSchemaName(control.value);
+      if (name === '' || (currentName != null && name === normalizeSchemaName(currentName))) {
+        return of(null);
+      }
+      const pattern = `^\\s*${escapeRegExp(name)}\\s*$`;
+      return manager.query({selector: {name: {$regex: pattern, $options: 'i'}}}).pipe(
         debounceTime(300),
         map(docs => {
-          if (currentName != null) {
-            docs = docs.filter(doc => doc.name != currentName);
-          }
           if (docs.length) {
             return {incorrect: true};
           } else {
@@ -69,4 +73,18 @@ export class ReportSchemaNameMatchValidator<T extends ReportSchema = ReportSchem
       );
     };
   }
+}
+
+/**
+ * The name as it is compared: without the spaces around it and in lower case.
+ */
+function normalizeSchemaName(name: unknown): string {
+  return typeof name === 'string' ? name.trim().toLowerCase() : '';
+}
+
+/**
+ * Escapes the characters that have a meaning in a regular expression.
+ */
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
