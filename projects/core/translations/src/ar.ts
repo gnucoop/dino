@@ -1018,4 +1018,6 @@ export const AR: Translation = {
   'Email language': 'لغة البريد الإلكتروني',
   'The language of the emails the user receives':
     'لغة رسائل البريد الإلكتروني التي يتلقاها المستخدم',
+  'This form is not available on this device': 'هذا النموذج غير متوفر على هذا الجهاز',
+  'This report is not available on this device': 'هذا التقرير غير متوفر على هذا الجهاز',
 };

@@ -89,6 +89,7 @@ import {
   zip,
 } from 'rxjs';
 import {
+  defaultIfEmpty,
   delay,
   filter,
   map,
@@ -400,8 +401,16 @@ export class EditReport implements AfterViewInit {
             return obsOf(repData);
           }),
           retryWhen(err => err.pipe(delay(1000), take(10))),
+          // The retries end without a value when the report never shows up.
+          defaultIfEmpty(null),
         );
       }),
+      tap(repData => {
+        if (repData == null) {
+          this._reportNotFound();
+        }
+      }),
+      filter(repData => repData != null),
       shareReplay(1),
     );
 
@@ -461,9 +470,16 @@ export class EditReport implements AfterViewInit {
             return obsOf(item);
           }),
           retryWhen(err => err.pipe(delay(1000), take(10))),
+          defaultIfEmpty(null),
         );
       }),
-      switchMap(schema => schema as Observable<ReportSchema>),
+      switchMap(schema => schema as Observable<ReportSchema | null>),
+      tap(schema => {
+        if (schema == null) {
+          this._reportNotFound();
+        }
+      }),
+      filter((schema): schema is ReportSchema => schema != null),
       shareReplay(1),
     );
 
@@ -787,6 +803,23 @@ export class EditReport implements AfterViewInit {
       });
     });
     return switchToOrQuery;
+  }
+
+  /**
+   * Tells the user that the report is not on this device - deleted, not synced yet, or not
+   * visible to them - and goes back to the reports. Not when the report is shown inside
+   * another page, such as the dashboard, which has nowhere to go back to.
+   */
+  private _reportNotFound(): void {
+    if (this._inputReportId.value != null) {
+      return;
+    }
+    this.snackbar.open(
+      this._translateService.translate('This report is not available on this device'),
+      undefined,
+      {duration: 5000},
+    );
+    this._router.navigate(['/reports']);
   }
 
   /**

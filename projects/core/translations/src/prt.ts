@@ -892,4 +892,8 @@ export const PRT: Translation = {
   'Hide password': 'Ocultar senha',
   'Email language': 'Idioma dos e-mails',
   'The language of the emails the user receives': 'O idioma dos e-mails que o usuário recebe',
+  'This form is not available on this device':
+    'Este formulário não está disponível neste dispositivo',
+  'This report is not available on this device':
+    'Este relatório não está disponível neste dispositivo',
 };

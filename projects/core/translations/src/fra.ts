@@ -903,4 +903,7 @@ export const FRA: Translation = {
   'Hide password': 'Masquer le mot de passe',
   'Email language': 'Langue des e-mails',
   'The language of the emails the user receives': "La langue des e-mails que l'utilisateur reçoit",
+  'This form is not available on this device':
+    "Ce formulaire n'est pas disponible sur cet appareil",
+  'This report is not available on this device': "Ce rapport n'est pas disponible sur cet appareil",
 };

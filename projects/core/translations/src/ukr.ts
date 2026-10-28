@@ -930,4 +930,6 @@ export const UKR: Translation = {
   'Hide password': 'Приховати пароль',
   'Email language': 'Мова листів',
   'The language of the emails the user receives': 'Мова листів, які отримує користувач',
+  'This form is not available on this device': 'Ця форма недоступна на цьому пристрої',
+  'This report is not available on this device': 'Цей звіт недоступний на цьому пристрої',
 };

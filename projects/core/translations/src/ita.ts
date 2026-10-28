@@ -906,4 +906,8 @@ export const ITA: Translation = {
   'Hide password': 'Nascondi password',
   'Email language': 'Lingua delle email',
   'The language of the emails the user receives': "La lingua delle email che l'utente riceve",
+  'This form is not available on this device':
+    'Questo form non è disponibile su questo dispositivo',
+  'This report is not available on this device':
+    'Questo report non è disponibile su questo dispositivo',
 };

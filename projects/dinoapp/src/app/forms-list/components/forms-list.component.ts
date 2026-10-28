@@ -8,7 +8,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ActionTrigger, Metric, MetricsService, PermissionContextService} from '@dino/core/data';
 import {FormData, FormDataManager, FormInfo, FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {ActionType, FiltersService, ListAction, ListHeader, NodeVisibility} from '@dino/core/list';
@@ -17,7 +17,16 @@ import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {RxDocument, isRxDocument} from 'rxdb';
 import {BehaviorSubject, combineLatest, forkJoin, from, Observable, of as obsOf} from 'rxjs';
-import {catchError, filter, map, shareReplay, startWith, switchMap, take} from 'rxjs/operators';
+import {
+  catchError,
+  filter,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators';
 import {Directory} from '@capacitor/filesystem';
 import write_blob from 'capacitor-blob-writer';
 import {ActionsService} from 'src/app/actions.service';
@@ -102,6 +111,7 @@ export class FormsListComponent {
     private _ugm: UserGroupManager,
     private _fdm: FormDataManager,
     private _snackbar: MatSnackBar,
+    private _router: Router,
     @Optional() private _logManager: LogManager | null,
     @Optional() private _caseManager?: CaseManager | null,
   ) {
@@ -111,7 +121,13 @@ export class FormsListComponent {
     this.additionalDataSchema = this.formSchemaId.pipe(
       switchMap(schemaId => {
         if (schemaId != null) {
-          return this.formSchemaManager.get(schemaId);
+          return this.formSchemaManager.get(schemaId).pipe(
+            tap(schema => {
+              if (schema == null) {
+                this._formNotFound();
+              }
+            }),
+          );
         }
         return obsOf(null);
       }),
@@ -703,5 +719,18 @@ export class FormsListComponent {
         );
       }
     }
+  }
+
+  /**
+   * Tells the user that the form is not on this device - deleted, not synced yet, or not
+   * visible to them - and goes back to the forms.
+   */
+  private _formNotFound(): void {
+    this._snackbar.open(
+      this._translateService.translate('This form is not available on this device'),
+      undefined,
+      {duration: 5000},
+    );
+    this._router.navigate(['/forms']);
   }
 }

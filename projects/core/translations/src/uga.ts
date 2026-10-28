@@ -543,4 +543,6 @@ export const UGA: Translation = {
   'Hide password': 'Hide password',
   'Email language': 'Email language',
   'The language of the emails the user receives': 'The language of the emails the user receives',
+  'This form is not available on this device': 'This form is not available on this device',
+  'This report is not available on this device': 'This report is not available on this device',
 };

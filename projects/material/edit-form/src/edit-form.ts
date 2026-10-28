@@ -47,7 +47,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {
   ActionTrigger,
   ActionTriggerData,
@@ -445,6 +445,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
     readonly metricsService: MetricsService,
     readonly uploadService: FileUploadService,
     readonly breakpointObserver: BreakpointObserverService,
+    private _router: Router,
   ) {
     this.isFormInizialized.next(false);
     this.formId = this._route.params.pipe(
@@ -562,7 +563,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
         return dm.get(id).pipe(
           map(doc => {
             if (doc == null) {
-              this._location.back();
+              this._formNotFound();
               return null;
             }
             const item: {[key: string]: any} = doc.toJSON();
@@ -591,8 +592,10 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             userId: string;
             id: string;
             createdAt: string;
-          }>,
+          } | null>,
       ),
+      filter(formDataObj => formDataObj != null),
+      map(formDataObj => formDataObj!),
       shareReplay(1),
     );
 
@@ -614,7 +617,13 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           }),
         ),
       ),
-      switchMap(schema => schema as Observable<FormSchema>),
+      switchMap(schema => schema as Observable<FormSchema | null>),
+      tap(schema => {
+        if (schema == null) {
+          this._formNotFound();
+        }
+      }),
+      filter((schema): schema is FormSchema => schema != null),
       shareReplay(1),
     );
 
@@ -1425,6 +1434,17 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       });
       formGroup.patchValue(patchValEmpty);
     }
+  }
+
+  /**
+   * Tells the user that the form is not on this device - deleted, not synced yet, or not
+   * visible to them - and goes back to the forms.
+   */
+  private _formNotFound(): void {
+    this.snackbar.open(this._ts.translate('This form is not available on this device'), undefined, {
+      duration: 5000,
+    });
+    this._router.navigate(['/forms']);
   }
 
   ngOnDestroy() {

@@ -212,6 +212,7 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
         this._rs.get(schemaId).pipe(
           map(doc => {
             if (doc == null) {
+              this._reportNotFound();
               return null;
             }
             const item = doc.toJSON();
@@ -220,7 +221,8 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
           }),
         ),
       ),
-      switchMap(schema => schema as Observable<ReportSchema>),
+      switchMap(schema => schema as Observable<ReportSchema | null>),
+      filter((schema): schema is ReportSchema => schema != null),
       shareReplay(1),
     );
   }
@@ -351,6 +353,19 @@ export class CreateReport implements AfterViewInit, OnInit, OnDestroy {
    */
   saveReport(): void {
     this._saveReportEvt.emit();
+  }
+
+  /**
+   * Tells the user that the report is not on this device - deleted, not synced yet, or not
+   * visible to them - and goes back to the reports.
+   */
+  private _reportNotFound(): void {
+    this.snackbar.open(
+      this._ts.translate('This report is not available on this device'),
+      undefined,
+      {duration: 5000},
+    );
+    this._router.navigate(['/reports']);
   }
 
   ngOnDestroy() {

@@ -894,4 +894,8 @@ export const ESP: Translation = {
   'Email language': 'Idioma de los correos',
   'The language of the emails the user receives':
     'El idioma de los correos electrónicos que recibe el usuario',
+  'This form is not available on this device':
+    'Este formulario no está disponible en este dispositivo',
+  'This report is not available on this device':
+    'Este informe no está disponible en este dispositivo',
 };
