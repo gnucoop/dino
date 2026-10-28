@@ -928,4 +928,8 @@ export const ITA: Translation = {
   'The backup could not be created': 'Non è stato possibile creare il backup',
   'A sync is in progress: this backup holds only the data downloaded so far.':
     'È in corso una sincronizzazione: questo backup contiene solo i dati scaricati finora.',
+  'This form is not available on this device':
+    'Questo form non è disponibile su questo dispositivo',
+  'This report is not available on this device':
+    'Questo report non è disponibile su questo dispositivo',
 };

@@ -431,6 +431,14 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   }
 
   /**
+   * The page recomputes the actions into a new array: tracking them by type keeps their
+   * buttons, so a dialog opened from one of them can give the focus back when it closes.
+   */
+  trackByActionType(_index: number, action: ListAction): string {
+    return action.actionType;
+  }
+
+  /**
    * Secondary metric field to display in the Form Metric Selector and Filters
    */
   private _secondaryMetricFieldsDisplayed: {

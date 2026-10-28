@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, ViewChild, ViewEncapsulation} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {MetricsService, PermissionContextService} from '@dino/core/data';
 import {ActionType, FiltersService, ListAction, ListHeader} from '@dino/core/list';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';
@@ -8,7 +8,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {TranslocoService} from '@ajf/core/transloco';
 import {ListDataSource, SelectionList} from '@dino/material/list';
 import {BehaviorSubject, combineLatest, Observable, of as obsOf} from 'rxjs';
-import {catchError, filter, map, shareReplay, switchMap, take} from 'rxjs/operators';
+import {catchError, filter, map, shareReplay, switchMap, take, tap} from 'rxjs/operators';
 import {environment} from 'src/environments/environment';
 import * as conf from '../conf';
 
@@ -64,13 +64,20 @@ export class ReportsListComponent {
     private _tokensService: TokensService,
     private _snackBar: MatSnackBar,
     private _ts: TranslocoService,
+    private _router: Router,
   ) {
     this.currentRowId = new BehaviorSubject<string | null>(null);
     this.reportSchemaId = this._route.params.pipe(map(params => params.report_schema_id));
     this.additionalDataSchema = this.reportSchemaId.pipe(
       switchMap(schemaId => {
         if (schemaId != null) {
-          return this.reportSchemaManager.get(schemaId);
+          return this.reportSchemaManager.get(schemaId).pipe(
+            tap(schema => {
+              if (schema == null) {
+                this._reportNotFound();
+              }
+            }),
+          );
         }
         return obsOf(null);
       }),
@@ -230,5 +237,18 @@ export class ReportsListComponent {
         take(1),
       )
       .subscribe();
+  }
+
+  /**
+   * Tells the user that the report is not on this device - deleted, not synced yet, or not
+   * visible to them - and goes back to the reports.
+   */
+  private _reportNotFound(): void {
+    this._snackBar.open(
+      this._ts.translate('This report is not available on this device'),
+      undefined,
+      {duration: 5000},
+    );
+    this._router.navigate(['/reports']);
   }
 }

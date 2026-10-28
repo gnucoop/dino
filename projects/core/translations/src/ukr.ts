@@ -952,4 +952,6 @@ export const UKR: Translation = {
     'Триває синхронізація: ця резервна копія містить лише дані, завантажені на цей момент.',
   'Document saved. You are offline: the files cannot be uploaded.':
     'Документ збережено. Ви офлайн: файли неможливо завантажити.',
+  'This form is not available on this device': 'Ця форма недоступна на цьому пристрої',
+  'This report is not available on this device': 'Цей звіт недоступний на цьому пристрої',
 };

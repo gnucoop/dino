@@ -925,4 +925,7 @@ export const FRA: Translation = {
   'The backup could not be created': 'La sauvegarde n’a pas pu être créée',
   'A sync is in progress: this backup holds only the data downloaded so far.':
     'Une synchronisation est en cours : cette sauvegarde ne contient que les données téléchargées jusqu’à présent.',
+  'This form is not available on this device':
+    "Ce formulaire n'est pas disponible sur cet appareil",
+  'This report is not available on this device': "Ce rapport n'est pas disponible sur cet appareil",
 };

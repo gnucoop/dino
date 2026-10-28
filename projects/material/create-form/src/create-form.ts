@@ -45,7 +45,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {
   ActionTrigger,
   ActionTriggerData,
@@ -392,6 +392,7 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     readonly metricsService: MetricsService,
     readonly uploadService: FileUploadService,
     readonly breakpointObserver: BreakpointObserverService,
+    private _router: Router,
   ) {
     this.isFormInizialized.next(false);
   }
@@ -478,7 +479,13 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           }),
         ),
       ),
-      switchMap(schema => schema as Observable<FormSchema>),
+      switchMap(schema => schema as Observable<FormSchema | null>),
+      tap(schema => {
+        if (schema == null) {
+          this._formNotFound();
+        }
+      }),
+      filter((schema): schema is FormSchema => schema != null),
       shareReplay(1),
     );
 
@@ -1172,6 +1179,17 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       });
       formGroup.patchValue(patchValEmpty);
     }
+  }
+
+  /**
+   * Tells the user that the form is not on this device - deleted, not synced yet, or not
+   * visible to them - and goes back to the forms.
+   */
+  private _formNotFound(): void {
+    this.snackbar.open(this._ts.translate('This form is not available on this device'), undefined, {
+      duration: 5000,
+    });
+    this._router.navigate(['/forms']);
   }
 
   ngOnDestroy() {

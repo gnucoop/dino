@@ -912,4 +912,6 @@ export const ENG: Translation = {
   'The backup could not be created': 'The backup could not be created',
   'A sync is in progress: this backup holds only the data downloaded so far.':
     'A sync is in progress: this backup holds only the data downloaded so far.',
+  'This form is not available on this device': 'This form is not available on this device',
+  'This report is not available on this device': 'This report is not available on this device',
 };
