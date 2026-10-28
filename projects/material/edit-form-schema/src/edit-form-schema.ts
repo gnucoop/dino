@@ -864,7 +864,7 @@ export class EditFormSchema implements OnInit, OnDestroy {
     const unique: boolean | undefined = formGroup.get('uniqueMetricsSet')?.value;
     const formPatch: Partial<InsertModel<FormSchema>> = {
       schema: {...schema, ...(unique ? {uniqueMetricsSet: unique} : undefined)},
-      name: formGroup.get('name')?.value,
+      name: formGroup.get('name')?.value?.trim(),
       label: formGroup.get('label')?.value,
       icon: formGroup.get('icon')?.value,
       form_schema_metrics: formGroup.get('form_schema_metrics')?.value,
