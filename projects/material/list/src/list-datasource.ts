@@ -570,9 +570,21 @@ export class ListDataSource<
                   },
                 };
               });
+            // A regular expression never matches a number field (the code of a case, for
+            // instance): a numeric keyword is also compared for equality with each column.
+            const keywordNumber =
+              typeof item.value === 'string' && item.value.trim() !== ''
+                ? Number(item.value)
+                : NaN;
+            const numberSearchExpressions = Number.isFinite(keywordNumber)
+              ? dataHeaders
+                  .filter(h => !h.dataColumn && h.column.toString().indexOf('_ref_id') < 0)
+                  .map(header => ({[`${header.column.toString()}`]: {$eq: keywordNumber}}))
+              : [];
             selector['$or'] = [
               ...dataHeadersSearchExpressions.flat(1),
               ...headersSearchExpressions,
+              ...numberSearchExpressions,
             ];
           }
 
