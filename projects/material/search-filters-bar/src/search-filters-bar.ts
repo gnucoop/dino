@@ -500,6 +500,7 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
     dialogConfig.minWidth = `${this._filtersDialogWidth}vw`;
     dialogConfig.maxWidth = `${this._filtersDialogWidth}vw`;
     dialogConfig.autoFocus = false;
+    dialogConfig.ariaLabelledBy = 'dino-filters-modal-heading';
     this._filtersDialogRef = this.dialog.open(this.filtersDialogTpl, dialogConfig);
 
     this._dialogSub.unsubscribe();
