@@ -598,6 +598,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     this._selectionChangedSub = this.selection.changed.subscribe(() => {
       this._cdr.markForCheck();
       this.emitSelectionChangedEvt.emit(this.getSelection());
+      this._emitSelectedRowData();
     });
   }
 
@@ -1837,6 +1838,19 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     const {target} = evt;
     if (target != null && !this.bds.isTouch()) {
       this._renderer.removeClass(target, 'dino-hover');
+    }
+    this._emitSelectedRowData();
+  }
+
+  /**
+   * The page computes the actions of the selection toolbar from the last row emitted, and a
+   * hover emits the hovered row. Emitting the selected row again when the selection changes
+   * and when the pointer leaves a row keeps the toolbar on the row it acts upon, also when
+   * the row was selected with the keyboard and never hovered.
+   */
+  private _emitSelectedRowData(): void {
+    if (this.emitRowDataOnHover && this.selection.selected.length === 1) {
+      this.emitRowData(this.selection.selected[0]);
     }
   }
 

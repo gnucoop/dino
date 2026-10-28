@@ -969,10 +969,32 @@ export class EditFormSchema implements OnInit, OnDestroy {
               duration: 10000,
             },
           );
+          if (action === 'Create') {
+            this._selectStatus(res.id);
+          }
         }
         this._updateStatusListEvt.emit();
         this._cdr.detectChanges();
       });
+  }
+
+  /**
+   * Adds a status to the ones selected for this Form Schema, so that a status created from
+   * the Status tab is saved with it.
+   * @param statusId The id of the status
+   */
+  private _selectStatus(statusId: string): void {
+    this.formGroup.pipe(take(1)).subscribe(formGroup => {
+      const control = formGroup.get('status');
+      if (control == null) {
+        return;
+      }
+      const selected: string[] = control.value ?? [];
+      if (!selected.includes(statusId)) {
+        control.setValue([...selected, statusId]);
+        control.markAsDirty();
+      }
+    });
   }
 
   /**
