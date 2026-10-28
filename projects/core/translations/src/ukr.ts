@@ -114,8 +114,8 @@ export const UKR: Translation = {
   'Log out': 'Вийти',
   'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
     'Хочете вийти, видаливши всі локальні дані, або лише завершити сеанс, зберігши дані на цьому пристрої?',
-  'Log out and delete the data': 'Вийти й видалити дані',
-  'End the session and keep the data': 'Завершити сеанс і зберегти дані',
+  'Log out and delete the local data': 'Вийти й видалити локальні дані',
+  'End the session and keep the local data': 'Завершити сеанс і зберегти локальні дані',
   'Cancel': 'Скасувати',
   'Session expired': 'Сеанс завершився',
   'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':

@@ -108,11 +108,11 @@ At the very bottom of the sidebar, the user card shows your initials, your name,
 
 Click the **Logout** button next to your user card. Dino always asks what to do with the data on this device:
 
-- **Log out and delete the data** — ends the session and deletes all the local data from this device.
-- **End the session and keep the data** — ends the session and takes you to the login page, keeping the data on this device for your next login.
+- **End the session and keep the local data** — ends the session and takes you to the login page, keeping the data on this device for your next login.
+- **Log out and delete the local data** — ends the session and deletes all the local data from this device.
 - **Cancel** — stays signed in.
 
 The Logout button is greyed out and cannot be used while a sync is in progress or when the device is offline.
 
 !!! warning "Data not yet synchronised"
-    Data you have not synchronised yet exists only on this device: deleting it on logout loses it for good. If you are unsure, synchronise first, or choose **End the session and keep the data**. Signing in later with a different account also deletes it — see [Logging In](../getting-started/login.md).
+    Data you have not synchronised yet exists only on this device: deleting it on logout loses it for good. If you are unsure, synchronise first, or choose **End the session and keep the local data**. Signing in later with a different account also deletes it — see [Logging In](../getting-started/login.md).

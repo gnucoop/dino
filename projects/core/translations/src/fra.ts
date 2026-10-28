@@ -116,8 +116,8 @@ export const FRA: Translation = {
   'Log out': 'Se déconnecter',
   'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
     'Voulez-vous vous déconnecter en supprimant toutes les données locales, ou seulement fermer la session en conservant les données sur cet appareil ?',
-  'Log out and delete the data': 'Se déconnecter et supprimer les données',
-  'End the session and keep the data': 'Fermer la session et conserver les données',
+  'Log out and delete the local data': 'Se déconnecter et supprimer les données locales',
+  'End the session and keep the local data': 'Fermer la session et conserver les données locales',
   'Cancel': 'Annuler',
   'Session expired': 'Session expirée',
   'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':

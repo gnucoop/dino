@@ -115,8 +115,8 @@ export const ENG: Translation = {
   'Log out': 'Log out',
   'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
     'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?',
-  'Log out and delete the data': 'Log out and delete the data',
-  'End the session and keep the data': 'End the session and keep the data',
+  'Log out and delete the local data': 'Log out and delete the local data',
+  'End the session and keep the local data': 'End the session and keep the local data',
   'Cancel': 'Cancel',
   'Session expired': 'Session expired',
   'The sync is stopped and no more data can be saved until a new login. Do you want to end the session, keeping the data on this device, and go to the login page?':
