@@ -73,7 +73,7 @@
           color="primary"
           translate
           (click)="save()"
-          [disabled]="!fgroup.valid || (saveAllowed|async) !== true"
+          [disabled]="!fgroup.valid || (saveAllowed|async) !== true || (hasSchema|async) !== true"
         >
           Save <mat-icon>save</mat-icon>
         </button>
