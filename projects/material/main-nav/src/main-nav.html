@@ -144,6 +144,7 @@
             class="dino-user-card-identity"
             [matMenuTriggerFor]="userMenu"
             [matTooltip]="(userDisplayName|async) ?? ('User Area'|transloco)"
+            [attr.aria-label]="(userDisplayName|async) ?? ('User Area'|transloco)"
             [matTooltipDisabled]="(extendedSidenav|async) || compact"
           >
             <span class="dino-user-avatar" aria-hidden="true">
@@ -399,6 +400,7 @@
     #notificationsTrigger="matMenuTrigger"
     [matMenuTriggerFor]="notificationsmenu"
     [matTooltip]="'Notifications'|transloco"
+    [attr.aria-label]="'Notifications'|transloco"
   >
     <mat-icon
       *ngIf="unreadNotificationsNumber|async as newNotifications; else noBadgeTemplate"

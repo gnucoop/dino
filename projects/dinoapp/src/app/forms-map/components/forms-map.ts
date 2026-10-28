@@ -434,6 +434,7 @@ export class FormsMapComponent implements AfterViewInit, OnDestroy {
     dialogConfig.height = '85vh';
     dialogConfig.maxHeight = '85vh';
     dialogConfig.autoFocus = false;
+    dialogConfig.ariaLabelledBy = 'dino-export-title';
     const dialogRef = this._dialog.open(ExportList, dialogConfig);
     dialogRef.componentInstance.emitExportActionTrigger
       .pipe(take(1))

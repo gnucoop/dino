@@ -916,6 +916,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
   openColumnsSelectorDialog() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.panelClass = 'columns-selector-dialog';
+    dialogConfig.ariaLabelledBy = 'dino-columns-selector-title';
     dialogConfig.data = {
       columns: this.headers,
     };
@@ -1990,6 +1991,7 @@ export class SelectionList<T extends Model = Model, U extends Model = Model>
     dialogConfig.height = compact ? 'auto' : '85vh';
     dialogConfig.maxHeight = '85vh';
     dialogConfig.autoFocus = false;
+    dialogConfig.ariaLabelledBy = 'dino-export-title';
     let dialogRef = this.dialog.open(ExportList, dialogConfig);
     dialogRef.componentInstance.emitExportActionTrigger
       .pipe(take(1))
