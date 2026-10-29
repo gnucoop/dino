@@ -9,6 +9,9 @@
         [value]="name"
         [disabled]="viewOnly"
         [placeholder]="'Group name' | transloco"
+        maxlength="100"
+        [class.dino-ge-name-taken]="nameTaken"
+        [attr.aria-invalid]="nameTaken"
         (input)="onName($any($event.target).value)"
       />
 
@@ -24,6 +27,9 @@
           {{ 'Save' | transloco }}
         </button>
       </div>
+    </div>
+    <div class="dino-ge-name-error" *ngIf="nameTaken" role="alert">
+      {{ 'This name is already being used.' | transloco }}
     </div>
   </div>
 

@@ -57,6 +57,9 @@
             <div class="dino-imp-drop-hint">
               {{ 'Accepted formats: .xls, .xlsx, .csv — up to 20 MB' | transloco }}
             </div>
+            <div *ngIf="fileTooLarge" class="dino-imp-file-error" role="alert">
+              {{ 'The file is larger than 20 MB' | transloco }}
+            </div>
             <input
               #fileInput
               type="file"

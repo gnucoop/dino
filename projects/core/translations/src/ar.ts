@@ -1048,4 +1048,5 @@ export const AR: Translation = {
     'جارٍ تحضير البيانات للتحليل: مع عدد كبير من السجلات قد يستغرق ذلك دقيقة أو أكثر...',
   'This form is not available on this device': 'هذا النموذج غير متوفر على هذا الجهاز',
   'This report is not available on this device': 'هذا التقرير غير متوفر على هذا الجهاز',
+  'The file is larger than 20 MB': 'حجم الملف أكبر من 20 ميغابايت',
 };

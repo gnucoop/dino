@@ -30,6 +30,7 @@
               <input
                 matInput
                 [formControlName]="field.fieldName"
+                [attr.maxlength]="field.fieldName === 'name' ? 100 : null"
                 [placeholder]="field.placeholder ?? ''"
                 [readonly]="data.metricAction === 'View'"
                 value="{{field.value}}"

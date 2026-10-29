@@ -19,8 +19,8 @@ import {ReportSchemaManager} from '@dino/core/reports';
 import {UserGroup, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {MixedEditorItem} from '@dino/material/mixed-editor';
 import {TranslocoService} from '@ngneat/transloco';
-import {combineLatest, Observable, Subscription} from 'rxjs';
-import {map, shareReplay, take} from 'rxjs/operators';
+import {combineLatest, Observable, of, Subject, Subscription} from 'rxjs';
+import {debounceTime, map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {environment} from 'src/environments/environment';
 
 /**
@@ -99,6 +99,15 @@ export class GroupEditorPage implements OnDestroy {
    * True while a save is in flight.
    */
   saving = false;
+  /**
+   * True when another group already has the typed name: the server would refuse the
+   * second one, and it would stay on this device only.
+   */
+  nameTaken = false;
+  /**
+   * True while the typed name is being checked: Save waits for the answer.
+   */
+  checkingName = false;
 
   // ---- Derived view data (recomputed on every state change) -----------------
   tabs: CategoryTab[] = [];
@@ -132,6 +141,9 @@ export class GroupEditorPage implements OnDestroy {
 
   private _subs = new Subscription();
 
+  /** The names typed in the name field, checked against the other groups. */
+  private readonly _nameInput = new Subject<string>();
+
   constructor(
     private _userGroupManager: UserGroupManager,
     private _userRoleManager: UserRoleManager,
@@ -151,6 +163,19 @@ export class GroupEditorPage implements OnDestroy {
   ) {
     this.viewOnly = this._route.snapshot.data['isView'] === true;
     this._groupId = this._route.snapshot.paramMap.get('id');
+
+    this._subs.add(
+      this._nameInput
+        .pipe(
+          debounceTime(300),
+          switchMap(name => this._isNameTaken(name)),
+        )
+        .subscribe(taken => {
+          this.nameTaken = taken;
+          this.checkingName = false;
+          this._cdr.markForCheck();
+        }),
+    );
 
     const schedule: Observable<MixedEditorItem[]>[] = [
       this._populateList(this._userRoleManager, 'roleName', 'school', false, true),
@@ -225,6 +250,8 @@ export class GroupEditorPage implements OnDestroy {
 
   onName(value: string): void {
     this.name = value;
+    this.checkingName = true;
+    this._nameInput.next(value);
   }
 
   // ---- Assignment mutations -------------------------------------------------
@@ -330,6 +357,8 @@ export class GroupEditorPage implements OnDestroy {
     return (
       !this.viewOnly &&
       !this.saving &&
+      !this.nameTaken &&
+      !this.checkingName &&
       this.name.trim().length > 0 &&
       (this._assigned['user_role']?.length ?? 0) > 0
     );
@@ -394,6 +423,21 @@ export class GroupEditorPage implements OnDestroy {
   }
 
   // ---- Internal -------------------------------------------------------------
+
+  /**
+   * True if a group other than the edited one has this name, compared without the
+   * spaces around it and case-insensitively.
+   */
+  private _isNameTaken(name: string): Observable<boolean> {
+    const trimmed = name.trim();
+    if (trimmed === '') {
+      return of(false);
+    }
+    const pattern = `^\\s*${trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`;
+    return this._userGroupManager
+      .query({selector: {groupName: {$regex: pattern, $options: 'i'}}})
+      .pipe(map(groups => groups.some(group => group.id !== this._groupId)));
+  }
 
   /** Seeds `_assigned` from the persisted group (edit/view modes). */
   private _loadGroup(): void {

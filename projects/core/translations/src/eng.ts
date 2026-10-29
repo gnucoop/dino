@@ -921,4 +921,5 @@ export const ENG: Translation = {
     'Preparing the data to analyze: with many records it can take a minute or more...',
   'This form is not available on this device': 'This form is not available on this device',
   'This report is not available on this device': 'This report is not available on this device',
+  'The file is larger than 20 MB': 'The file is larger than 20 MB',
 };

@@ -961,4 +961,5 @@ export const UKR: Translation = {
     'Підготовка даних для аналізу: за великої кількості записів це може тривати хвилину або більше...',
   'This form is not available on this device': 'Ця форма недоступна на цьому пристрої',
   'This report is not available on this device': 'Цей звіт недоступний на цьому пристрої',
+  'The file is larger than 20 MB': 'Файл більший за 20 МБ',
 };
