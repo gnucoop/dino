@@ -918,4 +918,5 @@ export const PRT: Translation = {
     'Este formulário não está disponível neste dispositivo',
   'This report is not available on this device':
     'Este relatório não está disponível neste dispositivo',
+  'The file is larger than 20 MB': 'O ficheiro tem mais de 20 MB',
 };

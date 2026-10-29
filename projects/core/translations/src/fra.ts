@@ -928,4 +928,5 @@ export const FRA: Translation = {
   'This form is not available on this device':
     "Ce formulaire n'est pas disponible sur cet appareil",
   'This report is not available on this device': "Ce rapport n'est pas disponible sur cet appareil",
+  'The file is larger than 20 MB': 'Le fichier dépasse 20 Mo',
 };

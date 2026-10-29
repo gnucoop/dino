@@ -53,6 +53,12 @@ import {
  * the result. It owns the whole interaction and knows nothing about what is being
  * imported: the host declares the fields and receives the mapped rows.
  */
+/**
+ * The largest file the wizard reads, as the upload step announces: the whole file is held in
+ * memory and its rows are written one by one to the local database.
+ */
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
+
 @Component({
   selector: 'dino-import-wizard',
   styleUrls: ['import-wizard.scss'],
@@ -140,6 +146,11 @@ export class ImportWizard implements OnDestroy, ErrorStateMatcher {
    * The name of the selected file, shown in the upload success chip.
    */
   fileName = '';
+
+  /**
+   * True when the last file chosen was over the size limit and was not read.
+   */
+  fileTooLarge = false;
 
   /**
    * Live search filter applied to the mapping rows.
@@ -469,7 +480,7 @@ export class ImportWizard implements OnDestroy, ErrorStateMatcher {
   onFileDrop(event: DragEvent): void {
     event.preventDefault();
     const file = event.dataTransfer?.files?.[0];
-    if (file) {
+    if (file && this._acceptFile(file)) {
       this._file = file;
       this.fileName = file.name;
       this._readFile(file);
@@ -490,6 +501,11 @@ export class ImportWizard implements OnDestroy, ErrorStateMatcher {
    */
   onExcelfileSelected(event: any): void {
     if (event.target.files.length === 0) {
+      return;
+    }
+    if (!this._acceptFile(event.target.files[0])) {
+      // Lets the same file be chosen again, which would otherwise fire no change.
+      event.target.value = '';
       return;
     }
     this._file = event.target.files[0];
@@ -640,6 +656,19 @@ export class ImportWizard implements OnDestroy, ErrorStateMatcher {
   }
 
   // ---- Internals ------------------------------------------------------------
+
+  /**
+   * False, and says so, when the file is over the size limit.
+   * @param file The chosen file
+   */
+  private _acceptFile(file: File): boolean {
+    this.fileTooLarge = file.size > MAX_FILE_SIZE;
+    if (this.fileTooLarge) {
+      this.fileName = '';
+      this._cdr.markForCheck();
+    }
+    return !this.fileTooLarge;
+  }
 
   /**
    * Reads the file and builds one column mapping per file column.

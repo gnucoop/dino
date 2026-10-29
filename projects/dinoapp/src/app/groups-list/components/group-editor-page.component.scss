@@ -38,6 +38,12 @@
     margin-top: 6px;
   }
 
+  .dino-ge-name-error {
+    margin-top: 4px;
+    font-size: 13px;
+    color: mat-css-vars.mat-css-color-warn(500);
+  }
+
   .dino-ge-name {
     flex: 1 1 auto;
     min-width: 0;
@@ -57,6 +63,9 @@
     }
     &:disabled {
       color: var(--ge-muted);
+    }
+    &.dino-ge-name-taken {
+      border-bottom-color: mat-css-vars.mat-css-color-warn(500);
     }
   }
 

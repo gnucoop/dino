@@ -203,6 +203,12 @@ dino-import-wizard {
     margin: 6px 0 18px;
   }
 
+  .dino-imp-file-error {
+    font-size: 14px;
+    color: mat-css-vars.mat-css-color-warn(500);
+    margin: -10px 0 18px;
+  }
+
   .dino-imp-file-input {
     position: absolute;
     width: 1px;

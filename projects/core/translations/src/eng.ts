@@ -914,4 +914,5 @@ export const ENG: Translation = {
     'A sync is in progress: this backup holds only the data downloaded so far.',
   'This form is not available on this device': 'This form is not available on this device',
   'This report is not available on this device': 'This report is not available on this device',
+  'The file is larger than 20 MB': 'The file is larger than 20 MB',
 };

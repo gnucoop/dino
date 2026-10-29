@@ -920,4 +920,5 @@ export const ESP: Translation = {
     'Este formulario no está disponible en este dispositivo',
   'This report is not available on this device':
     'Este informe no está disponible en este dispositivo',
+  'The file is larger than 20 MB': 'El archivo supera los 20 MB',
 };

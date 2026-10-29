@@ -1041,4 +1041,5 @@ export const AR: Translation = {
     'هناك مزامنة قيد التنفيذ: تحتوي هذه النسخة الاحتياطية على البيانات التي تم تنزيلها حتى الآن فقط.',
   'This form is not available on this device': 'هذا النموذج غير متوفر على هذا الجهاز',
   'This report is not available on this device': 'هذا التقرير غير متوفر على هذا الجهاز',
+  'The file is larger than 20 MB': 'حجم الملف أكبر من 20 ميغابايت',
 };

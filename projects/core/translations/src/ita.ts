@@ -932,4 +932,5 @@ export const ITA: Translation = {
     'Questo form non è disponibile su questo dispositivo',
   'This report is not available on this device':
     'Questo report non è disponibile su questo dispositivo',
+  'The file is larger than 20 MB': 'Il file supera i 20 MB',
 };
