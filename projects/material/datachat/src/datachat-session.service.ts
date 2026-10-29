@@ -121,9 +121,11 @@ export class DataChatSessionService {
   private _scope: string | null = null;
 
   /**
-   * Pending debounced save of the active conversation.
+   * Pending debounced saves, by conversation id. One per conversation: the
+   * late answer of a chat left meanwhile must not cancel the save of the
+   * conversation now displayed.
    */
-  private _saveTimeout: ReturnType<typeof setTimeout> | null = null;
+  private _saveTimeouts: Map<string, ReturnType<typeof setTimeout>> = new Map();
 
   /**
    * The Maui conversation ids, by Dino conversation id, of the conversations
@@ -308,7 +310,7 @@ export class DataChatSessionService {
    * @returns The chat entries to display after the deletion
    */
   async removeConversation(id: string): Promise<DataChatQA[]> {
-    this._cancelPendingSave();
+    this._cancelPendingSave(id);
     this._mauiConversations.delete(id);
     await this._store.remove(id);
     const conversations = this._scope != null ? await this._store.list(this._scope) : [];
@@ -325,26 +327,30 @@ export class DataChatSessionService {
   }
 
   /**
-   * Stores the chat entries of the active conversation, giving it a title on
-   * its first question. Debounced: the several entries of a single answer
-   * result in a single write.
+   * Stores the chat entries of a conversation, giving it a title on its first
+   * question. Debounced: the several entries of a single answer result in a
+   * single write.
+   *
+   * The conversation is the one the chat is writing to, and not the active
+   * one: an answer can arrive after the User has left that chat for another,
+   * and must not end up in the conversation activated meanwhile.
+   * @param conversation The conversation the entries belong to
    * @param messages The current chat entries
    */
-  saveActive(messages: DataChatQA[]): void {
-    const active = this.activeConversation.value;
-    if (active == null) {
-      return;
-    }
+  saveConversation(conversation: DataChatConversation, messages: DataChatQA[]): void {
     // The component instance of a table cannot be stored - its rows are, in
     // tableData - and an export link dies with the chat session.
-    active.messages = messages.map(qa =>
+    conversation.messages = messages.map(qa =>
       this._withoutFields(qa, ['componentData', 'downloadUrl', 'downloadFilename']),
     );
-    this._cancelPendingSave();
-    this._saveTimeout = setTimeout(() => {
-      this._saveTimeout = null;
-      this._flush(active);
-    }, SAVE_DEBOUNCE);
+    this._cancelPendingSave(conversation.id);
+    this._saveTimeouts.set(
+      conversation.id,
+      setTimeout(() => {
+        this._saveTimeouts.delete(conversation.id);
+        this._flush(conversation);
+      }, SAVE_DEBOUNCE),
+    );
   }
 
   /**
@@ -369,12 +375,14 @@ export class DataChatSessionService {
   }
 
   /**
-   * Cancels a pending debounced save, if any.
+   * Cancels the pending debounced save of a conversation, if any.
+   * @param id The conversation id
    */
-  private _cancelPendingSave(): void {
-    if (this._saveTimeout != null) {
-      clearTimeout(this._saveTimeout);
-      this._saveTimeout = null;
+  private _cancelPendingSave(id: string): void {
+    const timeout = this._saveTimeouts.get(id);
+    if (timeout != null) {
+      clearTimeout(timeout);
+      this._saveTimeouts.delete(id);
     }
   }
 
