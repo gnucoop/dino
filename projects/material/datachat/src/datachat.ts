@@ -425,6 +425,14 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   private _conversationKey: string | null = null;
 
   /**
+   * The conversation this chat writes to. It is kept here, and not read from
+   * the session, because the session holds the conversation of whichever chat
+   * is displayed: an answer arriving after the User has left this chat still
+   * belongs to this conversation.
+   */
+  private _conversation: DataChatConversation | null = null;
+
+  /**
    * True if a PandasAI agent of a previous visit of this Form Schema is still
    * alive: in that case no api key validation, csv export or agent creation
    * is performed, and the chat history is restored from the session.
@@ -614,6 +622,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     this._conversationKey = this.mode === 'datachat' ? this._schemaId : COMPLETION_CONVERSATIONS_KEY;
     if (this._conversationKey != null) {
       this._session.openScope(this._conversationKey).then(messages => {
+        this._conversation = this._session.activeConversation.value;
         this.history = this._restoreTables(messages);
         this._cdr.detectChanges();
         this._scrollChatBottom();
@@ -644,6 +653,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       return;
     }
     this.history = this._session.newConversation();
+    this._conversation = this._session.activeConversation.value;
     this._cdr.detectChanges();
   }
 
@@ -674,6 +684,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     }
     this._session.openConversation(conversation.id).then(messages => {
       if (messages != null) {
+        this._conversation = this._session.activeConversation.value;
         this.history = this._restoreTables(messages);
         this._cdr.detectChanges();
         this._scrollChatBottom();
@@ -698,6 +709,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       this._closeMauiConversation(mauiId);
     }
     this._session.removeConversation(conversation.id).then(messages => {
+      this._conversation = this._session.activeConversation.value;
       this.history = messages;
       this._cdr.detectChanges();
     });
@@ -1558,14 +1570,14 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   }
 
   /**
-   * Saves the chat history in the session, so that it can be restored when the
-   * AI view of this Form Schema is entered again.
+   * Saves the chat history in the conversation of this chat, so that it can be
+   * restored when the AI view of this Form Schema is entered again.
    */
   private _persistHistory(): void {
-    if (this._conversationKey == null) {
+    if (this._conversation == null) {
       return;
     }
-    this._session.saveActive(this.history);
+    this._session.saveConversation(this._conversation, this.history);
   }
 
   /**
