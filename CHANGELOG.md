@@ -1,3 +1,28 @@
+<a name="18.1.1-sw.150"></a>
+# 18.1.1-sw.150 "rough-dragon" (2026-10-29)
+### Bug Fixes
+* **core/file-upload:** send the file as file[] and read processedFiles, as nhost Storage expects ([8ed5268](https://github.com/gnucoop/dino/commit/8ed5268ef434b45a203617be5c7dc4a4b392c5be))
+* **datachat:** read result_rows/result_columns and send every call bypassing the interceptors ([ac6045a](https://github.com/gnucoop/dino/commit/ac6045ab10df47b7cca3c3569f2472e49619a0e5))
+* **forms:** keep the groups when deleting a form schema ([ccf4744](https://github.com/gnucoop/dino/commit/ccf4744c1cfca9352d0f7918ccde5ed9b1932506))
+* **material/datachat:** save a late answer in the conversation it belongs to, not in the active one ([0d6a856](https://github.com/gnucoop/dino/commit/0d6a85604657ed795dee24a2f1458f834c1c5117))
+* **material/main-nav:** clear the DINO-AI terms acceptance on logout ([d82eac1](https://github.com/gnucoop/dino/commit/d82eac14a35ac96fc5f88b6bdf2e02bd76f1bc4f))
+* **material/main-nav:** say local data in the logout choices and put keeping the data first ([9ca3d1e](https://github.com/gnucoop/dino/commit/9ca3d1e5d5cddeb441eccd2b50ab7e57d69d0f38))
+* **material/user-area:** build the backup at click time, once every backup collection exists ([3c5a9a7](https://github.com/gnucoop/dino/commit/3c5a9a7ad07a91d0e2b458089bb5f378dc46e5bf))
+### Features
+* **docker:** set the Maui url at container start via MAUI_URL ([502dc0a](https://github.com/gnucoop/dino/commit/502dc0ad5094e8ce21836ba7ba030aaeff3898c0))
+* **forms-map:** place the pins by a geolocation field of the form ([6fd963b](https://github.com/gnucoop/dino/commit/6fd963bd82c623a00d97e05e525c763b00c83a7d))
+* **forms:** add thematic groups to form schemas ([8efcaf3](https://github.com/gnucoop/dino/commit/8efcaf388be4f3f17644dcf0229733a5f81fad98))
+* **material/collect:** restyle the collect with group sections and views ([d240d6d](https://github.com/gnucoop/dino/commit/d240d6d1e98340b43b932a1459c09ce9906f33ce))
+* **material/datachat:** answer follow-up questions with Maui conversational memory ([dae8e9c](https://github.com/gnucoop/dino/commit/dae8e9c4d30b0d3540a782964f04b5beb89e1e5a))
+* **material/edit-form-schema:** assign groups from a new Group tab ([af3665e](https://github.com/gnucoop/dino/commit/af3665e610f84feb172452bdc67d1310d8fce46c))
+* **material/user-area:** warn that a backup taken while syncing may be partial ([65d3583](https://github.com/gnucoop/dino/commit/65d358343ebd782352b7cadfc11f4f2af688f649))
+* **material:** assign report groups in the editor and group the reports page ([5dae102](https://github.com/gnucoop/dino/commit/5dae1020859fa8d10e338c66e94dc7381c9fecf4))
+* **pandino:** identify the client as dino on checkpandinouser and storeragfile ([bf8a93f](https://github.com/gnucoop/dino/commit/bf8a93f1421ce28faa7d33da33662c340dd893c2))
+* **reports:** add thematic groups to report schemas ([a8b6009](https://github.com/gnucoop/dino/commit/a8b6009a2bf921cb694738b6c286866dff3f4fc3))
+* **user-editor:** set the password on creation, send a reset email and translate the form ([739d424](https://github.com/gnucoop/dino/commit/739d42467264fe7260300e532bf86872e71ea4df))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="18.1.0-sw.149"></a>
 # 18.1.0-sw.149 "blushing-coral" (2026-10-05)
 ### Bug Fixes
