@@ -950,4 +950,6 @@ export const UKR: Translation = {
   'The backup could not be created': 'Не вдалося створити резервну копію',
   'A sync is in progress: this backup holds only the data downloaded so far.':
     'Триває синхронізація: ця резервна копія містить лише дані, завантажені на цей момент.',
+  'Document saved. You are offline: the files cannot be uploaded.':
+    'Документ збережено. Ви офлайн: файли неможливо завантажити.',
 };

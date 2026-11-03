@@ -573,6 +573,22 @@ export class FormMetricSelector implements OnDestroy, AfterViewInit {
   }
 
   /**
+   * Empties a metric field, as deleting its text by hand would.
+   * @param event The click on the clear button, kept from reaching the field.
+   * @param fieldName The metric field to empty.
+   */
+  clearMetric(event: Event, fieldName: string): void {
+    event.stopPropagation();
+    const control = this.formMetrics.get(fieldName);
+    if (control == null) {
+      return;
+    }
+    control.setValue('');
+    control.markAsDirty();
+    control.markAsTouched();
+  }
+
+  /**
    * Triggers an event to move forward to the Data step of the Form Editor
    */
   goToData() {

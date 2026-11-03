@@ -345,6 +345,8 @@ export const PRT: Translation = {
   'Do you want to': 'Você deseja',
   'Docx': 'Exportar Docx',
   'Document saved': 'Documento salvo',
+  'Document saved. You are offline: the files cannot be uploaded.':
+    'Documento guardado. Está sem ligação: os ficheiros não podem ser carregados.',
   'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.':
     'Documento salvo. Alguns arquivos foram armazenados localmente devido a um problema temporário de rede. Você pode sincronizá-los mais tarde clicando no ícone de upload.',
   "Don't import metrics if name exists": 'Não importe métricas de importação se houver nome',

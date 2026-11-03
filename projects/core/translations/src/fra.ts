@@ -351,6 +351,8 @@ export const FRA: Translation = {
   'Do you want to': 'Voulez-vous',
   'Docx': 'Exporter Docx',
   'Document saved': 'Document enregistré',
+  'Document saved. You are offline: the files cannot be uploaded.':
+    'Document enregistré. Vous êtes hors ligne : les fichiers ne peuvent pas être envoyés.',
   'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.':
     "Document enregistré. Certains fichiers ont été stockés localement en raison d'un problème réseau temporaire. Vous pouvez les synchroniser ultérieurement en cliquant sur l'icône de téléchargement.",
   "Don't import metrics if name exists": "N'importez pas de mesures si le nom existe",
