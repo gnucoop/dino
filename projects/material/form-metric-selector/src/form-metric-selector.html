@@ -118,7 +118,21 @@
               [matAutocomplete]="auto"
             />
 
-            <mat-icon matIconSuffix class="dino-form-metric-selector-field-arrow">
+            <button
+              *ngIf="(isView|async) !== true && formMetrics.controls[field.fieldName].value"
+              matIconSuffix
+              type="button"
+              class="dino-form-metric-selector-field-clear"
+              [attr.aria-label]="'Clear'|transloco"
+              (click)="clearMetric($event, field.fieldName)"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-icon
+              *ngIf="(isView|async) === true || !formMetrics.controls[field.fieldName].value"
+              matIconSuffix
+              class="dino-form-metric-selector-field-arrow"
+            >
               expand_more
             </mat-icon>
 

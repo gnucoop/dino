@@ -352,6 +352,8 @@ export const ITA: Translation = {
   'Do you want to': 'Vuoi',
   'Docx': 'Esporta Docx',
   'Document saved': 'Documento salvato',
+  'Document saved. You are offline: the files cannot be uploaded.':
+    'Documento salvato. Sei offline: i file non possono essere caricati.',
   'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.':
     "Documento salvato. Alcuni file sono stati salvati localmente a causa di un problema di rete temporaneo. Puoi sincronizzarli in seguito cliccando sull'icona di caricamento.",
   "Don't import metrics if name exists": 'Non importare le metriche se il nome esiste',

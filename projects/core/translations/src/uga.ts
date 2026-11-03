@@ -563,4 +563,6 @@ export const UGA: Translation = {
   'The backup could not be created': 'The backup could not be created',
   'A sync is in progress: this backup holds only the data downloaded so far.':
     'A sync is in progress: this backup holds only the data downloaded so far.',
+  'Document saved. You are offline: the files cannot be uploaded.':
+    'Document saved. You are offline: the files cannot be uploaded.',
 };

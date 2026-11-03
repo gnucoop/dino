@@ -317,6 +317,8 @@ export const AR: Translation = {
   'Do you want to': 'هل تريد أن',
   'Docx': 'تصدير Docx',
   'Document saved': 'تم حفظ المستند',
+  'Document saved. You are offline: the files cannot be uploaded.':
+    'تم حفظ المستند. أنت غير متصل: لا يمكن رفع الملفات.',
   'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.':
     'تم حفظ المستند. تم تخزين بعض الملفات محلياً بسبب مشكلة مؤقتة في الشبكة. يمكنك مزامنة هذه الملفات لاحقاً بالنقر على أيقونة الرفع.',
   "Don't import metrics if name exists": 'لا تستورد المقاييس إذا كان الاسم موجوداً',

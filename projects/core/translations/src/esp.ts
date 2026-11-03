@@ -346,6 +346,8 @@ export const ESP: Translation = {
   'Do you want to': 'Quieres',
   'Docx': 'Exportar Docx',
   'Document saved': 'Documento guardado',
+  'Document saved. You are offline: the files cannot be uploaded.':
+    'Documento guardado. Estás sin conexión: los archivos no se pueden subir.',
   'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.':
     'Documento guardado. Algunos archivos se almacenaron localmente debido a un problema de red temporal. Puedes sincronizarlos más tarde haciendo clic en el icono de carga.',
   "Don't import metrics if name exists": 'No hay métricas de importación si el nombre existe',

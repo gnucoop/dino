@@ -85,6 +85,7 @@ import {
 } from 'rxjs';
 import {
   catchError,
+  debounceTime,
   distinctUntilChanged,
   filter,
   map,
@@ -102,6 +103,11 @@ import {UntypedFormGroup} from '@angular/forms';
 import {MatStepper} from '@angular/material/stepper';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
+
+/**
+ * How long the metric selection has to stay still before the unique metrics set is checked.
+ */
+const UNIQUE_METRICS_CHECK_DEBOUNCE_MS = 300;
 
 /**
  * The Form Edit component.
@@ -240,6 +246,12 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
    * The current document object
    */
   private _currentDoc: Subject<T> = new Subject<T>();
+
+  /**
+   * The record as stored when the form was opened, to tell whether the metrics
+   * selected now are still the saved ones.
+   */
+  private _savedDoc: {[key: string]: any} | null = null;
 
   /**
    * The Form schema id
@@ -563,6 +575,7 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               return null;
             }
             const item: {[key: string]: any} = doc.toJSON();
+            this._savedDoc = item;
             this._currentDoc.next(item as T);
             if ('data' in item && item['data'] != null) {
               const formDataObj = {
@@ -1026,11 +1039,15 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
       this._formData,
       this._formMetricsSelector.pipe(
         switchMap(fmSelector => fmSelector?.selectedMetricsChanges ?? obsOf(null)),
+        // Loading the record fills the metrics one by one, about ten changes in a
+        // few hundred ms: one query per change kept RxDB busy for seconds, and the
+        // metric step stayed blocked until the last one answered.
+        debounceTime(UNIQUE_METRICS_CHECK_DEBOUNCE_MS),
       ),
     ]).pipe(
-      switchMap(([fschema, fdata, fsmChanges]) => {
+      map(([fschema, fdata, fsmChanges]) => {
         if (!fschema.schema.uniqueMetricsSet || fsmChanges == null) {
-          return obsOf(false);
+          return null;
         }
         const querySelectorObj: {[key: string]: {$eq: string}} = {};
         for (let key in fsmChanges) {
@@ -1041,15 +1058,31 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
             querySelectorObj[`${key}_ref_id`] = {$eq: fsmChanges[key].option?.id ?? null};
           }
         }
-        if (Object.keys(querySelectorObj).length === 0 || !this._dataModelManager) {
-          return obsOf(false);
+        const refKeys = Object.keys(querySelectorObj);
+        if (refKeys.length === 0) {
+          return null;
         }
-        const selector = {
+        // The metrics the record was saved with: editing other fields cannot create
+        // a duplicate, so there is nothing to look for.
+        const saved = this._savedDoc;
+        if (saved != null && refKeys.every(k => (saved[k] ?? null) === querySelectorObj[k].$eq)) {
+          return null;
+        }
+        return {
           form_schema_ref_id: {$eq: fschema.id},
           id: {$ne: fdata.id},
           ...querySelectorObj,
         };
-        return this._dataModelManager.query({selector}).pipe(map(docs => docs.length > 0));
+      }),
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+      switchMap(selector => {
+        if (selector == null || !this._dataModelManager) {
+          return obsOf(false);
+        }
+        // One match is enough to know the set is taken.
+        return this._dataModelManager
+          .query({selector, limit: 1})
+          .pipe(map(docs => docs.length > 0));
       }),
       shareReplay(1),
     );
@@ -1106,9 +1139,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
           if (filesToUpload && filesToUpload.length) {
             if (!isOnline) {
               if (!this.offlineFileUpload) {
-                this.snackbar.open('You are offline. The files will not be uploaded', 'WARNING', {
-                  duration: 5000,
-                });
+                // Told in the "saved" message at the end: a snackbar of its own here is
+                // replaced a moment later by that one, before anyone can read it.
+                (formObj as any).filesNotUploadedOffline = true;
                 let formValue = {...formObj.formValue};
                 // Signatures cannot be taken again later: they are kept in the record.
                 formValue = this.uploadService.removeAllFiles(formValue, true);
@@ -1272,6 +1305,14 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
               this.snackbar.open(
                 this._ts.translate(
                   'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.',
+                ),
+                this._ts.translate('CLOSE'),
+                {duration: 10000},
+              );
+            } else if ((formObj as any)?.filesNotUploadedOffline) {
+              this.snackbar.open(
+                this._ts.translate(
+                  'Document saved. You are offline: the files cannot be uploaded.',
                 ),
                 this._ts.translate('CLOSE'),
                 {duration: 10000},

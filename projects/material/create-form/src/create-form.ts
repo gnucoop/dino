@@ -81,6 +81,7 @@ import {
 } from 'rxjs';
 import {
   catchError,
+  debounceTime,
   distinctUntilChanged,
   filter,
   map,
@@ -100,6 +101,11 @@ import {TranslocoService} from '@ngneat/transloco';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-service';
+
+/**
+ * How long the metric selection has to stay still before the unique metrics set is checked.
+ */
+const UNIQUE_METRICS_CHECK_DEBOUNCE_MS = 300;
 
 /**
  * The Form Edit component.
@@ -742,11 +748,14 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
       this._formSchema,
       this._formMetricsSelector.pipe(
         switchMap(fmSelector => fmSelector?.selectedMetricsChanges ?? obsOf(null)),
+        // A selection settles through a burst of changes: one query per change kept
+        // RxDB busy for seconds, and the metric step stayed blocked until the last one.
+        debounceTime(UNIQUE_METRICS_CHECK_DEBOUNCE_MS),
       ),
     ]).pipe(
-      switchMap(([fschema, fsmChanges]) => {
+      map(([fschema, fsmChanges]) => {
         if (!fschema.schema.uniqueMetricsSet || fsmChanges == null) {
-          return obsOf(false);
+          return null;
         }
         const querySelectorObj: {[key: string]: {$eq: string}} = {};
         for (let key in fsmChanges) {
@@ -757,11 +766,20 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
             querySelectorObj[`${key}_ref_id`] = {$eq: fsmChanges[key].option?.id ?? null};
           }
         }
-        if (Object.keys(querySelectorObj).length === 0 || !this._dataModelManager) {
+        if (Object.keys(querySelectorObj).length === 0) {
+          return null;
+        }
+        return {form_schema_ref_id: {$eq: fschema.id}, ...querySelectorObj};
+      }),
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+      switchMap(selector => {
+        if (selector == null || !this._dataModelManager) {
           return obsOf(false);
         }
-        const selector = {form_schema_ref_id: {$eq: fschema.id}, ...querySelectorObj};
-        return this._dataModelManager.query({selector}).pipe(map(docs => docs.length > 0));
+        // One match is enough to know the set is taken.
+        return this._dataModelManager
+          .query({selector, limit: 1})
+          .pipe(map(docs => docs.length > 0));
       }),
       shareReplay(1),
     );
@@ -859,9 +877,9 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
           if (filesToUpload && filesToUpload.length) {
             if (!isOnline) {
               if (!this.offlineFileUpload) {
-                this.snackbar.open('You are offline. The files will not be uploaded', 'WARNING', {
-                  duration: 5000,
-                });
+                // Told in the "saved" message at the end: a snackbar of its own here is
+                // replaced a moment later by that one, before anyone can read it.
+                (formObj as any).filesNotUploadedOffline = true;
                 let formValue = {...formObj.formValue};
                 // Signatures cannot be taken again later: they are kept in the record.
                 formValue = this.uploadService.removeAllFiles(formValue, true);
@@ -1013,6 +1031,12 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
               ),
               this._ts.translate('CLOSE'),
               {duration: 8000},
+            );
+          } else if ((formObj as any)?.filesNotUploadedOffline) {
+            this.snackbar.open(
+              this._ts.translate('Document saved. You are offline: the files cannot be uploaded.'),
+              this._ts.translate('CLOSE'),
+              {duration: 10000},
             );
           } else {
             this.snackbar.open(this._ts.translate('Document saved'), this._ts.translate('CLOSE'), {

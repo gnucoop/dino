@@ -348,6 +348,8 @@ export const ENG: Translation = {
   'Do you want to': 'Do you want to',
   'Docx': 'Export Docx',
   'Document saved': 'Document saved',
+  'Document saved. You are offline: the files cannot be uploaded.':
+    'Document saved. You are offline: the files cannot be uploaded.',
   'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.':
     'Document saved. Some files were stored locally due to a temporary network problem. You can sync these files later by clicking the upload icon.',
   "Don't import metrics if name exists": "Don't import metrics if name exists",
