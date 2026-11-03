@@ -115,6 +115,10 @@ export const UKR: Translation = {
   'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
     'Хочете вийти, видаливши всі локальні дані, або лише завершити сеанс, зберігши дані на цьому пристрої?',
   'Log out and delete the local data': 'Вийти й видалити локальні дані',
+  'The local data cannot be deleted while the sync is running: the data not sent yet would be lost.':
+    'Локальні дані не можна видалити під час синхронізації: ще не надіслані дані буде втрачено.',
+  'The local data cannot be deleted while offline.':
+    'Локальні дані не можна видалити в режимі офлайн.',
   'End the session and keep the local data': 'Завершити сеанс і зберегти локальні дані',
   'Cancel': 'Скасувати',
   'Session expired': 'Сеанс завершився',

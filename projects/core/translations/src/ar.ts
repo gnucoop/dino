@@ -113,6 +113,9 @@ export const AR: Translation = {
   'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
     'هل تريد تسجيل الخروج مع حذف جميع البيانات المحلية، أم إغلاق الجلسة فقط مع الإبقاء على البيانات على هذا الجهاز؟',
   'Log out and delete the local data': 'تسجيل الخروج وحذف البيانات المحلية',
+  'The local data cannot be deleted while the sync is running: the data not sent yet would be lost.':
+    'لا يمكن حذف البيانات المحلية أثناء المزامنة: ستُفقد البيانات التي لم تُرسل بعد.',
+  'The local data cannot be deleted while offline.': 'لا يمكن حذف البيانات المحلية دون اتصال.',
   'End the session and keep the local data': 'إغلاق الجلسة والإبقاء على البيانات المحلية',
   'Cancel': 'إلغاء',
   'Session expired': 'انتهت صلاحية الجلسة',

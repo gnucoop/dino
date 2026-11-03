@@ -76,6 +76,7 @@ import {
 
 import {Section} from './section-interface';
 import {
+  SessionDeleteBlock,
   SessionDialog,
   SessionDialogData,
   SessionDialogKind,
@@ -322,9 +323,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * If true, the logout button temporarily off.
+   * Why the logout dialog cannot offer to delete the local data right now. The
+   * logout icon itself is never switched off: a pull failing over and over keeps
+   * the sync "running" for good, and an icon tied to it left the user with no way
+   * out of the session. Keeping the data is always safe, so only deleting it waits.
    */
-  readonly logoutOff: Observable<boolean>;
+  private readonly _deleteBlocked: Observable<SessionDeleteBlock>;
 
   /**
    * Additional action icons that can redirect to the specified urls
@@ -874,8 +878,12 @@ export class MainNav implements AfterViewInit, OnDestroy {
     this.isAdmin = this._adminRoles.pipe(
       switchMap(roles => this.userGroupManager.isActiveUserAdmin(roles)),
     );
-    this.logoutOff = combineLatest([this.isSyncing, this.networkStatusService.isOnline$]).pipe(
-      map(([syncing, online]) => syncing || !online),
+    this._deleteBlocked = combineLatest([this.isSyncing, this.networkStatusService.isOnline$]).pipe(
+      map(
+        ([syncing, online]): SessionDeleteBlock =>
+          !online ? 'offline' : syncing ? 'syncing' : null,
+      ),
+      distinctUntilChanged(),
     );
 
     const hideChromeFor = (url: string): boolean => {
@@ -1360,7 +1368,7 @@ export class MainNav implements AfterViewInit, OnDestroy {
    */
   private _askAboutSession(kind: SessionDialogKind): Observable<SessionDialogResult> {
     const dialogConfig = new MatDialogConfig<SessionDialogData>();
-    dialogConfig.data = {kind};
+    dialogConfig.data = kind === 'logout' ? {kind, deleteBlocked: this._deleteBlocked} : {kind};
     dialogConfig.panelClass = 'session-dialog';
     // Narrow on a desktop, and still inside the viewport on a phone: a question
     // this short does not need the 80vw the dialog defaults to.

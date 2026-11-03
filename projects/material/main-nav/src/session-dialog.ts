@@ -20,8 +20,15 @@
  *
  */
 
-import {ChangeDetectionStrategy, Component, Inject, ViewEncapsulation} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnDestroy,
+  ViewEncapsulation,
+} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {BehaviorSubject, Observable, of as obsOf, Subscription} from 'rxjs';
 
 /**
  * What the dialog is asking about.
@@ -37,8 +44,24 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
  */
 export type SessionDialogKind = 'logout' | 'session-expired' | 'data-refused';
 
+/**
+ * Why deleting the local data is not offered right now.
+ *
+ * - `syncing`: a sync is running, and the data it has not sent yet would be lost.
+ * - `offline`: the logout request cannot reach the server, so nothing would be deleted anyway.
+ * - `null`: nothing stands in the way.
+ */
+export type SessionDeleteBlock = 'syncing' | 'offline' | null;
+
 export interface SessionDialogData {
   kind: SessionDialogKind;
+  /**
+   * For a `logout`, whether the destructive choice is blocked and why. Live, so the
+   * choice becomes available as soon as the sync ends or the connection comes back
+   * while the dialog is open. Keeping the data is never blocked: it deletes nothing,
+   * so it is a safe way out whatever the sync is doing.
+   */
+  deleteBlocked?: Observable<SessionDeleteBlock>;
 }
 
 /**
@@ -67,17 +90,38 @@ export type SessionDialogResult = 'logout' | 'end-session' | undefined;
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class SessionDialog {
+export class SessionDialog implements OnDestroy {
+  /**
+   * The latest {@link SessionDialogData.deleteBlocked}, null when none was given.
+   */
+  readonly deleteBlocked: BehaviorSubject<SessionDeleteBlock> =
+    new BehaviorSubject<SessionDeleteBlock>(null);
+
+  private readonly _deleteBlockedSub: Subscription;
+
   constructor(
     public dialogRef: MatDialogRef<SessionDialog, SessionDialogResult>,
     @Inject(MAT_DIALOG_DATA) public data: SessionDialogData,
-  ) {}
+  ) {
+    this._deleteBlockedSub = (data.deleteBlocked ?? obsOf(null)).subscribe(block =>
+      this.deleteBlocked.next(block),
+    );
+  }
+
+  ngOnDestroy(): void {
+    this._deleteBlockedSub.unsubscribe();
+  }
 
   /**
    * Closes the dialog with the user's decision.
    * @param result The decision, undefined when there is nothing to do.
    */
   respond(result: SessionDialogResult): void {
+    // Checked here too, not only through the disabled button: deleting the data
+    // while it is blocked is exactly the loss the block exists to prevent.
+    if (result === 'logout' && this.deleteBlocked.value != null) {
+      return;
+    }
     this.dialogRef.close(result);
   }
 }

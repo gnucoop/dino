@@ -437,11 +437,6 @@ dino-main-nav {
   .dino-logout-button {
     flex: 0 0 auto;
     transition: opacity ease-in-out 0.5s;
-
-    &.dino-logout-button-off {
-      opacity: 0.3;
-      pointer-events: none;
-    }
   }
 
   // ---- User card ----

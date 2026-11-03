@@ -4,6 +4,16 @@
     <mat-dialog-content>
       <!-- prettier-ignore -->
       {{'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?'|transloco}}
+      <ng-container [ngSwitch]="deleteBlocked|async">
+        <p *ngSwitchCase="'syncing'" class="dino-session-dialog-delete-blocked">
+          <!-- prettier-ignore -->
+          {{'The local data cannot be deleted while the sync is running: the data not sent yet would be lost.'|transloco}}
+        </p>
+        <p *ngSwitchCase="'offline'" class="dino-session-dialog-delete-blocked">
+          <!-- prettier-ignore -->
+          {{'The local data cannot be deleted while offline.'|transloco}}
+        </p>
+      </ng-container>
     </mat-dialog-content>
     <mat-dialog-actions class="dino-session-dialog-actions">
       <button
@@ -18,6 +28,7 @@
         class="dino-session-dialog-logout-button"
         mat-raised-button
         color="warn"
+        [disabled]="(deleteBlocked|async) !== null"
         (click)="respond('logout')"
       >
         {{'Log out and delete the local data'|transloco}}
