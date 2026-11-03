@@ -343,6 +343,27 @@ describe('Collect with groups', () => {
     ]);
   });
 
+  it('should deselect a group when its chip is clicked again, on the close icon', async () => {
+    let el = await render();
+    const chipOf = (name: string) =>
+      Array.from(el.querySelectorAll<HTMLElement>('.dino-collect-chip')).find(chip =>
+        chip.textContent!.includes(name),
+      )!;
+    const primary = (chip: HTMLElement) =>
+      chip.querySelector<HTMLElement>('.mdc-evolution-chip__action--primary')!;
+
+    primary(chipOf('Health')).click();
+    el = await render();
+    expect(collect.selectedGroups.value).toEqual(['health']);
+    // The chip itself has to agree with the model, or the next click toggles it the wrong way.
+    expect(primary(chipOf('Health')).getAttribute('aria-selected')).toBe('true');
+
+    chipOf('Health').querySelector<HTMLElement>('.dino-collect-chip-remove')!.click();
+    el = await render();
+    expect(collect.selectedGroups.value).toEqual([]);
+    expect(chipOf('Health').querySelector('.dino-collect-chip-remove')).toBeNull();
+  });
+
   it('should clear the selection when the All chip is picked', () => {
     collect.selectGroups(['health']);
     collect.selectGroups(['health', ALL_GROUPS_CHIP]);

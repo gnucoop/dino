@@ -170,6 +170,14 @@ export class Collect implements OnDestroy {
   readonly allGroupsChip = ALL_GROUPS_CHIP;
 
   /**
+   * Keeps each group chip alive across view model emissions. The chips are rebuilt on every
+   * selection change, and without this the listbox applied the selection to the chips it was
+   * about to drop: the new ones came up unselected, so a second click selected the group again
+   * instead of deselecting it.
+   */
+  readonly trackChip = (_: number, chip: CollectChip): string => chip.id;
+
+  /**
    * True if the Add button must be displayed
    */
   displayAddButton: Observable<boolean> = obsOf(false);

@@ -56,7 +56,7 @@
       </mat-chip-option>
       <span class="dino-collect-chips-divider"></span>
       <mat-chip-option
-        *ngFor="let chip of vm.chips"
+        *ngFor="let chip of vm.chips; trackBy: trackChip"
         class="dino-collect-chip"
         [value]="chip.id"
         [style.--g]="chip.color"
