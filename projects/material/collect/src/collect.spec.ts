@@ -318,8 +318,8 @@ describe('Collect with groups', () => {
     expect(texts(el, '.dino-collect-section-head h2')).toEqual([
       'Health',
       'M&E',
-      'Public forms',
       'Ungrouped',
+      'Public forms',
     ]);
 
     collect.selectGroups(['health']);

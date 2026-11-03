@@ -95,7 +95,7 @@ export function groupIdsOf(item: CollectItem): string[] {
 
 /**
  * Returns the groups of the given items, in display order: the thematic groups by name,
- * then the public forms, then the ungrouped ones. An automatic group is listed only when
+ * then the ungrouped forms, then the public ones. An automatic group is listed only when
  * at least one item falls in it.
  */
 export function buildGroups(items: CollectItem[]): CollectGroup[] {
@@ -111,7 +111,7 @@ export function buildGroups(items: CollectItem[]): CollectGroup[] {
     }),
   );
   const ids = items.map(groupIdsOf);
-  const automatic = [PUBLIC_GROUP, UNGROUPED_GROUP].filter(group =>
+  const automatic = [UNGROUPED_GROUP, PUBLIC_GROUP].filter(group =>
     ids.some(itemIds => itemIds.includes(group.id)),
   );
   return [...thematic, ...automatic];
