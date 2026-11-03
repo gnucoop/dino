@@ -150,6 +150,11 @@ export interface FormsConfig {
    */
   saveDraft: boolean;
   /**
+   * If true, the files selected offline are kept in the record, to be uploaded later.
+   * If false, they are dropped on save, except signatures. Defaults to false.
+   */
+  offlineFileUpload?: boolean;
+  /**
    * If true, form datas can be duplicated in the list (default: true)
    */
   duplicateAction: boolean;

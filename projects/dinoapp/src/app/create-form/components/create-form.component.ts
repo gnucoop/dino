@@ -24,6 +24,7 @@ export class CreateFormComponent {
   } | null = conf.secondaryMetricFieldsDisplayed;
   readonly saveDraft =
     environment.formsConfig.saveDraft === undefined ? false : environment.formsConfig.saveDraft;
+  readonly offlineFileUpload: boolean = environment.formsConfig.offlineFileUpload ?? false;
   readonly centeredFieldsContent: boolean = environment.layoutConfig.centeredFieldsContent ?? false;
   readonly maxAjfFormColumns: 1 | 2 | 3 = environment.layoutConfig.maxAjfFormColumns ?? 1;
   readonly formInfoMessage: string | undefined = conf.formInfoMessage;

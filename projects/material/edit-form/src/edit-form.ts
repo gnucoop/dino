@@ -1110,7 +1110,8 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                   duration: 5000,
                 });
                 let formValue = {...formObj.formValue};
-                formValue = this.uploadService.removeAllFiles(formValue);
+                // Signatures cannot be taken again later: they are kept in the record.
+                formValue = this.uploadService.removeAllFiles(formValue, true);
                 formObj.formValue = {...formValue};
               } else {
                 formObj.formValue['dino_filestoupload'] = true;
@@ -1156,7 +1157,9 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
                 );
               }
             }
-            if (hasUploadError) {
+            // Flagged by what the record still holds, not by the upload outcome: offline
+            // nothing is uploaded, yet the kept files still have to reach the storage.
+            if (this.uploadService.hasFilesToUpload(formValue)) {
               formValue['dino_filestoupload'] = true;
             } else {
               delete formValue['dino_filestoupload'];

@@ -241,17 +241,33 @@ export class FileUploadService {
   /**
    * Remove in the form values all the selected file
    * @param formValue All the form value fields
+   * @param keepSignatures if true, signatures are left in the form value
    * @returns The form value without all the file
    */
-  removeAllFiles(formValue: {[key: string]: any}): {[key: string]: any} {
+  removeAllFiles(
+    formValue: {[key: string]: any},
+    keepSignatures: boolean = false,
+  ): {[key: string]: any} {
     if (formValue) {
       Object.keys(formValue).forEach(key => {
-        if (this.isAjfBase64FileField(formValue[key])) {
+        if (this.isAjfBase64FileField(formValue[key], !keepSignatures)) {
           formValue[key] = null;
         }
       });
     }
     return formValue;
+  }
+
+  /**
+   * Check if the form value still holds files that are not in the storage
+   * @param formValue All the form value fields
+   * @returns true if at least one field holds a base64 file
+   */
+  hasFilesToUpload(formValue: {[key: string]: any}): boolean {
+    if (!formValue) return false;
+    return Object.keys(formValue).some(
+      key => key !== '$value' && this.isAjfBase64FileField(formValue[key]),
+    );
   }
 
   /**

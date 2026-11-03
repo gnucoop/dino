@@ -45,6 +45,7 @@ export const environment: DinoEnvironment = {
     'pipelines': [],
     'booleanQuickEdit': [],
     'saveDraft': false,
+    'offlineFileUpload': false,
     'duplicateAction': true,
     'aggregationFormCreator': true,
     'formImport': true,
