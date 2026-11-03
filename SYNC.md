@@ -332,6 +332,13 @@ whose other answer ends the session and keeps the data. The teardown hangs off t
 a logout whose request never reaches the server clears nothing: there the data survives by accident,
 not by design.
 
+The logout icon is always clickable. While a sync is running or the device is offline, the dialog keeps
+only *delete* switched off, with a line that says why, and switches it on as soon as the state changes;
+*keep the data* and *cancel* are always there. The icon used to switch itself off instead, tied to
+`isSyncing`, and a pull that fails over and over (a CORS block, a 504) never brings the replication in
+sync, so `isSyncing` stayed true for good and the user had no way out of the session short of reloading
+the page. Keeping the data deletes nothing, so it never needs to wait for the sync.
+
 **A different user logging in.** Before the new session gets a database, the logged in user is compared
 with the owner recorded in `dino_db_owner:<database name>`; when they differ the storage is removed —
 by name if no instance is open, so a fresh start does not have to open the previous user's database
@@ -355,7 +362,7 @@ one shared refresh and no logout risk.
 | A sync cycle that cannot renew the token | logout and wipe on the first one | skips the cycle and lights the badge; never ends the session |
 | Interceptor retry budget | never reset; the 2nd auth failure of the session logged out and wiped | reset by every successful refresh, counted per refresh round |
 | A session the app gives up on | logout: tokens cleared, database destroyed | `endSession()`: tokens dropped, data kept, redirect to login |
-| Logout | immediate and destructive | asks first: delete the data, keep it, or cancel |
+| Logout | immediate and destructive; the icon switched off while syncing or offline, for good when a pull kept failing | asks first: delete the data, keep it, or cancel; the icon is always on, only *delete* waits for the sync and the connection |
 | Sync icon with the badge | ran a cycle that could not succeed | tries a refresh, then asks; explains refused data instead of retrying it |
 | Navigation with a token that will not renew | redirect to login, cancelled by `LoginGuard`: user stuck, in silence | allowed, on local data |
 | Pre-emptive refresh | none; expiry discovered by a failing request | at 75% of the lifetime, re-armed offline with a 60s floor |
@@ -504,6 +511,8 @@ REFRESH IN …`, `AUTH TOKEN REFRESH FAILED`, `COULD NOT REFRESH THE AUTH TOKEN 
 11. **An explicit logout.** *Cancel* changes nothing; *keep the data* lands on the login page with
     IndexedDB and the owner record intact; *delete* gives the signout call, IndexedDB removed, the
     owner record gone, and no notice on the login page.
+    Offline, or with a sync running, the icon still opens the dialog: *delete* is off with a line saying
+    why, *keep the data* works.
 
 Steps 10 and 11 destroy the local database on purpose — they are the proof that the destructive path
 still works when it should. Leave them last.

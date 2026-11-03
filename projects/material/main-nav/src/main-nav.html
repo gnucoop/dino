@@ -173,7 +173,6 @@
             *ngIf="(logoutDisabled|async) !== true"
             type="button"
             class="dino-utility-button dino-logout-button"
-            [class.dino-logout-button-off]="logoutOff|async"
             [matTooltip]="'Logout'|transloco"
             (click)="logout()"
           >

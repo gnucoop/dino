@@ -236,8 +236,15 @@ solo chiudere la sessione mantenendo i dati su questo dispositivo?"* con tre ris
 - **Esci e cancella i dati** → chiamata a `signout`, IndexedDB **svuotato**, e sulla pagina di login
   nessun avviso su dati rimasti (giustamente: non ce ne sono più).
 
-**È un bug se** — il logout cancella i dati senza chiedere, o se "mantieni i dati" li cancella
-comunque.
+**Poi, con la sincronizzazione in corso o offline** — Toccare di nuovo l'icona di logout mentre gira la
+rotellina della sincronizzazione, oppure con la rete staccata. L'icona funziona lo stesso: la domanda
+compare, **Esci e cancella i dati** è grigio con una riga che spiega il perché, mentre **Chiudi la
+sessione e mantieni i dati** e **Annulla** funzionano. Quando la sincronizzazione finisce, o torna la
+rete, il pulsante grigio si riattiva da solo, senza dover chiudere la domanda.
+
+**È un bug se** — il logout cancella i dati senza chiedere, se "mantieni i dati" li cancella
+comunque, se l'icona di logout non si può toccare, o se "cancella i dati" si può scegliere mentre la
+sincronizzazione è in corso.
 
 ---
 

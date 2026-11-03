@@ -117,6 +117,10 @@ export const PRT: Translation = {
   'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
     'Quer sair apagando todos os dados locais, ou apenas encerrar a sessão mantendo os dados neste dispositivo?',
   'Log out and delete the local data': 'Sair e apagar os dados locais',
+  'The local data cannot be deleted while the sync is running: the data not sent yet would be lost.':
+    'Os dados locais não podem ser apagados enquanto a sincronização está em curso: os dados ainda não enviados seriam perdidos.',
+  'The local data cannot be deleted while offline.':
+    'Os dados locais não podem ser apagados sem ligação.',
   'End the session and keep the local data': 'Encerrar a sessão e manter os dados locais',
   'Cancel': 'Cancelar',
   'Session expired': 'Sessão expirada',

@@ -117,6 +117,10 @@ export const FRA: Translation = {
   'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
     'Voulez-vous vous déconnecter en supprimant toutes les données locales, ou seulement fermer la session en conservant les données sur cet appareil ?',
   'Log out and delete the local data': 'Se déconnecter et supprimer les données locales',
+  'The local data cannot be deleted while the sync is running: the data not sent yet would be lost.':
+    'Les données locales ne peuvent pas être supprimées pendant la synchronisation : les données pas encore envoyées seraient perdues.',
+  'The local data cannot be deleted while offline.':
+    'Les données locales ne peuvent pas être supprimées hors ligne.',
   'End the session and keep the local data': 'Fermer la session et conserver les données locales',
   'Cancel': 'Annuler',
   'Session expired': 'Session expirée',

@@ -117,6 +117,10 @@ export const ITA: Translation = {
   'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?':
     'Vuoi uscire cancellando tutti i dati locali, oppure solo chiudere la sessione mantenendo i dati su questo dispositivo?',
   'Log out and delete the local data': 'Esci e cancella i dati locali',
+  'The local data cannot be deleted while the sync is running: the data not sent yet would be lost.':
+    'I dati locali non si possono cancellare mentre la sincronizzazione è in corso: i dati non ancora inviati andrebbero persi.',
+  'The local data cannot be deleted while offline.':
+    'I dati locali non si possono cancellare mentre sei offline.',
   'End the session and keep the local data': 'Chiudi la sessione e mantieni i dati locali',
   'Cancel': 'Annulla',
   'Session expired': 'Sessione scaduta',

@@ -5,6 +5,12 @@ dino-session-dialog {
     text-align: center;
   }
 
+  .dino-session-dialog-delete-blocked {
+    margin: 12px 0 0;
+    font-size: 0.9em;
+    opacity: 0.8;
+  }
+
   .dino-session-dialog-actions {
     // Stacked, and all of the same width: the labels are whole sentences and
     // would not fit side by side on a phone.

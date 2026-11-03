@@ -1,7 +1,14 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TRANSLATIONS_CONFIG, TranslationsConfig} from '@dino/core/translations';
-import {MainNavModule, SessionDialog, SessionDialogData, SessionDialogKind} from './public_api';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {
+  MainNavModule,
+  SessionDeleteBlock,
+  SessionDialog,
+  SessionDialogData,
+  SessionDialogKind,
+} from './public_api';
 
 const defaultLanguageConfig: TranslationsConfig = {
   defaultLanguage: 'ENG',
@@ -10,8 +17,11 @@ const defaultLanguageConfig: TranslationsConfig = {
 describe('SessionDialog', () => {
   let closeSpy: jasmine.Spy;
 
-  const render = (kind: SessionDialogKind): ComponentFixture<SessionDialog> => {
-    const data: SessionDialogData = {kind};
+  const render = (
+    kind: SessionDialogKind,
+    deleteBlocked?: Observable<SessionDeleteBlock>,
+  ): ComponentFixture<SessionDialog> => {
+    const data: SessionDialogData = {kind, deleteBlocked};
     closeSpy = jasmine.createSpy('close');
     TestBed.configureTestingModule({
       imports: [MainNavModule],
@@ -45,6 +55,47 @@ describe('SessionDialog', () => {
 
     fixture.nativeElement.querySelector('.dino-session-dialog-cancel-button').click();
     expect(closeSpy).toHaveBeenCalledWith(undefined);
+  });
+
+  it('holds back only the delete choice while the sync runs, and frees it when the sync ends', () => {
+    const block = new BehaviorSubject<SessionDeleteBlock>('syncing');
+    const fixture = render('logout', block);
+    const deleteButton: HTMLButtonElement = fixture.nativeElement.querySelector(
+      '.dino-session-dialog-logout-button',
+    );
+    const keepButton: HTMLButtonElement = fixture.nativeElement.querySelector(
+      '.dino-session-dialog-keep-button',
+    );
+
+    expect(deleteButton.disabled).toBeTrue();
+    expect(
+      fixture.nativeElement.querySelector('.dino-session-dialog-delete-blocked'),
+    ).not.toBeNull();
+    // Refused even if the click gets through: that is the data loss the block is for.
+    fixture.componentInstance.respond('logout');
+    expect(closeSpy).not.toHaveBeenCalled();
+    // Keeping the data deletes nothing, so it is the way out a stuck sync must not take away.
+    expect(keepButton.disabled).toBeFalse();
+    keepButton.click();
+    expect(closeSpy).toHaveBeenCalledWith('end-session');
+
+    block.next(null);
+    fixture.detectChanges();
+    expect(deleteButton.disabled).toBeFalse();
+    expect(fixture.nativeElement.querySelector('.dino-session-dialog-delete-blocked')).toBeNull();
+    deleteButton.click();
+    expect(closeSpy).toHaveBeenCalledWith('logout');
+  });
+
+  it('holds back the delete choice while offline', () => {
+    const fixture = render('logout', new BehaviorSubject<SessionDeleteBlock>('offline'));
+
+    expect(
+      fixture.nativeElement.querySelector('.dino-session-dialog-logout-button').disabled,
+    ).toBeTrue();
+    expect(
+      fixture.nativeElement.querySelector('.dino-session-dialog-keep-button').disabled,
+    ).toBeFalse();
   });
 
   it('offers, on an expired session, the login page or nothing at all', () => {
