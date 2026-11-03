@@ -57,13 +57,13 @@ describe('collect groups', () => {
     expect(groupIdsOf(items[4])).toEqual([UNGROUPED_GROUP_ID]);
   });
 
-  it('should list thematic groups by name, then public, then ungrouped', () => {
+  it('should list thematic groups by name, then ungrouped, then public', () => {
     expect(buildGroups(items).map(g => g.id)).toEqual([
       'education',
       'health',
       'm&e',
-      PUBLIC_GROUP_ID,
       UNGROUPED_GROUP_ID,
+      PUBLIC_GROUP_ID,
     ]);
   });
 
@@ -78,8 +78,8 @@ describe('collect groups', () => {
       ['education', 1],
       ['health', 2],
       ['m&e', 1],
-      [PUBLIC_GROUP_ID, 3],
       [UNGROUPED_GROUP_ID, 2],
+      [PUBLIC_GROUP_ID, 3],
     ]);
   });
 
