@@ -40,6 +40,7 @@ import {
 import {
   catchError,
   debounceTime,
+  filter,
   map,
   shareReplay,
   skip,
@@ -555,7 +556,16 @@ export class FiltersService<T extends Model = Model> {
         map(([changes, basicFilters]) => {
           let filterItems: FilterItem[] = [];
           for (const fName of Object.keys(changes)) {
-            if (fName.indexOf('_multiple') < 0) {
+            // The text typed in an options field (a metric, a user, a user
+            // group, a form status) only searches its options: the field
+            // filters by the options selected, by id, and until one is picked
+            // the text would match nothing and re-query the whole list at
+            // every pause in typing. An emptied field still drops the filter.
+            const isTypedOptionsText =
+              this._availableBasicFilterLabels.includes(fName) &&
+              typeof changes[fName] === 'string' &&
+              changes[fName] !== '';
+            if (fName.indexOf('_multiple') < 0 && !isTypedOptionsText) {
               const changesValue =
                 this._getIdsFromMultipleMetricSelection(changes, fName) ?? changes[fName];
               const ftItem: FilterItem = {
@@ -569,6 +579,7 @@ export class FiltersService<T extends Model = Model> {
           }
           return [filterItems, basicFilters];
         }),
+        filter(([filterItems]) => filterItems.length > 0),
         catchError(err => throwError(() => err) as Observable<[FilterItem[], FilterItem[]]>),
       )
       .subscribe(([filters, currentFilters]) => {
@@ -756,7 +767,14 @@ export class FiltersService<T extends Model = Model> {
       const multipleValue: any[] = changes[`${fName}_multiple`] ? changes[`${fName}_multiple`] : [];
       if (multipleValue.length) {
         let multipleIds = multipleValue.map((m: any) => m?.id ?? m).map(m => (m == null ? '' : m));
-        return {id: multipleIds, name: changes[fName], secondary: null};
+        // The name is the one of the options selected, not the text of the
+        // field: that text is only a search, and once emptied by hand it would
+        // leave the selection still applied with no name for its chip.
+        const multipleNames = multipleValue
+          .map((m: any) => (m != null && typeof m === 'object' ? m.name : null))
+          .filter((n: any) => typeof n === 'string' && n !== '');
+        const name = multipleNames.length ? multipleNames.join(', ') : changes[fName];
+        return {id: multipleIds, name, secondary: null};
       }
     }
     return null;

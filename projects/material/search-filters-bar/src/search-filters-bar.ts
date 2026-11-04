@@ -983,21 +983,15 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
       this.metricFiltersOptions[metricType] = inputValue.pipe(
         switchMap(metricValue => {
           if (typeof metricValue === 'string') {
-            let mtQuery: DataQueryOptions = {
+            // The query is the same whatever the term, and the term is matched
+            // in memory: no index can serve a "contains" search, so a query per
+            // term would scan the whole collection each time, which with
+            // thousands of cases takes close to a minute. The same query is
+            // served by the rxdb query cache, kept up to date by the sync.
+            const mtQuery: DataQueryOptions = {
               selector: {is_deleted: {$ne: true}},
               sort: [{[metricAttributeToSearchBy]: 'asc'}],
             };
-            // Cases can be very numerous and their filtering is treated differently
-            if (metricType === 'case') {
-              mtQuery = {
-                selector: {
-                  [metricAttributeToSearchBy]: {$regex: metricValue, $options: 'i'},
-                  is_deleted: {$ne: true},
-                },
-                sort: [{[metricAttributeToSearchBy]: 'asc'}],
-                limit: 50,
-              };
-            }
             return metricManager.query(mtQuery).pipe(
               map((metricOptions: (Metric & {[key: string]: any})[]) => {
                 if (
@@ -1006,12 +1000,17 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
                   typeof metricValue === 'string'
                 ) {
                   const mtrName = metricValue.toLowerCase();
-                  const metricsMatchingByAttribute = metricOptions.filter(option => {
+                  let metricsMatchingByAttribute = metricOptions.filter(option => {
                     return option[metricAttributeToSearchBy]
                       .toString()
                       .toLowerCase()
                       .includes(mtrName);
                   });
+                  // Cases can be thousands: only the first ones are listed, and
+                  // cut before building their hierarchy, which costs more.
+                  if (metricType === 'case') {
+                    metricsMatchingByAttribute = metricsMatchingByAttribute.slice(0, 50);
+                  }
                   const matchingMetricsParentsIDs = [
                     ...new Set(metricsMatchingByAttribute.map(mt => mt.parent_id)),
                   ];
@@ -1169,6 +1168,41 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
   }
 
   /**
+   * Returns the ids of every descendant of a metric, at any depth, following
+   * the parent_id of the given metrics.
+   * @param allMetrics The metrics the descendants are searched among
+   * @param ancestorId The id of the metric whose descendants are returned
+   * @returns The ids of the descendants, the ancestor excluded
+   */
+  private _findDescendantIds(
+    allMetrics: {id: string; parent_id?: string | null}[],
+    ancestorId: string,
+  ): string[] {
+    const childrenByParent = new Map<string, string[]>();
+    for (const metric of allMetrics) {
+      if (metric.parent_id != null) {
+        const children = childrenByParent.get(metric.parent_id) ?? [];
+        children.push(metric.id);
+        childrenByParent.set(metric.parent_id, children);
+      }
+    }
+    const descendants: string[] = [];
+    const seen = new Set<string>([ancestorId]);
+    const toVisit = [ancestorId];
+    while (toVisit.length) {
+      for (const childId of childrenByParent.get(toVisit.pop()!) ?? []) {
+        // A parent_id cycle in the data must not loop forever.
+        if (!seen.has(childId)) {
+          seen.add(childId);
+          descendants.push(childId);
+          toVisit.push(childId);
+        }
+      }
+    }
+    return descendants;
+  }
+
+  /**
    * Sets up the subscription to the Metric Fields inputs valuechanges,
    * then sets the value of the field as an array of ids of the selected metric
    * and all of its descendants.
@@ -1186,9 +1220,14 @@ export class SearchFiltersBar extends SearchFiltersComponent implements OnInit, 
         .pipe(
           switchMap(inputVal => {
             if (typeof inputVal === 'object' && isRxDocument(inputVal)) {
+              // The descendants are walked in memory over the same query the
+              // options are listed from, served by the rxdb query cache:
+              // findDescendants queries by parent_id, which has no index, and
+              // with thousands of cases each level takes seconds.
+              const selectedId: string = inputVal.id;
               return metricManager
-                .findDescendants([inputVal.id])
-                .pipe(map(desc => desc?.map(d => d.id)))
+                .query({selector: {is_deleted: {$ne: true}}, sort: [{name: 'asc'}]})
+                .pipe(map(all => this._findDescendantIds(all, selectedId)))
                 .pipe(withLatestFrom(obsOf(inputVal)));
             }
             return obsOf([null, null]);
