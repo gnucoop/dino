@@ -20,10 +20,10 @@
  *
  */
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   Input,
+  OnChanges,
   ViewEncapsulation,
 } from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
@@ -37,7 +37,7 @@ import {LangService} from './lang.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
 })
-export class LangSelector implements AfterViewInit {
+export class LangSelector implements OnChanges {
   /**
    * Custom languages to be shown in the Language Selector
    */
@@ -50,7 +50,8 @@ export class LangSelector implements AfterViewInit {
     this.currentLang = this._langService.currentLang;
   }
 
-  ngAfterViewInit(): void {
+  // Before the view is rendered: changing the list after it is an NG0100.
+  ngOnChanges(): void {
     if (this.customLanguages) {
       this.langsShowed$.next(this.customLanguages);
     }
