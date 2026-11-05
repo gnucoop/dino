@@ -1,6 +1,7 @@
 import {Injectable, Optional} from '@angular/core';
 import {SwUpdate, VersionEvent} from '@angular/service-worker';
 import {environment} from 'src/environments/environment';
+import {appVersionLabel} from 'src/app/main-nav/conf';
 import {Subscription, interval} from 'rxjs';
 import {InstallAppModule} from '../install-app.module';
 
@@ -9,6 +10,10 @@ export class AppUpdateService {
   private _checkForUpdatesSub: Subscription = Subscription.EMPTY;
 
   constructor(@Optional() private _updates: SwUpdate) {
+    // An update applied without the arrow (reload, reopened app) leaves the alert behind.
+    if (localStorage.getItem('dino_new_version_ready') === appVersionLabel) {
+      localStorage.removeItem('dino_new_version_ready');
+    }
     if (this._updates != null && environment.installable && this._updates.isEnabled) {
       this._updates.versionUpdates.subscribe(evt => {
         if (evt.type === 'VERSION_READY') {
