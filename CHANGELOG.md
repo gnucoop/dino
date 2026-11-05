@@ -1,3 +1,16 @@
+<a name="18.1.2-sw.151"></a>
+# 18.1.2-sw.151 "successive-jackal" (2026-11-05)
+### Bug Fixes
+* **material/collect:** deselect a group when its chip is clicked again ([be17879](https://github.com/gnucoop/dino/commit/be17879dbab0fecd0318ebb03c651b36d551c4c9))
+* **material/forms:** keep signatures taken offline and flag them for upload ([f52194d](https://github.com/gnucoop/dino/commit/f52194d1009a4e3ab190aa5c61d24eb3de107005))
+* **material/forms:** unblock the metric step and keep the offline warning visible ([32f0bf7](https://github.com/gnucoop/dino/commit/32f0bf720834c92076bad2332605f1f9acb2fc16))
+* **material/main-nav:** keep the logout reachable while the sync is stuck ([11c5dc5](https://github.com/gnucoop/dino/commit/11c5dc5a9f44498984886977ca417f7a53fa9e89))
+* **material/search-filters-bar:** search the cases in memory and filter only by a chosen option ([a67813f](https://github.com/gnucoop/dino/commit/a67813f7a9cd390a423bf05831c5b6a03b2a5b8d))
+### Features
+* **material/collect:** list the ungrouped forms before the public ones ([9370891](https://github.com/gnucoop/dino/commit/93708919082bc61f60464eb17bef71faa044407c))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="18.1.1-sw.150"></a>
 # 18.1.1-sw.150 "rough-dragon" (2026-10-29)
 ### Bug Fixes
