@@ -185,11 +185,21 @@ export const generateSchemaListHeaders = (
         } as ListHeader<any>),
     );
 
+  // A field name can repeat across slides (e.g. conditional variants): keep one column per name,
+  // a duplicate column definition breaks the table in dev mode.
+  const seenColumns = new Set<string>();
   const finalHeaders = [
     {column: 'id', label: 'ID', sortable: true, displayed: false},
     ...defaultHeaders,
     ...dataHeaders,
-  ];
+  ].filter(header => {
+    const column = String(header.column);
+    if (seenColumns.has(column)) {
+      return false;
+    }
+    seenColumns.add(column);
+    return true;
+  });
   return sortAlphabetically
     ? finalHeaders.sort((a, b) => (a.label > b.label ? 1 : -1))
     : finalHeaders;

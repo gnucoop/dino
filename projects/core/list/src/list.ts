@@ -173,7 +173,10 @@ export abstract class List<T extends Model = Model, AD extends Model = Model> {
       }
       return loadedHeader;
     });
-    const setHeaders = loadedHeaders ?? headers;
+    // A preset saved while the headers held a column twice still holds it: one column per name.
+    const setHeaders = (loadedHeaders ?? headers).filter(
+      (header, idx, all) => all.findIndex(h => h.column === header.column) === idx,
+    );
     if (loadedPreset?.displayedColumns.length) {
       const headersCopy: ListHeader<T>[] = deepCopy(setHeaders);
       const sortedHeaders = headersCopy.sort(
