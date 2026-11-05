@@ -72,12 +72,40 @@ function trimSheetRange(ws: XLSX.WorkSheet): void {
 }
 
 /**
+ * Read the file content, decoding text files as UTF-8 when they are valid UTF-8.
+ * xlsx reads a CSV without BOM as Latin-1; XLSX (zip) and XLS (OLE) files carry
+ * their own encoding, and text that is not valid UTF-8 keeps the Latin-1 reading.
+ * @param bufferArray The file content
+ */
+function readWorkbook(bufferArray: any): XLSX.WorkBook {
+  // Not instanceof: an ArrayBuffer from another realm (e.g. jsdom) fails it
+  const bytes = ArrayBuffer.isView(bufferArray)
+    ? new Uint8Array(bufferArray.buffer, bufferArray.byteOffset, bufferArray.byteLength)
+    : Object.prototype.toString.call(bufferArray) === '[object ArrayBuffer]'
+    ? new Uint8Array(bufferArray)
+    : null;
+  const isZip = bytes != null && bytes[0] === 0x50 && bytes[1] === 0x4b;
+  const isOle = bytes != null && bytes[0] === 0xd0 && bytes[1] === 0xcf;
+  let text: string | null = null;
+  if (bytes != null && !isZip && !isOle) {
+    try {
+      text = new TextDecoder('utf-8', {fatal: true}).decode(bytes);
+    } catch {
+      // Not valid UTF-8: keep the Latin-1 reading
+    }
+  }
+  return text != null
+    ? XLSX.read(text, {type: 'string'})
+    : XLSX.read(bufferArray, {type: 'buffer'});
+}
+
+/**
  * Read the first sheet of an imported file into rows keyed by the file columns.
  * @param bufferArray The file content
  * @returns The parsed rows and the non empty column names
  */
 export function parseWorkbook(bufferArray: any): ParsedWorkbook {
-  const wb = XLSX.read(bufferArray, {type: 'buffer'});
+  const wb = readWorkbook(bufferArray);
   const wsname = wb.SheetNames[0];
   const ws = wb.Sheets[wsname];
   trimSheetRange(ws);
