@@ -139,6 +139,13 @@ dino-datachat {
     }
   }
 
+  .dino-datachat-preparing {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--dc-muted);
+  }
+
   .dino-datachat-welcome-subtitle {
     margin: 0 0 16px;
     max-width: 640px;

@@ -83,6 +83,9 @@
                 (followUpClick)="chat($event)" (regenerateClick)="chat($event)"
                 (downloadClick)="downloadExport($event.url, $event.filename)"
                 (feedbackClick)="sendFeedback($event.logId, $event.isPositive, $event.question, $event.answer)" />
+              <p class="dino-datachat-preparing" *ngIf="preparingDataset|async">
+                {{'Preparing the data to analyze: with many records it can take a minute or more...'|transloco}}
+              </p>
             </div>
 
             <footer class="dino-chat-input-container" [formGroup]="chatInputFormGrop">

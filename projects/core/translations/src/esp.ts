@@ -916,4 +916,6 @@ export const ESP: Translation = {
   'The backup could not be created': 'No se pudo crear la copia de seguridad',
   'A sync is in progress: this backup holds only the data downloaded so far.':
     'Hay una sincronización en curso: esta copia de seguridad contiene solo los datos descargados hasta ahora.',
+  'Preparing the data to analyze: with many records it can take a minute or more...':
+    'Preparando los datos para analizar: con muchos registros puede tardar un minuto o más...',
 };
