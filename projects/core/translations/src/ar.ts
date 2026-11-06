@@ -1039,4 +1039,6 @@ export const AR: Translation = {
   'The backup could not be created': 'تعذّر إنشاء النسخة الاحتياطية',
   'A sync is in progress: this backup holds only the data downloaded so far.':
     'هناك مزامنة قيد التنفيذ: تحتوي هذه النسخة الاحتياطية على البيانات التي تم تنزيلها حتى الآن فقط.',
+  'Preparing the data to analyze: with many records it can take a minute or more...':
+    'جارٍ تحضير البيانات للتحليل: مع عدد كبير من السجلات قد يستغرق ذلك دقيقة أو أكثر...',
 };

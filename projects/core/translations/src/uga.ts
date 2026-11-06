@@ -565,4 +565,6 @@ export const UGA: Translation = {
     'A sync is in progress: this backup holds only the data downloaded so far.',
   'Document saved. You are offline: the files cannot be uploaded.':
     'Document saved. You are offline: the files cannot be uploaded.',
+  'Preparing the data to analyze: with many records it can take a minute or more...':
+    'Preparing the data to analyze: with many records it can take a minute or more...',
 };

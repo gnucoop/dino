@@ -160,6 +160,12 @@ export class Exporter implements OnDestroy {
   private _ctxValuesDict: {[name: string]: string} = {};
 
   /**
+   * The translations of the current export, by source string: the same values
+   * repeat on every row. Cleared on each export, as the language may change.
+   */
+  private _translations: Map<string, string> = new Map();
+
+  /**
    * The Exporting state of the export
    */
   private _isExporting: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -259,8 +265,10 @@ export class Exporter implements OnDestroy {
         return forkJoin(expObjData).pipe(
           map(newDinoData => {
             const populatedData: ExportData[] = [];
-            expData.forEach(exp => {
-              const newData = newDinoData.find(ndd => ndd['id'] === exp.dino['id']);
+            // forkJoin keeps the order of its inputs: the values of a row are
+            // at its own index, without searching the whole list for each row.
+            expData.forEach((exp, index) => {
+              const newData = newDinoData[index];
               if (newData) {
                 exp.dino = newData;
               }
@@ -579,6 +587,7 @@ export class Exporter implements OnDestroy {
    * Starts the Export process
    */
   export(): void {
+    this._translations.clear();
     this._exportEvt.emit();
   }
 
@@ -692,8 +701,7 @@ export class Exporter implements OnDestroy {
                 .filter(rf => rf != null)
                 .forEach(repField => {
                   const repFieldNameWithCount = `${repField.name}__${i}`;
-                  const repFieldWithCount = deepCopy(repField);
-                  repFieldWithCount.name = repFieldNameWithCount;
+                  const repFieldWithCount = {...repField, name: repFieldNameWithCount};
                   this._evaluateContext(repFieldWithCount, exportCtx, ctx);
                   exportCtx[repField.name] = exportCtx[repFieldNameWithCount];
                   delete exportCtx[repFieldNameWithCount];
@@ -1160,11 +1168,15 @@ export class Exporter implements OnDestroy {
   private _translate(val: any): string | string[] {
     if (val != null && val != '') {
       if (Array.isArray(val)) {
-        val = val.map(v => `${v || ' '}`);
-      } else {
-        val = `${val}`;
+        return this._ts.translate(val.map(v => `${v || ' '}`));
       }
-      return this._ts.translate(val);
+      val = `${val}`;
+      let translation = this._translations.get(val);
+      if (translation === undefined) {
+        translation = this._ts.translate(val) as string;
+        this._translations.set(val, translation);
+      }
+      return translation;
     }
     return '';
   }
@@ -1230,10 +1242,12 @@ export class Exporter implements OnDestroy {
   }
 
   private _updateExportNamesBySlides(slideIndex: number, fieldName: string): void {
-    if (this._exportedNamesBySlide[slideIndex] != null) {
-      this._exportedNamesBySlide[slideIndex] = [
-        ...new Set([...this._exportedNamesBySlide[slideIndex], fieldName]),
-      ];
+    const names = this._exportedNamesBySlide[slideIndex];
+    if (names != null) {
+      // Called for every field of every row: the list is extended in place.
+      if (!names.includes(fieldName)) {
+        names.push(fieldName);
+      }
     } else {
       this._exportedNamesBySlide[slideIndex] = [fieldName];
     }
