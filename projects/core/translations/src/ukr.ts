@@ -952,4 +952,6 @@ export const UKR: Translation = {
     'Триває синхронізація: ця резервна копія містить лише дані, завантажені на цей момент.',
   'Document saved. You are offline: the files cannot be uploaded.':
     'Документ збережено. Ви офлайн: файли неможливо завантажити.',
+  'Preparing the data to analyze: with many records it can take a minute or more...':
+    'Підготовка даних для аналізу: за великої кількості записів це може тривати хвилину або більше...',
 };

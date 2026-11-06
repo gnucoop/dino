@@ -66,6 +66,7 @@ import {
   BehaviorSubject,
   combineLatest,
   forkJoin,
+  from,
   Observable,
   of as obsOf,
   Subject,
@@ -79,10 +80,10 @@ import {CaseManager} from '@dino/core/cases';
 import {ProjectManager} from '@dino/core/projects';
 import {LocationManager} from '@dino/core/locations';
 import {OrganizationManager} from '@dino/core/organizations';
-import {Exporter} from '@dino/core/exporter';
+import {Data, Exporter} from '@dino/core/exporter';
 import {FormData, FormDataManager, FormInfo, FormSchema, FormSchemaManager} from '@dino/core/forms';
 import {NodeVisibility} from '@dino/core/list';
-import {AjfCustomFunctions, populateDocRefs} from '@dino/core/data';
+import {AjfCustomFunctions} from '@dino/core/data';
 import {RxDocument} from 'rxdb';
 import {TableGenerator} from '@dino/material/table-generator';
 import {MatProgressBar} from '@angular/material/progress-bar';
@@ -159,6 +160,11 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * sent, and the active conversation cannot be changed.
    */
   readonly isAnswering: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  /**
+   * True while the dataset of the first question is being built.
+   */
+  readonly preparingDataset: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /**
    * True if there is no data associated with the schema
@@ -361,11 +367,6 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   chatPromptText: string = '';
 
   /**
-   * Emitted when the Exporter has been successfully created and set up
-   */
-  private _ExporterReadyEvt: EventEmitter<void> = new EventEmitter<void>();
-
-  /**
    * Subscribes to API key validation
    */
   private _apiKeyConfirmationSub: Subscription = Subscription.EMPTY;
@@ -374,29 +375,6 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * The Exporter instance
    */
   private _exporter: Exporter | null;
-
-  /**
-   * The file generated from the Exporter
-   */
-  private _exportedFile$: Observable<File | null>;
-  get exportedFile$(): Observable<File | null> {
-    return this._exportedFile$;
-  }
-
-  /**
-   * The DataChat Form Schema
-   */
-  private _formSchema$: Observable<FormSchema | null>;
-
-  /**
-   * The list of all populate Form Data associate with the Form Schema
-   */
-  private _formDataList$: Observable<RxDocument<FormData>[]>;
-
-  /**
-   * The Ajf Nodes Visibility observable
-   */
-  private _nodesVisibility: Observable<NodeVisibility[]>;
 
   /**
    * Http client used for every DataChat API call, bypassing the interceptors.
@@ -491,10 +469,6 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       }
     });
     this._exporter = null;
-    this._formSchema$ = obsOf(null);
-    this._formDataList$ = obsOf([]);
-    this._nodesVisibility = obsOf([]);
-    this._exportedFile$ = obsOf(null);
   }
 
   ngAfterViewInit(): void {
@@ -504,87 +478,37 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
         // been uploaded, there is nothing to export nor to create.
         return;
       }
-      this._exporter = this._createExporter();
-
-      this._formSchema$ = this._fsm.get(this._route.snapshot.params['form_schema_id']);
-
-      this._formDataList$ = this._fdm
-        .query({
-          selector: {
-            form_schema_ref_id: {$eq: this._route.snapshot.params['form_schema_id']},
-            is_deleted: {$ne: true},
+      // The dataset is not built here: with many Form Data it takes long, and
+      // the chat would stay empty meanwhile. It is built on the first question,
+      // together with the agent; here it is only checked that there is data.
+      this._apiKeyConfirmationSub = this.apiKeyConfirmationEvt
+        .pipe(
+          switchMap((confirmedKey: string) => {
+            this.apiKey.next(confirmedKey);
+            return this._hasFormData();
+          }),
+        )
+        .subscribe({
+          next: hasData => {
+            if (!hasData) {
+              this.noData.next(true);
+            }
+            this.isLoading.next(false);
+            this._cdr.detectChanges();
           },
-        })
-        .pipe(map(docs => populateDocRefs<FormData>(docs)));
-
-      this._nodesVisibility = combineLatest([
-        this._formSchema$,
-        this._udm.getActiveUserData(),
-        this._ugm.getActiveUserGroups(),
-      ]).pipe(
-        map(([fschema, activeUser, activeUserGroups]) => {
-          if (fschema == null || activeUser == null || activeUserGroups == null) return [];
-
-          const dinoFormInfo: FormInfo = {
-            activeUser,
-            activeUserGroups,
-            createdAt: null,
-            status: null,
-            allStatuses: [],
-            user: null,
-            userGroups: null,
-          };
-
-          const nodesVisibility = this._fsm.getPermissionsRelevant(
-            fschema.schema.nodes,
-            dinoFormInfo,
-          );
-          return nodesVisibility;
-        }),
-      );
-
-      forkJoin([this._formSchema$, this._formDataList$])
-        .pipe(take(1))
-        .subscribe(([schema, data]) => {
-          if (!schema || !data || !this._exporter) return;
-          this._setupExporter(this._exporter, schema, data);
+          error: (err: any) => {
+            this.isLoading.next(false);
+            this._cdr.detectChanges();
+            if (isDevMode()) {
+              console.log(err);
+            } else {
+              this._ehms.captureErrorMessage(
+                `Could not confirm api key and check the form data: ${JSON.stringify(err)}`,
+                'error',
+              );
+            }
+          },
         });
-
-      this._apiKeyConfirmationSub = combineLatest([
-        this._ExporterReadyEvt,
-        this._formDataList$,
-        this.apiKeyConfirmationEvt,
-      ]).subscribe({
-        next: res => {
-          const data = res[1];
-          const confirmedKey = res[2];
-          this.apiKey.next(confirmedKey);
-          if (this._exporter && data && data.length) {
-            // Only the csv is prepared here: it is built locally and costs
-            // nothing. The agent - which is paid - is created on the first
-            // question, so that merely opening the chat is free.
-            this._exporter.export();
-          } else if (!data || !data.length) {
-            this.noData.next(true);
-          }
-          this.isLoading.next(false);
-          this._cdr.detectChanges();
-        },
-        error: (err: any) => {
-          if (isDevMode()) {
-            console.log(err);
-          } else {
-            this._ehms.captureErrorMessage(
-              `Could not confirm api key and trigger csv file export and agent creation: ${JSON.stringify(
-                err,
-              )}`,
-              'error',
-            );
-          }
-        },
-      });
-
-      this._exportedFile$ = this._exporter.exportedFile;
     } else if (this.mode === 'completion') {
       this.currentNamespace =
         this.namespaces && this.namespaces.length ? this.namespaces[0] : 'default';
@@ -641,6 +565,8 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     const storedApiKey = localStorage.getItem('pandas_dino_api_key');
     const storedAcceptTerms = localStorage.getItem('pandas_dino_api_key_accept_terms');
     if (storedApiKey && storedAcceptTerms) {
+      // The spinner, not the key input, is shown while the stored key is validated.
+      this.isLoading.next(true);
       this.sendAPIKey(storedApiKey);
     }
   }
@@ -752,7 +678,11 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
     if (!this.baseDataChatAPIurl || this.isCommunicating.value) return;
     this.isCommunicating.next(true);
     const userInfo = this._auth.getUserInfo();
-    if (!userInfo || !userInfo.email) return;
+    if (!userInfo || !userInfo.email) {
+      this.isCommunicating.next(false);
+      this.isLoading.next(false);
+      return;
+    }
     const headers = {'X-API-KEY': key, 'X-USER-EMAIL': userInfo.email};
     this._http
       .post(
@@ -792,7 +722,9 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
           setTimeout(() => {
             this.isCommunicating.next(false);
           }, 1000);
-          if (err.error.error && err.error.error === 'Invalid API key') {
+          this.isLoading.next(false);
+          this._cdr.detectChanges();
+          if (err.error?.error && err.error.error === 'Invalid API key') {
             this.apiKeyFormGroup.get('apiKeyControl')?.setErrors({'invalid': true});
             this._cdr.detectChanges();
           } else {
@@ -1018,11 +950,11 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   /**
    * Forgets an agent the API reports as no longer active, together with the
    * conversations it remembered, so that the next question creates a new one.
-   * An agent inherited from a previous visit has no exported data to create
-   * a new one from: in that case the page must be reloaded.
+   * Outside of a form section there is no dataset to create a new one from:
+   * in that case the page must be reloaded.
    */
   private _discardAgent(): void {
-    const canRecreate = this._exporter != null;
+    const canRecreate = this._schemaId != null;
     this._agentAlive = false;
     this._agentReady = false;
     this._session.discardSession();
@@ -1416,7 +1348,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
    * @param apiKey
    */
   private _createAgent(apiKey: string): Observable<boolean> {
-    return combineLatest([this._udm.getActiveUserData(), this._exportedFile$]).pipe(
+    return combineLatest([this._udm.getActiveUserData(), this._prepareDataset()]).pipe(
       switchMap(([activeUserData, exportedFile]) => {
         if (!activeUserData || !exportedFile) return obsOf(null);
         // The agent belongs to this User from now on, and is destroyed in its
@@ -1480,6 +1412,142 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
         return obsOf(false);
       }),
     );
+  }
+
+  /**
+   * Returns true if the Form Schema of the chat has any Form Data, reading a
+   * single document instead of the whole dataset.
+   */
+  private _hasFormData(): Observable<boolean> {
+    if (this._schemaId == null) {
+      return obsOf(false);
+    }
+    if (this._session.datasetFor(this._schemaId) != null) {
+      return obsOf(true);
+    }
+    return this._fdm
+      .query({
+        selector: {form_schema_ref_id: {$eq: this._schemaId}, is_deleted: {$ne: true}},
+        limit: 1,
+      })
+      .pipe(map(docs => docs.length > 0));
+  }
+
+  /**
+   * Builds the csv the agent is created from, with every Form Data of the
+   * Form Schema. Building it takes long with many Form Data, so it is done
+   * once per visit of the form section and kept by the session: moving
+   * between the views of the form does not build it again.
+   * @returns The csv file, or null if there is nothing to export
+   */
+  private _prepareDataset(): Observable<File | null> {
+    const schemaId = this._schemaId;
+    if (schemaId == null) {
+      return obsOf(null);
+    }
+    const dataset = this._session.datasetFor(schemaId);
+    if (dataset != null) {
+      return obsOf(dataset);
+    }
+    this.preparingDataset.next(true);
+    const formData$ = this._fdm
+      .query({
+        selector: {form_schema_ref_id: {$eq: schemaId}, is_deleted: {$ne: true}},
+      })
+      .pipe(switchMap(docs => from(this._populateFormData(docs))));
+    // Building the dataset keeps the main thread busy for a long time: it starts
+    // only once the progress bar and the message are on screen.
+    return this._afterPaint().pipe(
+      switchMap(() => forkJoin([this._fsm.get(schemaId).pipe(take(1)), formData$])),
+      switchMap(([schema, data]) => {
+        if (schema == null || data.length === 0) {
+          return obsOf(null);
+        }
+        this._exporter?.ngOnDestroy();
+        const exporter = this._createExporter();
+        this._exporter = exporter;
+        this._setupExporter(exporter, schema, data);
+        exporter.export();
+        return exporter.exportedFile;
+      }),
+      take(1),
+      tap(file => {
+        if (file != null) {
+          this._session.keepDataset(schemaId, file);
+        }
+      }),
+      finalize(() => this.preparingDataset.next(false)),
+    );
+  }
+
+  /**
+   * Converts Form Data into plain objects with their references to other
+   * collections resolved, as populateDocRefs does for the exporter, but with a
+   * single query per referenced collection instead of one per document and
+   * reference: with many Form Data those queries took most of the build time.
+   * @param docs The Form Data
+   */
+  private async _populateFormData(docs: RxDocument<FormData>[]): Promise<Data[]> {
+    if (docs.length === 0) {
+      return [];
+    }
+    const collection = docs[0].collection;
+    const properties = collection.schema.jsonSchema.properties as {[prop: string]: any};
+    const refProps = Object.keys(properties).filter(prop => prop.includes('_ref_id'));
+    const refDocs = new Map<string, Map<string, RxDocument<any>>>();
+    await Promise.all(
+      refProps.map(async prop => {
+        const refCollection = collection.database.collections[properties[prop].ref];
+        if (refCollection == null) {
+          return;
+        }
+        const ids = new Set<string>();
+        for (const doc of docs) {
+          const value = doc.get(prop);
+          if (Array.isArray(value)) {
+            value.forEach(id => ids.add(id));
+          } else if (value) {
+            ids.add(value);
+          }
+        }
+        refDocs.set(prop, ids.size > 0 ? await refCollection.findByIds([...ids]).exec() : new Map());
+      }),
+    );
+    return docs.map(doc => {
+      const row = doc.toMutableJSON() as Data;
+      for (const prop of refProps) {
+        const value = doc.get(prop);
+        const found = refDocs.get(prop);
+        let ref: unknown = null;
+        if (value && found != null) {
+          ref = Array.isArray(value)
+            ? value.map(id => found.get(id)).filter(refDoc => refDoc != null)
+            : found.get(value) ?? null;
+        }
+        row[prop.replace('_ref_id', '')] = ref;
+      }
+      return row;
+    });
+  }
+
+  /**
+   * Emits once the browser has painted the pending DOM changes: a timeout set
+   * from an animation frame runs after that frame has been painted.
+   */
+  private _afterPaint(): Observable<void> {
+    return new Observable<void>(subscriber => {
+      let timeout: ReturnType<typeof setTimeout> | undefined;
+      const frame = requestAnimationFrame(() => {
+        timeout = setTimeout(() => {
+          subscriber.next();
+          subscriber.complete();
+        });
+      });
+      return () => {
+        cancelAnimationFrame(frame);
+        clearTimeout(timeout);
+      };
+    });
   }
 
   /**
@@ -1599,18 +1667,18 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
   }
 
   /**
-   * Performs the Exporter instance setup and emits the ExporterReady event
+   * Performs the Exporter instance setup
    * @param exporter The exporter instance
    * @param schema The form schema
    * @param data All form datas
    */
-  private _setupExporter(exporter: Exporter, schema: FormSchema, data: RxDocument<FormData>[]) {
+  private _setupExporter(exporter: Exporter, schema: FormSchema, data: Data[]) {
     exporter.setup(
       {
         exportFormat: 'csv',
         formSchema: schema,
         listType: 'forms',
-        nodesVisibility: this._nodesVisibility,
+        nodesVisibility: this._nodesVisibility(schema),
         singleHeader: true,
         removeCommas: true,
       },
@@ -1620,7 +1688,28 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       true,
       true,
     );
-    this._ExporterReadyEvt.emit();
+  }
+
+  /**
+   * Returns the visibility of the nodes of a Form Schema for the active User.
+   * @param schema The form schema
+   */
+  private _nodesVisibility(schema: FormSchema): Observable<NodeVisibility[]> {
+    return combineLatest([this._udm.getActiveUserData(), this._ugm.getActiveUserGroups()]).pipe(
+      map(([activeUser, activeUserGroups]) => {
+        if (activeUser == null || activeUserGroups == null) return [];
+        const dinoFormInfo: FormInfo = {
+          activeUser,
+          activeUserGroups,
+          createdAt: null,
+          status: null,
+          allStatuses: [],
+          user: null,
+          userGroups: null,
+        };
+        return this._fsm.getPermissionsRelevant(schema.schema.nodes, dinoFormInfo);
+      }),
+    );
   }
 
   ngOnDestroy(): void {

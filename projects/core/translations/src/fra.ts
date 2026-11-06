@@ -925,4 +925,6 @@ export const FRA: Translation = {
   'The backup could not be created': 'La sauvegarde n’a pas pu être créée',
   'A sync is in progress: this backup holds only the data downloaded so far.':
     'Une synchronisation est en cours : cette sauvegarde ne contient que les données téléchargées jusqu’à présent.',
+  'Preparing the data to analyze: with many records it can take a minute or more...':
+    'Préparation des données à analyser : avec de nombreux enregistrements, cela peut prendre une minute ou plus...',
 };

@@ -74,6 +74,10 @@ export interface DataChatLiveSession {
 /**
  * Owns everything of a DataChat conversation that must outlive the DataChat
  * component instance:
+ * - the dataset of the form, i.e. the csv the agent is created from, so that
+ *   moving between the views of a form does not build it again: with many
+ *   Form Data that takes a long time. It is dropped when the User leaves the
+ *   form section it belongs to;
  * - the live PandasAI agent, so that moving between the Data, Map and AI views
  *   of a form does not destroy and recreate it (which would re-upload the whole
  *   csv and consume credits). The agent is destroyed as soon as the User leaves
@@ -135,6 +139,11 @@ export class DataChatSessionService {
    */
   private _mauiConversations: Map<string, string> = new Map();
 
+  /**
+   * The dataset prepared for a Form Schema, if any.
+   */
+  private _dataset: {schemaId: string; file: File} | null = null;
+
   constructor(
     private _http: HttpClient,
     private _router: Router,
@@ -144,6 +153,9 @@ export class DataChatSessionService {
     this._router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
       if (this._live && !this.isInsideForm(this._router.url, this._live.schemaId)) {
         this.endSession();
+      }
+      if (this._dataset && !this.isInsideForm(this._router.url, this._dataset.schemaId)) {
+        this._dataset = null;
       }
     });
   }
@@ -164,6 +176,24 @@ export class DataChatSessionService {
    */
   isAliveFor(schemaId: string): boolean {
     return this._live != null && this._live.schemaId === schemaId;
+  }
+
+  /**
+   * Returns the dataset prepared for the given Form Schema, if any.
+   * @param schemaId The Form Schema id
+   */
+  datasetFor(schemaId: string): File | null {
+    return this._dataset != null && this._dataset.schemaId === schemaId ? this._dataset.file : null;
+  }
+
+  /**
+   * Keeps the dataset prepared for a Form Schema, until the User leaves its
+   * form section.
+   * @param schemaId The Form Schema id
+   * @param file The exported csv file
+   */
+  keepDataset(schemaId: string, file: File): void {
+    this._dataset = {schemaId, file};
   }
 
   /**
