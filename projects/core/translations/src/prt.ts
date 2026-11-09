@@ -562,6 +562,7 @@ export const PRT: Translation = {
   'Parent Organization': 'Organização principal',
   'Parent Project': 'Projeto principal',
   'Parent case': 'Caso principal',
+  'Parent Case': 'Caso principal',
   'Password': 'Senha',
   'Password changed': 'Senha alterada',
   'Password reset link sent to': 'Ligação para redefinição de senha enviada para',

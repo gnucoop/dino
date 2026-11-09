@@ -571,6 +571,7 @@ export const FRA: Translation = {
   'Parent Organization': 'Organisation parent',
   'Parent Project': 'Projet parent',
   'Parent case': 'Cas parent',
+  'Parent Case': 'Cas parent',
   'Password': 'Mot de passe',
   'Password changed': 'Mot de passe modifié',
   'Password reset link sent to': 'Le lien de réinitialisation du mot de passe est envoyé à',
