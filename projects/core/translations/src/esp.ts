@@ -565,6 +565,7 @@ export const ESP: Translation = {
   'Parent Organization': 'Organización principal',
   'Parent Project': 'Proyecto principal',
   'Parent case': 'Caso principal',
+  'Parent Case': 'Caso principal',
   'Password': 'Contraseña',
   'Password changed': 'Contraseña cambiada',
   'Password reset link sent to': 'Enlace para restablecer la contraseña enviado a',

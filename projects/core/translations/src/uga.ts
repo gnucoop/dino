@@ -320,6 +320,7 @@ export const UGA: Translation = {
   'Parent Area': 'Parent Area',
   'Code': 'Code',
   'Parent case': 'Parent case',
+  'Parent Case': 'Parent case',
   'Parent Location': 'Parent location',
   'Coordinates': 'Coordinates',
   'Parent Organization': 'Parent organization',

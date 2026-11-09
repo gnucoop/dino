@@ -68,6 +68,22 @@ import {ExportModel} from './export-model.interface';
 import {isRxDocument, RxDocument} from 'rxdb';
 
 /**
+ * The translation keys of the metric properties used as column labels, the
+ * same shown in the metrics lists. The name and the parent name are labelled
+ * after the metric itself, the properties not listed keep their column name.
+ */
+const METRIC_PROPERTY_LABELS: {[prop: string]: string} = {
+  code: 'Code',
+  sectors_of_intervention: 'Sectors of Intervention',
+  donors: 'Donors',
+  start_date: 'Start Date',
+  end_date: 'End Date',
+  coordinates: 'Coordinates',
+  logo_path: 'Logo Path',
+  website_url: 'Website Url',
+};
+
+/**
  * Exporter Class that can be instantiated to export documents
  */
 @Directive()
@@ -791,9 +807,12 @@ export class Exporter implements OnDestroy {
 
   private _buildLabelsRow(names: string[]): {[name: string]: string} {
     const labels: {[name: string]: string} = {};
+    const metricLabels = this._metricColumnLabels();
     names.forEach(name => {
       const fieldName = this._getFieldName(name);
-      if (this._dinoFields.indexOf(name) === -1) {
+      if (metricLabels[name] != null) {
+        labels[name] = metricLabels[name];
+      } else if (this._dinoFields.indexOf(name) === -1) {
         labels[name] =
           this._ctxValuesDict[fieldName] != null ? this._ctxValuesDict[fieldName] : name;
       } else {
@@ -803,6 +822,35 @@ export class Exporter implements OnDestroy {
     if (this._setupData.value && this._setupData.value.removeCommas) {
       this._removeCommasFromlabels(labels);
     }
+    return labels;
+  }
+
+  /**
+   * Returns the labels of the metric columns, translated in the active language,
+   * by column name (`<metric>_<property>`). The name column is labelled with the
+   * metric name, the others with the property followed by the metric name, which
+   * also tells apart properties shared by two metrics (the project and the case
+   * code). Properties without a label are left out and keep their column name.
+   */
+  private _metricColumnLabels(): {[column: string]: string} {
+    const labels: {[column: string]: string} = {};
+    this._metricManagers.forEach(manager => {
+      if (manager == null) {
+        return;
+      }
+      const metricName = manager.collectionName.toLowerCase();
+      const metricKey = metricName.charAt(0).toUpperCase() + metricName.slice(1);
+      const metric = this._ts.translate(metricKey);
+      labels[`${metricName}_name`] = metric;
+      labels[`${metricName}_parent_name`] =
+        `${this._ts.translate(`Parent ${metricKey}`)} (${metric})`;
+      for (const prop in manager.collectionSchema.properties) {
+        if (METRIC_PROPERTY_LABELS[prop] != null) {
+          labels[`${metricName}_${prop}`] =
+            `${this._ts.translate(METRIC_PROPERTY_LABELS[prop])} (${metric})`;
+        }
+      }
+    });
     return labels;
   }
 

@@ -529,6 +529,7 @@ export const UKR: Translation = {
   'Parent Organization': 'Батьківська організація',
   'Parent Project': 'Батьківський проект',
   'Parent case': 'Батьківська справа',
+  'Parent Case': 'Батьківська справа',
   'Password': 'Пароль',
   'Password changed': 'Пароль змінено',
   'Password reset link sent to': 'Посилання для скидання пароля надіслано на',

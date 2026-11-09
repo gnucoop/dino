@@ -563,6 +563,7 @@ export const ENG: Translation = {
   'Parent Organization': 'Parent organization',
   'Parent Project': 'Parent project',
   'Parent case': 'Parent case',
+  'Parent Case': 'Parent case',
   'Password': 'Password',
   'Password changed': 'Password changed',
   'Password reset link sent to': 'Password reset link sent to',

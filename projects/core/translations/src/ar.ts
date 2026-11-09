@@ -529,6 +529,7 @@ export const AR: Translation = {
   'Parent Organization': 'المنظمة الأصل',
   'Parent Project': 'المشروع الأصل',
   'Parent case': 'الحالة الأصل',
+  'Parent Case': 'الحالة الأصل',
   'Password': 'كلمة المرور',
   'Password changed': 'تم تغيير كلمة المرور',
   'Password reset link sent to': 'تم إرسال رابط إعادة تعيين كلمة المرور إلى',
