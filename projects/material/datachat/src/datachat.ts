@@ -1685,7 +1685,7 @@ export class DataChat implements AfterViewInit, OnDestroy, OnInit {
       'all',
       data,
       'csv',
-      true,
+      false,
       true,
     );
   }
