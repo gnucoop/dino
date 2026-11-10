@@ -1,3 +1,13 @@
+<a name="18.1.3-sw.152"></a>
+# 18.1.3-sw.152 "colorful-goldfish" (2026-11-10)
+### Bug Fixes
+* **material/datachat:** build the dataset on the first question, once per form section ([c5d6b4e](https://github.com/gnucoop/dino/commit/c5d6b4ef84428c00b54aab5e57d96bfd55dae0e7))
+### Features
+* **core/exporter:** label the metric columns with their translated names ([14bf165](https://github.com/gnucoop/dino/commit/14bf1655dc3e26460d7a9512ac32488859d0b074))
+* **datachat:** set DataAnalysisFormat to false ([5f15dc2](https://github.com/gnucoop/dino/commit/5f15dc27ff142a99ab7a4b58f8425d122e0366e8))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="18.1.2-sw.151"></a>
 # 18.1.2-sw.151 "successive-jackal" (2026-11-05)
 ### Bug Fixes

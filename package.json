@@ -44,7 +44,7 @@
     "cypress:run": "cypress run",
     "repomix-skill": "repomix --skill-generate --compress --remove-empty-lines"
   },
-  "version": "18.1.2",
+  "version": "18.1.3",
   "private": true,
   "dependencies": {
     "@ajf/calendars": "^18.5.4",
