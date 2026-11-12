@@ -899,6 +899,10 @@ export const ITA: Translation = {
   'Oops! Something went wrong while saving the User.':
     "Ops! Si è verificato un errore durante il salvataggio dell'utente.",
   'SAVE ERROR': 'ERRORE DI SALVATAGGIO',
+  'A user with this email already exists.': 'Esiste già un utente con questa email.',
+  'Only an administrator can create users.': 'Solo un amministratore può creare utenti.',
+  'Users can only be created online. Check the connection and try again.':
+    'Gli utenti si possono creare solo online. Controlla la connessione e riprova.',
   '{{name}} saved': '{{name}} salvato',
   'USER SAVED': 'UTENTE SALVATO',
   '{{name}} saved, but the email to set the password could not be sent.':

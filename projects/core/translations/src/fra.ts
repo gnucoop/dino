@@ -897,6 +897,10 @@ export const FRA: Translation = {
   'Oops! Something went wrong while saving the User.':
     "Oups ! Une erreur s'est produite lors de l'enregistrement de l'utilisateur.",
   'SAVE ERROR': "ERREUR D'ENREGISTREMENT",
+  'A user with this email already exists.': 'Un utilisateur avec cet e-mail existe déjà.',
+  'Only an administrator can create users.': 'Seul un administrateur peut créer des utilisateurs.',
+  'Users can only be created online. Check the connection and try again.':
+    "Les utilisateurs ne peuvent être créés qu'en ligne. Vérifiez la connexion et réessayez.",
   '{{name}} saved': '{{name}} enregistré',
   'USER SAVED': 'UTILISATEUR ENREGISTRÉ',
   '{{name}} saved, but the email to set the password could not be sent.':

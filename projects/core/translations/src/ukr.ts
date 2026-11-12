@@ -921,6 +921,10 @@ export const UKR: Translation = {
   'Oops! Something went wrong while saving the User.':
     'Ой! Під час збереження користувача сталася помилка.',
   'SAVE ERROR': 'ПОМИЛКА ЗБЕРЕЖЕННЯ',
+  'A user with this email already exists.': 'Користувач із цією електронною адресою вже існує.',
+  'Only an administrator can create users.': 'Лише адміністратор може створювати користувачів.',
+  'Users can only be created online. Check the connection and try again.':
+    "Користувачів можна створювати лише онлайн. Перевірте з'єднання та спробуйте ще раз.",
   '{{name}} saved': '{{name}} збережено',
   'USER SAVED': 'КОРИСТУВАЧА ЗБЕРЕЖЕНО',
   '{{name}} saved, but the email to set the password could not be sent.':

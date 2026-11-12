@@ -1010,6 +1010,10 @@ export const AR: Translation = {
     'إرسال بريد إلكتروني إلى المستخدم لتغيير كلمة المرور',
   'Oops! Something went wrong while saving the User.': 'عذرًا! حدث خطأ أثناء حفظ المستخدم.',
   'SAVE ERROR': 'خطأ في الحفظ',
+  'A user with this email already exists.': 'يوجد مستخدم بهذا البريد الإلكتروني بالفعل.',
+  'Only an administrator can create users.': 'يمكن للمسؤول فقط إنشاء المستخدمين.',
+  'Users can only be created online. Check the connection and try again.':
+    'لا يمكن إنشاء المستخدمين إلا عبر الإنترنت. تحقق من الاتصال وحاول مرة أخرى.',
   '{{name}} saved': 'تم حفظ {{name}}',
   'USER SAVED': 'تم حفظ المستخدم',
   '{{name}} saved, but the email to set the password could not be sent.':

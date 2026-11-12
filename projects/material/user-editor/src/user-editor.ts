@@ -34,15 +34,17 @@ import {UntypedFormControl, UntypedFormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {HttpErrorResponse} from '@angular/common/http';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {AuthService, AuthServiceConfig, AUTH_SERVICE_CONFIG} from '@dino/core/auth';
 import {
-  AuthService,
-  AuthServiceConfig,
-  AUTH_SERVICE_CONFIG,
-  NHostSignupResponse,
-} from '@dino/core/auth';
-import {UserGroup, UserGroupManager, UserData, UserDataManager} from '@dino/core/users';
-import {Observable, of as obsOf, Subscription} from 'rxjs';
-import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
+  UserAccountError,
+  UserAccountService,
+  UserGroup,
+  UserGroupManager,
+  UserData,
+  UserDataManager,
+} from '@dino/core/users';
+import {EMPTY, Observable, of as obsOf, Subscription} from 'rxjs';
+import {catchError, exhaustMap, map, switchMap, take, tap} from 'rxjs/operators';
 import {translatedValidationErrors, PasswordMatch} from '@dino/core/auth';
 import {ActionTrigger, ActionTriggerData} from '@dino/core/data';
 import {LANG_LOCALES, langLabel} from '@dino/core/langs';
@@ -173,6 +175,7 @@ export class UserEditor implements OnDestroy, OnInit {
   constructor(
     private _userDataManager: UserDataManager,
     private _userGroupManager: UserGroupManager,
+    private _userAccountService: UserAccountService,
     private _authService: AuthService,
     @Inject(AUTH_SERVICE_CONFIG) private _config: AuthServiceConfig,
     @Inject(MAT_DIALOG_DATA) public data: UserDialogData,
@@ -194,9 +197,11 @@ export class UserEditor implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
+    // exhaustMap ignores a second click while a save is running. A failed creation emits
+    // nothing and leaves the editor open, so take(1) still waits for the next attempt.
     this._saveSub = this._saveEvt
       .pipe(
-        switchMap(item => {
+        exhaustMap(item => {
           if (this.data.userAction === 'edit') {
             if (this.data.userItem == null || this.data.userItem.id == null) {
               return obsOf(null);
@@ -248,41 +253,38 @@ export class UserEditor implements OnDestroy, OnInit {
               send_password_email: boolean;
               email_lang: string;
             };
-            return this._signup(nHostItem, nHostItem.email_lang).pipe(
-              switchMap(nhostRes => {
-                if (nhostRes == null || nhostRes.session == null || nhostRes.session.user == null) {
-                  return obsOf(null);
-                }
-                return this._userDataManager
-                  .create({
-                    full_name: item.full_name,
-                    email: item.email,
-                    user_group_ids: item.user_group_ids,
-                    user_auth_ref_id: nhostRes.session.user.id,
-                    created_at: new Date().toISOString(),
-                  })
-                  .pipe(
-                    tap(ud => {
-                      if (ud) {
-                        const trigData: ActionTriggerData<UserData> = {
-                          doc: ud,
-                        };
-                        const trigger: ActionTrigger<UserData> = {
-                          name: 'User Data Created',
-                          triggerType: 'on_user_data_creation',
-                          triggerData: trigData,
-                        };
-                        this.emitActionTrigger.emit(trigger);
-                      }
-                    }),
-                    switchMap(ud =>
-                      ud != null && nHostItem.send_password_email
-                        ? this._sendPasswordEmail(ud)
-                        : obsOf(ud),
-                    ),
-                  );
-              }),
-            );
+            const locale =
+              nHostItem.email_lang != null
+                ? LANG_LOCALES[nHostItem.email_lang]?.slice(0, 2)
+                : undefined;
+            return this._userAccountService
+              .createAccount({
+                email: item.email,
+                password: nHostItem.password,
+                full_name: item.full_name,
+                user_group_ids: item.user_group_ids ?? [],
+                locale,
+              })
+              .pipe(
+                tap(ud => {
+                  const trigData: ActionTriggerData<UserData> = {
+                    doc: ud,
+                  };
+                  const trigger: ActionTrigger<UserData> = {
+                    name: 'User Data Created',
+                    triggerType: 'on_user_data_creation',
+                    triggerData: trigData,
+                  };
+                  this.emitActionTrigger.emit(trigger);
+                }),
+                switchMap(ud =>
+                  nHostItem.send_password_email ? this._sendPasswordEmail(ud) : obsOf(ud),
+                ),
+                catchError(err => {
+                  this._showCreateError(err);
+                  return EMPTY;
+                }),
+              );
           }
         }),
         take(1),
@@ -341,30 +343,21 @@ export class UserEditor implements OnDestroy, OnInit {
   }
 
   /**
-   * Creates the nHost account, in the given Dino language when nHost knows it. nHost rejects a
-   * locale that the instance does not allow, so a failed signup with a locale is retried
-   * without one: the user is still created and gets the emails in the instance default.
-   * @param item The user to create
-   * @param lang The Dino language code of the user's emails
-   * @returns The nHost signup response
+   * Reports why a user could not be created. The editor stays open, so the admin can correct
+   * the data or retry once back online.
+   * @param err The error of the creation
    */
-  private _signup(
-    item: UserData & {password: string},
-    lang: string | null,
-  ): Observable<NHostSignupResponse | null> {
-    const locale = lang != null ? LANG_LOCALES[lang]?.slice(0, 2) : undefined;
-    const request = (withLocale: boolean) =>
-      this._authService.signupNHost({
-        email: item.email,
-        password: item.password,
-        options: withLocale ? {displayName: item.full_name, locale} : {displayName: item.full_name},
-      });
-    if (locale == null) {
-      return request(false);
-    }
-    return request(true).pipe(
-      switchMap(res => (res?.session?.user != null ? obsOf(res) : request(false))),
-    );
+  private _showCreateError(err: unknown): void {
+    const reason = err instanceof UserAccountError ? err.reason : 'unknown';
+    const messages: Record<string, string> = {
+      'email-in-use': 'A user with this email already exists.',
+      'not-admin': 'Only an administrator can create users.',
+      offline: 'Users can only be created online. Check the connection and try again.',
+      unknown: 'Oops! Something went wrong while saving the User.',
+    };
+    this.snackbar.open(this._ts.translate(messages[reason]), this._ts.translate('SAVE ERROR'), {
+      duration: 10000,
+    });
   }
 
   /**
