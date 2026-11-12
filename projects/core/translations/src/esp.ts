@@ -887,6 +887,10 @@ export const ESP: Translation = {
   'Oops! Something went wrong while saving the User.':
     '¡Vaya! Algo salió mal al guardar el usuario.',
   'SAVE ERROR': 'ERROR AL GUARDAR',
+  'A user with this email already exists.': 'Ya existe un usuario con este correo electrónico.',
+  'Only an administrator can create users.': 'Solo un administrador puede crear usuarios.',
+  'Users can only be created online. Check the connection and try again.':
+    'Los usuarios solo se pueden crear en línea. Comprueba la conexión e inténtalo de nuevo.',
   '{{name}} saved': '{{name}} guardado',
   'USER SAVED': 'USUARIO GUARDADO',
   '{{name}} saved, but the email to set the password could not be sent.':
