@@ -25,10 +25,17 @@ import {Injectable} from '@angular/core';
 import {AuthService, buildAuthorizationHeader} from '@dino/core/auth';
 import {DataService} from '@dino/core/data';
 import {Apollo, gql} from 'apollo-angular';
-import {Observable, throwError} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import {RxDocument} from 'rxdb';
+import {merge, Observable, of as obsOf, throwError} from 'rxjs';
+import {catchError, filter, map, switchMap, take, timeout} from 'rxjs/operators';
 
 import {UserData} from './user-data';
+import {UserDataManager} from './user-data-manager';
+
+/**
+ * How long to wait for a created user to reach the local database through the pull.
+ */
+const LOCAL_USER_TIMEOUT_MS = 30000;
 
 /**
  * The user to create with {@link UserAccountService.createAccount}.
@@ -112,7 +119,26 @@ export class UserAccountService {
     private _apollo: Apollo,
     private _authService: AuthService,
     private _dataService: DataService,
+    private _userDataManager: UserDataManager,
   ) {}
+
+  /**
+   * Waits for a user created by {@link createAccount} to reach the local database, through the
+   * pull that createAccount starts. Deployment actions run on the user's creation expect the
+   * local rxdb document: they call its methods and update the row, which fails while the row is
+   * only on the server.
+   * @param id The id of the created user_data row
+   * @returns The local document, or null if it did not arrive in time
+   */
+  waitForLocalUser(id: string): Observable<RxDocument<UserData> | null> {
+    return merge(obsOf(null), this._userDataManager.collectionChanged).pipe(
+      switchMap(() => this._userDataManager.get(id)),
+      filter((doc): doc is RxDocument<UserData> => doc != null),
+      take(1),
+      timeout({first: LOCAL_USER_TIMEOUT_MS, with: () => obsOf(null)}),
+      catchError(() => obsOf(null)),
+    );
+  }
 
   /**
    * Creates the login and the Dino user. The new user_data row is not written locally: it
