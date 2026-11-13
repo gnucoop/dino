@@ -886,6 +886,10 @@ export const PRT: Translation = {
     'Enviar ao usuário um e-mail para alterar a senha',
   'Oops! Something went wrong while saving the User.': 'Ops! Algo deu errado ao salvar o usuário.',
   'SAVE ERROR': 'ERRO AO SALVAR',
+  'A user with this email already exists.': 'Já existe um usuário com este e-mail.',
+  'Only an administrator can create users.': 'Apenas um administrador pode criar usuários.',
+  'Users can only be created online. Check the connection and try again.':
+    'Os usuários só podem ser criados online. Verifique a conexão e tente novamente.',
   '{{name}} saved': '{{name}} salvo',
   'USER SAVED': 'USUÁRIO SALVO',
   '{{name}} saved, but the email to set the password could not be sent.':
