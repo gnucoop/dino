@@ -266,9 +266,22 @@ export class UserEditor implements OnDestroy, OnInit {
                 locale,
               })
               .pipe(
-                tap(ud => {
+                // The actions expect the local document, as when the editor created the row
+                // itself: wait for the pull to bring it before triggering them.
+                switchMap(created =>
+                  this._userAccountService
+                    .waitForLocalUser(created.id)
+                    .pipe(map(local => ({created, local}))),
+                ),
+                tap(({created, local}) => {
+                  if (local == null) {
+                    console.error(
+                      `User ${created.id} was created but did not reach the local database in time: on_user_data_creation was not triggered.`,
+                    );
+                    return;
+                  }
                   const trigData: ActionTriggerData<UserData> = {
-                    doc: ud,
+                    doc: local,
                   };
                   const trigger: ActionTrigger<UserData> = {
                     name: 'User Data Created',
@@ -277,6 +290,7 @@ export class UserEditor implements OnDestroy, OnInit {
                   };
                   this.emitActionTrigger.emit(trigger);
                 }),
+                map(({created}) => created),
                 switchMap(ud =>
                   nHostItem.send_password_email ? this._sendPasswordEmail(ud) : obsOf(ud),
                 ),
