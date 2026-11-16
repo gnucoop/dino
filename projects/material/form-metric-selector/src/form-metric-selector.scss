@@ -359,6 +359,11 @@ dino-form-metric-selector {
     justify-content: flex-end;
     gap: 12px;
 
+    .dino-metric-footer-start {
+      display: flex;
+      margin-inline-end: auto;
+    }
+
     // The shape the two footer actions share. Named for where they sit rather
     // than for what one of them does: `dino-go-to-data-button` is the one that
     // goes to the data step, and stays on that button alone -- the transcribe

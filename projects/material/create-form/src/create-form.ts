@@ -444,6 +444,18 @@ export class CreateForm<T extends Model = Model> implements AfterViewInit, OnIni
     }
   }
 
+  /**
+   * Saves from the metrics step, as the renderer's Save does from the data step. The save
+   * reads the values from the renderer, which the stepper builds while the first step shows.
+   */
+  saveFromMetricsStep(): void {
+    this._saveFormEvt.emit({
+      source: null as unknown as AjfFormRenderer,
+      value: {},
+      action: 'save',
+    });
+  }
+
   ngOnInit() {
     if (this._dataModelManager == null) {
       this._location.back();

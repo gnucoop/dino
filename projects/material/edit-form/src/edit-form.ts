@@ -542,6 +542,18 @@ export class EditForm<T extends Model = Model> implements AfterViewInit, OnInit,
   }
 
   /**
+   * Saves from the metrics step, as the renderer's Save does from the data step. The save
+   * reads the values from the renderer, which the stepper builds while the first step shows.
+   */
+  saveFromMetricsStep(): void {
+    this._saveFormEvt.emit({
+      source: null as unknown as AjfFormRenderer,
+      value: {},
+      action: 'save',
+    });
+  }
+
+  /**
    * Scrolls the ajfForm to the slide at the provided index
    * @param index
    */

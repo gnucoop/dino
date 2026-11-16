@@ -177,6 +177,10 @@
     <ng-container *ngIf="context === 'form' || context === 'report'">
       <mat-divider></mat-divider>
       <div class="dino-go-to-data-button-container">
+        <div class="dino-metric-footer-start">
+          <ng-content select="[metric-selector-actions]"></ng-content>
+        </div>
+
         <button
           *ngIf="context === 'form' && (isCreate|async) === true && isRecordAudioEnabled"
           mat-stroked-button
