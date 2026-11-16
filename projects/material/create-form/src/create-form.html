@@ -15,6 +15,31 @@
             (audioFormDataEvt)="updateFormData($event)"
           >
             <ng-content metric-selector-message select="[metric-selector-message]"></ng-content>
+            <!-- One save at a time: the draft while the form cannot be saved complete,
+                 the Save otherwise. -->
+            <button
+              *ngIf="allowSaveDraft && (isSaveDraftDisabled|async) === false"
+              metric-selector-actions
+              mat-stroked-button
+              type="button"
+              class="dino-metric-footer-button dino-metric-save-draft-button"
+              (click)="saveDraft()"
+            >
+              <mat-icon>save_as</mat-icon>
+              {{'Save draft'|transloco}}
+            </button>
+            <button
+              *ngIf="!allowSaveDraft || (isSaveDraftDisabled|async) !== false"
+              metric-selector-actions
+              mat-stroked-button
+              type="button"
+              class="dino-metric-footer-button dino-metric-save-button"
+              [disabled]="(isSaveDisabled|async) === true"
+              (click)="saveFromMetricsStep()"
+            >
+              <mat-icon>save</mat-icon>
+              {{'Save form'|transloco}}
+            </button>
           </dino-form-metric-selector>
         </div>
       </mat-step>
