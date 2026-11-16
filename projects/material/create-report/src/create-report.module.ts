@@ -34,7 +34,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
 import {FormMetricSelectorModule} from '@dino/material/form-metric-selector';
 import {FloatingButtonModule as DinoFloatingButtonModule} from '@dino/material/floating-button';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 
 import {CreateReport} from './create-report';
 import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';

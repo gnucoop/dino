@@ -11,7 +11,7 @@ import {FormSchema, FormSchemaManager, FormSchemaVisibility} from './public_api'
 import {UserData, UserGroup} from '@dino/core/users';
 import {FormInfo} from './form-info';
 import {NodeVisibility} from '@dino/core/list';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 
 // Custom Ajf functions used by the visibility tests below. Kept local to the spec
 // so it does not depend on the e2e-app project.
@@ -127,7 +127,7 @@ describe('FormSchemaManager', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: AuthService, useValue: authServiceMock},
         {provide: Router, useValue: {}},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

@@ -46,7 +46,7 @@ import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {buildInitials, ShellContextService, ThemeService} from '@dino/material/core';
 import {LangService} from '@dino/material/lang-selector';
 import {groupNotifications, NotificationEntry, NotificationGroup} from './notification-groups';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {RxError, RxTypeError} from 'rxdb';
 import {
   BehaviorSubject,

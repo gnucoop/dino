@@ -6,7 +6,7 @@ import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {AUTH_SERVICE_CONFIG, AuthServiceConfig} from '@dino/core/auth';
 
 import {BreadCrumbs, BreadcrumbsModule} from './public_api';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {provideRouter} from '@angular/router';
 
 let testDbIdx = 0;
@@ -49,7 +49,7 @@ describe('BreadCrumbs', () => {
       providers: [
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
         provideRouter([]),
       ],

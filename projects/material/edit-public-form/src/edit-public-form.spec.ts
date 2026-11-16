@@ -15,7 +15,7 @@ import {ActivatedRoute} from '@angular/router';
 import {AnimationBuilder, AnimationFactory, AnimationPlayer} from '@angular/animations';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {format} from 'date-fns';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 
 let testDbIdx = 0;
 
@@ -109,7 +109,7 @@ describe('Edit Public Form', () => {
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: TRANSLATIONS_CONFIG, useValue: {defaultLanguage: 'eng'}},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

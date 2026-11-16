@@ -29,7 +29,7 @@ import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 import {ListModule} from '@dino/material/list';
 import {MetricEditorModule} from '@dino/material/metric-editor';
 import {SearchFiltersBarModule} from '@dino/material/search-filters-bar';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 
 import {MetricSection} from './metric-section';
 import {MatIconModule} from '@angular/material/icon';

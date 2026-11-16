@@ -1,6 +1,11 @@
 import {OverlayModule} from '@angular/cdk/overlay';
 import {ServiceWorkerModule} from '@angular/service-worker';
-import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXhr,
+} from '@angular/common/http';
 import {APP_INITIALIZER, ErrorHandler, inject, isDevMode, NgModule, Optional} from '@angular/core';
 import {MatNativeDateModule, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -71,7 +76,7 @@ import {
   withLatestFrom,
 } from 'rxjs/operators';
 import {of as obsOf} from 'rxjs';
-import {ColorPickerModule} from 'ngx-color-picker';
+import {ColorPickerDirective} from 'ngx-color-picker';
 import {
   AuthServiceBackendless,
   PermissionContextServiceBackendless,
@@ -177,7 +182,7 @@ export function provideMatDateLocale(ts: TranslocoService) {
       ],
     }),
     AjfEchartsModule.forRoot({echarts: () => import('echarts')}),
-    ColorPickerModule,
+    ColorPickerDirective,
     DinoAuthModule.forRoot(environment.authConfig),
     environment.dataConfig.dynamicBackend
       ? DinoConfigModule.forRoot({apiUrl: environment.dataConfig.dynamicBackendapiUrl})
@@ -357,7 +362,7 @@ export function provideMatDateLocale(ts: TranslocoService) {
       useFactory: (ts: TranslocoService) => provideMatDateLocale(ts),
       deps: [TranslocoService],
     },
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
   ],
 })
 export class AppModule {

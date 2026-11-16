@@ -30,7 +30,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 
 import {FormMetricSelector} from './form-metric-selector';
 import {FormMetricSelectorDialog} from './form-metric-selector-dialog';

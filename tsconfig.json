@@ -2,19 +2,20 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "paths": {
       "@dino/core": ["./projects/core"],
       "@dino/core/*": ["./projects/core/*"],
       "@dino/material": ["./projects/material"],
       "@dino/material/*": ["./projects/material/*"],
-      "dino-examples": ["dist/dino-examples/dino-examples", "dist/dino-examples"],
+      "dino-examples": ["./dist/dino-examples/dino-examples", "./dist/dino-examples"],
       "assert": ["./node_modules/assert"],
       "crypto": ["./node_modules/crypto-browserify"],
       "stream": ["./node_modules/stream-browserify"]
     },
+    "rootDir": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -22,7 +23,6 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
     "importHelpers": true,

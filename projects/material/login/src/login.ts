@@ -37,7 +37,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService, ExternalAuthProvider, LoginComponent, User} from '@dino/core/auth';
 import {Observable, Subscription, of as obsOf} from 'rxjs';
 import {map, switchMap, take, tap} from 'rxjs/operators';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {NhostClient} from '@nhost/nhost-js';
 import {OnlineUserDataManager, UserData} from '@dino/core/users';
 import {ActionTrigger, ActionTriggerData, localDataOwners} from '@dino/core/data';

@@ -19,7 +19,7 @@ import {
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxJsonSchema} from 'rxdb';
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {provideRouter} from '@angular/router';
 
 let testDbIdx = 0;
@@ -113,7 +113,7 @@ describe('Data Chat', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
         {provide: PANDINO_SERVICE_CONFIG, useValue: pandinoConfig},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
         provideRouter([]),
       ],

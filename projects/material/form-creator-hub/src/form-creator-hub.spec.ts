@@ -9,7 +9,7 @@ import {FormCreatorHub, FormCreatorHubModule} from './public_api';
 import {MatDialogRef} from '@angular/material/dialog';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {MatButtonToggleChange} from '@angular/material/button-toggle';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 
 let testDbIdx = 0;
 
@@ -67,7 +67,7 @@ describe('Form Creator Hub', () => {
         {provide: MatDialogRef, useValue: mockDialogRef},
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
     ]
 }).compileComponents();

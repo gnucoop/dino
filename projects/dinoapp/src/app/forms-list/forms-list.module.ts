@@ -8,7 +8,7 @@ import {FloatingButtonModule} from '@dino/material/floating-button';
 import {ListModule as DinoListModule} from '@dino/material/list';
 import {SearchFiltersBarModule as DinoFiltersBarModule} from '@dino/material/search-filters-bar';
 import {BreadcrumbsModule as DinoBreadcrumbsModule} from '@dino/material/breadcrumbs';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 
 import {FormsListComponent} from './components/forms-list.component';

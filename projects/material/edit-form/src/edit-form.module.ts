@@ -39,7 +39,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
 import {FormMetricSelectorModule} from '@dino/material/form-metric-selector';
 import {PipelineStepperModule as DinoPipelineStepperModule} from '@dino/material/pipeline-stepper';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 import {BreakpointObserverModule as DinoBreakpointObserverModule} from '@dino/material/breakpoint-observer';
 
 import {EditForm} from './edit-form';

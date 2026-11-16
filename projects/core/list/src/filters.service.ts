@@ -25,7 +25,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MetricsService, Model} from '@dino/core/data';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {RxJsonSchema, TopLevelProperty, isRxDocument} from 'rxdb';
 import {
   BehaviorSubject,

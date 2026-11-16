@@ -34,7 +34,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {DataModelManager, DataQueryOptions, Metric} from '@dino/core/data';
 import {FormDataManager} from '@dino/core/forms';
 import {ReportDataManager} from '@dino/core/reports';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {RxDocument} from 'rxdb';
 import {
   catchError,

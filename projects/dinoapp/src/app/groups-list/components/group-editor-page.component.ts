@@ -18,7 +18,7 @@ import {ProjectManager} from '@dino/core/projects';
 import {ReportSchemaManager} from '@dino/core/reports';
 import {UserGroup, UserGroupManager, UserRoleManager} from '@dino/core/users';
 import {MixedEditorItem} from '@dino/material/mixed-editor';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {combineLatest, Observable, of, Subject, Subscription} from 'rxjs';
 import {debounceTime, map, shareReplay, switchMap, take} from 'rxjs/operators';
 import {environment} from 'src/environments/environment';

@@ -10,7 +10,7 @@ export const versionReplacements = packages => {
     ['@angular/core', 'NGF'],
     ['@angular/cdk', 'NGC'],
     ['@apollo/client', 'APOLLOCLIENT'],
-    ['@ngneat/transloco', 'TRANSLOCO'],
+    ['@jsverse/transloco', 'TRANSLOCO'],
     ['angular-material-css-vars', 'AMCV'],
     ['apollo-angular', 'APOLLONG'],
     ['assert', 'ASSERT'],

@@ -8,7 +8,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {LangSelectorModule} from '@dino/material/lang-selector';
 import {LoginModule as DinoLoginModule} from '@dino/material/login';
 import {ThemeSwitchModule} from '@dino/material/theme-switch';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 
 import {LoginComponent} from './components/login/login.component';
 import {LoginRoutingModule} from './login-routing.module';

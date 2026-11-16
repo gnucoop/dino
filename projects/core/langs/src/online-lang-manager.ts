@@ -23,7 +23,7 @@
 import {Inject, Injectable, isDevMode} from '@angular/core';
 import {OnlineDataModelManager, OnlineDataService, PermissionContextService} from '@dino/core/data';
 import {TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {Observable} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 

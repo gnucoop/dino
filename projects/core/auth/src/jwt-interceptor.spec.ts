@@ -4,6 +4,7 @@ import {
   HttpInterceptor,
   provideHttpClient,
   withInterceptorsFromDi,
+  withXhr,
 } from '@angular/common/http';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {inject, TestBed} from '@angular/core/testing';
@@ -54,7 +55,7 @@ describe(`JWTInterceptor`, () => {
         JWTInterceptor,
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
@@ -283,7 +284,7 @@ describe('JWTInterceptor - session started offline', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: NetworkStatusService, useClass: OfflineStartNetworkStatusService},
         {provide: HTTP_INTERCEPTORS, useClass: JWTInterceptor, multi: true},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

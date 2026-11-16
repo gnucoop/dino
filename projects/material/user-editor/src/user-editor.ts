@@ -49,7 +49,7 @@ import {translatedValidationErrors, PasswordMatch} from '@dino/core/auth';
 import {ActionTrigger, ActionTriggerData} from '@dino/core/data';
 import {LANG_LOCALES, langLabel} from '@dino/core/langs';
 import {TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 
 /**
  * Characters used for generated passwords: letters and digits only, without the ones that are

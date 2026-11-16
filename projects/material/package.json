@@ -19,7 +19,7 @@
     "@angular/material": "0.0.0-NGC",
     "@angular/router": "0.0.0-NGF",
     "@dino/core": "0.0.0-PLACEHOLDER",
-    "@ngneat/transloco": "0.0.0-TRANSLOCO",
+    "@jsverse/transloco": "0.0.0-TRANSLOCO",
     "angular-material-css-vars": "0.0.0-AMCV",
     "chart.js": "0.0.0-CHARTJS",
     "rxdb": "0.0.0-RXDB",

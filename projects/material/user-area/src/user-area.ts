@@ -47,7 +47,7 @@ import {
   takeUntil,
   tap,
 } from 'rxjs/operators';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {buildInitials, DinoTheme, ThemeService} from '@dino/material/core';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {AdminUserInteractionsService} from '@dino/material/user-interactions';

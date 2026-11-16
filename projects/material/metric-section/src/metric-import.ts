@@ -53,7 +53,7 @@ import {
   warningGroup,
 } from '@dino/material/import-wizard';
 import {UserGroupManager} from '@dino/core/users';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {RxDocument, RxJsonSchema} from 'rxdb';
 import {
   catchError,

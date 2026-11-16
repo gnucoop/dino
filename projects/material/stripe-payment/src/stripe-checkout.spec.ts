@@ -12,7 +12,7 @@ import {RxJsonSchema} from 'rxdb';
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from './stripe-payment-config';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {StripePaymentData} from './stripe-payment-data-interface';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 
 let testDbIdx = 0;
 
@@ -110,7 +110,7 @@ describe('Stripe Checkout', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
         {provide: MAT_DIALOG_DATA, useValue: mockDialogData},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

@@ -9,7 +9,7 @@ import {FloatingButtonModule as DinoFloatingButtonModule} from '@dino/material/f
 import {ListModule as DinoListModule} from '@dino/material/list';
 import {SearchFiltersBarModule as DinoSearchFiltersBarModule} from '@dino/material/search-filters-bar';
 import {UserEditorModule as DinoUserEditorModule} from '@dino/material/user-editor';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 
 import {NotificationsListComponent} from './components/notifications-list.component';
 import {NotificationsListRoutingModule} from './notifications-list-routing.module';

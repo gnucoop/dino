@@ -22,7 +22,7 @@
 
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 
 import {TableGenerator} from './table-generator';
 import {MatTableModule} from '@angular/material/table';

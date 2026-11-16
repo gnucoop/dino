@@ -47,7 +47,7 @@ import {NetworkStatusService} from '@dino/core/auth';
 import {DataModelManager, Metric, PermissionContextService} from '@dino/core/data';
 import {FileUploadService, StorageUploadResponse} from '@dino/core/file-upload';
 import {UserGroup, UserGroupManager} from '@dino/core/users';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {format} from 'date-fns';
 import {RxDocument, RxJsonSchema} from 'rxdb';
 import {combineLatest, forkJoin, Observable, of as obsOf, Subscription, zip} from 'rxjs';

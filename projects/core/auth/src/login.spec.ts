@@ -6,11 +6,11 @@ import {UntypedFormBuilder} from '@angular/forms';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {Observable, of as obsOf} from 'rxjs';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {AjfTranslocoModule} from '@ajf/core/transloco';
 
 import {AuthService, Credentials, LoginComponent, NHostSignupRequest} from './public_api';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 
 const authServiceMock = {
   authenticated: obsOf({auth: true, evt: 'init'}),
@@ -70,7 +70,7 @@ describe('LoginComponent', () => {
         {provide: ChangeDetectorRef, useValue: changeDetectorRefMock},
         {provide: AuthService, useValue: authServiceMock},
         {provide: Router, useValue: routerSpy},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

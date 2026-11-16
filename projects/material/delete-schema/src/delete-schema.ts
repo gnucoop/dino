@@ -33,7 +33,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {FormSchemaDepsManager, FormSchemaManager} from '@dino/core/forms';
 import {ReportSchemaManager} from '@dino/core/reports';
 import {UserGroupManager} from '@dino/core/users';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {BehaviorSubject, Observable, combineLatest, of as obsOf} from 'rxjs';
 import {map} from 'rxjs/operators';
 

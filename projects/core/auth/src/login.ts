@@ -30,7 +30,7 @@ import {NHostSignupRequest} from './auth-response';
 import {AuthService} from './auth-service';
 import {PasswordMatch} from './user-password-validator';
 import {translatedValidationErrors} from './validation-errors';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 
 /**
  * Represents an Authentication Error

@@ -16,7 +16,7 @@ import {BehaviorSubject, of} from 'rxjs';
 
 import {CreateReport, CreateReportModule} from './public_api';
 import {UI_TOUR_SERVICE_CONFIG} from '@dino/material/ui-tour-service';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {provideRouter} from '@angular/router';
 
 const authServiceConfig: AuthServiceConfig = {
@@ -89,7 +89,7 @@ describe('Create Report', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: PANDINO_SERVICE_CONFIG, useValue: pandinoConfig},
         {provide: UI_TOUR_SERVICE_CONFIG, useValue: undefined},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
         provideRouter([]),
       ],

@@ -4,7 +4,7 @@ import {take} from 'rxjs/operators';
 
 import {ConfigServiceConfig} from './config.token';
 import {CONFIG_SERVICE_CONFIG, ConfigResponse, ConfigSet, ConfigService} from './public_api';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 
 const configServiceConfig: ConfigServiceConfig = {
   apiUrl: 'https://test-config-url',
@@ -85,7 +85,7 @@ describe('Config service', () => {
       providers: [
         ConfigService,
         {provide: CONFIG_SERVICE_CONFIG, useValue: configServiceConfig},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

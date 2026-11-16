@@ -13,7 +13,7 @@ import {
   LoginResponse,
   User,
 } from './public_api';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -58,7 +58,7 @@ describe('AuthService', () => {
       providers: [
         AuthService,
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
@@ -147,7 +147,7 @@ describe('refresh token', () => {
       providers: [
         AuthService,
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
@@ -185,7 +185,7 @@ describe('logged in', () => {
       providers: [
         AuthService,
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
@@ -280,7 +280,7 @@ describe('custom local storage keys', () => {
             userInfoLocalStorageKey: 'user_info_ls_key',
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
@@ -367,7 +367,7 @@ describe('custom local storage keys - logged in', () => {
             userInfoLocalStorageKey: 'user_info_ls_key',
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
@@ -495,7 +495,7 @@ describe('custom storage functions', () => {
             retrieveUserInfo: userDefinedStore.retrieveUserInfo,
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
@@ -582,7 +582,7 @@ describe('custom storage functions - logged in', () => {
             storeUserInfo: userDefinedStore.storeUserInfo,
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
@@ -676,7 +676,7 @@ describe('pre-emptive refresh while offline', () => {
           provide: NetworkStatusService,
           useValue: {isOnline$: obsOf(false), statusHistory$: new BehaviorSubject([false])},
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });
@@ -749,7 +749,7 @@ describe('endSession', () => {
       providers: [
         AuthService,
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     });

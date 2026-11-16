@@ -21,7 +21,8 @@
  */
 
 import {AbstractControl} from '@angular/forms';
-import {HashMap, TranslocoService} from '@ngneat/transloco';
+import {HashMap} from '@ajf/core/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 
 /**
  * Translates a key, replacing the `{{param}}` placeholders with the given params.

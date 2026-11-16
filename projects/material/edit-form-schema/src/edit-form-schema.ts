@@ -82,7 +82,7 @@ import {
 } from 'rxjs/operators';
 
 import {ImportFormSchema} from './import-form-schema';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {Translations} from './form-schema-translation-interface';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {ReportData, ReportDataManager, ReportSchema, ReportSchemaManager} from '@dino/core/reports';

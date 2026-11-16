@@ -12,7 +12,7 @@ import {BehaviorSubject, of} from 'rxjs';
 
 import {CreateForm, CreateFormModule} from './public_api';
 import {UI_TOUR_SERVICE_CONFIG} from '@dino/material/ui-tour-service';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {provideRouter} from '@angular/router';
 
 const authServiceConfig: AuthServiceConfig = {
@@ -82,7 +82,7 @@ describe('Create Form', () => {
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: UI_TOUR_SERVICE_CONFIG, useValue: undefined},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
         provideRouter([]),
       ],

@@ -38,7 +38,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {RouterModule} from '@angular/router';
 import {IconsServiceModule} from '@dino/material/icons-service';
 import {FormDepsEditorModule} from '@dino/material/form-deps-editor';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 
 import {EditFormSchema} from './edit-form-schema';
 import {ImportFormSchema} from './import-form-schema';

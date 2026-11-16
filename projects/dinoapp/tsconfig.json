@@ -2,12 +2,12 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "./",
     "rootDir": "../../",
     "outDir": "./dist/out-tsc",
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
     "paths": {
+      "src/*": ["./src/*"],
       "@dino/core": ["../../projects/core"],
       "@dino/core/*": ["../../projects/core/*"],
       "@dino/material": ["../../projects/material"],

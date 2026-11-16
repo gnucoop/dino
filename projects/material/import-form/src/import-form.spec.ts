@@ -6,7 +6,7 @@ import {DATA_SERVICE_CONFIG, DataServiceConfig, MetricsService} from '@dino/core
 import {FormDataManager, FormStatusManager} from '@dino/core/forms';
 import {ProjectManager} from '@dino/core/projects';
 import {UserData, UserDataManager} from '@dino/core/users';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxDocument} from 'rxdb';
 import {BehaviorSubject, Observable, of} from 'rxjs';
@@ -15,7 +15,7 @@ import {ImportForm} from './public_api';
 import {provideHttpClientTesting} from '@angular/common/http/testing';
 import {AuthService, AuthServiceConfig} from '@dino/core/auth';
 import {EventEmitter} from '@angular/core';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 
 let testDbIdx = 0;
 
@@ -160,7 +160,7 @@ describe('Import Forms', () => {
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: MAT_DIALOG_DATA, useValue: mockDialogData},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

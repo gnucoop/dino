@@ -9,7 +9,7 @@ import {BehaviorSubject, of} from 'rxjs';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {EditForm, EditFormModule} from './public_api';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {provideRouter} from '@angular/router';
 
 let testDbIdx = 0;
@@ -63,7 +63,7 @@ describe('Edit Form', () => {
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
         provideRouter([]),
       ],

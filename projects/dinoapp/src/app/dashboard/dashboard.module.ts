@@ -9,7 +9,7 @@ import {DashboardReportComponent} from './components/dashboard/dashboard-report.
 import {MatIconModule} from '@angular/material/icon';
 
 import {DashboardRoutingModule} from './dashboard-routing.module';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 import {TourMatMenuModule} from 'ngx-ui-tour-md-menu';
 import {environment} from 'src/environments/environment';
 

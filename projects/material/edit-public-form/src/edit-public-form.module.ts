@@ -26,7 +26,7 @@ import {NgModule} from '@angular/core';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {RouterModule} from '@angular/router';
 import {FormsModule} from '@dino/core/forms';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 import {LangSelectorModule} from '@dino/material/lang-selector';
 
 import {EditPublicForm} from './edit-public-form';

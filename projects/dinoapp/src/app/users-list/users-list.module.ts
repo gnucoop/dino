@@ -5,7 +5,7 @@ import {FormsModule as DinoFormsModule} from '@dino/core/forms';
 import {ListModule as DinoListModule} from '@dino/material/list';
 import {SearchFiltersBarModule as DinoFiltersBarModule} from '@dino/material/search-filters-bar';
 import {UserEditorModule as DinoUserEditorModule} from '@dino/material/user-editor';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 
 import {UsersEditor} from './components/users-editor.component';
 import {UsersList} from './components/users-list.component';

@@ -24,7 +24,7 @@ import {ChangeDetectionStrategy, Component, OnDestroy, ViewEncapsulation} from '
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {KeySegment, LangManager, isRtlLang, langLabel, splitVariables} from '@dino/core/langs';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {BehaviorSubject, Observable, Subscription, combineLatest} from 'rxjs';
 import {filter, map, switchMap, take} from 'rxjs/operators';
 

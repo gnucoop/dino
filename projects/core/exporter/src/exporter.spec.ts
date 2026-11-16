@@ -21,7 +21,7 @@
  */
 
 import {NodeVisibility} from '@dino/core/list';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {of as obsOf} from 'rxjs';
 
 import {Exporter} from './exporter';

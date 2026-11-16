@@ -20,7 +20,7 @@
  *
  */
 
-export const enum FormSchemaVisibility {
+export enum FormSchemaVisibility {
   Private = 0,
   Public = 1,
 }

@@ -13,7 +13,7 @@ import {map} from 'rxjs/operators';
 
 import {ALL_GROUPS_CHIP, Collect, CollectModule} from './public_api';
 import {UI_TOUR_SERVICE_CONFIG} from '@dino/material/ui-tour-service';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {provideRouter} from '@angular/router';
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
@@ -108,7 +108,7 @@ describe('Collect', () => {
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: UI_TOUR_SERVICE_CONFIG, useValue: undefined},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
         provideRouter([]),
       ],
@@ -289,7 +289,7 @@ describe('Collect with groups', () => {
           provide: BreakpointObserver,
           useValue: {observe: () => narrow.pipe(map(matches => ({matches, breakpoints: {}})))},
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
         provideRouter([]),
         provideNoopAnimations(),

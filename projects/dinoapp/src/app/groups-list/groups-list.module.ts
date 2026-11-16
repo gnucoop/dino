@@ -9,7 +9,7 @@ import {BreadcrumbsModule as DinoBreadcrumbsModule} from '@dino/material/breadcr
 import {FormsModule as DinoFormsModule} from '@dino/core/forms';
 import {ListModule as DinoListModule} from '@dino/material/list';
 import {SearchFiltersBarModule as DinoFiltersBarModule} from '@dino/material/search-filters-bar';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 
 import {GroupEditorPage} from './components/group-editor-page.component';
 import {GroupsList} from './components/groups-list.component';

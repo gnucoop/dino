@@ -99,7 +99,7 @@ import {
 import {UserDataManager, UserGroupManager} from '@dino/core/users';
 import {UntypedFormGroup} from '@angular/forms';
 import {MatStepper} from '@angular/material/stepper';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {BreakpointObserverService} from '@dino/material/breakpoint-observer';
 import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-service';

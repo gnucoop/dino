@@ -104,7 +104,7 @@ import {ChoicesDicitionary, ListDataSource} from './list-datasource';
 import {PaginatorIntl} from './paginator-intl';
 import {AdminUserInteractionsService} from '@dino/material/user-interactions';
 import {RxDocument} from 'rxdb';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {deepCopy} from '@ajf/core/utils';
 import {format} from 'date-fns';
 import {FileUploadService, StorageUploadResponse} from '@dino/core/file-upload';

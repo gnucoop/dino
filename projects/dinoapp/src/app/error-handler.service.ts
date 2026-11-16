@@ -24,11 +24,11 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {ErrorHandler, Injectable, isDevMode} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable, take} from 'rxjs';
-import * as Sentry from '@sentry/angular-ivy';
+import * as Sentry from '@sentry/angular';
 import {UserDataManager} from '@dino/core/users';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {environment} from 'src/environments/environment';
-import {SeverityLevel} from '@sentry/angular-ivy';
+import {SeverityLevel} from '@sentry/angular';
 
 const ngsw = require('../../ngsw-config.json');
 
@@ -53,14 +53,7 @@ export class ErrorHandlerService implements ErrorHandler {
           : undefined,
         environment: environment.dataConfig.instanceName,
         maxBreadcrumbs: 50,
-        integrations: [
-          new Sentry.BrowserTracing({
-            // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
-            // tracePropagationTargets: ['localhost', 'dinoapp', 'vercel'],
-            routingInstrumentation: Sentry.routingInstrumentation,
-          }),
-          new Sentry.Replay(),
-        ],
+        integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
         // Performance Monitoring
         tracesSampleRate: 1.0, // Capture 100% of the transactions
         // Session Replay
@@ -77,12 +70,10 @@ export class ErrorHandlerService implements ErrorHandler {
         .getActiveUserData()
         .pipe(take(1))
         .subscribe(userData => {
-          Sentry.configureScope(scope => {
-            scope.setUser({
-              id: userData?.id,
-              email: userData?.email,
-              username: userData?.full_name,
-            });
+          Sentry.setUser({
+            id: userData?.id,
+            email: userData?.email,
+            username: userData?.full_name,
           });
         });
 

@@ -4,7 +4,7 @@ import {BreadcrumbsModule as DinoBreadcrumbsModule} from '@dino/material/breadcr
 import {ReportsModule as DinoReportsModule} from '@dino/core/reports';
 import {ListModule as DinoListModule} from '@dino/material/list';
 import {SearchFiltersBarModule as DinoFiltersBarModule} from '@dino/material/search-filters-bar';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 
 import {ReportsListComponent} from './components/reports-list.component';
 import {ReportsListRoutingModule} from './reports-list-routing.module';

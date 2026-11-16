@@ -3,7 +3,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DataModelManager} from '@dino/core/data';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {UserGroupManager} from '@dino/core/users';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 import {Observable, of} from 'rxjs';
 
 import {MetricImport} from './metric-import';

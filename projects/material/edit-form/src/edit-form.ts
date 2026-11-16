@@ -71,7 +71,7 @@ import {format} from 'date-fns';
 import {isRxDocument, RxDocument} from 'rxdb';
 import {NetworkStatusService} from '@dino/core/auth';
 import {FileUploadService, StorageUploadResponse} from '@dino/core/file-upload';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 
 import {
   asapScheduler,

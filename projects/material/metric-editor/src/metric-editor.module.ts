@@ -38,7 +38,7 @@ import {RouterModule} from '@angular/router';
 import {AuthModule} from '@dino/core/auth';
 import {BreakpointObserverModule} from '@dino/material/breakpoint-observer';
 import {ImageCaptureModule as DinoImageCaptureModule} from '@dino/material/image-capture';
-import {TranslocoModule} from '@ngneat/transloco';
+import {TranslocoModule} from '@jsverse/transloco';
 
 import {MetricEditor} from './metric-editor';
 import {NameMatchValidator} from './metric-name-validator';

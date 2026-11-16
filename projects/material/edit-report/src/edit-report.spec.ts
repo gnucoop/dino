@@ -16,7 +16,7 @@ import {FormSchemaManager, FormsModule} from '@dino/core/forms';
 import {EditReport, EditReportModule} from './public_api';
 import {EventEmitter} from '@angular/core';
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {provideRouter} from '@angular/router';
 
 let testDbIdx = 0;
@@ -82,7 +82,7 @@ describe('Edit Report', () => {
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
         {provide: PANDINO_SERVICE_CONFIG, useValue: pandinoConfig},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
         provideRouter([]),
       ],

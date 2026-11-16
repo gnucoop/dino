@@ -23,7 +23,7 @@
 import {EventEmitter, Inject, Injectable, isDevMode} from '@angular/core';
 import {DataModelManager, DataService, PermissionContextService} from '@dino/core/data';
 import {dinoTranslations, TranslationsConfig, TRANSLATIONS_CONFIG} from '@dino/core/translations';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {
   BehaviorSubject,
   combineLatest,

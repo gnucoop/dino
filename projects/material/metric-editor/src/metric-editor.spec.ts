@@ -10,7 +10,7 @@ import {RxDocument} from 'rxdb';
 import {Observable, of} from 'rxjs';
 
 import {MetricEditor, MetricEditorModule} from './public_api';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 
 const authServiceConfig: AuthServiceConfig = {
   host: 'http://test-auth-backend',
@@ -68,7 +68,7 @@ describe('Metric Editor', () => {
             metricAction: 'edit',
           },
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

@@ -38,8 +38,8 @@ import {ThemeSwitchModule as DinoThemeSwitchModule} from '@dino/material/theme-s
 import {RouterModule} from '@angular/router';
 import {UsersModule} from '@dino/core/users';
 import {UserInteractionsModule as DinoUserInteractionsModule} from '@dino/material/user-interactions';
-import {TranslocoModule} from '@ngneat/transloco';
-import {ColorPickerModule} from 'ngx-color-picker';
+import {TranslocoModule} from '@jsverse/transloco';
+import {ColorPickerDirective} from 'ngx-color-picker';
 
 import {UserArea} from './user-area';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -49,7 +49,7 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
   imports: [
     AjfTranslocoModule,
     ClipboardModule,
-    ColorPickerModule,
+    ColorPickerDirective,
     CommonModule,
     DinoBreakpointObserverModule,
     DinoLoadingSpinnerModule,

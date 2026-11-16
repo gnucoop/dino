@@ -22,7 +22,7 @@ import {ThemeService} from '@dino/material/core';
 import {NotificationModule} from '@dino/core/notifications';
 import {STRIPE_PAYMENT_CONFIG, StripePaymentConfig} from '@dino/material/stripe-payment';
 import {UI_TOUR_SERVICE_CONFIG, UITourConfig} from '@dino/material/ui-tour-service';
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 
 let testDbIdx = 0;
 
@@ -134,7 +134,7 @@ describe('Main', () => {
         {provide: STRIPE_PAYMENT_CONFIG, useValue: stripePaymentConfig},
         {provide: PANDINO_SERVICE_CONFIG, useValue: pandinoConfig},
         {provide: UI_TOUR_SERVICE_CONFIG, useValue: uiTourConfig},
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
     }).compileComponents();

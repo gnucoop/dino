@@ -57,7 +57,7 @@ import {
 } from '@dino/core/forms';
 import {OnlineLangManager} from '@dino/core/langs';
 import {OnlineUserDataManager} from '@dino/core/users';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {format} from 'date-fns';
 import {BehaviorSubject, Observable, Subscription, combineLatest, of as obsOf} from 'rxjs';
 import {

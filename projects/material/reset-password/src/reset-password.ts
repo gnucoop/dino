@@ -33,7 +33,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AuthError, AuthService, PasswordMatch, translatedValidationErrors} from '@dino/core/auth';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {map, startWith, switchMap, take, tap} from 'rxjs/operators';
-import {TranslocoService} from '@ngneat/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 
 /**
  * Component that allows the user to reset their password

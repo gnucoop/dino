@@ -20,12 +20,12 @@
  *
  */
 
-import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi, withXhr} from '@angular/common/http';
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from './data-service-config';
 
 @NgModule({
-  providers: [provideHttpClient(withInterceptorsFromDi())],
+  providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())],
 })
 export class DataModule {
   static forRoot(config: DataServiceConfig): ModuleWithProviders<DataModule> {
