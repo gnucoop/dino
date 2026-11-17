@@ -1,3 +1,13 @@
+<a name="18.1.4-sw.153"></a>
+# 18.1.4-sw.153 "visiting-guanaco" (2026-11-17)
+### Bug Fixes
+* **material/user-editor:** trigger on_user_data_creation with the local document ([d022407](https://github.com/gnucoop/dino/commit/d022407897772cb646debe71baaeb5baef040d5b))
+### Features
+* **material/create-form, edit-form:** save from the metrics step ([73ff724](https://github.com/gnucoop/dino/commit/73ff7241c3c93ade432c442226f4832ceb43b830))
+* **material/user-editor:** create users through the create_dino_user mutation ([44de127](https://github.com/gnucoop/dino/commit/44de127828d90ffbd1751ee1f5ab3a24bf837dbc))
+
+<!-- CHANGELOG SPLIT MARKER -->
+
 <a name="18.1.3-sw.152"></a>
 # 18.1.3-sw.152 "colorful-goldfish" (2026-11-10)
 ### Bug Fixes
