@@ -26,7 +26,8 @@ FROM nginx:alpine
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 # 2. Copiamo i file statici generati dal Builder.
-# Il builder ":browser" produce l'output direttamente in dist/dinoapp (senza sottocartella browser/).
+# The ":application" builder writes straight to dist/dinoapp, with no browser/ subfolder:
+# angular.json sets `outputPath.browser` to "".
 COPY --from=builder /app/dist/dinoapp /usr/share/nginx/html
 
 # 3. Copiamo lo script di iniezione nella cartella speciale di esecuzione automatica di Nginx,

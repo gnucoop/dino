@@ -10,7 +10,7 @@
       "prefix": "dino",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "project": "projects/core/ng-package.json"
           },
@@ -103,7 +103,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "project": "projects/material/ng-package.json"
           },
@@ -204,9 +204,9 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular/build:application",
           "options": {
-            "serviceWorker": true,
+            "serviceWorker": "projects/dinoapp/ngsw-config.json",
             "allowedCommonJsDependencies": [
               "chart.js",
               "crypto-js/aes",
@@ -219,12 +219,26 @@
               "graphql-ws",
               "jsbarcode",
               "uuid",
-              "xlsx"
+              "xlsx",
+              "buffer",
+              "dagre",
+              "date-fns",
+              "fetch-ponyfill",
+              "get-graphql-from-jsonschema",
+              "isomorphic-unfetch",
+              "leaflet",
+              "leaflet.markercluster",
+              "marked",
+              "papaparse",
+              "quill-delta",
+              "svg-pan-zoom"
             ],
-            "outputPath": "dist/dinoapp",
+            "outputPath": {
+              "base": "dist/dinoapp",
+              "browser": ""
+            },
             "index": "projects/dinoapp/src/index.html",
-            "main": "projects/dinoapp/src/main.ts",
-            "polyfills": "projects/dinoapp/src/polyfills.ts",
+            "polyfills": ["projects/dinoapp/src/polyfills.ts"],
             "tsConfig": "projects/dinoapp/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -250,7 +264,7 @@
               "includePaths": ["node_modules/"]
             },
             "scripts": [],
-            "ngswConfigPath": "projects/dinoapp/ngsw-config.json"
+            "browser": "projects/dinoapp/src/main.ts"
           },
           "configurations": {
             "production": {
@@ -329,9 +343,8 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
+              "outputHashing": "media",
               "extractLicenses": false,
               "sourceMap": {
                 "scripts": true,
@@ -342,9 +355,8 @@
               "namedChunks": true
             },
             "e2e": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
+              "outputHashing": "media",
               "extractLicenses": false,
               "sourceMap": {
                 "scripts": true,
@@ -386,7 +398,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "dinoapp:build:production"
@@ -401,7 +413,7 @@
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "@angular/build:extract-i18n",
           "options": {
             "buildTarget": "dinoapp:build"
           }
@@ -439,7 +451,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "project": "projects/dino-examples/ng-package.json"
           },
