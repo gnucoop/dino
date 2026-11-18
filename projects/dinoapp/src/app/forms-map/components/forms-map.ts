@@ -45,7 +45,10 @@ import {
 import {environment} from 'src/environments/environment';
 import {ActionsService} from 'src/app/actions.service';
 
-import * as L from 'leaflet';
+// The default import, not a namespace one: leaflet.markercluster adds `markerClusterGroup` to
+// the module's exports object (as `window.L`) after it is loaded, and esbuild's namespace of a
+// CommonJS module is a copy taken at import time, which never sees it.
+import L from 'leaflet';
 import 'leaflet.markercluster';
 
 L.Icon.Default.prototype.options.iconUrl = 'assets/icons/marker-icon.png';
