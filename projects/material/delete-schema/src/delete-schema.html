@@ -4,7 +4,7 @@
 </mat-dialog-content>
 <br />
 <mat-dialog-actions align="center">
-  <ng-container *ngIf="isDeletable|async ; else cancelTemplate">
+  @if (isDeletable|async) {
     <button
       class="dino-confirm-button"
       mat-raised-button
@@ -21,9 +21,7 @@
     >
       {{'No'|transloco}}
     </button>
-  </ng-container>
-
-  <ng-template #cancelTemplate>
+  } @else {
     <button
       class="dino-cancel-button"
       mat-raised-button
@@ -31,6 +29,6 @@
       (click)="confirmationResponse(false)"
     >
       {{'Close'|transloco}}
-    </button></ng-template
-  >
+    </button>
+  }
 </mat-dialog-actions>

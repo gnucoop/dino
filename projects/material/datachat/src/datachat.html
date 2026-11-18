@@ -1,10 +1,10 @@
 <ng-content select="[breadcrumbs]"></ng-content>
 
-<ng-container *ngIf="(noTokens|async) === false; else notokens">
-  <ng-container *ngIf="(noData|async) === false; else nodata">
+@if ((noTokens|async) === false) {
+  @if ((noData|async) === false) {
     <div class="dino-datachat-container">
-      <ng-container *ngIf="(isLoading|async) === false; else loading">
-        <ng-container *ngIf="!termsAccepted">
+      @if ((isLoading|async) === false) {
+        @if (!termsAccepted) {
           <div class="dino-gpt-terms-container">
             <ng-content select="[gptTerms]"></ng-content>
           </div>
@@ -14,175 +14,196 @@
               {{'Accept'|transloco}}
             </button>
           </div>
-        </ng-container>
+        }
 
-        <ng-container [formGroup]="apiKeyFormGroup" *ngIf="(apiKey|async) === null && termsAccepted">
-          <mat-form-field class="dino-apikey-field">
-            <mat-label>{{'Enter your DataChat API key'|transloco}}</mat-label>
-            <input [readonly]="(apiKey|async) !== null" #apiKeyInput matInput formControlName="apiKeyControl"
-              (keyup.enter)="sendAPIKey(apiKeyInput.value)" type="password" />
-            <button *ngIf="(isCommunicating|async) === false; else communicatingSpinner" mat-mini-fab matSuffix
-              color="accent" aria-label="Send API Key" class="dino-apikey-field-fab"
-              (click)="sendAPIKey(apiKeyInput.value)">
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
-
-            <ng-template #communicatingSpinner>
-              <mat-spinner matSuffix class="dino-communicating-spinner" color="accent" [strokeWidth]="4" [diameter]="32"
-                mode="indeterminate"></mat-spinner>
-            </ng-template>
-
-            <mat-error *ngIf="apiKeyFormGroup.get('apiKeyControl')?.hasError('required')">
-              API Key is <strong>required</strong>
-            </mat-error>
-            <mat-error *ngIf="apiKeyFormGroup.get('apiKeyControl')?.hasError('invalid')">
-              Invalid API Key
-            </mat-error>
-          </mat-form-field>
-        </ng-container>
-
-        <div class="dino-datachat-layout" *ngIf="(apiKey|async) !== null && termsAccepted">
-          <section class="dino-datachat-panel">
-            <header class="dino-datachat-panel-header">
-              <span class="dino-datachat-panel-title">
-                {{(activeConversation|async)?.title || ('New chat'|transloco)}}
-              </span>
-              <button
-                mat-icon-button
-                class="dino-datachat-sidebar-open"
-                *ngIf="conversationsSidebar && (sidebarCollapsed|async)"
-                [matTooltip]="'Chats'|transloco"
-                (click)="toggleSidebar()"
-              >
-                <mat-icon>chevron_left</mat-icon>
-              </button>
-            </header>
-
-            <div #chatHistory class="dino-chat-history-container">
-              <div class="dino-datachat-welcome" *ngIf="showWelcome && history.length === 0">
-                <h2 class="dino-datachat-welcome-title">
-                  <mat-icon color="primary">auto_awesome</mat-icon>
-                  <span>{{welcomeTitle ?? ('Ask your data'|transloco)}}</span>
-                </h2>
-                <p class="dino-datachat-welcome-subtitle">
-                  {{welcomeSubtitle ?? ('Ask a question in natural language about this form data'|transloco)}}
-                </p>
-                <div class="dino-datachat-starters">
-                  <button
-                    type="button"
-                    class="dino-datachat-starter"
-                    *ngFor="let question of starters"
-                    (click)="chat(question)"
-                  >
-                    {{question}}
-                  </button>
-                </div>
-              </div>
-
-              <dino-datachat-entry *ngFor="let qa of history" [qa]="qa" [bucketUrl]="bucketUrl"
-                (followUpClick)="chat($event)" (regenerateClick)="chat($event)"
-                (downloadClick)="downloadExport($event.url, $event.filename)"
-                (feedbackClick)="sendFeedback($event.logId, $event.isPositive, $event.question, $event.answer)" />
-              <p class="dino-datachat-preparing" *ngIf="preparingDataset|async">
-                {{'Preparing the data to analyze: with many records it can take a minute or more...'|transloco}}
-              </p>
-            </div>
-
-            <footer class="dino-chat-input-container" [formGroup]="chatInputFormGrop">
-              <mat-form-field appearance="fill" class="dino-chat-namespace-select" *ngIf="mode === 'completion'">
-                <mat-icon matPrefix [matTooltip]="'Namespace'|transloco">folder</mat-icon>
-                <mat-select #namespace (selectionChange)="selectNamespace($event)"
-                  [(value)]="currentNamespace"><mat-option *ngFor="let namespace of namespaces" [value]="namespace">
-                    {{namespace || 'default'}}
-                  </mat-option></mat-select></mat-form-field>
-              <mat-form-field class="dino-chat-text-input">
-                <textarea #chatPrompt matInput formControlName="chatInputControl" rows="1" cols="50"
-                  [placeholder]="'Write a question about the data...'|transloco" style="resize: none;"
-                  (keydown)="chatPromptText = chatPrompt.value"
-                  (keyup.enter)="sendPrompt(chatPrompt)"></textarea>
-              </mat-form-field>
-              <button mat-flat-button color="primary" class="dino-chat-send" [disabled]="isAnswering|async"
-                (click)="sendPrompt(chatPrompt)">
-                <mat-icon>send</mat-icon>
-                <span>{{'Send'|transloco}}</span>
-              </button>
-            </footer>
-          </section>
-
-          <aside
-            class="dino-datachat-conversations"
-            *ngIf="conversationsSidebar && (sidebarCollapsed|async) === false"
-          >
-            <header class="dino-datachat-conversations-header">
-              <span class="dino-datachat-conversations-title">{{'Chats'|transloco}}</span>
-              <button mat-icon-button [matTooltip]="'Close'|transloco" (click)="toggleSidebar()">
-                <mat-icon>chevron_right</mat-icon>
-              </button>
-            </header>
-
-            <button mat-flat-button color="primary" class="dino-datachat-new" [disabled]="isAnswering|async"
-              (click)="newConversation()">
-              <mat-icon>add</mat-icon>
-              <span>{{'New chat'|transloco}}</span>
-            </button>
-
-            <div class="dino-datachat-conversations-list">
-              <div
-                class="dino-datachat-conversation"
-                *ngFor="let conversation of conversations|async"
-                [class.dino-datachat-conversation-active]="conversation.id === (activeConversation|async)?.id"
-                (click)="openConversation(conversation)"
-              >
-                <div class="dino-datachat-conversation-info">
-                  <span class="dino-datachat-conversation-title">
-                    {{conversation.title || ('New chat'|transloco)}}
-                  </span>
-                  <span class="dino-datachat-conversation-date">
-                    {{conversation.updatedAt|dinoRelativeDate}}
-                  </span>
-                </div>
-                <button
-                  mat-icon-button
-                  class="dino-datachat-conversation-delete"
-                  [matTooltip]="'Delete chat'|transloco"
-                  (click)="deleteConversation(conversation, $event)"
-                >
-                  <mat-icon>delete</mat-icon>
+        @if ((apiKey|async) === null && termsAccepted) {
+          <ng-container [formGroup]="apiKeyFormGroup">
+            <mat-form-field class="dino-apikey-field">
+              <mat-label>{{'Enter your DataChat API key'|transloco}}</mat-label>
+              <input [readonly]="(apiKey|async) !== null" #apiKeyInput matInput formControlName="apiKeyControl"
+                (keyup.enter)="sendAPIKey(apiKeyInput.value)" type="password" />
+              @if ((isCommunicating|async) === false) {
+                <button mat-mini-fab matSuffix
+                  color="accent" aria-label="Send API Key" class="dino-apikey-field-fab"
+                  (click)="sendAPIKey(apiKeyInput.value)">
+                  <mat-icon>arrow_forward</mat-icon>
                 </button>
-              </div>
-            </div>
-          </aside>
-        </div>
-      </ng-container>
+              } @else {
+                <mat-spinner matSuffix class="dino-communicating-spinner" color="accent" [strokeWidth]="4" [diameter]="32"
+                  mode="indeterminate"></mat-spinner>
+              }
 
-      <ng-template #loading>
-        <div class="dino-loading">
-          <ng-container *ngIf="spinnerImagePath; else defaultspinner"><dino-loading-spinner
-              [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+              @if (apiKeyFormGroup.get('apiKeyControl')?.hasError('required')) {
+                <mat-error>
+                  API Key is <strong>required</strong>
+                </mat-error>
+              }
+              @if (apiKeyFormGroup.get('apiKeyControl')?.hasError('invalid')) {
+                <mat-error>
+                  Invalid API Key
+                </mat-error>
+              }
+            </mat-form-field>
           </ng-container>
-          <ng-template #defaultspinner><mat-spinner class="dino-component-load-spinner"
-              mode="indeterminate"></mat-spinner></ng-template>
+        }
+
+        @if ((apiKey|async) !== null && termsAccepted) {
+          <div class="dino-datachat-layout">
+            <section class="dino-datachat-panel">
+              <header class="dino-datachat-panel-header">
+                <span class="dino-datachat-panel-title">
+                  {{(activeConversation|async)?.title || ('New chat'|transloco)}}
+                </span>
+                @if (conversationsSidebar && (sidebarCollapsed|async)) {
+                  <button
+                    mat-icon-button
+                    class="dino-datachat-sidebar-open"
+                    [matTooltip]="'Chats'|transloco"
+                    (click)="toggleSidebar()"
+                  >
+                    <mat-icon>chevron_left</mat-icon>
+                  </button>
+                }
+              </header>
+
+              <div #chatHistory class="dino-chat-history-container">
+                @if (showWelcome && history.length === 0) {
+                  <div class="dino-datachat-welcome">
+                    <h2 class="dino-datachat-welcome-title">
+                      <mat-icon color="primary">auto_awesome</mat-icon>
+                      <span>{{welcomeTitle ?? ('Ask your data'|transloco)}}</span>
+                    </h2>
+                    <p class="dino-datachat-welcome-subtitle">
+                      {{welcomeSubtitle ?? ('Ask a question in natural language about this form data'|transloco)}}
+                    </p>
+                    <div class="dino-datachat-starters">
+                      @for (question of starters; track $index) {
+                        <button
+                          type="button"
+                          class="dino-datachat-starter"
+                          (click)="chat(question)"
+                        >
+                          {{question}}
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+
+                @for (qa of history; track qa) {
+                  <dino-datachat-entry [qa]="qa" [bucketUrl]="bucketUrl"
+                    (followUpClick)="chat($event)" (regenerateClick)="chat($event)"
+                    (downloadClick)="downloadExport($event.url, $event.filename)"
+                    (feedbackClick)="sendFeedback($event.logId, $event.isPositive, $event.question, $event.answer)" />
+                }
+                @if (preparingDataset|async) {
+                  <p class="dino-datachat-preparing">
+                    {{'Preparing the data to analyze: with many records it can take a minute or more...'|transloco}}
+                  </p>
+                }
+              </div>
+
+              <footer class="dino-chat-input-container" [formGroup]="chatInputFormGrop">
+                @if (mode === 'completion') {
+                  <mat-form-field appearance="fill" class="dino-chat-namespace-select">
+                    <mat-icon matPrefix [matTooltip]="'Namespace'|transloco">folder</mat-icon>
+                    <mat-select #namespace (selectionChange)="selectNamespace($event)"
+                      [(value)]="currentNamespace">
+                      @for (namespace of namespaces; track namespace) {
+                        <mat-option [value]="namespace">
+                          {{namespace || 'default'}}
+                        </mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                }
+                <mat-form-field class="dino-chat-text-input">
+                  <textarea #chatPrompt matInput formControlName="chatInputControl" rows="1" cols="50"
+                    [placeholder]="'Write a question about the data...'|transloco" style="resize: none;"
+                    (keydown)="chatPromptText = chatPrompt.value"
+                    (keyup.enter)="sendPrompt(chatPrompt)"></textarea>
+                </mat-form-field>
+                <button mat-flat-button color="primary" class="dino-chat-send" [disabled]="isAnswering|async"
+                  (click)="sendPrompt(chatPrompt)">
+                  <mat-icon>send</mat-icon>
+                  <span>{{'Send'|transloco}}</span>
+                </button>
+              </footer>
+            </section>
+
+            @if (conversationsSidebar && (sidebarCollapsed|async) === false) {
+              <aside class="dino-datachat-conversations">
+                <header class="dino-datachat-conversations-header">
+                  <span class="dino-datachat-conversations-title">{{'Chats'|transloco}}</span>
+                  <button mat-icon-button [matTooltip]="'Close'|transloco" (click)="toggleSidebar()">
+                    <mat-icon>chevron_right</mat-icon>
+                  </button>
+                </header>
+
+                <button mat-flat-button color="primary" class="dino-datachat-new" [disabled]="isAnswering|async"
+                  (click)="newConversation()">
+                  <mat-icon>add</mat-icon>
+                  <span>{{'New chat'|transloco}}</span>
+                </button>
+
+                <div class="dino-datachat-conversations-list">
+                  @for (conversation of conversations|async; track conversation.id) {
+                    <div
+                      class="dino-datachat-conversation"
+                      [class.dino-datachat-conversation-active]="conversation.id === (activeConversation|async)?.id"
+                      (click)="openConversation(conversation)"
+                    >
+                      <div class="dino-datachat-conversation-info">
+                        <span class="dino-datachat-conversation-title">
+                          {{conversation.title || ('New chat'|transloco)}}
+                        </span>
+                        <span class="dino-datachat-conversation-date">
+                          {{conversation.updatedAt|dinoRelativeDate}}
+                        </span>
+                      </div>
+                      <button
+                        mat-icon-button
+                        class="dino-datachat-conversation-delete"
+                        [matTooltip]="'Delete chat'|transloco"
+                        (click)="deleteConversation(conversation, $event)"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  }
+                </div>
+              </aside>
+            }
+          </div>
+        }
+      } @else {
+        <div class="dino-loading">
+          @if (spinnerImagePath) {
+            <dino-loading-spinner
+              [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+          } @else {
+            <mat-spinner class="dino-component-load-spinner"
+              mode="indeterminate"></mat-spinner>
+          }
         </div>
-      </ng-template>
+      }
     </div>
-  </ng-container>
-</ng-container>
-
-<ng-template #nodata>
-  <div class="dino-no-items-message">
-    <h1>{{'No Forms were found'|transloco}}</h1>
-  </div>
-</ng-template>
-
-<ng-template #notokens>
+  } @else {
+    <div class="dino-no-items-message">
+      <h1>{{'No Forms were found'|transloco}}</h1>
+    </div>
+  }
+} @else {
   <div class="dino-no-tokens-message">
     <h1 class="dino-no-tokens-message-row">
       {{'Sorry, you don\'t have enough Credits!'|transloco}}
     </h1>
     <br />
-    <h1 *ngIf="config" class="dino-no-tokens-message-row dino-no-tokens-message-row-buy" (click)="openPayment()">
-      {{'You can purchase more Credits here'|transloco}}
-      <mat-icon class="dino-no-tokens-icon" color="primary">smart_toy</mat-icon>
-    </h1>
+    @if (config) {
+      <h1 class="dino-no-tokens-message-row dino-no-tokens-message-row-buy" (click)="openPayment()">
+        {{'You can purchase more Credits here'|transloco}}
+        <mat-icon class="dino-no-tokens-icon" color="primary">smart_toy</mat-icon>
+      </h1>
+    }
   </div>
-</ng-template>
+}

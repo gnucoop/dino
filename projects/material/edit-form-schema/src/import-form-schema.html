@@ -1,4 +1,4 @@
-<ng-container *ngIf="importForm|async as importForm">
+@if (importForm|async; as importForm) {
   <div class="dino-import">
     <!-- Header -->
     <div class="dino-import-head">
@@ -26,7 +26,9 @@
               <mat-icon>description</mat-icon>{{'Choose file'|transloco}}
             </a>
           </label>
-          <div class="dino-import-xls-status" *ngIf="convStatus"><b>{{convStatus}}</b></div>
+          @if (convStatus) {
+            <div class="dino-import-xls-status"><b>{{convStatus}}</b></div>
+          }
           <div class="dino-import-xls-note">
             {{'Required sheets: survey, choices, settings'|transloco}}
           </div>
@@ -41,4 +43,4 @@
       </div>
     </div>
   </div>
-</ng-container>
+}

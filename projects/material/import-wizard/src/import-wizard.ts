@@ -382,15 +382,6 @@ export class ImportWizard implements OnDestroy, ErrorStateMatcher {
   }
 
   /**
-   * Track the field options by value so Angular reuses the mat-option nodes.
-   * @param _index The option index
-   * @param field The field option
-   */
-  trackByField(_index: number, field: string): string {
-    return field;
-  }
-
-  /**
    * Update the repetition order of a column mapped to a repeatable field.
    * @param mapping The column mapping
    * @param event The number input change event

@@ -1,6 +1,6 @@
 <ng-content select="[breadcrumbs]"></ng-content>
-<ng-container *ngIf="(reportSchema|async)">
-  <ng-container *ngIf="metricsService.hasActiveMetrics|async">
+@if ((reportSchema|async)) {
+  @if (metricsService.hasActiveMetrics|async) {
     <mat-stepper labelPosition="bottom" #stepper linear>
       <ng-template matStepperIcon="done">
         <mat-icon>article</mat-icon>
@@ -61,8 +61,8 @@
         </div>
       </mat-step>
     </mat-stepper>
-  </ng-container>
-  <ng-container *ngIf="(metricsService.hasActiveMetrics|async) === false">
+  }
+  @if ((metricsService.hasActiveMetrics|async) === false) {
     <div class="dino-create-report-step-container">
       <form [formGroup]="dateIntervalForm" autocomplete="off">
         <mat-form-field appearance="fill">
@@ -79,7 +79,7 @@
         </mat-form-field>
       </form>
     </div>
-  </ng-container>
+  }
 
   <dino-floating-button
     buttonIcon="save"
@@ -88,4 +88,4 @@
     [buttonDisabled]="(isFormMetricsSelectorValid|async) === false || !dateIntervalForm.valid"
     (click)="saveReport()"
   ></dino-floating-button>
-</ng-container>
+}

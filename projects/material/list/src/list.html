@@ -1,25 +1,24 @@
 <div class="dino-list-toolbar">
   <ng-content select="[breadcrumbs]"></ng-content>
-  <ng-container *ngIf="dataSource">
+  @if (dataSource) {
     <div class="dino-list-count">
       <mat-icon color="primary">numbers</mat-icon>
       <span>{{'Items found'|transloco}}: </span>
-      <ng-container *ngIf="(dataSource.dataResultsCount|async) !== null; else loadingCountTemplate"
-        ><span><b>{{dataSource.dataResultsCount|async}}</b></span></ng-container
-      >
-      <ng-template #loadingCountTemplate
-        ><mat-icon class="dino-loading-count-icon">data_usage</mat-icon></ng-template
-      >
+      @if ((dataSource.dataResultsCount|async) !== null) {
+        <span><b>{{dataSource.dataResultsCount|async}}</b></span>
+      } @else {
+        <mat-icon class="dino-loading-count-icon">data_usage</mat-icon>
+      }
     </div>
     <mat-paginator
       #pag
       [length]="dataSource.dataResultsCount|async"
       [showFirstLastButtons]="true"
     ></mat-paginator>
-  </ng-container>
+  }
 </div>
 <ng-content select="[filters]"></ng-content>
-<ng-container *ngIf="expandable && displayExpandAllBtn">
+@if (expandable && displayExpandAllBtn) {
   <button
     mat-icon-button
     color="primary"
@@ -29,7 +28,7 @@
   >
     <mat-icon>{{(expandAllRows|async) ? 'unfold_less' : 'unfold_more' }}</mat-icon>
   </button>
-</ng-container>
+}
 
 <ng-template #tableTemplate let-ctx="ctx">
   <mat-table
@@ -48,7 +47,7 @@
           *matHeaderCellDef
           [ngClass]="isAggregationList ? 'dino-aggregation' : null"
         >
-          <ng-container *ngIf="bulkActions">
+          @if (bulkActions) {
             <mat-checkbox
               class="dino-row-actions"
               (change)="$event ? masterToggle() : null"
@@ -57,18 +56,19 @@
               [aria-label]="checkboxLabel()"
             >
             </mat-checkbox>
-          </ng-container>
+          }
         </mat-header-cell>
         <mat-cell *matCellDef="let row" [ngClass]="isAggregationList ? 'dino-aggregation' : null">
-          <mat-checkbox
-            *ngIf="bulkActions"
-            class="dino-row-actions"
-            (click)="$event.stopPropagation()"
-            (change)="$event ? selection.toggle(row) : null"
-            [checked]="selection.isSelected(row)"
-            [aria-label]="checkboxLabel(row)"
-          >
-          </mat-checkbox>
+          @if (bulkActions) {
+            <mat-checkbox
+              class="dino-row-actions"
+              (click)="$event.stopPropagation()"
+              (change)="$event ? selection.toggle(row) : null"
+              [checked]="selection.isSelected(row)"
+              [aria-label]="checkboxLabel(row)"
+            >
+            </mat-checkbox>
+          }
           <!--
             The status of the row - invalid, files still to go out - rides on its
             left edge instead of taking a place beside the checkbox: a column has
@@ -76,22 +76,23 @@
             empty space on the rows that have nothing to say.
           -->
           <span class="dino-row-status">
-            <mat-icon
-              color="warn"
-              class="dino-invalid-form-icon"
-              *ngIf="isInvalidRow(row)"
-              [matTooltip]="'This form might not be valid. Please review and fill its data'|transloco"
-              [matTooltipPosition]="'right'"
-              >warning</mat-icon
-            >
+            @if (isInvalidRow(row)) {
+              <mat-icon
+                color="warn"
+                class="dino-invalid-form-icon"
+                [matTooltip]="'This form might not be valid. Please review and fill its data'|transloco"
+                [matTooltipPosition]="'right'"
+                >warning</mat-icon
+              >
+            }
 
-            <ng-container *ngIf="hasFilesToUploadRow(row)">
-              <mat-spinner
-                *ngIf="isUploadingFilesRow(row); else uploadFilesIcon"
-                diameter="16"
-                class="dino-upload-files-spinner"
-              ></mat-spinner>
-              <ng-template #uploadFilesIcon>
+            @if (hasFilesToUploadRow(row)) {
+              @if (isUploadingFilesRow(row)) {
+                <mat-spinner
+                  diameter="16"
+                  class="dino-upload-files-spinner"
+                ></mat-spinner>
+              } @else {
                 <mat-icon
                   color="accent"
                   class="dino-upload-files-icon"
@@ -101,154 +102,157 @@
                   (click)="isOnline && $event.stopPropagation(); isOnline && uploadFilesRow(row)"
                   >cloud_upload</mat-icon
                 >
-              </ng-template>
-            </ng-container>
+              }
+            }
           </span>
         </mat-cell>
       </ng-container>
     </ng-container>
 
     <!-- Row Item Columns -->
-    <ng-container
-      *ngFor="let header of ctx.headers|async;"
-      [matColumnDef]="header.column.toString()"
-    >
-      <ng-container *ngIf="header.sortable; else notSortable">
-        <mat-header-cell
-          cdkDrag
-          *matHeaderCellDef
-          [mat-sort-header]="header.column"
-          [dinoColumnResize]="header.column.toString()"
-          (columnResize)="resizeColumn($event)"
-          (columnResizeEnd)="resizeColumnEnd($event)"
-        >
-          <ng-container
-            *ngTemplateOutlet="cellTemplatesMap[header.label] ?
-        cellTemplatesMap[header.label] : defaultHeaderCellTemplate;
-        context: {$implicit: header.label|transloco}"
-          >
-          </ng-container>
-        </mat-header-cell>
-      </ng-container>
-
-      <ng-template #notSortable>
-        <mat-header-cell
-          cdkDrag
-          *matHeaderCellDef
-          [dinoColumnResize]="header.column.toString()"
-          (columnResize)="resizeColumn($event)"
-          (columnResizeEnd)="resizeColumnEnd($event)"
-        >
-          <ng-container
-            *ngTemplateOutlet="cellTemplatesMap[header.label] ?
-        cellTemplatesMap[header.label] : defaultHeaderCellTemplate;"
-          >
-          </ng-container>
-        </mat-header-cell>
-      </ng-template>
-
-      <ng-template #defaultHeaderCellTemplate>
-        {{ header.label|transloco }}
-        <mat-icon class="dino-header-icon" *ngIf="header.icon && (breakpointObserver.large|async)"
-          >{{header.icon}}</mat-icon
-        ></ng-template
+    @for (header of $any(ctx.headers|async); track header) {
+      <ng-container
+        [matColumnDef]="header.column.toString()"
       >
-
-      <mat-cell *matCellDef="let element;">
-        <ng-container
-          *ngTemplateOutlet="header.populateWith ?
-          externalRefCellTemplate :
-          (header.repeatingSlideColumn ?
-          repeatingCellTemplate :
-          singleCellTemplate);"
-        >
-        </ng-container>
-        <ng-template #externalRefCellTemplate>
-          <ng-container *ngIf="(element[getRef(header)])|async as elemRef">
-            <ng-container *ngIf="getPopulatedRef( elemRef, header.populateWith) as elem">
-              <ng-container *ngIf="elem|dinoListCellIsStorageImageUrl; else defaultExternalRef">
-                <mat-icon (click)="previewImage($event, elem)" class="dino-file-cell-icon"
-                  >photo_camera</mat-icon
-                ></ng-container
-              >
-
-              <ng-template #defaultExternalRef>
-                <span [ngStyle]="{'color': getPopulatedRef( elemRef, 'color') ?? 'inherit'}"
-                  >{{ elem|dinoDateValue }}</span
-                ></ng-template
-              >
-            </ng-container>
-          </ng-container>
-          <mat-icon
-            class="dino-edit-status-icon"
-            [ngClass]="bds.isTouch()  ? 'dino-edit-status-icon-touch' : null"
-            [tourAnchor]="uiServiceConfig ? 'edit-status-icon' : ''"
-            *ngIf="
-            (hasAllowedStatus(element)|async) === true &&
-            header.column === 'form_status_ref_id' &&
-            header.isEditable &&
-            header.isEditable(element) &&
-            header.editMethod &&
-            element.data &&
-            !isInvalidRow(element)"
-            mat-list-icon
-            (click)="$event.stopPropagation();header.editMethod(element);"
-            >edit_note
-          </mat-icon>
-          <mat-progress-bar
-            *ngIf="header.column === 'form_status_ref_id' && element.form_status_ref_id !== null && showStatusProgressBar"
-            class="dino-status-bar"
-            mode="determinate"
-            [value]="getStatusProgress(element.form_status)|async"
-          ></mat-progress-bar>
-        </ng-template>
-        <ng-template #repeatingCellTemplate>
-          <mat-tab-group #tabGroup [attr.tabgroupid]="header.repeatingSlideName + '_' + element.id">
-            <mat-tab
-              *ngFor="let item of getRepeatingSlideCellContent(element.data, header, dataSource?.choices); let idx = index;"
-            >
-              <mat-icon
-                *ngIf="idx > 0"
-                class="dino-repeating-slide-icon"
-                (click)="moveRepeatingSlideTab(tabGroup, idx-1); $event.stopPropagation();"
-                >navigate_before</mat-icon
-              >
-
-              <dino-list-cell
-                [item]="item|dinoDateValue"
-                [rowElement]="element"
-                [header]="header"
-                [previewMethod]="previewImage"
-                [dialog]="dialog"
-              />
-
-              <mat-icon
-                *ngIf="idx + 1 < getRepeatingSlideTabCount(tabGroup)"
-                class="dino-repeating-slide-icon"
-                (click)="moveRepeatingSlideTab(tabGroup, idx+1); $event.stopPropagation();"
-                >navigate_next</mat-icon
-              >
-            </mat-tab>
-          </mat-tab-group>
-        </ng-template>
-
-        <ng-template #singleCellTemplate
-          ><mat-icon *ngIf="header.column === 'text' && element.icon"
-            >{{element.icon}}</mat-icon
+        @if (header.sortable) {
+          <mat-header-cell
+            cdkDrag
+            *matHeaderCellDef
+            [mat-sort-header]="header.column"
+            [dinoColumnResize]="header.column.toString()"
+            (columnResize)="resizeColumn($event)"
+            (columnResizeEnd)="resizeColumnEnd($event)"
           >
-          <mat-icon *ngIf="header.column === 'text' && element.redirect_url">link</mat-icon>
+            <ng-container
+              *ngTemplateOutlet="cellTemplatesMap[header.label] ?
+          cellTemplatesMap[header.label] : defaultHeaderCellTemplate;
+          context: {$implicit: header.label|transloco}"
+            >
+            </ng-container>
+          </mat-header-cell>
+        } @else {
+          <mat-header-cell
+            cdkDrag
+            *matHeaderCellDef
+            [dinoColumnResize]="header.column.toString()"
+            (columnResize)="resizeColumn($event)"
+            (columnResizeEnd)="resizeColumnEnd($event)"
+          >
+            <ng-container
+              *ngTemplateOutlet="cellTemplatesMap[header.label] ?
+          cellTemplatesMap[header.label] : defaultHeaderCellTemplate;"
+            >
+            </ng-container>
+          </mat-header-cell>
+        }
 
-          <dino-list-cell
-            [item]="element|dinoListCellValue:header:dataSource?.choices"
-            [rowElement]="element"
-            [header]="header"
-            [previewMethod]="previewImage"
-            [dialog]="dialog"
-            (booleanChangedEvt)="editQuickAction($event)"
-          />
+        <ng-template #defaultHeaderCellTemplate>
+          {{ header.label|transloco }}
+          @if (header.icon && (breakpointObserver.large|async)) {
+            <mat-icon class="dino-header-icon">{{header.icon}}</mat-icon>
+          }
         </ng-template>
-      </mat-cell>
-    </ng-container>
+
+        <mat-cell *matCellDef="let element;">
+          <ng-container
+            *ngTemplateOutlet="header.populateWith ?
+            externalRefCellTemplate :
+            (header.repeatingSlideColumn ?
+            repeatingCellTemplate :
+            singleCellTemplate);"
+          >
+          </ng-container>
+          <ng-template #externalRefCellTemplate>
+            @if ((element[getRef(header)])|async; as elemRef) {
+              @if (getPopulatedRef( elemRef, header.populateWith); as elem) {
+                @if (elem|dinoListCellIsStorageImageUrl) {
+                  <mat-icon (click)="previewImage($event, elem)" class="dino-file-cell-icon"
+                    >photo_camera</mat-icon
+                  >
+                } @else {
+                  <span [ngStyle]="{'color': getPopulatedRef( elemRef, 'color') ?? 'inherit'}"
+                    >{{ elem|dinoDateValue }}</span
+                  >
+                }
+              }
+            }
+            @if (
+              (hasAllowedStatus(element)|async) === true &&
+              header.column === 'form_status_ref_id' &&
+              header.isEditable &&
+              header.isEditable(element) &&
+              header.editMethod &&
+              element.data &&
+              !isInvalidRow(element)) {
+              <mat-icon
+                class="dino-edit-status-icon"
+                [ngClass]="bds.isTouch()  ? 'dino-edit-status-icon-touch' : null"
+                [tourAnchor]="uiServiceConfig ? 'edit-status-icon' : ''"
+                mat-list-icon
+                (click)="$event.stopPropagation();header.editMethod(element);"
+                >edit_note
+              </mat-icon>
+            }
+            @if (header.column === 'form_status_ref_id' && element.form_status_ref_id !== null && showStatusProgressBar) {
+              <mat-progress-bar
+                class="dino-status-bar"
+                mode="determinate"
+                [value]="getStatusProgress(element.form_status)|async"
+              ></mat-progress-bar>
+            }
+          </ng-template>
+          <ng-template #repeatingCellTemplate>
+            <mat-tab-group #tabGroup [attr.tabgroupid]="header.repeatingSlideName + '_' + element.id">
+              @for (item of getRepeatingSlideCellContent(element.data, header, dataSource?.choices); track $index; let idx = $index) {
+                <mat-tab>
+                  @if (idx > 0) {
+                    <mat-icon
+                      class="dino-repeating-slide-icon"
+                      (click)="moveRepeatingSlideTab(tabGroup, idx-1); $event.stopPropagation();"
+                      >navigate_before</mat-icon
+                    >
+                  }
+
+                  <dino-list-cell
+                    [item]="item|dinoDateValue"
+                    [rowElement]="element"
+                    [header]="header"
+                    [previewMethod]="previewImage"
+                    [dialog]="dialog"
+                  />
+
+                  @if (idx + 1 < getRepeatingSlideTabCount(tabGroup)) {
+                    <mat-icon
+                      class="dino-repeating-slide-icon"
+                      (click)="moveRepeatingSlideTab(tabGroup, idx+1); $event.stopPropagation();"
+                      >navigate_next</mat-icon
+                    >
+                  }
+                </mat-tab>
+              }
+            </mat-tab-group>
+          </ng-template>
+
+          <ng-template #singleCellTemplate>
+            @if (header.column === 'text' && element.icon) {
+              <mat-icon>{{element.icon}}</mat-icon>
+            }
+            @if (header.column === 'text' && element.redirect_url) {
+              <mat-icon>link</mat-icon>
+            }
+
+            <dino-list-cell
+              [item]="element|dinoListCellValue:header:dataSource?.choices"
+              [rowElement]="element"
+              [header]="header"
+              [previewMethod]="previewImage"
+              [dialog]="dialog"
+              (booleanChangedEvt)="editQuickAction($event)"
+            />
+          </ng-template>
+        </mat-cell>
+      </ng-container>
+    }
 
     <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
     <ng-container matColumnDef="expandedDetail">
@@ -258,35 +262,37 @@
         [@detailExpand]="isRowExpanded(row)"
         class="dino-expanded-cell"
       >
-        <div class="dino-inner-table-container" *ngIf="isRowExpanded(row) && !ctx.isDetails">
-          <ng-container *ngIf="expandedRowsData[row.id]?.data?.length">
-            <mat-form-field
-              class="dino-details-search"
-              floatLabel="always"
-              (click)="$event.stopPropagation()"
-            >
-              <input
-                matInput
-                (keyup)="detailsKeywordsFilter($event, expandedRowsData[row.id])"
-                [placeholder]="'search by keyword'"
-              />
-              <mat-icon color="primary" matSuffix>search</mat-icon>
-            </mat-form-field>
-            <ng-container
-              *ngTemplateOutlet="tableTemplate; context: {ctx: {
-                            showCheckBox: detailsListContext?.showCheckBox,
-                            showPaginator: detailsListContext?.showPaginator,
-                            showColumnsSelector: detailsListContext?.showColumnsSelector,
-                            dataSource: expandedRowsData[row.id],
-                            headers: detailsListContext?.headers,
-                            displayedColumns: detailsListContext?.displayedColumns,
-                            listRowActions: detailsListContext?.listRowActions,
-                            isDetails: true
-                        }}"
-            >
-            </ng-container>
-          </ng-container>
-        </div>
+        @if (isRowExpanded(row) && !ctx.isDetails) {
+          <div class="dino-inner-table-container">
+            @if (expandedRowsData[row.id]?.data?.length) {
+              <mat-form-field
+                class="dino-details-search"
+                floatLabel="always"
+                (click)="$event.stopPropagation()"
+              >
+                <input
+                  matInput
+                  (keyup)="detailsKeywordsFilter($event, expandedRowsData[row.id])"
+                  [placeholder]="'search by keyword'"
+                />
+                <mat-icon color="primary" matSuffix>search</mat-icon>
+              </mat-form-field>
+              <ng-container
+                *ngTemplateOutlet="tableTemplate; context: {ctx: {
+                              showCheckBox: detailsListContext?.showCheckBox,
+                              showPaginator: detailsListContext?.showPaginator,
+                              showColumnsSelector: detailsListContext?.showColumnsSelector,
+                              dataSource: expandedRowsData[row.id],
+                              headers: detailsListContext?.headers,
+                              displayedColumns: detailsListContext?.displayedColumns,
+                              listRowActions: detailsListContext?.listRowActions,
+                              isDetails: true
+                          }}"
+              >
+              </ng-container>
+            }
+          </div>
+        }
       </mat-cell>
     </ng-container>
 
@@ -296,18 +302,19 @@
       </mat-header-cell>
       <mat-cell *matCellDef="let row" class="dino-row-actions">
         <div class="dino-row-actions-container">
-          <ng-container *ngIf="ctx.listRowActions|async|dinoAsListCellActions as actions">
+          @if (ctx.listRowActions|async|dinoAsListCellActions; as actions) {
             <!-- The main actions only: every action of a row is available from the
                  action row above, by selecting it. -->
-            <mat-icon
-              class="dino-action-icon"
-              *ngFor="let action of getMainActions(actions)"
-              mat-list-icon
-              [matTooltip]="(action.actionType[0].toUpperCase() + action.actionType.slice(1).toLowerCase())|transloco"
-              (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
-              >{{action.matIcon}}
-            </mat-icon>
-          </ng-container>
+            @for (action of getMainActions(actions); track action.actionType) {
+              <mat-icon
+                class="dino-action-icon"
+                mat-list-icon
+                [matTooltip]="(action.actionType[0].toUpperCase() + action.actionType.slice(1).toLowerCase())|transloco"
+                (click)="$event.stopPropagation(); actionOnItems(row, action, ctx.isDetails);"
+                >{{action.matIcon}}
+              </mat-icon>
+            }
+          }
         </div>
       </mat-cell>
     </ng-container>
@@ -327,7 +334,7 @@
     >
     </mat-row>
 
-    <ng-container *ngIf="expandable">
+    @if (expandable) {
       <mat-row
         *matRowDef="let row; columns: ['expandedDetail']"
         class="dino-row-details"
@@ -335,94 +342,105 @@
         [class.dino-details-row]="ctx.isDetails"
       >
       </mat-row>
-    </ng-container>
+    }
   </mat-table>
 </ng-template>
 
-<div class="dino-selection-actions" *ngIf="dataSource">
-  <div class="dino-selection-actions-left" *ngIf="selectionActionsAvailable">
-    <span class="dino-selection-hint" *ngIf="!selection.hasValue()">
-      <mat-icon>check_box_outline_blank</mat-icon>
-      {{'Select one or more rows to see the available actions'|transloco}}
-    </span>
+@if (dataSource) {
+  <div class="dino-selection-actions">
+    @if (selectionActionsAvailable) {
+      <div class="dino-selection-actions-left">
+        @if (!selection.hasValue()) {
+          <span class="dino-selection-hint">
+            <mat-icon>check_box_outline_blank</mat-icon>
+            {{'Select one or more rows to see the available actions'|transloco}}
+          </span>
+        }
 
-    <ng-container *ngIf="selection.hasValue()">
-    <button
-      mat-button
-      class="dino-selection-clear"
-      (click)="clearSelection()"
-      [attr.aria-label]="'Clear selection'|transloco"
-    >
-      <mat-icon>close</mat-icon>
-      <span><b>{{selection.selected.length}}</b>&nbsp;{{'selected'|transloco}}</span>
-    </button>
+        @if (selection.hasValue()) {
+          <button
+            mat-button
+            class="dino-selection-clear"
+            (click)="clearSelection()"
+            [attr.aria-label]="'Clear selection'|transloco"
+          >
+            <mat-icon>close</mat-icon>
+            <span><b>{{selection.selected.length}}</b>&nbsp;{{'selected'|transloco}}</span>
+          </button>
 
-    <ng-container *ngIf="selection.selected.length === 1; else bulkActionsTpl">
-      <button
-        *ngFor="let action of listRowActions; trackBy: trackByActionType"
-        mat-button
-        class="dino-selection-action"
-        [color]="action.actionType === 'delete' ? 'warn' : 'primary'"
-        [attr.aria-label]="(action.actionType[0].toUpperCase() + action.actionType.slice(1).toLowerCase())|transloco"
-        (click)="actionOnItems(selection.selected[0], action, false)"
-      >
-        <mat-icon>{{action.matIcon}}</mat-icon>
-        <span class="dino-action-label">{{(action.actionType[0].toUpperCase() + action.actionType.slice(1).toLowerCase())|transloco}}</span>
-      </button>
-    </ng-container>
+          @if (selection.selected.length === 1) {
+            <!-- The page recomputes the actions into a new array: tracking them by type keeps their
+                 buttons, so a dialog opened from one of them can give the focus back when it closes. -->
+            @for (action of listRowActions; track action.actionType) {
+              <button
+                mat-button
+                class="dino-selection-action"
+                [color]="action.actionType === 'delete' ? 'warn' : 'primary'"
+                [attr.aria-label]="(action.actionType[0].toUpperCase() + action.actionType.slice(1).toLowerCase())|transloco"
+                (click)="actionOnItems(selection.selected[0], action, false)"
+              >
+                <mat-icon>{{action.matIcon}}</mat-icon>
+                <span class="dino-action-label">{{(action.actionType[0].toUpperCase() + action.actionType.slice(1).toLowerCase())|transloco}}</span>
+              </button>
+            }
+          } @else {
+            <!-- More than one row selected, which only a list with bulk actions allows:
+                 what can be performed on them all. -->
+            @if (bulkActionsAvailable?.includes('delete')) {
+              <button
+                mat-stroked-button
+                color="warn"
+                class="dino-selection-bulk"
+                (click)="actionOnItems(selection.selected, {actionType: 'delete', matIcon: 'delete', askConfirm: true}, false)"
+              >
+                <mat-icon>delete</mat-icon>
+                <span>{{'Delete'|transloco}}</span>
+              </button>
+            }
+            @if (bulkActionsAvailable?.includes('deleteWithCheck')) {
+              <button
+                mat-stroked-button
+                color="warn"
+                class="dino-selection-bulk"
+                (click)="actionOnItemsDeleteWithCheck(selection.selected, false)"
+              >
+                <mat-icon>delete</mat-icon>
+                <span>{{'Delete'|transloco}}</span>
+              </button>
+            }
+            @if (bulkActionsAvailable?.includes('bulkFormEdit')) {
+              <button
+                mat-stroked-button
+                color="primary"
+                class="dino-selection-bulk"
+                (click)="actionOnItems(selection.selected, {actionType: 'bulkFormEdit', matIcon: 'edit_note', askConfirm: false}, false)"
+              >
+                <mat-icon>edit_note</mat-icon>
+                <span>{{'Edit'|transloco}}</span>
+              </button>
+            }
+          }
+        }
+      </div>
+    }
 
-    <!-- More than one row selected, which only a list with bulk actions allows:
-         what can be performed on them all. -->
-    <ng-template #bulkActionsTpl>
-      <button
-        *ngIf="bulkActionsAvailable?.includes('delete')"
-        mat-stroked-button
-        color="warn"
-        class="dino-selection-bulk"
-        (click)="actionOnItems(selection.selected, {actionType: 'delete', matIcon: 'delete', askConfirm: true}, false)"
-      >
-        <mat-icon>delete</mat-icon>
-        <span>{{'Delete'|transloco}}</span>
-      </button>
-      <button
-        *ngIf="bulkActionsAvailable?.includes('deleteWithCheck')"
-        mat-stroked-button
-        color="warn"
-        class="dino-selection-bulk"
-        (click)="actionOnItemsDeleteWithCheck(selection.selected, false)"
-      >
-        <mat-icon>delete</mat-icon>
-        <span>{{'Delete'|transloco}}</span>
-      </button>
-      <button
-        *ngIf="bulkActionsAvailable?.includes('bulkFormEdit')"
-        mat-stroked-button
-        color="primary"
-        class="dino-selection-bulk"
-        (click)="actionOnItems(selection.selected, {actionType: 'bulkFormEdit', matIcon: 'edit_note', askConfirm: false}, false)"
-      >
-        <mat-icon>edit_note</mat-icon>
-        <span>{{'Edit'|transloco}}</span>
-      </button>
-    </ng-template>
-    </ng-container>
+    <div class="dino-selection-actions-right">
+      @if (showColumnsSelector !== false) {
+        <button
+          #columns_btn
+          mat-stroked-button
+          class="dino-columns-btn"
+          [matTooltip]="'Customize the columns'|transloco"
+          aria-label="Customize table columns"
+          (click)="openColumnsSelectorDialog()"
+        >
+          <mat-icon>view_week</mat-icon>
+          <span>{{'Columns'|transloco}} {{columnsSelectedLabel}}</span>
+        </button>
+      }
+    </div>
   </div>
-
-  <div class="dino-selection-actions-right">
-    <button
-      #columns_btn
-      mat-stroked-button
-      class="dino-columns-btn"
-      [matTooltip]="'Customize the columns'|transloco"
-      aria-label="Customize table columns"
-      *ngIf="showColumnsSelector !== false"
-      (click)="openColumnsSelectorDialog()"
-    >
-      <mat-icon>view_week</mat-icon>
-      <span>{{'Columns'|transloco}} {{columnsSelectedLabel}}</span>
-    </button>
-  </div>
-</div>
+}
 
 <div class="dino-table-container" [ngClass]="bds.isTouch() ? 'dino-table-container-touch' : null">
   <ng-container *ngTemplateOutlet="tableTemplate; context: {ctx: mainListContext}"></ng-container>

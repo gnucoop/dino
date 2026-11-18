@@ -34,32 +34,36 @@
   </div>
 
   <div class="dino-langs-add-body">
-    <div class="dino-langs-add-body-head" *ngIf="state$|async as state">
-      <span class="dino-langs-eyebrow">
-        {{'Translations'|transloco|uppercase}}
-        <span class="dino-langs-optional">{{'optional'|transloco}}</span>
-      </span>
-      <span class="dino-langs-add-counter">
-        {{state.filled}} / {{state.total}} {{'filled'|transloco}}
-      </span>
-    </div>
+    @if (state$|async; as state) {
+      <div class="dino-langs-add-body-head">
+        <span class="dino-langs-eyebrow">
+          {{'Translations'|transloco|uppercase}}
+          <span class="dino-langs-optional">{{'optional'|transloco}}</span>
+        </span>
+        <span class="dino-langs-add-counter">
+          {{state.filled}} / {{state.total}} {{'filled'|transloco}}
+        </span>
+      </div>
+    }
 
-    <div class="dino-langs-add-row" *ngFor="let row of langs">
-      <span class="dino-langs-add-label">{{row.label}}</span>
-      <span class="dino-langs-chip" [class.dino-langs-chip-source]="row.source">{{row.lang}}</span>
-      <input
-        class="dino-langs-text-field"
-        type="text"
-        [formControlName]="row.lang"
-        [dir]="row.rtl ? 'rtl' : 'ltr'"
-        [attr.aria-label]="row.label"
-        [placeholder]="
-          row.source
-            ? ('Source text'|transloco)
-            : ('Translation {{language}}…'|transloco:{language: row.label})
-        "
-      />
-    </div>
+    @for (row of langs; track row.lang) {
+      <div class="dino-langs-add-row">
+        <span class="dino-langs-add-label">{{row.label}}</span>
+        <span class="dino-langs-chip" [class.dino-langs-chip-source]="row.source">{{row.lang}}</span>
+        <input
+          class="dino-langs-text-field"
+          type="text"
+          [formControlName]="row.lang"
+          [dir]="row.rtl ? 'rtl' : 'ltr'"
+          [attr.aria-label]="row.label"
+          [placeholder]="
+            row.source
+              ? ('Source text'|transloco)
+              : ('Translation {{language}}…'|transloco:{language: row.label})
+          "
+        />
+      </div>
+    }
   </div>
 </form>
 
@@ -68,13 +72,14 @@
     {{'The languages left empty stay marked as missing.'|transloco}}
   </span>
   <button type="button" class="dino-langs-btn" (click)="close()">{{'Undo'|transloco}}</button>
-  <button
-    type="button"
-    class="dino-langs-btn dino-langs-btn-primary"
-    *ngIf="state$|async as state"
-    [disabled]="!state.canSave"
-    (click)="save()"
-  >
-    {{'Save translation'|transloco}}
-  </button>
+  @if (state$|async; as state) {
+    <button
+      type="button"
+      class="dino-langs-btn dino-langs-btn-primary"
+      [disabled]="!state.canSave"
+      (click)="save()"
+    >
+      {{'Save translation'|transloco}}
+    </button>
+  }
 </div>

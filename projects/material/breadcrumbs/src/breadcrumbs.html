@@ -2,45 +2,44 @@
   <div class="dino-page-heading">
     <!-- Overline: the explicit override, else the ancestor crumbs, else the section group -->
     <div class="dino-page-overline">
-      <ng-container *ngIf="overlineOverride|async as override; else crumbsOverlineTemplate">
+      @if (overlineOverride|async; as override) {
         <span class="dino-page-overline-segment">{{override|transloco}}</span>
-      </ng-container>
-
-      <ng-template #crumbsOverlineTemplate>
-        <ng-container *ngIf="(parentCrumbs|async) as parents">
-          <ng-container *ngIf="parents.length > 0; else sectionGroupTemplate">
-            <ng-container *ngFor="let crumb of parents; last as isLast">
+      } @else {
+        @if (parentCrumbs|async; as parents) {
+          @if (parents.length > 0) {
+            @for (crumb of parents; track $index; let isLast = $last) {
               <span
                 class="dino-page-overline-segment"
                 [class.dino-breadcrumb-history-link]="crumb?.url"
                 (click)="crumbNavigate(crumb.url)"
                 >{{crumb?.label|transloco}}</span
               >
-              <span class="dino-page-overline-separator" *ngIf="!isLast" aria-hidden="true">/</span>
-            </ng-container>
-          </ng-container>
-        </ng-container>
-      </ng-template>
-
-      <ng-template #sectionGroupTemplate>
-        <span class="dino-page-overline-segment" *ngIf="sectionGroupLabel|async as groupLabel"
-          >{{groupLabel|transloco}}</span
-        >
-      </ng-template>
+              @if (!isLast) {
+                <span class="dino-page-overline-separator" aria-hidden="true">/</span>
+              }
+            }
+          } @else {
+            @if (sectionGroupLabel|async; as groupLabel) {
+              <span class="dino-page-overline-segment">{{groupLabel|transloco}}</span>
+            }
+          }
+        }
+      }
     </div>
 
     <!-- Title: the last crumb -->
-    <h1 class="dino-page-title" *ngIf="currentCrumb|async as crumb">
-      <ng-container *ngIf="crumb.icon">
-        <mat-icon *ngIf="!crumb.svgIcon; else svgIconTemplate" class="dino-page-title-icon"
-          >{{crumb.icon}}</mat-icon
-        >
-        <ng-template #svgIconTemplate>
-          <mat-icon class="dino-page-title-icon" svgIcon="{{crumb.svgIcon ?? ''}}"></mat-icon>
-        </ng-template>
-      </ng-container>
-      <span>{{crumb.label|transloco}}</span>
-    </h1>
+    @if (currentCrumb|async; as crumb) {
+      <h1 class="dino-page-title">
+        @if (crumb.icon) {
+          @if (!crumb.svgIcon) {
+            <mat-icon class="dino-page-title-icon">{{crumb.icon}}</mat-icon>
+          } @else {
+            <mat-icon class="dino-page-title-icon" svgIcon="{{crumb.svgIcon ?? ''}}"></mat-icon>
+          }
+        }
+        <span>{{crumb.label|transloco}}</span>
+      </h1>
+    }
   </div>
 
   <div class="dino-page-actions">

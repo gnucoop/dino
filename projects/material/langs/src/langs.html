@@ -19,7 +19,9 @@
   </div>
 </div>
 
-<dino-langs-loading *ngIf="loading$|async"></dino-langs-loading>
+@if (loading$|async) {
+  <dino-langs-loading></dino-langs-loading>
+}
 
 <div class="dino-langs-panes">
   <div class="dino-langs-pane-master">

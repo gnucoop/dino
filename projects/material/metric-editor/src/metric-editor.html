@@ -3,129 +3,134 @@
     {{data.metricAction|transloco}} {{metricName|transloco}}
   </p>
   <mat-dialog-content>
-    <form *ngIf="metricForm" [formGroup]="metricForm" autocomplete="off">
-      <ng-container *ngFor="let field of metricFormFields; let idx = index">
-        <ng-container *ngIf="!field.fieldName.includes('file'); else imageField">
-          <mat-form-field class="dino-metric-editor-field" appearance="fill">
-            <ng-template #autocompleteField>
-              <input
-                matInput
-                [formControlName]="field.fieldName"
-                [placeholder]="field.placeholder ?? ''"
-                [matAutocomplete]="auto"
-                [readonly]="data.metricAction === 'View'"
-                value="{{field.value}}"
-              />
-              <mat-autocomplete
-                #auto="matAutocomplete"
-                [autoActiveFirstOption]="true"
-                [displayWith]="displayParentName"
-              >
-                <mat-option *ngFor="let option of parentOptions | async" [value]="option">
-                  {{option.parent_name}}
-                </mat-option>
-              </mat-autocomplete>
-            </ng-template>
-            <ng-template #regularField>
-              <input
-                matInput
-                [formControlName]="field.fieldName"
-                [attr.maxlength]="field.fieldName === 'name' ? 100 : null"
-                [placeholder]="field.placeholder ?? ''"
-                [readonly]="data.metricAction === 'View'"
-                value="{{field.value}}"
-              />
-            </ng-template>
-            <ng-template #dateField>
-              <input
-                matInput
-                [formControlName]="field.fieldName"
-                [placeholder]="field.placeholder ?? ''"
-                [readonly]="data.metricAction === 'View'"
-                [matDatepicker]="picker"
-                value="{{field.value}}"
-              />
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </ng-template>
-            <ng-template #fileField>
-              <input
-                type="hidden"
-                matInput
-                [formControlName]="field.fieldName"
-                [readonly]="true"
-                value="{{field.value}}"
-              />
-            </ng-template>
-            <ng-container
-              *ngTemplateOutlet="field.fieldName === 'parent' ? autocompleteField : field.fieldName.includes('date') ? dateField : field.fieldName.includes('file') ? fileField : regularField"
-            ></ng-container>
-            <mat-error *ngIf="metricForm.controls[field.fieldName].hasError('required')">
-              Please enter a {{field.fieldName}}
-            </mat-error>
+    @if (metricForm) {
+      <form [formGroup]="metricForm" autocomplete="off">
+        @for (field of metricFormFields; track field.fieldName) {
+          @if (!field.fieldName.includes('file')) {
+            <mat-form-field class="dino-metric-editor-field" appearance="fill">
+              <ng-template #autocompleteField>
+                <input
+                  matInput
+                  [formControlName]="field.fieldName"
+                  [placeholder]="field.placeholder ?? ''"
+                  [matAutocomplete]="auto"
+                  [readonly]="data.metricAction === 'View'"
+                  value="{{field.value}}"
+                />
+                <mat-autocomplete
+                  #auto="matAutocomplete"
+                  [autoActiveFirstOption]="true"
+                  [displayWith]="displayParentName"
+                >
+                  @for (option of parentOptions | async; track option.parent_id) {
+                    <mat-option [value]="option">
+                      {{option.parent_name}}
+                    </mat-option>
+                  }
+                </mat-autocomplete>
+              </ng-template>
+              <ng-template #regularField>
+                <input
+                  matInput
+                  [formControlName]="field.fieldName"
+                  [attr.maxlength]="field.fieldName === 'name' ? 100 : null"
+                  [placeholder]="field.placeholder ?? ''"
+                  [readonly]="data.metricAction === 'View'"
+                  value="{{field.value}}"
+                />
+              </ng-template>
+              <ng-template #dateField>
+                <input
+                  matInput
+                  [formControlName]="field.fieldName"
+                  [placeholder]="field.placeholder ?? ''"
+                  [readonly]="data.metricAction === 'View'"
+                  [matDatepicker]="picker"
+                  value="{{field.value}}"
+                />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </ng-template>
+              <ng-template #fileField>
+                <input
+                  type="hidden"
+                  matInput
+                  [formControlName]="field.fieldName"
+                  [readonly]="true"
+                  value="{{field.value}}"
+                />
+              </ng-template>
+              <ng-container
+                *ngTemplateOutlet="field.fieldName === 'parent' ? autocompleteField : field.fieldName.includes('date') ? dateField : field.fieldName.includes('file') ? fileField : regularField"
+              ></ng-container>
+              @if (metricForm.controls[field.fieldName].hasError('required')) {
+                <mat-error>
+                  Please enter a {{field.fieldName}}
+                </mat-error>
+              }
 
-            <mat-error *ngIf="metricForm.controls[field.fieldName].hasError('incorrect')">
-              Please select a valid parent
-            </mat-error>
+              @if (metricForm.controls[field.fieldName].hasError('incorrect')) {
+                <mat-error>
+                  Please select a valid parent
+                </mat-error>
+              }
 
-            <mat-hint [class.dino-warning]="metricForm.controls[field.fieldName].warning"
-              >{{ metricForm.controls[field.fieldName].warning ?
-              (metricForm.controls[field.fieldName].warning|transloco) :
-              field.hint|transloco}}</mat-hint
-            >
-          </mat-form-field>
-        </ng-container>
-        <ng-template #imageField>
-          <div class="dino-metric-image-field">
-            <ng-container *ngIf="preview || field.value">
-              <div class="dino-metric-image-preview">
-                <p class="dino-metric-image-preview-title">{{'Image preview'|transloco}}</p>
-                <img alt="" class="dino-metric-image" [src]="preview || field.value" />
-              </div>
-            </ng-container>
-            <ng-container *ngIf="data.metricAction !== 'View'">
-              <mat-tab-group
-                class="dino-metric-image-tab-group"
-                (selectedTabChange)="imageCaptureComponent.reset()"
+              <mat-hint [class.dino-warning]="metricForm.controls[field.fieldName].warning"
+                >{{ metricForm.controls[field.fieldName].warning ?
+                (metricForm.controls[field.fieldName].warning|transloco) :
+                field.hint|transloco}}</mat-hint
               >
-                <mat-tab>
-                  <ng-template mat-tab-label>
-                    <mat-icon>upload_file</mat-icon>
-                  </ng-template>
-                  <div class="dino-metric-image-upload">
-                    <div class="dino-metric-image-tab-title">
-                      {{'Upload a jpg or png file'|transloco}}
+            </mat-form-field>
+          } @else {
+            <div class="dino-metric-image-field">
+              @if (preview || field.value) {
+                <div class="dino-metric-image-preview">
+                  <p class="dino-metric-image-preview-title">{{'Image preview'|transloco}}</p>
+                  <img alt="" class="dino-metric-image" [src]="preview || field.value" />
+                </div>
+              }
+              @if (data.metricAction !== 'View') {
+                <mat-tab-group
+                  class="dino-metric-image-tab-group"
+                  (selectedTabChange)="imageCaptureComponent.reset()"
+                >
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <mat-icon>upload_file</mat-icon>
+                    </ng-template>
+                    <div class="dino-metric-image-upload">
+                      <div class="dino-metric-image-tab-title">
+                        {{'Upload a jpg or png file'|transloco}}
+                      </div>
+                      <input
+                        type="file"
+                        id="metricFileInput"
+                        accept=".jpg,.jpeg,.png"
+                        (change)="onMetricFileSelected($event)"
+                        style="visibility: hidden; height: 1px"
+                      /><br />
+                      <label for="metricFileInput">
+                        <a color="primary" mat-raised-button>{{'Choose file'|transloco}}</a>
+                      </label>
                     </div>
-                    <input
-                      type="file"
-                      id="metricFileInput"
-                      accept=".jpg,.jpeg,.png"
-                      (change)="onMetricFileSelected($event)"
-                      style="visibility: hidden; height: 1px"
-                    /><br />
-                    <label for="metricFileInput">
-                      <a color="primary" mat-raised-button>{{'Choose file'|transloco}}</a>
-                    </label>
-                  </div>
-                </mat-tab>
-                <mat-tab>
-                  <ng-template mat-tab-label>
-                    <mat-icon>add_a_photo</mat-icon>
-                  </ng-template>
-                  <dino-image-capture
-                    #imageCaptureComponent
-                    (capturedImageEvt)="snapshotPreview($event)"
-                  ></dino-image-capture>
-                </mat-tab>
-              </mat-tab-group>
-            </ng-container>
-          </div>
-        </ng-template>
-      </ng-container>
-    </form>
-    <ng-container
-      *ngIf="data.metricAction !== 'View' || (data.metricAction === 'View' && attributes().controls.length)"
-    >
+                  </mat-tab>
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <mat-icon>add_a_photo</mat-icon>
+                    </ng-template>
+                    <dino-image-capture
+                      #imageCaptureComponent
+                      (capturedImageEvt)="snapshotPreview($event)"
+                    ></dino-image-capture>
+                  </mat-tab>
+                </mat-tab-group>
+              }
+            </div>
+          }
+        }
+      </form>
+    }
+    @if (data.metricAction !== 'View' || (data.metricAction === 'View' && attributes().controls.length)) {
       <mat-divider></mat-divider>
       <br />
       <form [formGroup]="metricDataForm" autocomplete="off">
@@ -133,7 +138,7 @@
           {{'Additional attributes'|transloco}}
         </p>
         <div formArrayName="attributes" class="dino-additional-attributes-container">
-          <ng-container *ngFor="let dataField of attributes().controls; let idx = index">
+          @for (dataField of attributes().controls; track dataField; let idx = $index) {
             <div class="dino-additional-attribute-entry" [formGroupName]="idx">
               <mat-form-field class="dino-metric-editor-field" appearance="fill">
                 <mat-label>{{'Attribute name'|transloco}}</mat-label>
@@ -154,41 +159,44 @@
                   [readonly]="data.metricAction === 'View'"
                   [value]="dataField.value['attribute_value']"
               /></mat-form-field>
-              <button
-                *ngIf="data.metricAction !== 'View'"
-                class="dino-attribute-button dino-remove-attribute-button"
-                aria-label="Remove attribute"
-                (click)="removeAttribute(idx)"
-                mat-mini-fab
-              >
-                <mat-icon class="icon">remove</mat-icon>
-              </button>
+              @if (data.metricAction !== 'View') {
+                <button
+                  class="dino-attribute-button dino-remove-attribute-button"
+                  aria-label="Remove attribute"
+                  (click)="removeAttribute(idx)"
+                  mat-mini-fab
+                >
+                  <mat-icon class="icon">remove</mat-icon>
+                </button>
+              }
             </div>
-          </ng-container>
-          <button
-            *ngIf="data.metricAction !== 'View'"
-            class="dino-attribute-button"
-            aria-label="Add attribute"
-            (click)="addAttribute()"
-            mat-mini-fab
-          >
-            <mat-icon class="icon">add</mat-icon>
-          </button>
+          }
+          @if (data.metricAction !== 'View') {
+            <button
+              class="dino-attribute-button"
+              aria-label="Add attribute"
+              (click)="addAttribute()"
+              mat-mini-fab
+            >
+              <mat-icon class="icon">add</mat-icon>
+            </button>
+          }
         </div>
       </form>
-    </ng-container>
+    }
   </mat-dialog-content>
   <div mat-dialog-actions>
     <button mat-raised-button color="warn" (click)="closeEditor()">{{'Close'|transloco}}</button>
-    <button
-      *ngIf="data.metricAction !== 'View'"
-      mat-raised-button
-      color="primary"
-      cdkFocusInitial
-      (click)="saveMetric()"
-      [disabled]="!isFormValid()"
-    >
-      {{'Save'|transloco}}
-    </button>
+    @if (data.metricAction !== 'View') {
+      <button
+        mat-raised-button
+        color="primary"
+        cdkFocusInitial
+        (click)="saveMetric()"
+        [disabled]="!isFormValid()"
+      >
+        {{'Save'|transloco}}
+      </button>
+    }
   </div>
 </div>

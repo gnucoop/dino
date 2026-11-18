@@ -1,73 +1,81 @@
 <div class="dino-filters-toolbar">
   <div class="dino-filters-toolbar-left">
-    <mat-button-toggle-group
-      class="dino-view-switcher"
-      *ngIf="displayViewSwitcher|async"
-      [value]="currentView$|async"
-      (change)="switchView($event.value)"
-    >
-      <mat-button-toggle value="table">
-        <mat-icon>table_chart</mat-icon>
-        <span>{{'Data'|transloco}}</span>
-      </mat-button-toggle>
-      <mat-button-toggle value="map" [disabled]="(displayFormMapButton|async) === false">
-        <mat-icon>place</mat-icon>
-        <span>{{'Map'|transloco}}</span>
-      </mat-button-toggle>
-      <mat-button-toggle value="ai">
-        <mat-icon>auto_awesome</mat-icon>
-        <span>AI</span>
-      </mat-button-toggle>
-    </mat-button-toggle-group>
-
-    <ng-container [formGroup]="textSearchFilters" *ngIf="keywordSearch">
-      <mat-form-field class="dino-filter-keyword" floatLabel="always">
-        <input
-          matInput
-          #keywordinput
-          formControlName="keyword"
-          [placeholder]="'search by keyword'|transloco"
-        />
-        <mat-icon color="primary" matSuffix>search</mat-icon>
-        <mat-icon
-          matSuffix
-          color="primary"
-          *ngIf="keywordinput.value"
-          aria-label="Clear"
-          (click)="clearFilter('keyword', textSearchFilters)"
-          class="dino-clear-filter-button"
-          >close</mat-icon
-        >
-      </mat-form-field>
-    </ng-container>
-  </div>
-
-  <div class="dino-filters-toolbar-right" *ngIf="(isAiView$|async) === false">
-    <ng-content select="[toolbarActions]"></ng-content>
-
-    <button
-      class="dino-filters-dialog-button"
-      mat-stroked-button
-      (click)="openFiltersDialog()"
-      [attr.aria-label]="'Filters'|transloco"
-    >
-      <mat-icon>tune</mat-icon>
-      <span>{{'Filters'|transloco}}</span>
-      <span class="dino-filters-count" *ngIf="(appliedFiltersCount$|async) as count">{{count}}</span>
-    </button>
-
-    <ng-container *ngIf="exportable">
-      <button
-        class="dino-export-button"
-        mat-stroked-button
-        (click)="openExportDialog()"
-        [attr.aria-label]="'Export items'|transloco"
+    @if (displayViewSwitcher|async) {
+      <mat-button-toggle-group
+        class="dino-view-switcher"
+        [value]="currentView$|async"
+        (change)="switchView($event.value)"
       >
-        <mat-icon>cloud_download</mat-icon>
-        <span>{{'Export'|transloco}}</span>
-      </button>
-    </ng-container>
+        <mat-button-toggle value="table">
+          <mat-icon>table_chart</mat-icon>
+          <span>{{'Data'|transloco}}</span>
+        </mat-button-toggle>
+        <mat-button-toggle value="map" [disabled]="(displayFormMapButton|async) === false">
+          <mat-icon>place</mat-icon>
+          <span>{{'Map'|transloco}}</span>
+        </mat-button-toggle>
+        <mat-button-toggle value="ai">
+          <mat-icon>auto_awesome</mat-icon>
+          <span>AI</span>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    }
+
+    @if (keywordSearch) {
+      <ng-container [formGroup]="textSearchFilters">
+        <mat-form-field class="dino-filter-keyword" floatLabel="always">
+          <input
+            matInput
+            #keywordinput
+            formControlName="keyword"
+            [placeholder]="'search by keyword'|transloco"
+          />
+          <mat-icon color="primary" matSuffix>search</mat-icon>
+          @if (keywordinput.value) {
+            <mat-icon
+              matSuffix
+              color="primary"
+              aria-label="Clear"
+              (click)="clearFilter('keyword', textSearchFilters)"
+              class="dino-clear-filter-button"
+              >close</mat-icon
+            >
+          }
+        </mat-form-field>
+      </ng-container>
+    }
   </div>
+
+  @if ((isAiView$|async) === false) {
+    <div class="dino-filters-toolbar-right">
+      <ng-content select="[toolbarActions]"></ng-content>
+
+      <button
+        class="dino-filters-dialog-button"
+        mat-stroked-button
+        (click)="openFiltersDialog()"
+        [attr.aria-label]="'Filters'|transloco"
+      >
+        <mat-icon>tune</mat-icon>
+        <span>{{'Filters'|transloco}}</span>
+        @if ((appliedFiltersCount$|async); as count) {
+          <span class="dino-filters-count">{{count}}</span>
+        }
+      </button>
+
+      @if (exportable) {
+        <button
+          class="dino-export-button"
+          mat-stroked-button
+          (click)="openExportDialog()"
+          [attr.aria-label]="'Export items'|transloco"
+        >
+          <mat-icon>cloud_download</mat-icon>
+          <span>{{'Export'|transloco}}</span>
+        </button>
+      }
+    </div>
+  }
 </div>
 
 <ng-template #filtersDialogTpl>
@@ -82,11 +90,12 @@
           (change)="activeFilterTab = $event.value"
         >
           <mat-button-toggle value="simple">{{'Simple'|transloco}}</mat-button-toggle>
-          <mat-button-toggle
-            value="advanced"
-            *ngIf="additionalFilters && (generatedAdditionalFilters|async)?.length"
-            >{{'Advanced'|transloco}}</mat-button-toggle
-          >
+          @if (additionalFilters && (generatedAdditionalFilters|async)?.length) {
+            <mat-button-toggle
+              value="advanced"
+              >{{'Advanced'|transloco}}</mat-button-toggle
+            >
+          }
         </mat-button-toggle-group>
       </div>
       <div class="dino-filters-modal-actions">
@@ -124,18 +133,20 @@
           ></dino-search-filters-chips>
         </div>
         <mat-tab-group (selectedIndexChange)="setCurrentGroupId($event)">
-          <mat-tab
-            *ngFor="let filterGroup of fts.generatedFilters|async"
-            [label]="filterGroup.filterGroupName|transloco"
-          >
-            <ng-template matTabContent>
-              <dino-search-filters-widget
-                *ngFor="let filterItem of filterItemsData|async"
-                [filterItemData]="filterItem"
-                (addFilter)="addFilter($event, 'temporary')"
-              ></dino-search-filters-widget>
-            </ng-template>
-          </mat-tab>
+          @for (filterGroup of fts.generatedFilters|async; track filterGroup) {
+            <mat-tab
+              [label]="filterGroup.filterGroupName|transloco"
+            >
+              <ng-template matTabContent>
+                @for (filterItem of filterItemsData|async; track filterItem.name) {
+                  <dino-search-filters-widget
+                    [filterItemData]="filterItem"
+                    (addFilter)="addFilter($event, 'temporary')"
+                  ></dino-search-filters-widget>
+                }
+              </ng-template>
+            </mat-tab>
+          }
         </mat-tab-group>
       </div>
     </div>
@@ -144,9 +155,10 @@
 
 <ng-template #filtersbar>
   <div class="dino-filters-bar">
-    <dino-search-filters-preset-manager
-      *ngIf="presetManager && (breakpointObserver.small|async|isFalseOrNull)"
-    ></dino-search-filters-preset-manager>
+    @if (presetManager && (breakpointObserver.small|async|isFalseOrNull)) {
+      <dino-search-filters-preset-manager
+      ></dino-search-filters-preset-manager>
+    }
 
     <ng-container [formGroup]="dateSearchFilters">
       <mat-form-field floatLabel="always">
@@ -159,15 +171,16 @@
           [placeholder]="'From date'|transloco"
         />
         <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
-        <mat-icon
-          matSuffix
-          color="primary"
-          *ngIf="datestartinput.value"
-          aria-label="Clear"
-          (click)="clearFilter('dateStart', dateSearchFilters)"
-          class="dino-clear-filter-button"
-          >close</mat-icon
-        >
+        @if (datestartinput.value) {
+          <mat-icon
+            matSuffix
+            color="primary"
+            aria-label="Clear"
+            (click)="clearFilter('dateStart', dateSearchFilters)"
+            class="dino-clear-filter-button"
+            >close</mat-icon
+          >
+        }
         <mat-datepicker #pickerFrom></mat-datepicker>
       </mat-form-field>
 
@@ -181,139 +194,146 @@
           [placeholder]="'To date'|transloco"
         />
         <mat-datepicker-toggle color="primary" matSuffix [for]="pickerTo"></mat-datepicker-toggle>
-        <mat-icon
-          matSuffix
-          color="primary"
-          *ngIf="dateendinput.value"
-          aria-label="Clear"
-          (click)="clearFilter('dateEnd', dateSearchFilters)"
-          class="dino-clear-filter-button"
-          >close</mat-icon
-        >
+        @if (dateendinput.value) {
+          <mat-icon
+            matSuffix
+            color="primary"
+            aria-label="Clear"
+            (click)="clearFilter('dateEnd', dateSearchFilters)"
+            class="dino-clear-filter-button"
+            >close</mat-icon
+          >
+        }
         <mat-datepicker #pickerTo></mat-datepicker>
       </mat-form-field>
     </ng-container>
 
-    <ng-container *ngFor="let group of additionalBasicFilters; let idx = index" [formGroup]="group">
-      <ng-template #metricOrStatusField>
-        <mat-form-field
-          floatLabel="always"
-          *ngIf="additionalBasicFiltersLabels[idx] &&
-          (isMetric(group) ||
-          isMetricSubFilter(group) ||
-          isUser(group) ||
-          isUserGroup(group) ||
-          (isStatus(group) && (availableFormStatuses|async)?.length) )"
-          (click)="showOptions(group)"
-        >
-          <input
-            matInput
-            #fltinput
-            [formControlName]="additionalBasicFiltersLabels[idx]"
-            placeholder="{{((additionalBasicFiltersLabels[idx]).charAt(0).toUpperCase() +
-              (additionalBasicFiltersLabels[idx]).slice(1).replace('_', ' ').replace('data', '')).trim()|transloco}}"
-            [matAutocomplete]="auto"
-          />
-          <mat-icon matSuffix color="primary">search</mat-icon>
+    @for (group of additionalBasicFilters; track group; let idx = $index) {
+      <ng-container [formGroup]="group">
+        <ng-template #metricOrStatusField>
+          @if (additionalBasicFiltersLabels[idx] &&
+            (isMetric(group) ||
+            isMetricSubFilter(group) ||
+            isUser(group) ||
+            isUserGroup(group) ||
+            (isStatus(group) && (availableFormStatuses|async)?.length) )) {
+            <mat-form-field
+              floatLabel="always"
+              (click)="showOptions(group)"
+            >
+              <input
+                matInput
+                #fltinput
+                [formControlName]="additionalBasicFiltersLabels[idx]"
+                placeholder="{{((additionalBasicFiltersLabels[idx]).charAt(0).toUpperCase() +
+                  (additionalBasicFiltersLabels[idx]).slice(1).replace('_', ' ').replace('data', '')).trim()|transloco}}"
+                [matAutocomplete]="auto"
+              />
+              <mat-icon matSuffix color="primary">search</mat-icon>
 
-          <mat-icon
-            matSuffix
-            color="primary"
-            *ngIf="fltinput.value"
-            aria-label="Clear"
-            (click)="clearFilter(additionalBasicFiltersLabels[idx], group)"
-            class="dino-clear-filter-button"
-            >close</mat-icon
-          >
-
-          <mat-autocomplete
-            #auto="matAutocomplete"
-            [autoActiveFirstOption]="false"
-            [displayWith]="displayItemName"
-            (optionSelected)="optionClicked($event.option.value, additionalBasicFiltersLabels[idx], group)"
-          >
-            <ng-container *ngIf="isMetric(group); else statusOptions ">
-              <mat-option
-                *ngFor="let option of metricFiltersOptions[getControlKey(group)] | async"
-                [value]="option"
-                [ngClass]="'dino-option-level-' + (option.level ?? '0')"
-              >
-                <mat-checkbox [checked]="option.selected" 
-                  (change)="toggleSelection(option, additionalBasicFiltersLabels[idx], group)" 
-                  (click)="$event.stopPropagation()">
-                  {{displayItemName({id: [option.id], name: option.name, secondary:
-                    getMetricDataSecondaryAttribute(option, secondaryMetricFieldsDisplayed,
-                    additionalBasicFiltersLabels[idx])})}}
-                </mat-checkbox>
-              </mat-option>
-            </ng-container>
-
-            <ng-template #statusOptions>
-              <ng-container *ngIf="isStatus(group); else metricSubFilterOptions">
-                <mat-option
-                  [ngStyle]="{'color': option.color ?? 'inherit'}"
-                  *ngFor="let option of formStatusFilterOptions | async"
-                  [value]="option"
+              @if (fltinput.value) {
+                <mat-icon
+                  matSuffix
+                  color="primary"
+                  aria-label="Clear"
+                  (click)="clearFilter(additionalBasicFiltersLabels[idx], group)"
+                  class="dino-clear-filter-button"
+                  >close</mat-icon
                 >
-                  {{option.label}}
-                </mat-option>
-              </ng-container>
+              }
 
-              <ng-template #metricSubFilterOptions>
-                <ng-container *ngIf="isMetricSubFilter(group); else userFilterOptions">
-                  <mat-option
-                    *ngFor="let option of metricFiltersOptions[getControlKey(group)] | async"
-                    [value]="option"
-                    [ngClass]="'dino-option-level-' + (option.level ?? '0')"
-                  >
-                    {{option[getMetricSubFilter(option, group)]}}
-                  </mat-option>
-                </ng-container>
-
-                <ng-template #userFilterOptions>
-                  <ng-container *ngIf="isUser(group); else userGroupFilterOptions">
-                    <mat-option *ngFor="let option of usersFilterOptions | async" [value]="option">
-                      {{option.full_name}}
+              <mat-autocomplete
+                #auto="matAutocomplete"
+                [autoActiveFirstOption]="false"
+                [displayWith]="displayItemName"
+                (optionSelected)="optionClicked($event.option.value, additionalBasicFiltersLabels[idx], group)"
+              >
+                @if (isMetric(group)) {
+                  @for (option of metricFiltersOptions[getControlKey(group)] | async; track option.id) {
+                    <mat-option
+                      [value]="option"
+                      [ngClass]="'dino-option-level-' + (option.level ?? '0')"
+                    >
+                      <mat-checkbox [checked]="option.selected"
+                        (change)="toggleSelection(option, additionalBasicFiltersLabels[idx], group)"
+                        (click)="$event.stopPropagation()">
+                        {{displayItemName({id: [option.id], name: option.name, secondary:
+                          getMetricDataSecondaryAttribute(option, secondaryMetricFieldsDisplayed,
+                          additionalBasicFiltersLabels[idx])})}}
+                      </mat-checkbox>
                     </mat-option>
-                  </ng-container>
-
-                  <ng-template #userGroupFilterOptions>
-                    <ng-container *ngIf="isUserGroup(group)">
-                      <mat-option *ngFor="let option of userGroupsFilterOptions | async" [value]="option">
-                        {{option.groupName}}
+                  }
+                } @else {
+                  @if (isStatus(group)) {
+                    @for (option of formStatusFilterOptions | async; track option.id) {
+                      <mat-option
+                        [ngStyle]="{'color': option.color ?? 'inherit'}"
+                        [value]="option"
+                      >
+                        {{option.label}}
                       </mat-option>
-                    </ng-container>
-                  </ng-template>
-                </ng-template>
-              </ng-template>
-            </ng-template>
-          </mat-autocomplete>
-        </mat-form-field>
-      </ng-template>
+                    }
+                  } @else {
+                    @if (isMetricSubFilter(group)) {
+                      @for (option of metricFiltersOptions[getControlKey(group)] | async; track option.id) {
+                        <mat-option
+                          [value]="option"
+                          [ngClass]="'dino-option-level-' + (option.level ?? '0')"
+                        >
+                          {{option[getMetricSubFilter(option, group)]}}
+                        </mat-option>
+                      }
+                    } @else {
+                      @if (isUser(group)) {
+                        @for (option of usersFilterOptions | async; track option.id) {
+                          <mat-option [value]="option">
+                            {{option.full_name}}
+                          </mat-option>
+                        }
+                      } @else {
+                        @if (isUserGroup(group)) {
+                          @for (option of userGroupsFilterOptions | async; track option.id) {
+                            <mat-option [value]="option">
+                              {{option.groupName}}
+                            </mat-option>
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+          }
+        </ng-template>
 
-      <ng-template #default>
-        <mat-form-field floatLabel="always" *ngIf="additionalBasicFiltersLabels[idx]">
-          <input
-            matInput
-            [formControlName]="additionalBasicFiltersLabels[idx]"
-            placeholder="{{'search by'|transloco}} {{additionalBasicFiltersLabels[idx]|transloco}}"
-          />
-          <mat-icon matSuffix color="primary">search</mat-icon>
-        </mat-form-field>
-      </ng-template>
+        <ng-template #default>
+          @if (additionalBasicFiltersLabels[idx]) {
+            <mat-form-field floatLabel="always">
+              <input
+                matInput
+                [formControlName]="additionalBasicFiltersLabels[idx]"
+                placeholder="{{'search by'|transloco}} {{additionalBasicFiltersLabels[idx]|transloco}}"
+              />
+              <mat-icon matSuffix color="primary">search</mat-icon>
+            </mat-form-field>
+          }
+        </ng-template>
 
-      <ng-container
-        *ngTemplateOutlet="isMetric(group) || isStatus(group) || isMetricSubFilter(group) || isUser(group) || isUserGroup(group) ? metricOrStatusField : default"
-      ></ng-container>
-    </ng-container>
+        <ng-container
+          *ngTemplateOutlet="isMetric(group) || isStatus(group) || isMetricSubFilter(group) || isUser(group) || isUserGroup(group) ? metricOrStatusField : default"
+        ></ng-container>
+      </ng-container>
+    }
 
   </div>
 </ng-template>
 
-<dino-search-filters-chips
-  *ngIf="(isAiView$|async) === false"
-  (excludeFilter)="removeChip($event)"
-  [chipsType]="'all'"
-  [hiddenFilterNames]="chipsHiddenFilters"
->
-</dino-search-filters-chips>
+@if ((isAiView$|async) === false) {
+  <dino-search-filters-chips
+    (excludeFilter)="removeChip($event)"
+    [chipsType]="'all'"
+    [hiddenFilterNames]="chipsHiddenFilters"
+  >
+  </dino-search-filters-chips>
+}

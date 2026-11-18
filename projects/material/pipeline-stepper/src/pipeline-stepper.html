@@ -19,13 +19,14 @@
     <mat-icon>edit</mat-icon>
   </ng-template>
 
-  <mat-step
-    *ngFor="let step of steps|async; let idx = index;"
-    [label]="step.timeStamp ?  'completed on ' + (step.timeStamp|date:'short') + ' '+ step.label : step.label"
-    [completed]="(getStepState(step)|async) === 'done'"
-    [state]="(getStepState(step)|async) ?? 'edit-readonly'"
-    [editable]="step.editable"
-    [aria-labelledby]="(getStepState(step)|async) ?? ''"
-  >
-  </mat-step>
+  @for (step of steps|async; track step) {
+    <mat-step
+      [label]="step.timeStamp ?  'completed on ' + (step.timeStamp|date:'short') + ' '+ step.label : step.label"
+      [completed]="(getStepState(step)|async) === 'done'"
+      [state]="(getStepState(step)|async) ?? 'edit-readonly'"
+      [editable]="step.editable"
+      [aria-labelledby]="(getStepState(step)|async) ?? ''"
+    >
+    </mat-step>
+  }
 </mat-horizontal-stepper>

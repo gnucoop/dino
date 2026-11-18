@@ -1,96 +1,105 @@
 <div class="dino-user-editor-container">
   <h1 mat-dialog-title>{{dialogTitle | transloco | uppercase}}</h1>
   <mat-dialog-content>
-    <form *ngIf="userForm" [formGroup]="userForm" autocomplete="off">
-      <div class="dino-user-editor-grid">
-        <ng-container *ngFor="let field of userFormFields">
-          <ng-container *ngIf="field.inputType !== 'password'">
-            <ng-container *ngTemplateOutlet="fieldTpl; context: {$implicit: field}"></ng-container>
-          </ng-container>
-        </ng-container>
-        <mat-form-field class="dino-user-editor-field" appearance="fill">
-          <mat-label>{{'User Permission Groups' | transloco}}</mat-label>
-          <mat-select
-            formControlName="user_group_ids"
-            multiple
-            [disabled]="data.userAction === 'view'"
-          >
-            <mat-option
-              *ngFor="let userGroup of userGroups|async"
-              [value]="userGroup.id"
+    @if (userForm) {
+      <form [formGroup]="userForm" autocomplete="off">
+        <div class="dino-user-editor-grid">
+          @for (field of userFormFields; track field.fieldName) {
+            @if (field.inputType !== 'password') {
+              <ng-container *ngTemplateOutlet="fieldTpl; context: {$implicit: field}"></ng-container>
+            }
+          }
+          <mat-form-field class="dino-user-editor-field" appearance="fill">
+            <mat-label>{{'User Permission Groups' | transloco}}</mat-label>
+            <mat-select
+              formControlName="user_group_ids"
+              multiple
               [disabled]="data.userAction === 'view'"
             >
-              {{userGroup.groupName}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field *ngIf="passwordEnabled" class="dino-user-editor-field" appearance="fill">
-          <mat-label>{{'Email language' | transloco}}</mat-label>
-          <mat-select formControlName="email_lang">
-            <mat-option *ngFor="let lang of emailLangs" [value]="lang.code"
-              >{{lang.label}}</mat-option
-            >
-          </mat-select>
-          <mat-hint>{{'The language of the emails the user receives' | transloco}}</mat-hint>
-        </mat-form-field>
-      </div>
-      <ng-container *ngIf="passwordEnabled">
-        <div class="dino-user-editor-grid">
-          <ng-container *ngFor="let field of userFormFields">
-            <ng-container *ngIf="field.inputType === 'password'">
-              <ng-container *ngTemplateOutlet="fieldTpl; context: {$implicit: field}"></ng-container>
-            </ng-container>
-          </ng-container>
-          <button mat-stroked-button type="button" (click)="generatePassword()">
-            {{'Generate password' | transloco}}
-          </button>
+              @for (userGroup of userGroups|async; track userGroup.id) {
+                <mat-option
+                  [value]="userGroup.id"
+                  [disabled]="data.userAction === 'view'"
+                >
+                  {{userGroup.groupName}}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          @if (passwordEnabled) {
+            <mat-form-field class="dino-user-editor-field" appearance="fill">
+              <mat-label>{{'Email language' | transloco}}</mat-label>
+              <mat-select formControlName="email_lang">
+                @for (lang of emailLangs; track lang.code) {
+                  <mat-option [value]="lang.code"
+                    >{{lang.label}}</mat-option
+                  >
+                }
+              </mat-select>
+              <mat-hint>{{'The language of the emails the user receives' | transloco}}</mat-hint>
+            </mat-form-field>
+          }
         </div>
-        <mat-checkbox formControlName="send_password_email">
-          {{'Send the user an email to change the password' | transloco}}
-        </mat-checkbox>
-      </ng-container>
-      <ng-template #fieldTpl let-field>
-        <mat-form-field class="dino-user-editor-field" appearance="fill">
-          <input
-            matInput
-            [type]="field.inputType === 'password' && passwordVisible ? 'text' : field.inputType || 'text'"
-            [formControlName]="field.fieldName"
-            [placeholder]="(field.placeholder || '') | transloco"
-            [attr.autocomplete]="field.autocomplete || 'off'"
-            [readonly]="data.userAction === 'view'"
-            value="{{field.value}}"
-          />
-          <button
-            *ngIf="passwordEnabled && field.inputType === 'password'"
-            mat-icon-button
-            matSuffix
-            type="button"
-            [attr.aria-label]="(passwordVisible ? 'Hide password' : 'Show password') | transloco"
-            (click)="passwordVisible = !passwordVisible"
-          >
-            <mat-icon>{{passwordVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
+        @if (passwordEnabled) {
+          <div class="dino-user-editor-grid">
+            @for (field of userFormFields; track field.fieldName) {
+              @if (field.inputType === 'password') {
+                <ng-container *ngTemplateOutlet="fieldTpl; context: {$implicit: field}"></ng-container>
+              }
+            }
+            <button mat-stroked-button type="button" (click)="generatePassword()">
+              {{'Generate password' | transloco}}
+            </button>
+          </div>
+          <mat-checkbox formControlName="send_password_email">
+            {{'Send the user an email to change the password' | transloco}}
+          </mat-checkbox>
+        }
+        <ng-template #fieldTpl let-field>
+          <mat-form-field class="dino-user-editor-field" appearance="fill">
+            <input
+              matInput
+              [type]="field.inputType === 'password' && passwordVisible ? 'text' : field.inputType || 'text'"
+              [formControlName]="field.fieldName"
+              [placeholder]="(field.placeholder || '') | transloco"
+              [attr.autocomplete]="field.autocomplete || 'off'"
+              [readonly]="data.userAction === 'view'"
+              value="{{field.value}}"
+            />
+            @if (passwordEnabled && field.inputType === 'password') {
+              <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                [attr.aria-label]="(passwordVisible ? 'Hide password' : 'Show password') | transloco"
+                (click)="passwordVisible = !passwordVisible"
+              >
+                <mat-icon>{{passwordVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            }
 
-          <mat-error>
-            {{showValErrors(userForm.get([field.fieldName]), field.placeholder)}}
-          </mat-error>
+            <mat-error>
+              {{showValErrors(userForm.get([field.fieldName]), field.placeholder)}}
+            </mat-error>
 
-          <mat-hint>{{field.hint | transloco}}</mat-hint>
-        </mat-form-field>
-      </ng-template>
-    </form></mat-dialog-content
-  >
+            <mat-hint>{{field.hint | transloco}}</mat-hint>
+          </mat-form-field>
+        </ng-template>
+      </form>
+    }
+  </mat-dialog-content>
   <div mat-dialog-actions>
     <button mat-raised-button color="warn" (click)="closeEditor()">{{'Close' | transloco}}</button>
-    <button
-      *ngIf="data.userAction !== 'view'"
-      mat-raised-button
-      color="primary"
-      cdkFocusInitial
-      (click)="saveUser()"
-      [disabled]="!isFormValid()"
-    >
-      {{'Save' | transloco}}
-    </button>
+    @if (data.userAction !== 'view') {
+      <button
+        mat-raised-button
+        color="primary"
+        cdkFocusInitial
+        (click)="saveUser()"
+        [disabled]="!isFormValid()"
+      >
+        {{'Save' | transloco}}
+      </button>
+    }
   </div>
 </div>

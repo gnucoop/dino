@@ -1098,16 +1098,6 @@ export class MainNav implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * Identifies a day group by its heading, which is unique within a panel.
-   */
-  trackNotificationGroup = (_: number, group: NotificationGroup): string => group.label;
-
-  /**
-   * Identifies a row by the newest notification of its run.
-   */
-  trackNotificationEntry = (_: number, entry: NotificationEntry): string => entry.id;
-
-  /**
    * Marks all the notification as read by the active user
    * @param $event The js event
    */

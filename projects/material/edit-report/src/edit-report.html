@@ -1,9 +1,9 @@
 <ng-content select="[breadcrumbs]"></ng-content>
-<ng-container *ngIf="reportInstance|async as repInstance; else loading">
-  <ng-container *ngIf="sourceFormData|async as formDatas">
-    <ng-container *ngIf="formDatas.length; else nodata">
+@if (reportInstance|async; as repInstance) {
+  @if (sourceFormData|async; as formDatas) {
+    @if (formDatas.length) {
       <div #printContainer class="report print">
-        <ng-container *ngIf="(metricsService.hasActiveMetrics|async) && steps === true">
+        @if ((metricsService.hasActiveMetrics|async) && steps === true) {
           <mat-stepper labelPosition="bottom" #stepper linear>
             <mat-step [completed]="(isReportMetricsSelectorValid|async) || (isView|async)">
               <ng-template matStepLabel>{{'REPORT METRICS'|transloco}}</ng-template>
@@ -32,8 +32,8 @@
                   <mat-icon>arrow_back</mat-icon>
                 </button>
               </div>
-              <ng-container *ngIf="reportSchema|async as repschema">
-                <ng-container *ngIf="reportData|async as repData">
+              @if (reportSchema|async; as repschema) {
+                @if (reportData|async; as repData) {
                   <div class="dino-edit-report-print">
                     {{'Export as:'|transloco}}
                     <button color="primary" mat-raised-button (click)="printReport('portrait')">
@@ -58,11 +58,13 @@
                       {{repData.date_end ? ('Collected Until'|transloco) + ' ' +
                       (repData.date_end|dinoDateValue): null}}
                     </h2>
-                    <h2 *ngIf="reportMetrics|async as repMetrics">{{repMetrics}}</h2>
+                    @if (reportMetrics|async; as repMetrics) {
+                      <h2>{{repMetrics}}</h2>
+                    }
                     <!-- <h2>{{('Forms Filled'|transloco)}}: {{formDatas.length}}</h2> -->
                   </div>
-                </ng-container>
-              </ng-container>
+                }
+              }
               <div class="dino-edit-report-step-container">
                 <ajf-report id="report print" [instance]="repInstance"
                   (filterWidgetChange)="filterWidgetChanged($event)">
@@ -70,11 +72,11 @@
               </div>
             </mat-step>
           </mat-stepper>
-        </ng-container>
+        }
 
-        <ng-container *ngIf="(metricsService.hasActiveMetrics|async) === false || steps === false">
-          <ng-container *ngIf="reportSchema|async as repschema">
-            <ng-container *ngIf="reportData|async as repData">
+        @if ((metricsService.hasActiveMetrics|async) === false || steps === false) {
+          @if (reportSchema|async; as repschema) {
+            @if (reportData|async; as repData) {
               <div class="dino-edit-report-info">
                 <h1>{{repschema.label}}</h1>
                 <h2>
@@ -83,25 +85,29 @@
                   {{repData.date_end ? ('Collected Until'|transloco) + ' ' +
                   (repData.date_end|dinoDateValue): null}}
                 </h2>
-                <h2 *ngIf="reportMetrics|async as repMetrics">{{repMetrics}}</h2>
+                @if (reportMetrics|async; as repMetrics) {
+                  <h2>{{repMetrics}}</h2>
+                }
               </div>
-            </ng-container>
-          </ng-container>
+            }
+          }
           <div class="dino-edit-report-step-container" tourAnchor="edit-report">
             <ajf-report id="report print" [instance]="repInstance"
               (filterWidgetChange)="filterWidgetChanged($event)">
             </ajf-report>
           </div>
-        </ng-container>
+        }
       </div>
-    </ng-container>
-  </ng-container>
-</ng-container>
-
-<ng-template #loading>
+    } @else {
+      <div class="dino-no-items-message">
+        <h1>{{'No Forms were found for this Report'|transloco}}</h1>
+      </div>
+    }
+  }
+} @else {
   <div class="dino-loading">
-    <ng-container *ngIf="(isAILoading|async) === true; else spinnerloading">
-      <ng-container *ngIf="AILoadingBarValues|async as barValues">
+    @if ((isAILoading|async) === true) {
+      @if (AILoadingBarValues|async; as barValues) {
         <div class="dino-aireport-progress-bar-message">
           <h2>
             {{'Generating report prompt'|transloco}} {{barValues.current}} {{'of'|transloco}}
@@ -113,23 +119,16 @@
           [value]="barValues.percent"
           mode="buffer"
         ></mat-progress-bar>
-      </ng-container>
-    </ng-container>
-    <ng-template #spinnerloading
-      ><ng-container *ngIf="spinnerImagePath; else defaultspinner"
-        ><dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
-      </ng-container>
-      <ng-template #defaultspinner
-        ><mat-spinner
+      }
+    } @else {
+      @if (spinnerImagePath) {
+        <dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
+      } @else {
+        <mat-spinner
           class="dino-component-load-spinner"
           mode="indeterminate"
-        ></mat-spinner></ng-template
-    ></ng-template>
+        ></mat-spinner>
+      }
+    }
   </div>
-</ng-template>
-
-<ng-template #nodata>
-  <div class="dino-no-items-message">
-    <h1>{{'No Forms were found for this Report'|transloco}}</h1>
-  </div>
-</ng-template>
+}

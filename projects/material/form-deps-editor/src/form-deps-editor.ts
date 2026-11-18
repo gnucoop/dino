@@ -112,7 +112,7 @@ export class FormDepsEditor implements OnInit, OnDestroy {
    *
    * `static: true` is required: the host reads them during its first update pass.
    * That in turn is why the templates sit at the top level of the markup, with no
-   * enclosing *ngIf.
+   * enclosing `@if`.
    */
   @ViewChild('metricsSections', {static: true}) metricsSections!: TemplateRef<unknown>;
   @ViewChild('relationsSection', {static: true}) relationsSection!: TemplateRef<unknown>;

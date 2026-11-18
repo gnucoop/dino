@@ -10,9 +10,11 @@
 
 <div class="dino-langs-dialog-body">
   <div class="dino-langs-dialog-sidebar">
-    <div class="dino-langs-sidebar-title" *ngIf="summaries$|async as summaries">
-      {{'Available languages'|transloco|uppercase}} · {{summaries.length}}
-    </div>
+    @if (summaries$|async; as summaries) {
+      <div class="dino-langs-sidebar-title">
+        {{'Available languages'|transloco|uppercase}} · {{summaries.length}}
+      </div>
+    }
     <div class="dino-langs-search">
       <mat-icon>search</mat-icon>
       <input
@@ -24,104 +26,118 @@
       />
     </div>
     <div class="dino-langs-lang-list">
-      <button
-        type="button"
-        class="dino-langs-lang-row"
-        *ngFor="let summary of visibleSummaries$|async; trackBy: trackByName"
-        [class.dino-langs-lang-selected]="summary.name === (selected$|async)?.name"
-        [matTooltip]="summary.filled + ' / ' + summary.total"
-        (click)="select(summary.name)"
-      >
-        <span class="dino-langs-lang-code">{{summary.name}}</span>
-        <span class="dino-langs-lang-label">{{summary.label}}</span>
-        <span class="dino-langs-dot dino-langs-dot-{{summary.status}}"></span>
-      </button>
-    </div>
-  </div>
-
-  <div class="dino-langs-dialog-main" *ngIf="selected$|async as selected">
-    <div class="dino-langs-file-bar">
-      <div class="dino-langs-file-chip">
-        <mat-icon>description</mat-icon>
-        <span class="dino-langs-file-name">
-          {{(uploaded$|async)?.filename || (selected.name|lowercase) + '.json'}}
-        </span>
-        <span class="dino-langs-file-rows" *ngIf="counters$|async as counters">
-          {{counters.total}} {{'rows'|transloco}}
-        </span>
-      </div>
-      <span class="dino-langs-json-state" [class.dino-langs-json-invalid]="invalidFile$|async">
-        <mat-icon>{{(invalidFile$|async) ? 'error_outline' : 'check'}}</mat-icon>
-        {{((invalidFile$|async) ? 'Invalid JSON' : 'Valid JSON')|transloco}}
-      </span>
-      <span class="dino-langs-file-bar-spacer"></span>
-      <dino-langs-file-uploader
-        fileType="json"
-        (uploaded)="setUploaded($event)"
-        (name)="setFilename($event)"
-        (errors)="setError()"
-      >
-        {{'Import file'|transloco}}
-      </dino-langs-file-uploader>
-      <button type="button" class="dino-langs-btn" (click)="download(selected.name)">
-        <mat-icon>get_app</mat-icon>
-        {{'Export'|transloco}} {{selected.name}}
-      </button>
-    </div>
-
-    <div class="dino-langs-search dino-langs-entry-search">
-      <mat-icon>search</mat-icon>
-      <input
-        type="text"
-        #entrySearch
-        [placeholder]="'Search in file…'|transloco"
-        [attr.aria-label]="'Search in file…'|transloco"
-        (input)="setEntryQuery(entrySearch.value)"
-      />
-    </div>
-
-    <div class="dino-langs-table-head">
-      <span class="dino-langs-col-num">#</span>
-      <span class="dino-langs-col-key">{{'Key'|transloco|uppercase}}</span>
-      <span class="dino-langs-col-value">{{'Value'|transloco|uppercase}}</span>
-    </div>
-
-    <ng-container *ngIf="visibleEntries$|async as entries">
-      <div class="dino-langs-table-empty" *ngIf="entries.length === 0">
-        {{'No results'|transloco}}
-      </div>
-      <cdk-virtual-scroll-viewport
-        *ngIf="entries.length > 0"
-        itemSize="39"
-        minBufferPx="300"
-        maxBufferPx="600"
-        class="dino-langs-table"
-      >
-        <div
-          class="dino-langs-table-row"
-          *cdkVirtualFor="let entry of entries; trackBy: trackByKey"
+      @for (summary of visibleSummaries$|async; track summary.name) {
+        <button
+          type="button"
+          class="dino-langs-lang-row"
+          [class.dino-langs-lang-selected]="summary.name === (selected$|async)?.name"
+          [matTooltip]="summary.filled + ' / ' + summary.total"
+          (click)="select(summary.name)"
         >
-          <span class="dino-langs-col-num">{{entry.position}}</span>
-          <span class="dino-langs-col-key">{{entry.key}}</span>
-          <span class="dino-langs-col-value" *ngIf="entry.value !== ''">{{entry.value}}</span>
-          <span class="dino-langs-col-value dino-langs-missing" *ngIf="entry.value === ''">
-            {{'Missing'|transloco}}
-          </span>
-        </div>
-      </cdk-virtual-scroll-viewport>
-    </ng-container>
-
-    <div class="dino-langs-table-note">
-      <mat-icon>info_outline</mat-icon>
-      {{'Read-only preview. Single translations are edited from the Translations page.'|transloco}}
+          <span class="dino-langs-lang-code">{{summary.name}}</span>
+          <span class="dino-langs-lang-label">{{summary.label}}</span>
+          <span class="dino-langs-dot dino-langs-dot-{{summary.status}}"></span>
+        </button>
+      }
     </div>
   </div>
+
+  @if (selected$|async; as selected) {
+    <div class="dino-langs-dialog-main">
+      <div class="dino-langs-file-bar">
+        <div class="dino-langs-file-chip">
+          <mat-icon>description</mat-icon>
+          <span class="dino-langs-file-name">
+            {{(uploaded$|async)?.filename || (selected.name|lowercase) + '.json'}}
+          </span>
+          @if (counters$|async; as counters) {
+            <span class="dino-langs-file-rows">
+              {{counters.total}} {{'rows'|transloco}}
+            </span>
+          }
+        </div>
+        <span class="dino-langs-json-state" [class.dino-langs-json-invalid]="invalidFile$|async">
+          <mat-icon>{{(invalidFile$|async) ? 'error_outline' : 'check'}}</mat-icon>
+          {{((invalidFile$|async) ? 'Invalid JSON' : 'Valid JSON')|transloco}}
+        </span>
+        <span class="dino-langs-file-bar-spacer"></span>
+        <dino-langs-file-uploader
+          fileType="json"
+          (uploaded)="setUploaded($event)"
+          (name)="setFilename($event)"
+          (errors)="setError()"
+        >
+          {{'Import file'|transloco}}
+        </dino-langs-file-uploader>
+        <button type="button" class="dino-langs-btn" (click)="download(selected.name)">
+          <mat-icon>get_app</mat-icon>
+          {{'Export'|transloco}} {{selected.name}}
+        </button>
+      </div>
+
+      <div class="dino-langs-search dino-langs-entry-search">
+        <mat-icon>search</mat-icon>
+        <input
+          type="text"
+          #entrySearch
+          [placeholder]="'Search in file…'|transloco"
+          [attr.aria-label]="'Search in file…'|transloco"
+          (input)="setEntryQuery(entrySearch.value)"
+        />
+      </div>
+
+      <div class="dino-langs-table-head">
+        <span class="dino-langs-col-num">#</span>
+        <span class="dino-langs-col-key">{{'Key'|transloco|uppercase}}</span>
+        <span class="dino-langs-col-value">{{'Value'|transloco|uppercase}}</span>
+      </div>
+
+      @if (visibleEntries$|async; as entries) {
+        @if (entries.length === 0) {
+          <div class="dino-langs-table-empty">
+            {{'No results'|transloco}}
+          </div>
+        }
+        @if (entries.length > 0) {
+          <cdk-virtual-scroll-viewport
+            itemSize="39"
+            minBufferPx="300"
+            maxBufferPx="600"
+            class="dino-langs-table"
+          >
+            <div
+              class="dino-langs-table-row"
+              *cdkVirtualFor="let entry of entries; trackBy: trackByKey"
+            >
+              <span class="dino-langs-col-num">{{entry.position}}</span>
+              <span class="dino-langs-col-key">{{entry.key}}</span>
+              @if (entry.value !== '') {
+                <span class="dino-langs-col-value">{{entry.value}}</span>
+              }
+              @if (entry.value === '') {
+                <span class="dino-langs-col-value dino-langs-missing">
+                  {{'Missing'|transloco}}
+                </span>
+              }
+            </div>
+          </cdk-virtual-scroll-viewport>
+        }
+      }
+
+      <div class="dino-langs-table-note">
+        <mat-icon>info_outline</mat-icon>
+        {{'Read-only preview. Single translations are edited from the Translations page.'|transloco}}
+      </div>
+    </div>
+  }
 </div>
 
 <div class="dino-langs-dialog-footer">
-  <span class="dino-langs-footer-counter" *ngIf="counters$|async as counters">
-    {{counters.filled}} {{'of'|transloco}} {{counters.total}} {{'values present'|transloco}}
-  </span>
+  @if (counters$|async; as counters) {
+    <span class="dino-langs-footer-counter">
+      {{counters.filled}} {{'of'|transloco}} {{counters.total}} {{'values present'|transloco}}
+    </span>
+  }
   <button type="button" class="dino-langs-btn" (click)="close()">{{'Close'|transloco}}</button>
   <button
     type="button"

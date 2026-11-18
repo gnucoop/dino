@@ -7,17 +7,16 @@
 
   <div class="dino-schema-selectors-list">
     <mat-button-toggle-group [vertical]="true" (change)="selectSchema($event)">
-      <mat-button-toggle *ngFor="let schema of schemas|async" [value]="schema.id">
-        <span class="dino-schema-selector-label">{{schema.label|transloco}}</span>
-        <ng-container *ngIf="schema.icon && !schema.icon.includes('icon-'); else svgIconTemplate;"
-          ><mat-icon color="primary" class="dino-schema-selector-icon"
-            >{{schema.icon}}</mat-icon
-          ></ng-container
-        >
-        <ng-template #svgIconTemplate
-          ><mat-icon color="primary" class="dino-schema-selector-icon" [svgIcon]="schema.icon!"></mat-icon
-        ></ng-template>
-      </mat-button-toggle>
+      @for (schema of schemas|async; track schema.id) {
+        <mat-button-toggle [value]="schema.id">
+          <span class="dino-schema-selector-label">{{schema.label|transloco}}</span>
+          @if (schema.icon && !schema.icon.includes('icon-')) {
+            <mat-icon color="primary" class="dino-schema-selector-icon">{{schema.icon}}</mat-icon>
+          } @else {
+            <mat-icon color="primary" class="dino-schema-selector-icon" [svgIcon]="schema.icon!"></mat-icon>
+          }
+        </mat-button-toggle>
+      }
     </mat-button-toggle-group>
   </div>
   <br />

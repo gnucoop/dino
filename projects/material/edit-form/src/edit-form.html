@@ -1,6 +1,6 @@
 <ng-content select="[breadcrumbs]"></ng-content>
-<ng-container *ngIf="(form|async)">
-  <ng-container *ngIf="metricsService.hasActiveMetrics|async">
+@if ((form|async)) {
+  @if (metricsService.hasActiveMetrics|async) {
     <mat-stepper labelPosition="bottom" #stepper linear>
       <mat-step [completed]="(isFormMetricsSelectorValid|async) || (isView|async)">
         <ng-template matStepLabel>{{ 'FORM METRICS'|transloco }}</ng-template>
@@ -50,15 +50,16 @@
             <mat-icon>arrow_back</mat-icon>
           </button>
         </div>
-        <dino-pipeline-stepper
-          *ngIf="(formSchemaStatuses|async)?.length"
-          [setStatuses]="formSchemaStatuses|async"
-          [ajfFormRenderer]="formRenderer"
-          [slides]="slides|async"
-          [setCurrentFormStatus]="formDataStatus|async"
-          [setIsPipeline]="isPipeline|async"
-          (position)="scrollToSlide($event)"
-        ></dino-pipeline-stepper>
+        @if ((formSchemaStatuses|async)?.length) {
+          <dino-pipeline-stepper
+            [setStatuses]="formSchemaStatuses|async"
+            [ajfFormRenderer]="formRenderer"
+            [slides]="slides|async"
+            [setCurrentFormStatus]="formDataStatus|async"
+            [setIsPipeline]="isPipeline|async"
+            (position)="scrollToSlide($event)"
+          ></dino-pipeline-stepper>
+        }
         <div class="dino-edit-form-renderer-container">
           <ajf-form
             #ajfFormRenderer
@@ -73,18 +74,19 @@
                  directly. Save goes in the renderer's own save slot, whose wrapper turns
                  the click into a `formAction` -- see onFormAction(). Both stay visible
                  while unavailable, disabled, as the floating buttons they replace did. -->
-            <button
-              *ngIf="(isView|async) !== true && allowSaveDraft"
-              ajfFormTopToolbarButtons
-              type="button"
-              class="ajf-btn dino-form-save-draft-button"
-              [attr.aria-label]="'Save draft'|transloco"
-              [disabled]="(isSaveDraftDisabled|async) === true"
-              (click)="saveDraft()"
-            >
-              <mat-icon>save_as</mat-icon
-              ><span class="dino-form-save-label">{{'Save draft'|transloco}}</span>
-            </button>
+            @if ((isView|async) !== true && allowSaveDraft) {
+              <button
+                ajfFormTopToolbarButtons
+                type="button"
+                class="ajf-btn dino-form-save-draft-button"
+                [attr.aria-label]="'Save draft'|transloco"
+                [disabled]="(isSaveDraftDisabled|async) === true"
+                (click)="saveDraft()"
+              >
+                <mat-icon>save_as</mat-icon
+                ><span class="dino-form-save-label">{{'Save draft'|transloco}}</span>
+              </button>
+            }
             <button
               ajfFormSaveButton
               type="button"
@@ -99,17 +101,18 @@
         </div>
       </mat-step>
     </mat-stepper>
-  </ng-container>
-  <ng-container *ngIf="(metricsService.hasActiveMetrics|async) === false">
-    <dino-pipeline-stepper
-      *ngIf="(formSchemaStatuses|async)?.length"
-      [setStatuses]="formSchemaStatuses|async"
-      [ajfFormRenderer]="formRenderer"
-      [slides]="slides|async"
-      [setCurrentFormStatus]="formDataStatus|async"
-      [setIsPipeline]="isPipeline|async"
-      (position)="scrollToSlide($event)"
-    ></dino-pipeline-stepper>
+  }
+  @if ((metricsService.hasActiveMetrics|async) === false) {
+    @if ((formSchemaStatuses|async)?.length) {
+      <dino-pipeline-stepper
+        [setStatuses]="formSchemaStatuses|async"
+        [ajfFormRenderer]="formRenderer"
+        [slides]="slides|async"
+        [setCurrentFormStatus]="formDataStatus|async"
+        [setIsPipeline]="isPipeline|async"
+        (position)="scrollToSlide($event)"
+      ></dino-pipeline-stepper>
+    }
     <div class="dino-edit-form-renderer-container">
       <ajf-form
         #ajfFormRenderer
@@ -124,18 +127,19 @@
              directly. Save goes in the renderer's own save slot, whose wrapper turns
              the click into a `formAction` -- see onFormAction(). Both stay visible
              while unavailable, disabled, as the floating buttons they replace did. -->
-        <button
-          *ngIf="(isView|async) !== true && allowSaveDraft"
-          ajfFormTopToolbarButtons
-          type="button"
-          class="ajf-btn dino-form-save-draft-button"
-          [attr.aria-label]="'Save draft'|transloco"
-          [disabled]="(isSaveDraftDisabled|async) === true"
-          (click)="saveDraft()"
-        >
-          <mat-icon>save_as</mat-icon
-          ><span class="dino-form-save-label">{{'Save draft'|transloco}}</span>
-        </button>
+        @if ((isView|async) !== true && allowSaveDraft) {
+          <button
+            ajfFormTopToolbarButtons
+            type="button"
+            class="ajf-btn dino-form-save-draft-button"
+            [attr.aria-label]="'Save draft'|transloco"
+            [disabled]="(isSaveDraftDisabled|async) === true"
+            (click)="saveDraft()"
+          >
+            <mat-icon>save_as</mat-icon
+            ><span class="dino-form-save-label">{{'Save draft'|transloco}}</span>
+          </button>
+        }
         <button
           ajfFormSaveButton
           type="button"
@@ -148,8 +152,8 @@
         </button>
       </ajf-form>
     </div>
-  </ng-container>
-  <ng-container *ngIf="(isLoading|async) === true">
+  }
+  @if ((isLoading|async) === true) {
     <mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner>
-  </ng-container>
-</ng-container>
+  }
+}

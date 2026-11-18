@@ -6,17 +6,18 @@
   <br /><br />
   <br />
   <div class="dino-action-selectors-list">
-    <div
-      class="dino-action-selector"
-      *ngFor="let action of actions"
-      (click)="performListAction(action)"
-    >
-      <mat-icon color="accent" class="dino-action-selector-icon">{{action.matIcon}}</mat-icon>
-      <span class="dino-action-selector-label"
-        >{{action.actionType[0].toUpperCase() + action.actionType.slice(1).toLowerCase()
-        |transloco}}</span
+    @for (action of actions; track action.actionType) {
+      <div
+        class="dino-action-selector"
+        (click)="performListAction(action)"
       >
-    </div>
+        <mat-icon color="accent" class="dino-action-selector-icon">{{action.matIcon}}</mat-icon>
+        <span class="dino-action-selector-label"
+          >{{action.actionType[0].toUpperCase() + action.actionType.slice(1).toLowerCase()
+          |transloco}}</span
+        >
+      </div>
+    }
   </div>
   <br />
 </div>

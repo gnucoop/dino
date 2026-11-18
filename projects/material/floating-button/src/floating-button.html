@@ -1,5 +1,5 @@
-<ng-container *ngIf="draggable; else undraggable"
-  ><button
+@if (draggable) {
+  <button
     cdkDrag
     aria-label="An action floating button"
     class="mat-fab-bottom-right"
@@ -20,11 +20,9 @@
       <mat-icon>open_with</mat-icon>
     </button>
     <mat-icon class="icon">{{buttonIcon}}</mat-icon>
-  </button></ng-container
->
-
-<ng-template #undraggable
-  ><button
+  </button>
+} @else {
+  <button
     aria-label="An action floating button"
     [ngClass]="'mat-fab-bottom-right ' + (tourInteractive ? 'dino-tour-interactive-anchor' : '')"
     [routerLink]="buttonUrl"
@@ -36,13 +34,14 @@
     [extended]="cost !== undefined && cost !== null && cost > 0"
   >
     <mat-icon class="icon">{{buttonIcon}}</mat-icon>
-    <div
-      *ngIf="cost"
-      class="dino-floating-button-cost-container"
-      [tourAnchor]="tourAnchor ? tourAnchor+'-credits' : ''"
-    >
-      <mat-icon color="primary">smart_toy</mat-icon>
-      <div class="dino-tokens-counter-amount">{{cost}}</div>
-    </div>
-  </button></ng-template
->
+    @if (cost) {
+      <div
+        class="dino-floating-button-cost-container"
+        [tourAnchor]="tourAnchor ? tourAnchor+'-credits' : ''"
+      >
+        <mat-icon color="primary">smart_toy</mat-icon>
+        <div class="dino-tokens-counter-amount">{{cost}}</div>
+      </div>
+    }
+  </button>
+}

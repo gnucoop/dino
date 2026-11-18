@@ -1,8 +1,10 @@
 <mat-form-field>
   <mat-select-trigger> {{ currentLang }} </mat-select-trigger>
   <mat-select [aria-label]="'Language'|transloco">
-    <mat-option *ngFor="let lang of langsShowed$|async" (click)="setLang(lang)"
-      >{{ lang }}</mat-option
-    >
+    @for (lang of langsShowed$|async; track lang) {
+      <mat-option (click)="setLang(lang)"
+        >{{ lang }}</mat-option
+      >
+    }
   </mat-select>
 </mat-form-field>

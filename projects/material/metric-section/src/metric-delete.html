@@ -1,34 +1,38 @@
 <h4 mat-dialog-title>{{'Confirm'|transloco}} {{'delete'|transloco}}</h4>
 <mat-dialog-content>
-  <ng-container *ngIf="!data.customContent; else customContent">
+  @if (!data.customContent) {
     {{'Do you want to'|transloco}} {{'delete'|transloco}} {{'the selected items'|transloco}} ?
-  </ng-container>
-  <ng-template #customContent> {{data.customContent|transloco}} </ng-template>
+  } @else {
+    {{data.customContent|transloco}}
+  }
 </mat-dialog-content>
 <br />
 <mat-dialog-actions align="center">
-  <button
-    *ngIf="enableDelete"
-    class="dino-confirm-button"
-    mat-raised-button
-    color="primary"
-    (click)="confirmationResponse(true)">
-    {{'Yes'|transloco}}
-  </button>
-  <button
-    *ngIf="enableDelete"
-    class="dino-cancel-button"
-    mat-raised-button
-    color="accent"
-    (click)="confirmationResponse(false)">
-    {{'No'|transloco}}
-  </button>
-  <button
-    *ngIf="!enableDelete"
-    class="dino-cancel-button"
-    mat-raised-button
-    color="accent"
-    (click)="confirmationResponse(false)">
-    {{'Close'|transloco}}
-  </button>
+  @if (enableDelete) {
+    <button
+      class="dino-confirm-button"
+      mat-raised-button
+      color="primary"
+      (click)="confirmationResponse(true)">
+      {{'Yes'|transloco}}
+    </button>
+  }
+  @if (enableDelete) {
+    <button
+      class="dino-cancel-button"
+      mat-raised-button
+      color="accent"
+      (click)="confirmationResponse(false)">
+      {{'No'|transloco}}
+    </button>
+  }
+  @if (!enableDelete) {
+    <button
+      class="dino-cancel-button"
+      mat-raised-button
+      color="accent"
+      (click)="confirmationResponse(false)">
+      {{'Close'|transloco}}
+    </button>
+  }
 </mat-dialog-actions>

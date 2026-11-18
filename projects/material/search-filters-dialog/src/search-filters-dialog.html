@@ -23,19 +23,21 @@
 
 <mat-dialog-content>
   <mat-tab-group (selectedIndexChange)="setCurrentGroupId($event)">
-    <mat-tab
-      *ngFor=" let filterGroup of fts.generatedFilters|async;"
-      [label]="filterGroup.filterGroupName|transloco"
-      style="width: 100%"
-    >
-      <ng-template matTabContent>
-        <dino-search-filters-widget
-          *ngFor="let filterItem of filterItemsData|async;"
-          [filterItemData]="filterItem"
-          (addFilter)="addFilter($event, 'temporary')"
-        >
-        </dino-search-filters-widget>
-      </ng-template>
-    </mat-tab>
+    @for (filterGroup of fts.generatedFilters|async; track filterGroup) {
+      <mat-tab
+        [label]="filterGroup.filterGroupName|transloco"
+        style="width: 100%"
+      >
+        <ng-template matTabContent>
+          @for (filterItem of filterItemsData|async; track filterItem.name) {
+            <dino-search-filters-widget
+              [filterItemData]="filterItem"
+              (addFilter)="addFilter($event, 'temporary')"
+            >
+            </dino-search-filters-widget>
+          }
+        </ng-template>
+      </mat-tab>
+    }
   </mat-tab-group>
 </mat-dialog-content>

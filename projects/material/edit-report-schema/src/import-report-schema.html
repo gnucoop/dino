@@ -1,4 +1,4 @@
-<ng-container *ngIf="importReport">
+@if (importReport) {
   <mat-card appearance="outlined" class="form-container">
     <mat-toolbar color="primary"> Import report</mat-toolbar>
     <mat-card-content>
@@ -33,4 +33,4 @@
       </button>
     </mat-card-actions>
   </mat-card>
-</ng-container>
+}

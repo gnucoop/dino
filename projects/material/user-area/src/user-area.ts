@@ -516,12 +516,6 @@ export class UserArea implements OnDestroy {
   }
 
   /**
-   * Keeps the rendered tabs identified by slug. Without it a new tab list rebuilds every
-   * tab body and wipes whatever the user had typed into the other tabs.
-   */
-  trackTabById = (_: number, tab: UserAreaTab): UserAreaPanelType => tab.id;
-
-  /**
    * Sets the theme Primary Color. The colors are not applied to the app as they are
    * picked - only the preview follows them, until saveDinoTheme().
    */

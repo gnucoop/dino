@@ -1,126 +1,170 @@
-<ng-container *ngIf="qa">
-  <div class="dino-datachat-message dino-datachat-message-question" *ngIf="qa.question && !qa.noPrompt">
-    <div class="dino-datachat-avatar dino-datachat-avatar-user">
-      <mat-icon>person</mat-icon>
+@if (qa) {
+  @if (qa.question && !qa.noPrompt) {
+    <div class="dino-datachat-message dino-datachat-message-question">
+      <div class="dino-datachat-avatar dino-datachat-avatar-user">
+        <mat-icon>person</mat-icon>
+      </div>
+      <div class="dino-datachat-bubble">{{qa.question}}</div>
     </div>
-    <div class="dino-datachat-bubble">{{qa.question}}</div>
-  </div>
+  }
 
-  <div class="dino-datachat-message dino-datachat-message-answer" *ngIf="hasAnswer">
-    <div class="dino-datachat-avatar">
-      <mat-icon>smart_toy</mat-icon>
-    </div>
-    <div class="dino-datachat-bubble">
-      <p class="dino-datachat-explanation" *ngIf="qa.explanation">{{qa.explanation}}</p>
-
-      <div class="dino-datachat-answer" *ngIf="qa.response" [innerHTML]="getFormattedResponse(qa)"></div>
-
-      <!-- The result is only a preview: say so before it can be read as the whole one. -->
-      <div class="dino-datachat-preview" *ngIf="qa.truncated">
-        <mat-icon>visibility</mat-icon>
-        <span class="dino-datachat-preview-text">
-          <span *ngIf="hasRowCounts(qa); else noRowCounts"
-            [innerText]="'Showing the first {{preview}} of {{total}} rows'|transloco:{preview: qa.previewRows, total: qa.totalRows}"></span>
-          <ng-template #noRowCounts><span [innerText]="'Not all rows are shown'|transloco"></span></ng-template>
-          <span *ngIf="hasDroppedColumns(qa)"
-            [innerText]="'Only {{preview}} of {{total}} columns are shown'|transloco:{preview: qa.previewColumns, total: qa.totalColumns}"></span>
-        </span>
+  @if (hasAnswer) {
+    <div class="dino-datachat-message dino-datachat-message-answer">
+      <div class="dino-datachat-avatar">
+        <mat-icon>smart_toy</mat-icon>
       </div>
+      <div class="dino-datachat-bubble">
+        @if (qa.explanation) {
+          <p class="dino-datachat-explanation">{{qa.explanation}}</p>
+        }
 
-      <img class="dino-datachat-image" *ngIf="qa.imageData" [src]="qa.imageData" />
+        @if (qa.response) {
+          <div class="dino-datachat-answer" [innerHTML]="getFormattedResponse(qa)"></div>
+        }
 
-      <div class="dino-datachat-component" *ngIf="qa.componentData">
-        <ng-container *ngComponentOutlet="qa.componentData.component; inputs: qa.componentData.inputs"></ng-container>
-      </div>
-
-      <!-- A caveat about the result itself: displayed verbatim, whether or not
-           the result is truncated. -->
-      <div class="dino-datachat-note" *ngIf="qa.note">
-        <mat-icon>info</mat-icon>
-        <span>{{qa.note}}</span>
-      </div>
-
-      <div class="dino-datachat-charts" *ngIf="hasCharts">
-        <dino-datachat-chart *ngFor="let chart of qa.charts" [spec]="chart"></dino-datachat-chart>
-      </div>
-
-      <div class="dino-datachat-sources" *ngIf="getRelevantVectors(qa).length > 0">
-        <div class="dino-datachat-section-label">
-          <mat-icon>description</mat-icon>
-          <span>{{'Sources'|transloco}}</span>
-        </div>
-        <div class="dino-datachat-source-list">
-          <button
-            type="button"
-            class="dino-datachat-source"
-            *ngFor="let vec of getRelevantVectors(qa)"
-            (click)="openParagraphDialog(qa, vec)"
-          >
-            <mat-icon>description</mat-icon>
-            <span class="dino-datachat-source-info">
-              <span class="dino-datachat-source-name">{{vec.metadata.source ?? 'file'}}</span>
-              <span class="dino-datachat-source-page" *ngIf="vec.metadata.page">pag. {{vec.metadata.page}}</span>
+        <!-- The result is only a preview: say so before it can be read as the whole one. -->
+        @if (qa.truncated) {
+          <div class="dino-datachat-preview">
+            <mat-icon>visibility</mat-icon>
+            <span class="dino-datachat-preview-text">
+              @if (hasRowCounts(qa)) {
+                <span
+                  [innerText]="'Showing the first {{preview}} of {{total}} rows'|transloco:{preview: qa.previewRows, total: qa.totalRows}"></span>
+              } @else {
+                <span [innerText]="'Not all rows are shown'|transloco"></span>
+              }
+              @if (hasDroppedColumns(qa)) {
+                <span
+                  [innerText]="'Only {{preview}} of {{total}} columns are shown'|transloco:{preview: qa.previewColumns, total: qa.totalColumns}"></span>
+              }
             </span>
-          </button>
-        </div>
+          </div>
+        }
+
+        @if (qa.imageData) {
+          <img class="dino-datachat-image" [src]="qa.imageData" />
+        }
+
+        @if (qa.componentData) {
+          <div class="dino-datachat-component">
+            <ng-container *ngComponentOutlet="qa.componentData.component; inputs: qa.componentData.inputs"></ng-container>
+          </div>
+        }
+
+        <!-- A caveat about the result itself: displayed verbatim, whether or not
+             the result is truncated. -->
+        @if (qa.note) {
+          <div class="dino-datachat-note">
+            <mat-icon>info</mat-icon>
+            <span>{{qa.note}}</span>
+          </div>
+        }
+
+        @if (hasCharts) {
+          <div class="dino-datachat-charts">
+            @for (chart of qa.charts; track chart) {
+              <dino-datachat-chart [spec]="chart"></dino-datachat-chart>
+            }
+          </div>
+        }
+
+        @if (getRelevantVectors(qa).length > 0) {
+          <div class="dino-datachat-sources">
+            <div class="dino-datachat-section-label">
+              <mat-icon>description</mat-icon>
+              <span>{{'Sources'|transloco}}</span>
+            </div>
+            <div class="dino-datachat-source-list">
+              @for (vec of getRelevantVectors(qa); track vec) {
+                <button
+                  type="button"
+                  class="dino-datachat-source"
+                  (click)="openParagraphDialog(qa, vec)"
+                >
+                  <mat-icon>description</mat-icon>
+                  <span class="dino-datachat-source-info">
+                    <span class="dino-datachat-source-name">{{vec.metadata.source ?? 'file'}}</span>
+                    @if (vec.metadata.page) {
+                      <span class="dino-datachat-source-page">pag. {{vec.metadata.page}}</span>
+                    }
+                  </span>
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        @if (showActions) {
+          <div class="dino-datachat-actions">
+            @if (feedbackAvailable) {
+              <button mat-icon-button (click)="onFeedbackClick(true)" [matTooltip]="'Good response'|transloco"
+                [disabled]="qa.userIsHappy === true">
+                <mat-icon [class.active-feedback]="qa.userIsHappy === true">thumb_up</mat-icon>
+              </button>
+              <button mat-icon-button (click)="onFeedbackClick(false)" [matTooltip]="'Bad response'|transloco"
+                [disabled]="qa.userIsHappy === false">
+                <mat-icon [class.active-feedback]="qa.userIsHappy === false">thumb_down</mat-icon>
+              </button>
+            }
+
+            @if (feedbackAvailable && (canCopy || canRegenerate)) {
+              <span class="dino-datachat-actions-divider"></span>
+            }
+
+            @if (canCopy) {
+              <button mat-icon-button (click)="copyAnswer()"
+                [matTooltip]="(copied ? 'Copied' : 'Copy')|transloco">
+                <mat-icon>{{copied ? 'check' : 'content_copy'}}</mat-icon>
+              </button>
+            }
+            @if (canRegenerate) {
+              <button mat-icon-button (click)="onRegenerateClick()"
+                [matTooltip]="'Regenerate answer'|transloco">
+                <mat-icon>refresh</mat-icon>
+              </button>
+            }
+
+            @if (canDownload) {
+              <button
+                mat-stroked-button
+                class="dino-datachat-download"
+                (click)="onDownloadClick()"
+              >
+                <mat-icon>download</mat-icon>
+                <span>{{qa.downloadFilename || ('Download'|transloco)}}</span>
+              </button>
+            }
+          </div>
+        }
       </div>
+    </div>
+  }
 
-      <div class="dino-datachat-actions" *ngIf="showActions">
-        <ng-container *ngIf="feedbackAvailable">
-          <button mat-icon-button (click)="onFeedbackClick(true)" [matTooltip]="'Good response'|transloco"
-            [disabled]="qa.userIsHappy === true">
-            <mat-icon [class.active-feedback]="qa.userIsHappy === true">thumb_up</mat-icon>
-          </button>
-          <button mat-icon-button (click)="onFeedbackClick(false)" [matTooltip]="'Bad response'|transloco"
-            [disabled]="qa.userIsHappy === false">
-            <mat-icon [class.active-feedback]="qa.userIsHappy === false">thumb_down</mat-icon>
-          </button>
-        </ng-container>
+  @if (qa.error) {
+    <div class="dino-datachat-message dino-datachat-message-error">
+      <div class="dino-datachat-avatar dino-datachat-avatar-error">
+        <mat-icon>error</mat-icon>
+      </div>
+      <div class="dino-datachat-bubble"><span [innerHTML]="qa.error"></span></div>
+    </div>
+  }
 
-        <span class="dino-datachat-actions-divider" *ngIf="feedbackAvailable && (canCopy || canRegenerate)"></span>
-
-        <button mat-icon-button *ngIf="canCopy" (click)="copyAnswer()"
-          [matTooltip]="(copied ? 'Copied' : 'Copy')|transloco">
-          <mat-icon>{{copied ? 'check' : 'content_copy'}}</mat-icon>
-        </button>
-        <button mat-icon-button *ngIf="canRegenerate" (click)="onRegenerateClick()"
-          [matTooltip]="'Regenerate answer'|transloco">
-          <mat-icon>refresh</mat-icon>
-        </button>
-
+  @if (qa.followUpQuestions && qa.followUpQuestions.length > 0) {
+    <div class="dino-datachat-suggested">
+      <div class="dino-datachat-section-label">
+        <mat-icon>lightbulb</mat-icon>
+        <span>{{'Suggested questions'|transloco}}</span>
+      </div>
+      @for (question of qa.followUpQuestions; track $index) {
         <button
-          mat-stroked-button
-          class="dino-datachat-download"
-          *ngIf="canDownload"
-          (click)="onDownloadClick()"
+          type="button"
+          class="dino-datachat-suggestion"
+          (click)="onFollowUpClick(question)"
         >
-          <mat-icon>download</mat-icon>
-          <span>{{qa.downloadFilename || ('Download'|transloco)}}</span>
+          <span>{{question}}</span>
+          <mat-icon>north_east</mat-icon>
         </button>
-      </div>
+      }
     </div>
-  </div>
-
-  <div class="dino-datachat-message dino-datachat-message-error" *ngIf="qa.error">
-    <div class="dino-datachat-avatar dino-datachat-avatar-error">
-      <mat-icon>error</mat-icon>
-    </div>
-    <div class="dino-datachat-bubble"><span [innerHTML]="qa.error"></span></div>
-  </div>
-
-  <div class="dino-datachat-suggested" *ngIf="qa.followUpQuestions && qa.followUpQuestions.length > 0">
-    <div class="dino-datachat-section-label">
-      <mat-icon>lightbulb</mat-icon>
-      <span>{{'Suggested questions'|transloco}}</span>
-    </div>
-    <button
-      type="button"
-      class="dino-datachat-suggestion"
-      *ngFor="let question of qa.followUpQuestions"
-      (click)="onFollowUpClick(question)"
-    >
-      <span>{{question}}</span>
-      <mat-icon>north_east</mat-icon>
-    </button>
-  </div>
-</ng-container>
+  }
+}

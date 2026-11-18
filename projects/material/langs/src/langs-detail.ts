@@ -146,8 +146,4 @@ export class LangsDetailComponent implements OnDestroy {
         this._snackBar.open(res, this._ts.translate('Ok'), {duration: 2000});
       });
   }
-
-  trackByLang(_: number, row: LangsDetailRow): string {
-    return row.lang;
-  }
 }

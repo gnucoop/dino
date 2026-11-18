@@ -70,7 +70,7 @@ export class MixedEditor implements AfterViewInit {
 
   /**
    * Filtered source list emitting only items with displayed===true per type.
-   * Updated by updateFilter() (avoids *ngIf inside *ngFor in the template)
+   * Updated by updateFilter() (avoids an @if inside the *cdkVirtualFor in the template)
    */
   readonly filteredSourceList$: Observable<{[key: string]: MixedEditorItem[]}> =
     this._filteredSubject.asObservable();
@@ -135,13 +135,6 @@ export class MixedEditor implements AfterViewInit {
    */
   trackById(_index: number, item: MixedEditorItem): string {
     return item.itemId;
-  }
-
-  /**
-   * TrackBy function for type tab list.
-   */
-  trackByType(_index: number, t: {type: string}): string {
-    return t.type;
   }
 
   /**

@@ -1,19 +1,23 @@
-<ng-container [ngSwitch]="data.kind">
-  <ng-container *ngSwitchCase="'logout'">
+@switch (data.kind) {
+  @case ('logout') {
     <h4 mat-dialog-title>{{'Log out'|transloco}}</h4>
     <mat-dialog-content>
       <!-- prettier-ignore -->
       {{'Do you want to log out and delete all the local data, or only end the session keeping the data on this device?'|transloco}}
-      <ng-container [ngSwitch]="deleteBlocked|async">
-        <p *ngSwitchCase="'syncing'" class="dino-session-dialog-delete-blocked">
-          <!-- prettier-ignore -->
-          {{'The local data cannot be deleted while the sync is running: the data not sent yet would be lost.'|transloco}}
-        </p>
-        <p *ngSwitchCase="'offline'" class="dino-session-dialog-delete-blocked">
-          <!-- prettier-ignore -->
-          {{'The local data cannot be deleted while offline.'|transloco}}
-        </p>
-      </ng-container>
+      @switch (deleteBlocked|async) {
+        @case ('syncing') {
+          <p class="dino-session-dialog-delete-blocked">
+            <!-- prettier-ignore -->
+            {{'The local data cannot be deleted while the sync is running: the data not sent yet would be lost.'|transloco}}
+          </p>
+        }
+        @case ('offline') {
+          <p class="dino-session-dialog-delete-blocked">
+            <!-- prettier-ignore -->
+            {{'The local data cannot be deleted while offline.'|transloco}}
+          </p>
+        }
+      }
     </mat-dialog-content>
     <mat-dialog-actions class="dino-session-dialog-actions">
       <button
@@ -37,9 +41,9 @@
         {{'Cancel'|transloco}}
       </button>
     </mat-dialog-actions>
-  </ng-container>
+  }
 
-  <ng-container *ngSwitchCase="'session-expired'">
+  @case ('session-expired') {
     <h4 mat-dialog-title>{{'Session expired'|transloco}}</h4>
     <mat-dialog-content>
       <!-- prettier-ignore -->
@@ -58,9 +62,9 @@
         {{'Later'|transloco}}
       </button>
     </mat-dialog-actions>
-  </ng-container>
+  }
 
-  <ng-container *ngSwitchCase="'data-refused'">
+  @case ('data-refused') {
     <h4 mat-dialog-title>{{'The data cannot be saved'|transloco}}</h4>
     <mat-dialog-content>
       <!-- prettier-ignore -->
@@ -73,5 +77,5 @@
         {{'Close'|transloco}}
       </button>
     </mat-dialog-actions>
-  </ng-container>
-</ng-container>
+  }
+}

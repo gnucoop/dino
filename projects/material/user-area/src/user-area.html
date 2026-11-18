@@ -10,42 +10,56 @@
     <span class="dino-user-area-avatar" aria-hidden="true">{{userInitials|async}}</span>
     <div class="dino-user-area-identity">
       <ng-content select="[breadcrumbs]"></ng-content>
-      <span class="dino-user-area-subtitle" *ngIf="userData|async as userInfo"
-        >{{userInfo.full_name}} &middot; {{userInfo.email}}</span
-      >
+      @if (userData|async; as userInfo) {
+        <span class="dino-user-area-subtitle"
+          >{{userInfo.full_name}} &middot; {{userInfo.email}}</span
+        >
+      }
     </div>
   </div>
 
-  <ng-container *ngIf="tabs|async as tabList">
+  @if (tabs|async; as tabList) {
     <mat-tab-group
       class="dino-user-area-tabs"
       animationDuration="0ms"
       [selectedIndex]="tabIndex(tabList, activeTab)"
       (selectedIndexChange)="selectTab(tabList, $event)"
     >
-      <mat-tab *ngFor="let tab of tabList; trackBy: trackTabById" [label]="tab.label|transloco">
-        <div class="dino-user-area-panel">
-          <div class="dino-user-area-panel-head">
-            <h2 class="dino-user-area-panel-title">{{tab.title|transloco}}</h2>
-            <p class="dino-user-area-panel-desc">{{tab.description|transloco}}</p>
+      <!-- Keeps the rendered tabs identified by slug. Without it a new tab list rebuilds every
+           tab body and wipes whatever the user had typed into the other tabs. -->
+      @for (tab of tabList; track tab.id) {
+        <mat-tab [label]="tab.label|transloco">
+          <div class="dino-user-area-panel">
+            <div class="dino-user-area-panel-head">
+              <h2 class="dino-user-area-panel-title">{{tab.title|transloco}}</h2>
+              <p class="dino-user-area-panel-desc">{{tab.description|transloco}}</p>
+            </div>
+            @switch (tab.id) {
+              @case ('password') {
+                <ng-container
+                  [ngTemplateOutlet]="passwordTab"
+                ></ng-container>
+              }
+              @case ('ai') {
+                <ng-container [ngTemplateOutlet]="aiTab"></ng-container>
+              }
+              @case ('theme') {
+                <ng-container [ngTemplateOutlet]="themeTab"></ng-container>
+              }
+              @case ('backup') {
+                <ng-container [ngTemplateOutlet]="backupTab"></ng-container>
+              }
+              @case ('tutorial') {
+                <ng-container
+                  [ngTemplateOutlet]="tutorialTab"
+                ></ng-container>
+              }
+            }
           </div>
-          <ng-container [ngSwitch]="tab.id">
-            <ng-container
-              *ngSwitchCase="'password'"
-              [ngTemplateOutlet]="passwordTab"
-            ></ng-container>
-            <ng-container *ngSwitchCase="'ai'" [ngTemplateOutlet]="aiTab"></ng-container>
-            <ng-container *ngSwitchCase="'theme'" [ngTemplateOutlet]="themeTab"></ng-container>
-            <ng-container *ngSwitchCase="'backup'" [ngTemplateOutlet]="backupTab"></ng-container>
-            <ng-container
-              *ngSwitchCase="'tutorial'"
-              [ngTemplateOutlet]="tutorialTab"
-            ></ng-container>
-          </ng-container>
-        </div>
-      </mat-tab>
+        </mat-tab>
+      }
     </mat-tab-group>
-  </ng-container>
+  }
 </div>
 
 <!-- ==================== Password ==================== -->
@@ -106,7 +120,7 @@
 
 <ng-template #aiTab>
   <div class="dino-user-area-panel-body dino-user-area-body-ai">
-    <ng-container *ngIf="storedPandinoAPIKey|async as apiKey; else noApiKeyTemplate">
+    @if (storedPandinoAPIKey|async; as apiKey) {
       <div class="dino-user-area-block">
         <span class="dino-user-area-block-label">{{'DINO-AI API Key'|transloco}}</span>
         <div class="dino-user-area-key-row">
@@ -125,27 +139,28 @@
         </div>
       </div>
 
-      <div
-        class="dino-user-area-block dino-user-area-credits"
-        *ngIf="(availablePandinoTokens|async) !== null"
-      >
-        <span class="dino-user-area-credits-caption">{{'DINO-AI Credits'|transloco}}</span>
-        <span class="dino-user-area-credits-figure">{{availablePandinoTokens|async}}</span>
-        <button *ngIf="stripeConfig" mat-stroked-button type="button" (click)="openPayment()">
-          <mat-icon>add</mat-icon>{{'Add more'|transloco}}
-        </button>
-      </div>
-    </ng-container>
-
-    <!--
-      The key is provisioned at login, not entered here, so a missing one is nothing the
-      user can act on - saying so is better than an empty field that reads as broken.
-    -->
-    <ng-template #noApiKeyTemplate>
+      @if ((availablePandinoTokens|async) !== null) {
+        <div
+          class="dino-user-area-block dino-user-area-credits"
+        >
+          <span class="dino-user-area-credits-caption">{{'DINO-AI Credits'|transloco}}</span>
+          <span class="dino-user-area-credits-figure">{{availablePandinoTokens|async}}</span>
+          @if (stripeConfig) {
+            <button mat-stroked-button type="button" (click)="openPayment()">
+              <mat-icon>add</mat-icon>{{'Add more'|transloco}}
+            </button>
+          }
+        </div>
+      }
+    } @else {
+      <!--
+        The key is provisioned at login, not entered here, so a missing one is nothing the
+        user can act on - saying so is better than an empty field that reads as broken.
+      -->
       <p class="dino-user-area-empty">
         {{'No DINO-AI key is associated with this account'|transloco}}
       </p>
-    </ng-template>
+    }
   </div>
 </ng-template>
 
@@ -203,9 +218,9 @@
         <mat-label>{{'Preset name'|transloco}}</mat-label>
         <input matInput [formControlName]="'presetName'" [matAutocomplete]="auto" />
         <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let option of themePresetOptions|async" [value]="option"
-            >{{option}}</mat-option
-          >
+          @for (option of themePresetOptions|async; track option) {
+            <mat-option [value]="option">{{option}}</mat-option>
+          }
         </mat-autocomplete>
       </mat-form-field>
 
@@ -265,7 +280,7 @@
 
 <ng-template #backupTab>
   <div class="dino-user-area-panel-body dino-user-area-body-backup">
-    <ng-container *ngIf="(processing|async) === false; else restoringTemplate">
+    @if ((processing|async) === false) {
       <div class="dino-user-area-block dino-user-area-block-inline">
         <span class="dino-user-area-block-label">{{'Backup Data'|transloco}}</span>
         <button
@@ -298,19 +313,16 @@
           <mat-icon>upload_file</mat-icon>{{'Choose a backup file'|transloco}}
         </button>
       </div>
-    </ng-container>
-
-    <ng-template #restoringTemplate>
+    } @else {
       <div class="dino-user-area-restoring">
         <div>{{'Restoring Data...'|transloco}}</div>
-        <ng-container *ngIf="spinnerImagePath; else defaultSpinnerTemplate">
+        @if (spinnerImagePath) {
           <dino-loading-spinner [spinnerImagePath]="spinnerImagePath"></dino-loading-spinner>
-        </ng-container>
-        <ng-template #defaultSpinnerTemplate>
+        } @else {
           <mat-spinner class="dino-component-load-spinner" mode="indeterminate"></mat-spinner>
-        </ng-template>
+        }
       </div>
-    </ng-template>
+    }
   </div>
 </ng-template>
 

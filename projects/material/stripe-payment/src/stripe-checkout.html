@@ -1,11 +1,12 @@
-<mat-dialog-content *ngIf="config">
-  <ng-container *ngIf="(checkoutElement|async) === null">
-    <ng-container *ngIf="config.spinnerImagePath; else defaultspinner">
-      <dino-loading-spinner [spinnerImagePath]="config.spinnerImagePath"></dino-loading-spinner>
-    </ng-container>
-    <ng-template #defaultspinner>
-      <mat-spinner mode="indeterminate" [diameter]="180"></mat-spinner
-    ></ng-template>
-  </ng-container>
-  <div id="checkout"></div
-></mat-dialog-content>
+@if (config) {
+  <mat-dialog-content>
+    @if ((checkoutElement|async) === null) {
+      @if (config.spinnerImagePath) {
+        <dino-loading-spinner [spinnerImagePath]="config.spinnerImagePath"></dino-loading-spinner>
+      } @else {
+        <mat-spinner mode="indeterminate" [diameter]="180"></mat-spinner>
+      }
+    }
+    <div id="checkout"></div
+  ></mat-dialog-content>
+}

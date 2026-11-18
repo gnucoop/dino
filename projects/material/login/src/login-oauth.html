@@ -1,6 +1,6 @@
-<ng-container *ngIf="externalOAuthProviders">
+@if (externalOAuthProviders) {
   <div class="dino-oauth-container">
-    <ng-container *ngFor="let provider of externalOAuthProviders">
+    @for (provider of externalOAuthProviders; track provider) {
       <button mat-stroked-button (click)="signInOauth(provider)" class="dino-oauth-button">
         <div class="dino-oauth-logo-container">
           <img [src]="'assets/svg/'+provider+'.svg'" class="dino-oauth-logo" />
@@ -8,7 +8,7 @@
         <div class="dino-oauth-text-container">
           <span class="dino-oauth-text">{{('Login with'|transloco) +' '+ oAuthProvidersNames[provider]}}</span>
         </div>
-      </button></ng-container
-    >
+      </button>
+    }
   </div>
-</ng-container>
+}

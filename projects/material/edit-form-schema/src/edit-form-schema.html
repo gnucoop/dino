@@ -1,5 +1,5 @@
-<ng-container *ngIf="form|async as form">
-  <ng-container *ngIf="formGroup|async as fgroup">
+@if (form|async; as form) {
+  @if (formGroup|async; as fgroup) {
     <div class="dino-efs">
       <!-- ===== Breadcrumb bar ===== -->
       <div class="dino-efs-actionbar">
@@ -76,9 +76,11 @@
                 <mat-form-field appearance="outline" floatLabel="always">
                   <mat-label>{{'Form Name'|transloco}}</mat-label>
                   <input matInput formControlName="name" />
-                  <mat-error *ngIf="fgroup.controls['name'].hasError('incorrect')">
-                    {{ 'This name is already being used.'|transloco}}
-                  </mat-error>
+                  @if (fgroup.controls['name'].hasError('incorrect')) {
+                    <mat-error>
+                      {{ 'This name is already being used.'|transloco}}
+                    </mat-error>
+                  }
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" floatLabel="always">
@@ -98,22 +100,28 @@
                   <mat-label>{{'Icon Identifier'|transloco}}</mat-label>
                   <input matInput formControlName="icon" [matAutocomplete]="autoicons" />
 
-                  <mat-icon matSuffix *ngIf="iconSetSelect.value === 'default'"
-                    >{{fgroup.get('icon')?.value}}</mat-icon
-                  >
-                  <mat-icon
-                    matSuffix
-                    *ngIf="iconSetSelect.value !== 'default'"
-                    [svgIcon]="fgroup.get('icon')?.value"
-                  ></mat-icon>
+                  @if (iconSetSelect.value === 'default') {
+                    <mat-icon matSuffix
+                      >{{fgroup.get('icon')?.value}}</mat-icon
+                    >
+                  }
+                  @if (iconSetSelect.value !== 'default') {
+                    <mat-icon
+                      matSuffix
+                      [svgIcon]="fgroup.get('icon')?.value"
+                    ></mat-icon>
+                  }
                   <mat-autocomplete #autoicons="matAutocomplete">
-                    <mat-option *ngFor="let icon of filteredIcons | async" [value]="icon">
-                      <span>{{icon.replace('_', ' ').replace('icon-','').replace('-',' ')}}</span>
-                      <ng-container *ngIf="iconSetSelect.value === 'default'; else svgIcon"
-                        ><mat-icon>{{icon}}</mat-icon></ng-container
-                      >
-                      <ng-template #svgIcon><mat-icon [svgIcon]="icon"></mat-icon></ng-template>
-                    </mat-option>
+                    @for (icon of filteredIcons | async; track icon) {
+                      <mat-option [value]="icon">
+                        <span>{{icon.replace('_', ' ').replace('icon-','').replace('-',' ')}}</span>
+                        @if (iconSetSelect.value === 'default') {
+                          <ng-container><mat-icon>{{icon}}</mat-icon></ng-container>
+                        } @else {
+                          <ng-container><mat-icon [svgIcon]="icon"></mat-icon></ng-container>
+                        }
+                      </mat-option>
+                    }
                   </mat-autocomplete>
                 </mat-form-field>
 
@@ -137,9 +145,11 @@
                   </mat-select>
                   <!-- Key kept on one line: a newline inside the string literal would
                        become part of the translation key and break the lookup. -->
-                  <mat-hint *ngIf="(autoReport|async) !== null">
-                    {{"An automatic report already exists for this form. To disable it, delete that report's schema and data."|transloco}}
-                  </mat-hint>
+                  @if ((autoReport|async) !== null) {
+                    <mat-hint>
+                      {{"An automatic report already exists for this form. To disable it, delete that report's schema and data."|transloco}}
+                    </mat-hint>
+                  }
                 </mat-form-field>
               </form>
 
@@ -174,11 +184,12 @@
                 <mat-form-field appearance="outline" floatLabel="always" class="dino-efs-span-full">
                   <mat-label>{{'Form Metrics'|transloco}}</mat-label>
                   <mat-select [disableRipple]="true" formControlName="form_schema_metrics" multiple>
-                    <mat-option
-                      *ngFor="let availableMetric of availableMetrics|async"
-                      [value]="availableMetric.metricName"
-                      >{{availableMetric.label|transloco}}</mat-option
-                    >
+                    @for (availableMetric of availableMetrics|async; track availableMetric.metricName) {
+                      <mat-option
+                        [value]="availableMetric.metricName"
+                        >{{availableMetric.label|transloco}}</mat-option
+                      >
+                    }
                   </mat-select>
                 </mat-form-field>
 
@@ -194,9 +205,11 @@
 
             <!-- Metric data + metric-as-choice-options sections, projected from the
                  headless deps editor declared above the tab group. -->
-            <ng-container *ngIf="(isCreation|async) !== true; else depsLocked">
+            @if ((isCreation|async) !== true) {
               <ng-container *ngTemplateOutlet="deps.metricsSections"></ng-container>
-            </ng-container>
+            } @else {
+              <ng-container [ngTemplateOutlet]="depsLocked" />
+            }
           </div>
         </mat-tab>
 
@@ -220,26 +233,27 @@
                 <mat-form-field appearance="outline" floatLabel="always" class="dino-efs-span-full">
                   <mat-label>{{'Form Statuses'|transloco}}</mat-label>
                   <mat-select [disableRipple]="true" formControlName="status" multiple>
-                    <div
-                      class="dino-status-option-container"
-                      *ngFor="let status of availableFormStatuses | async"
-                    >
-                      <mat-option
-                        class="dino-status-option"
-                        [value]="status.id"
-                        [matTooltip]="status.label"
+                    @for (status of availableFormStatuses | async; track status.id) {
+                      <div
+                        class="dino-status-option-container"
                       >
-                        <span [ngStyle]="{'color': status.color ?? 'inherit'}">{{status.label}}</span>
-                      </mat-option>
-                      <button
-                        class="dino-status-edit-button"
-                        mat-icon-button
-                        (click)="openStatusEditor('Edit', status); $event.stopPropagation()"
-                        [ngStyle]="{'color': status.color ?? 'inherit'}"
-                      >
-                        <mat-icon>edit</mat-icon>
-                      </button>
-                    </div>
+                        <mat-option
+                          class="dino-status-option"
+                          [value]="status.id"
+                          [matTooltip]="status.label"
+                        >
+                          <span [ngStyle]="{'color': status.color ?? 'inherit'}">{{status.label}}</span>
+                        </mat-option>
+                        <button
+                          class="dino-status-edit-button"
+                          mat-icon-button
+                          (click)="openStatusEditor('Edit', status); $event.stopPropagation()"
+                          [ngStyle]="{'color': status.color ?? 'inherit'}"
+                        >
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                      </div>
+                    }
 
                     <mat-option class="dino-new-status-button-option">
                       <button
@@ -291,65 +305,77 @@
                     [displayWith]="groupOptionLabel"
                     (optionSelected)="addGroup(fgroup, $event.option.value)"
                   >
-                    <mat-option *ngFor="let option of groupOptions|async" [value]="option">
-                      <ng-container *ngIf="option.kind === 'existing'; else createOption">
-                        <span class="dino-efs-group-dot" [style.background]="option.group.color"></span>
-                        {{option.group.name}}
-                      </ng-container>
-                      <ng-template #createOption>
-                        <mat-icon>add</mat-icon>
-                        {{'Create group "{{name}}"'|transloco:{name: $any(option).name} }}
-                      </ng-template>
-                    </mat-option>
+                    @for (option of groupOptions|async; track option.kind === 'existing' ? option.group.name : option.name) {
+                      <mat-option [value]="option">
+                        @if (option.kind === 'existing') {
+                          <ng-container>
+                            <span class="dino-efs-group-dot" [style.background]="option.group.color"></span>
+                            {{option.group.name}}
+                          </ng-container>
+                        } @else {
+                          <ng-container>
+                            <mat-icon>add</mat-icon>
+                            {{'Create group "{{name}}"'|transloco:{name: $any(option).name} }}
+                          </ng-container>
+                        }
+                      </mat-option>
+                    }
                   </mat-autocomplete>
                 </mat-form-field>
 
                 <div class="dino-efs-groups-list" formArrayName="groups">
-                  <div
-                    class="dino-efs-group-row"
-                    *ngFor="let group of groupsArray(fgroup).controls; let i = index"
-                    [formGroupName]="i"
-                  >
-                    <mat-form-field appearance="outline" class="dino-efs-group-color">
-                      <mat-label>{{'Color'|transloco}}</mat-label>
-                      <mat-select
-                        formControlName="color"
-                        panelClass="dino-efs-group-colors"
-                        hideSingleSelectionIndicator
-                        [attr.aria-label]="'Color'|transloco"
-                      >
-                        <mat-select-trigger>
-                          <span class="dino-efs-group-dot" [style.background]="group.value.color"></span>
-                        </mat-select-trigger>
-                        <mat-option *ngFor="let color of groupColors" [value]="color">
-                          <span class="dino-efs-group-dot" [style.background]="color"></span>
-                        </mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" class="dino-efs-group-name">
-                      <mat-label>{{'Group name'|transloco}}</mat-label>
-                      <input matInput formControlName="name" />
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" class="dino-efs-group-desc">
-                      <mat-label>{{'Description'|transloco}}</mat-label>
-                      <input matInput formControlName="description" />
-                    </mat-form-field>
-                    <button
-                      mat-icon-button
-                      type="button"
-                      class="dino-efs-group-remove"
-                      [matTooltip]="'Remove group'|transloco"
-                      (click)="removeGroup(fgroup, i)"
+                  @for (group of groupsArray(fgroup).controls; track group; let i = $index) {
+                    <div
+                      class="dino-efs-group-row"
+                      [formGroupName]="i"
                     >
-                      <mat-icon>close</mat-icon>
-                    </button>
-                  </div>
-                  <p class="dino-efs-groups-empty" *ngIf="groupsArray(fgroup).length === 0">
-                    {{'This questionnaire belongs to no group yet.'|transloco}}
-                  </p>
-                  <mat-error *ngIf="groupsArray(fgroup).hasError('duplicateGroup')">
-                    {{'A group with this name is already assigned'|transloco}}
-                  </mat-error>
+                      <mat-form-field appearance="outline" class="dino-efs-group-color">
+                        <mat-label>{{'Color'|transloco}}</mat-label>
+                        <mat-select
+                          formControlName="color"
+                          panelClass="dino-efs-group-colors"
+                          hideSingleSelectionIndicator
+                          [attr.aria-label]="'Color'|transloco"
+                        >
+                          <mat-select-trigger>
+                            <span class="dino-efs-group-dot" [style.background]="group.value.color"></span>
+                          </mat-select-trigger>
+                          @for (color of groupColors; track color) {
+                            <mat-option [value]="color">
+                              <span class="dino-efs-group-dot" [style.background]="color"></span>
+                            </mat-option>
+                          }
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="dino-efs-group-name">
+                        <mat-label>{{'Group name'|transloco}}</mat-label>
+                        <input matInput formControlName="name" />
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="dino-efs-group-desc">
+                        <mat-label>{{'Description'|transloco}}</mat-label>
+                        <input matInput formControlName="description" />
+                      </mat-form-field>
+                      <button
+                        mat-icon-button
+                        type="button"
+                        class="dino-efs-group-remove"
+                        [matTooltip]="'Remove group'|transloco"
+                        (click)="removeGroup(fgroup, i)"
+                      >
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                  }
+                  @if (groupsArray(fgroup).length === 0) {
+                    <p class="dino-efs-groups-empty">
+                      {{'This questionnaire belongs to no group yet.'|transloco}}
+                    </p>
+                  }
+                  @if (groupsArray(fgroup).hasError('duplicateGroup')) {
+                    <mat-error>
+                      {{'A group with this name is already assigned'|transloco}}
+                    </mat-error>
+                  }
                 </div>
               </form>
 
@@ -393,13 +419,15 @@
             <!-- Form-to-form relationships section, projected from the headless deps
                  editor declared above the tab group. The metric sections it also
                  owns live in the Metrics tab. -->
-            <ng-container *ngIf="(isCreation|async) !== true; else depsLocked">
+            @if ((isCreation|async) !== true) {
               <ng-container *ngTemplateOutlet="deps.relationsSection"></ng-container>
-            </ng-container>
+            } @else {
+              <ng-container [ngTemplateOutlet]="depsLocked" />
+            }
           </div>
         </mat-tab>
       </mat-tab-group>
       </div>
     </div>
-  </ng-container>
-</ng-container>
+  }
+}

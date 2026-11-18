@@ -1,118 +1,88 @@
 <!-- Cell Container -->
-<ng-container *ngIf="!(item|dinoListCellIsFile); else fileTemplate">
-  <ng-container *ngIf="!(item|dinoListCellIsStorageImageUrl);else imageTemplate">
-    <ng-container
-      *ngIf="header?.fieldType === 3 &&
+@if (!(item|dinoListCellIsFile)) {
+  @if (!(item|dinoListCellIsStorageImageUrl)) {
+    @if (header?.fieldType === 3 &&
       header?.isEditable &&
       rowElement &&
-      header?.isEditable(rowElement);
-      then booleanCellTemplate; else standardCellTemplate"
-    />
-  </ng-container>
-</ng-container>
+      header?.isEditable(rowElement)) {
+      <!-- Boolean Cell template -->
+      <mat-slide-toggle
+        [checked]="item === true"
+        (click)="$event.stopPropagation()"
+        (change)="toggleBoolean($event)"
+        aria-label="Edit boolean field"
+      ></mat-slide-toggle>
+    } @else {
+      <!-- Standard Cell template -->
+      @if (isUrl(item)) {
+        <!-- Link Cell temlate -->
+        <a
+          class="dino-link-cell"
+          [matTooltip]="item"
+          [href]="item"
+          target="_blank"
+          (click)="$event.stopPropagation()"
+          >Link</a
+        >
+      } @else {
+        <!-- Standard Text Cell template (long, else regular) -->
+        @if (isSingleWordLongString(item, 25) || isLongString(item, 90)) {
+          <!-- Long Standard Text Cell template -->
+          <div class="dino-text-cell-long" [matTooltip]="item">{{item}}</div>
+        } @else {
+          {{item}}
+        }
+      }
+    }
+  } @else {
+    <!-- Image Cell template -->
+    @if (!(item|dinoListCellIsDeletedFile)) {
+      <!-- Valid Image Cell template -->
+      <mat-icon (click)="previewMethod ? previewMethod($event, item) : null" class="dino-file-cell-icon"
+        >photo_camera</mat-icon
+      >
+    }
+  }
+} @else {
+  <!-- File Cell Template -->
+  @if (!(item|dinoListCellIsDeletedFile)) {
+    <!-- Valid File Cell template -->
+    @if ((item|dinoListCellGetFile); as fileItem) {
+      @if (item|dinoListCellGetFileIcon; as fileIcon) {
+        @if (fileItem | dinoFileView; as fileView) {
 
-<!-- ---- CELL TEMPLATES ---- -->
+          <!-- AUDIO -->
+          @if (fileView.isAudio && fileView.href) {
+            <audio class="dino-file-cell-audio" controls
+              [src]="fileView.href" (click)="$event.stopPropagation()"></audio>
+          }
 
-<!-- Image Cell template -->
-<ng-template #imageTemplate>
-  <ng-container
-    *ngIf="!(item|dinoListCellIsDeletedFile);
-    then validImageTemplate; else deletedFileTemplate"
-  />
-</ng-template>
+          <!-- DOWNLOAD / URL -->
+          @if (!fileView.isImage && !fileView.isAudio && fileView.href) {
+            <a [href]="fileView.href"
+              [attr.target]="fileView.targetBlank ? '_blank' : null" [attr.download]="fileView.download ? '' : null"
+              (click)="$event.stopPropagation()">
 
-<!-- File Cell Template -->
-<ng-template #fileTemplate>
-  <ng-container
-    *ngIf="!(item|dinoListCellIsDeletedFile);
-    then validFileTemplate; else deletedFileTemplate"
-  />
-</ng-template>
+              <mat-icon class="dino-file-cell-icon">
+                {{ fileIcon }}
+              </mat-icon>
+            </a>
+          }
 
-<!-- Valid Image Cell template -->
-<ng-template #validImageTemplate>
-  <mat-icon (click)="previewMethod ? previewMethod($event, item) : null" class="dino-file-cell-icon"
-    >photo_camera</mat-icon
-  ></ng-template
->
+          <!-- IMAGE -->
+          @if (fileView.isImage) {
+            <mat-icon (click)="previewMethod?.($event, item)" class="dino-file-cell-icon">
+              {{ fileIcon }}
+            </mat-icon>
+          }
 
-<!-- Valid File Cell template -->
-<ng-template #validFileTemplate>
-  <ng-container *ngIf="(item|dinoListCellGetFile) as fileItem">
-    <ng-container *ngIf="item|dinoListCellGetFileIcon as fileIcon">
-      <ng-container *ngIf="fileItem | dinoFileView as fileView">
+          <!-- FALLBACK -->
+          @if (!fileView.isImage && !fileView.isAudio && !fileView.href) {
+            {{ item }}
+          }
 
-        <!-- AUDIO -->
-        <audio *ngIf="fileView.isAudio && fileView.href" class="dino-file-cell-audio" controls
-          [src]="fileView.href" (click)="$event.stopPropagation()"></audio>
-
-        <!-- DOWNLOAD / URL -->
-        <a *ngIf="!fileView.isImage && !fileView.isAudio && fileView.href" [href]="fileView.href"
-          [attr.target]="fileView.targetBlank ? '_blank' : null" [attr.download]="fileView.download ? '' : null"
-          (click)="$event.stopPropagation()">
-
-          <mat-icon class="dino-file-cell-icon">
-            {{ fileIcon }}
-          </mat-icon>
-        </a>
-
-        <!-- IMAGE -->
-        <mat-icon *ngIf="fileView.isImage" (click)="previewMethod?.($event, item)" class="dino-file-cell-icon">
-          {{ fileIcon }}
-        </mat-icon>
-
-        <!-- FALLBACK -->
-        <ng-container *ngIf="!fileView.isImage && !fileView.isAudio && !fileView.href">
-          {{ item }}
-        </ng-container>
-
-      </ng-container>
-    </ng-container>
-  </ng-container>
-</ng-template>
-
-<!-- Deleted file Cell template -->
-<ng-template #deletedFileTemplate></ng-template>
-
-<!-- Boolean Cell template -->
-<ng-template #booleanCellTemplate>
-  <mat-slide-toggle
-    [checked]="item === true"
-    (click)="$event.stopPropagation()"
-    (change)="toggleBoolean($event)"
-    aria-label="Edit boolean field"
-  ></mat-slide-toggle>
-</ng-template>
-
-<!-- Standard Cell template -->
-<ng-template #standardCellTemplate>
-  <ng-container *ngIf="isUrl(item); then urlTemplate; else standardTextCellTemplate"></ng-container>
-</ng-template>
-
-<!-- Link Cell temlate -->
-<ng-template #urlTemplate
-  ><a
-    class="dino-link-cell"
-    [matTooltip]="item"
-    [href]="item"
-    target="_blank"
-    (click)="$event.stopPropagation()"
-    >Link</a
-  ></ng-template
->
-
-<!-- Standard Text Cell template -->
-<ng-template #standardTextCellTemplate>
-  <ng-container
-    *ngIf="isSingleWordLongString(item, 25) || isLongString(item, 90);then longStandardCellTemplate;  else regularStandardCellTemplate"
-    ><div class="dino-text-cell-long" [matTooltip]="item">{{item}}</div></ng-container
-  >
-</ng-template>
-
-<!-- Long Standard Text Cell template -->
-<ng-template #longStandardCellTemplate
-  ><div class="dino-text-cell-long" [matTooltip]="item">{{item}}</div></ng-template
->
-
-<!-- Regular Standard Text Cell template -->
-<ng-template #regularStandardCellTemplate>{{item}}</ng-template>
+        }
+      }
+    }
+  }
+}

@@ -16,9 +16,11 @@
       <mat-form-field appearance="outline" class="dino-deps-metrics-select">
         <mat-label>{{'Select metrics'|transloco}}</mat-label>
         <mat-select [(ngModel)]="currentMetricsForData" multiple>
-          <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
-            {{metric|transloco}}
-          </mat-option>
+          @for (metric of activeMetrics; track metric) {
+            <mat-option [value]="metric">
+              {{metric|transloco}}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </section>
@@ -60,9 +62,11 @@
                   [required]="true"
                   (selectionChange)="getQueryForMetric(row)"
                 >
-                  <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
-                    {{metric|transloco}}
-                  </mat-option>
+                  @for (metric of activeMetrics; track metric) {
+                    <mat-option [value]="metric">
+                      {{metric|transloco}}
+                    </mat-option>
+                  }
                 </mat-select>
               </mat-form-field>
             </mat-cell>
@@ -108,9 +112,11 @@
                   (ngModelChange)="getQueryForMetric(row)"
                 />
               </mat-form-field>
-              <div class="dino-error" *ngIf="row.query_selector && row.query_selector.error">
-                {{row.query_selector.error}}
-              </div>
+              @if (row.query_selector && row.query_selector.error) {
+                <div class="dino-error">
+                  {{row.query_selector.error}}
+                </div>
+              }
             </mat-cell>
           </ng-container>
 
@@ -166,14 +172,15 @@
             <mat-cell *matCellDef="let row; let idx = index">
               <mat-form-field appearance="outline">
                 <mat-select [(ngModel)]="row.form_schema_ref_id" [required]="true">
-                  <mat-option
-                    *ngFor="let s of (availableSchemas|async)"
-                    [value]="s.id"
-                    [matTooltip]="s.name"
-                    [matTooltipPosition]="'right'"
-                  >
-                    {{s.name|transloco}}
-                  </mat-option>
+                  @for (s of (availableSchemas|async); track s.id) {
+                    <mat-option
+                      [value]="s.id"
+                      [matTooltip]="s.name"
+                      [matTooltipPosition]="'right'"
+                    >
+                      {{s.name|transloco}}
+                    </mat-option>
+                  }
                 </mat-select>
               </mat-form-field>
             </mat-cell>
@@ -190,15 +197,16 @@
                   (selectionChange)="checkChoiceOption($event, idx)"
                   [required]="true"
                 >
-                  <ng-container *ngIf="row.form_schema_ref_id">
-                    <mat-option
-                      *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
-                      [value]="field"
-                      [matTooltip]="field"
-                      [matTooltipPosition]="'right'"
-                      >{{field}}</mat-option
-                    >
-                  </ng-container>
+                  @if (row.form_schema_ref_id) {
+                    @for (field of schemaFields$[row.form_schema_ref_id]; track field) {
+                      <mat-option
+                        [value]="field"
+                        [matTooltip]="field"
+                        [matTooltipPosition]="'right'"
+                        >{{field}}</mat-option
+                      >
+                    }
+                  }
                 </mat-select>
               </mat-form-field>
             </mat-cell>
@@ -213,9 +221,11 @@
                   multiple
                   (selectionChange)="changeMetrics($event)"
                 >
-                  <mat-option *ngFor="let metric of activeMetrics" [value]="metric">
-                    {{metric|transloco}}
-                  </mat-option>
+                  @for (metric of activeMetrics; track metric) {
+                    <mat-option [value]="metric">
+                      {{metric|transloco}}
+                    </mat-option>
+                  }
                 </mat-select>
               </mat-form-field>
             </mat-cell>
@@ -235,46 +245,54 @@
           <ng-container matColumnDef="choice_label_fields">
             <mat-header-cell *matHeaderCellDef>{{'Label field'|transloco}}</mat-header-cell>
             <mat-cell *matCellDef="let row; let idx = index">
-              <mat-form-field appearance="outline" *ngIf="row.is_choice">
-                <mat-select
-                  [(ngModel)]="row.choices_origin.label_fields"
-                  [placeholder]="'Label fields'|transloco"
-                  multiple
-                >
-                  <ng-container *ngIf="row.form_schema_ref_id">
-                    <mat-option
-                      *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
-                      [value]="field"
-                      [matTooltip]="field"
-                      [matTooltipPosition]="'left'"
-                      >{{field}}</mat-option
-                    >
-                  </ng-container>
-                </mat-select>
-              </mat-form-field>
+              @if (row.is_choice) {
+                <mat-form-field appearance="outline">
+                  <mat-select
+                    [(ngModel)]="row.choices_origin.label_fields"
+                    [placeholder]="'Label fields'|transloco"
+                    multiple
+                  >
+                    @if (row.form_schema_ref_id) {
+                      @for (field of schemaFields$[row.form_schema_ref_id]; track field) {
+                        <mat-option
+                          [value]="field"
+                          [matTooltip]="field"
+                          [matTooltipPosition]="'left'"
+                          >{{field}}</mat-option
+                        >
+                      }
+                    }
+                  </mat-select>
+                </mat-form-field>
+              }
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="choice_extra_value_key">
             <mat-header-cell *matHeaderCellDef>{{'Additional field'|transloco}}</mat-header-cell>
             <mat-cell *matCellDef="let row; let idx = index">
-              <mat-form-field appearance="outline" *ngIf="row.is_choice">
-                <mat-select
-                  [(ngModel)]="row.choices_origin.extra_value_key"
-                  [placeholder]="'Additional field'|transloco"
-                >
-                  <ng-container *ngIf="row.form_schema_ref_id">
-                    <mat-option [value]=""> </mat-option>
-                    <mat-option
-                      *ngFor="let field of schemaFields$[row.form_schema_ref_id]"
-                      [value]="field"
-                      [matTooltip]="field"
-                      [matTooltipPosition]="'left'"
-                      >{{field}}</mat-option
-                    >
-                  </ng-container>
-                </mat-select>
-              </mat-form-field>
+              @if (row.is_choice) {
+                <mat-form-field appearance="outline">
+                  <mat-select
+                    [(ngModel)]="row.choices_origin.extra_value_key"
+                    [placeholder]="'Additional field'|transloco"
+                  >
+                    @if (row.form_schema_ref_id) {
+                      <ng-container>
+                        <mat-option [value]=""> </mat-option>
+                        @for (field of schemaFields$[row.form_schema_ref_id]; track field) {
+                          <mat-option
+                            [value]="field"
+                            [matTooltip]="field"
+                            [matTooltipPosition]="'left'"
+                            >{{field}}</mat-option
+                          >
+                        }
+                      </ng-container>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              }
             </mat-cell>
           </ng-container>
 

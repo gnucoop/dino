@@ -1,94 +1,102 @@
 <div class="dino-survey-topbar">
   <dino-lang-selector [customLanguages]="customLanguages"></dino-lang-selector>
 </div>
-<ng-container *ngIf="(metricsState$|async) === 'ok'">
-<h1 *ngIf="(submitted|async) === false" class="dino-public-title">
-  {{(formSchema|async)?.label|transloco }}
-</h1>
-<div
-  class="dino-survey-progress"
-  *ngIf="(submitted|async) === false && (slidesNum$|async)! > 1"
-  role="progressbar"
-  aria-valuemin="0"
-  aria-valuemax="100"
-  [attr.aria-valuenow]="progress$ | async"
->
-  <div class="dino-survey-progress-track">
-    <div class="dino-survey-progress-fill" [style.width.%]="progress$ | async"></div>
-  </div>
-</div>
-<ng-container *ngIf="(submitted|async) === false">
-  <h2 *ngIf="currentSlideLabel$|async as slideLabel" class="dino-survey-slide-title">
-    {{ slideLabel|transloco }}
-  </h2>
-</ng-container>
-<ng-container *ngIf="(submitted|async) === false ; else successMsg">
-  <div *ngIf="form|async as currentForm" class="dino-edit-form-step-container">
-    <div class="dino-survey-slider-wrap">
-      <ajf-form
-        #formContainer
-        [form]="(form|async)!"
-        [saveDisabled]="(isValid|async) === false"
-        [topBar]="false"
-        [hideTopToolbar]="true"
-        [hideNavigationButtons]="true"
-        [centeredFieldsContent]="centeredFieldsContent"
-        (formAction)="onFormAction($event)"
-      ></ajf-form>
+@if ((metricsState$|async) === 'ok') {
+  @if ((submitted|async) === false) {
+    <h1 class="dino-public-title">
+      {{(formSchema|async)?.label|transloco }}
+    </h1>
+  }
+  @if ((submitted|async) === false && (slidesNum$|async)! > 1) {
+    <div
+      class="dino-survey-progress"
+      role="progressbar"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [attr.aria-valuenow]="progress$ | async"
+    >
+      <div class="dino-survey-progress-track">
+        <div class="dino-survey-progress-fill" [style.width.%]="progress$ | async"></div>
+      </div>
     </div>
-
-    <div class="dino-survey-footer">
-      <button
-        mat-raised-button
-        color="primary"
-        class="dino-survey-back"
-        [disabled]="(currentSlide$|async)! <= 0"
-        (click)="prevSlide()"
-      >
-        ‹ {{'Previous'|transloco}}
-      </button>
-      <span class="dino-survey-footer-spacer"></span>
-      <button
-        mat-raised-button
-        color="primary"
-        class="dino-survey-next"
-        *ngIf="(currentSlide$|async)! < (slidesNum$|async)! - 1"
-        [disabled]="(currentSlideValid$|async) === false"
-        (click)="nextSlide()"
-      >
-        {{'Next'|transloco}} ›
-      </button>
-      <button
-        mat-raised-button
-        color="primary"
-        class="dino-survey-submit"
-        [disabled]="(isValid|async) === false || isSaving"
-        (click)="saveForm()"
-      >
-        {{'Send'|transloco}}
-      </button>
-    </div>
-  </div>
-</ng-container>
-</ng-container>
-
-<div class="dino-survey-brand" *ngIf="logoUrl">
-  <span>{{ 'Powered by'|transloco }} {{ poweredByName }}</span>
-  <img [src]="logoUrl" [alt]="poweredByName" />
-</div>
-
-<ng-template #successMsg>
-  <div class="dino-edit-form-success-container">
-    <div class="dino-survey-success-box">
-      <mat-icon class="dino-survey-success-icon">check_circle</mat-icon>
-      <h2 class="dino-survey-success-title">
-        {{ 'The form has been successfully submitted.'|transloco }}
+  }
+  @if ((submitted|async) === false) {
+    @if (currentSlideLabel$|async; as slideLabel) {
+      <h2 class="dino-survey-slide-title">
+        {{ slideLabel|transloco }}
       </h2>
-    </div>
-  </div>
-</ng-template>
+    }
+  }
+  @if ((submitted|async) === false) {
+    @if (form|async; as currentForm) {
+      <div class="dino-edit-form-step-container">
+        <div class="dino-survey-slider-wrap">
+          <ajf-form
+            #formContainer
+            [form]="(form|async)!"
+            [saveDisabled]="(isValid|async) === false"
+            [topBar]="false"
+            [hideTopToolbar]="true"
+            [hideNavigationButtons]="true"
+            [centeredFieldsContent]="centeredFieldsContent"
+            (formAction)="onFormAction($event)"
+          ></ajf-form>
+        </div>
 
-<ng-container *ngIf="(metricsState$|async) === 'missing'">
+        <div class="dino-survey-footer">
+          <button
+            mat-raised-button
+            color="primary"
+            class="dino-survey-back"
+            [disabled]="(currentSlide$|async)! <= 0"
+            (click)="prevSlide()"
+          >
+            ‹ {{'Previous'|transloco}}
+          </button>
+          <span class="dino-survey-footer-spacer"></span>
+          @if ((currentSlide$|async)! < (slidesNum$|async)! - 1) {
+            <button
+              mat-raised-button
+              color="primary"
+              class="dino-survey-next"
+              [disabled]="(currentSlideValid$|async) === false"
+              (click)="nextSlide()"
+            >
+              {{'Next'|transloco}} ›
+            </button>
+          }
+          <button
+            mat-raised-button
+            color="primary"
+            class="dino-survey-submit"
+            [disabled]="(isValid|async) === false || isSaving"
+            (click)="saveForm()"
+          >
+            {{'Send'|transloco}}
+          </button>
+        </div>
+      </div>
+    }
+  } @else {
+    <div class="dino-edit-form-success-container">
+      <div class="dino-survey-success-box">
+        <mat-icon class="dino-survey-success-icon">check_circle</mat-icon>
+        <h2 class="dino-survey-success-title">
+          {{ 'The form has been successfully submitted.'|transloco }}
+        </h2>
+      </div>
+    </div>
+  }
+}
+
+@if (logoUrl) {
+  <div class="dino-survey-brand">
+    <span>{{ 'Powered by'|transloco }} {{ poweredByName }}</span>
+    <img [src]="logoUrl" [alt]="poweredByName" />
+  </div>
+}
+
+@if ((metricsState$|async) === 'missing') {
   <div class="dino-edit-form-error-container">
     <div class="dino-survey-error-box">
       <mat-icon class="dino-survey-error-icon">error_outline</mat-icon>
@@ -97,4 +105,4 @@
       </h2>
     </div>
   </div>
-</ng-container>
+}

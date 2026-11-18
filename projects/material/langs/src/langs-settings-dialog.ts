@@ -272,10 +272,6 @@ export class LangsSettingsDialog implements OnDestroy {
     return entry.key;
   }
 
-  trackByName(_: number, summary: LangSummaryVm): string {
-    return summary.name;
-  }
-
   private _resetUpload(): void {
     this._uploaded$.next(null);
     this._invalidFile$.next(false);

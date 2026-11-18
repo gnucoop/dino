@@ -2,268 +2,290 @@
   Compact layout only: a slim bar carrying the drawer toggle, the logo and the sync
   control. On wide viewports the full-height sidebar replaces it entirely.
 -->
-<mat-toolbar *ngIf="compact && sidenav && (showNav|async) !== false" class="dino-mobile-bar">
-  <button
-    mat-icon-button
-    (click)="menuToggle()"
-    aria-label="Toggle menu button"
-    *ngIf="(sideMenuDisabled|async) !== true"
-  >
-    <mat-icon>{{sidenav.opened ? 'menu_open' : 'menu'}}</mat-icon>
-  </button>
+@if (compact && sidenav && (showNav|async) !== false) {
+  <mat-toolbar class="dino-mobile-bar">
+    @if ((sideMenuDisabled|async) !== true) {
+      <button
+        mat-icon-button
+        (click)="menuToggle()"
+        aria-label="Toggle menu button"
+      >
+        <mat-icon>{{sidenav.opened ? 'menu_open' : 'menu'}}</mat-icon>
+      </button>
+    }
 
-  <img class="dino-mobile-bar-logo" [src]="logoImagePath" alt="logo" />
+    <img class="dino-mobile-bar-logo" [src]="logoImagePath" alt="logo" />
 
-  <div class="dino-mobile-bar-actions">
-    <ng-container [ngTemplateOutlet]="newVersionTemplate"></ng-container>
-    <!-- Sync is the action worth reaching without opening the drawer on a phone -->
-    <ng-container
-      [ngTemplateOutlet]="syncControl"
-      [ngTemplateOutletContext]="{inBar: true}"
-    ></ng-container>
-  </div>
-</mat-toolbar>
+    <div class="dino-mobile-bar-actions">
+      <ng-container [ngTemplateOutlet]="newVersionTemplate"></ng-container>
+      <!-- Sync is the action worth reaching without opening the drawer on a phone -->
+      <ng-container
+        [ngTemplateOutlet]="syncControl"
+        [ngTemplateOutletContext]="{inBar: true}"
+      ></ng-container>
+    </div>
+  </mat-toolbar>
+}
 
 <!--
   No 'autosize': the sidebar width and the content offset are both driven by the
   dino-shell-extended host class, so they animate together. See MainNav.shellExtended.
 -->
 <mat-sidenav-container class="dino-sidenav-container">
-  <mat-sidenav
-    *ngIf="(showNav|async) !== false"
-    #sidenav
-    [mode]="compact ? 'over' : 'side'"
-    [opened]="!compact"
-    class="dino-sidenav"
-    [class.dino-large-sidenav]="!compact"
-    [class.extended]="(extendedSidenav|async) || compact"
-  >
-    <div class="dino-sidenav-inner" *ngIf="(sideMenuDisabled|async) !== true">
-      <!--
-        Brand row: logo plus the collapse/expand toggle. The compact layout already
-        carries both in the top bar, so it would only repeat them here.
-      -->
-      <div class="dino-sidenav-brand" *ngIf="!compact">
-        <img
-          class="dino-sidenav-logo"
-          [src]="(extendedSidenav|async) ? logoImagePath : (logoMarkPath || logoImagePath)"
-          alt="logo"
-        />
-        <button
-          mat-icon-button
-          class="dino-sidenav-toggle"
-          (click)="menuToggle()"
-          [attr.aria-label]="'Toggle menu button'"
-          [attr.aria-expanded]="(extendedSidenav|async) || compact"
-        >
-          <mat-icon>menu</mat-icon>
-        </button>
-      </div>
-
-      <!--
-        Navigation: the public sections, then the Admin only ones. The nav element stays
-        in the layout while the sections load, since it is the flexible zone that holds
-        the utilities down at the bottom of the sidebar.
-      -->
-      <nav class="dino-sidenav-nav">
-        <mat-nav-list *ngIf="(isLoading|async) === false" [@loadComponent]>
-          <ng-container
-            [ngTemplateOutlet]="groupLabelTemplate"
-            [ngTemplateOutletContext]="{label: userSectionsLabel}"
-          ></ng-container>
-          <div *ngFor="let section of sections$|async" [tourAnchor]="section.url+'-nav'">
-            <ng-container
-              [ngTemplateOutlet]="sectionTemplate"
-              [ngTemplateOutletContext]="{section: section, ariaLabel: 'Section'}"
-            ></ng-container>
-          </div>
-
-          <ng-container *ngIf="adminSections$|async as adminSections">
-            <ng-container *ngIf="adminSections.length > 0 && (isAdmin|async)">
-              <ng-container
-                [ngTemplateOutlet]="groupLabelTemplate"
-                [ngTemplateOutletContext]="{label: adminSectionsLabel}"
-              ></ng-container>
-              <div *ngFor="let adminSection of adminSections">
-                <ng-container
-                  [ngTemplateOutlet]="sectionTemplate"
-                  [ngTemplateOutletContext]="{section: adminSection, ariaLabel: 'Admin Section'}"
-                ></ng-container>
-              </div>
-            </ng-container>
-          </ng-container>
-        </mat-nav-list>
-      </nav>
-
-      <!-- Utilities: sync, the utility icon row and the active user card -->
-      <div class="dino-sidenav-utilities">
-        <!-- In the compact layout sync lives in the top bar instead -->
-        <ng-container
-          *ngIf="!compact"
-          [ngTemplateOutlet]="syncControl"
-          [ngTemplateOutletContext]="{inBar: false}"
-        ></ng-container>
-
-        <div class="dino-utility-row">
-          <!-- In the compact layout this already lives in the top bar -->
-          <ng-container *ngIf="!compact">
-            <ng-container [ngTemplateOutlet]="newVersionTemplate"></ng-container>
-          </ng-container>
-          <ng-container [ngTemplateOutlet]="notificationsTemplate"></ng-container>
-          <!-- Too cramped to be usable in the rail; the user menu is the fallback there -->
-          <dino-theme-switch *ngIf="(extendedSidenav|async) || compact"></dino-theme-switch>
-
-          <ng-container *ngIf="(availableTokens|async) !== null">
-            <button
-              type="button"
-              class="dino-utility-button dino-tokens-counter"
-              [matTooltip]="'Your DINO-AI Credits'|transloco"
-              (click)="goToUserArea('ai')"
-            >
-              <mat-icon
-                aria-hidden="false"
-                aria-label="DINO-AI Credits"
-                class="dino-tokens-counter-icon"
-                [matBadge]="availableTokens|async"
-                matBadgeColor="primary"
-                matBadgeSize="small"
-                >smart_toy</mat-icon
+  @if ((showNav|async) !== false) {
+    <mat-sidenav
+      #sidenav
+      [mode]="compact ? 'over' : 'side'"
+      [opened]="!compact"
+      class="dino-sidenav"
+      [class.dino-large-sidenav]="!compact"
+      [class.extended]="(extendedSidenav|async) || compact"
+    >
+      @if ((sideMenuDisabled|async) !== true) {
+        <div class="dino-sidenav-inner">
+          <!--
+            Brand row: logo plus the collapse/expand toggle. The compact layout already
+            carries both in the top bar, so it would only repeat them here.
+          -->
+          @if (!compact) {
+            <div class="dino-sidenav-brand">
+              <img
+                class="dino-sidenav-logo"
+                [src]="(extendedSidenav|async) ? logoImagePath : (logoMarkPath || logoImagePath)"
+                alt="logo"
+              />
+              <button
+                mat-icon-button
+                class="dino-sidenav-toggle"
+                (click)="menuToggle()"
+                [attr.aria-label]="'Toggle menu button'"
+                [attr.aria-expanded]="(extendedSidenav|async) || compact"
               >
-            </button>
-          </ng-container>
-        </div>
-
-        <!-- Active user card -->
-        <div class="dino-user-card">
-          <!--
-            Always rendered, even before the user data resolves: this button is the only
-            way into the user menu, which now also holds the help link and the build info.
-          -->
-          <button
-            type="button"
-            class="dino-user-card-identity"
-            [matMenuTriggerFor]="userMenu"
-            [matTooltip]="(userDisplayName|async) ?? ('User Area'|transloco)"
-            [attr.aria-label]="(userDisplayName|async) ?? ('User Area'|transloco)"
-            [matTooltipDisabled]="(extendedSidenav|async) || compact"
-          >
-            <span class="dino-user-avatar" aria-hidden="true">
-              <ng-container *ngIf="userInitials|async as initials; else userIconTemplate">
-                {{initials}}
-              </ng-container>
-              <ng-template #userIconTemplate>
-                <mat-icon *ngIf="!userSectionIcon; else svgUserIconTemplate">person</mat-icon>
-                <ng-template #svgUserIconTemplate>
-                  <mat-icon svgIcon="{{userSectionIcon ?? ''}}"></mat-icon>
-                </ng-template>
-              </ng-template>
-            </span>
-            <span class="dino-user-card-text">
-              <span class="dino-user-card-name">{{userDisplayName|async}}</span>
-              <span class="dino-user-card-meta">
-                <ng-container *ngIf="userRoleLabel|async as roleLabel"
-                  >{{roleLabel|transloco}} &middot; </ng-container
-                >{{activeLang|async}}<ng-container *ngIf="appVersion">
-                  &middot; v{{appVersion}}</ng-container
-                >
-              </span>
-            </span>
-          </button>
-
-          <button
-            *ngIf="(logoutDisabled|async) !== true"
-            type="button"
-            class="dino-utility-button dino-logout-button"
-            [matTooltip]="'Logout'|transloco"
-            (click)="logout()"
-          >
-            <mat-icon>logout</mat-icon>
-          </button>
-        </div>
-
-        <mat-menu #userMenu="matMenu" [class]="'dino-user-menu'">
-          <button mat-menu-item (click)="goToUserArea()">
-            <mat-icon>settings</mat-icon>
-            <span>{{'User Area'|transloco}}</span>
-          </button>
-          <button mat-menu-item [matMenuTriggerFor]="langMenu">
-            <mat-icon>translate</mat-icon>
-            <span>{{'Language'|transloco}}</span>
-          </button>
-
-          <!--
-            The help link and the build info: they are reference material, not everyday
-            controls, so they live here rather than in the sidebar utility row. Entries
-            with a url are links; the one without is the build info, which is not
-            actionable and only carries text.
-          -->
-          <ng-container *ngFor="let linkIcon of linkIcons|async">
-            <a
-              *ngIf="linkIcon.url"
-              mat-menu-item
-              class="dino-link-button"
-              [href]="linkIcon.url"
-              target="_blank"
-            >
-              <mat-icon>{{linkIcon.icon}}</mat-icon>
-              <!-- The tooltip is deployment configured free text, so it is not a key -->
-              <span>{{linkIcon.tooltip || ('Help'|transloco)}}</span>
-            </a>
-          </ng-container>
-
-          <!-- Logout is the dedicated button next to the user card, not a menu entry -->
-
-          <!-- Build info: informational text, so not a menu item -->
-          <ng-container *ngFor="let linkIcon of linkIcons|async">
-            <div *ngIf="!linkIcon.url" class="dino-user-menu-info" role="none">
-              <mat-icon>{{linkIcon.icon}}</mat-icon>
-              <span>{{linkIcon.tooltip}}</span>
+                <mat-icon>menu</mat-icon>
+              </button>
             </div>
-          </ng-container>
-        </mat-menu>
+          }
 
-        <mat-menu #langMenu="matMenu">
-          <button
-            mat-menu-item
-            *ngFor="let lang of customLanguages"
-            [class.dino-lang-selected]="lang === (activeLang|async)"
-            (click)="setLang(lang)"
-          >
-            {{lang}}
-          </button>
-        </mat-menu>
-      </div>
-    </div>
-  </mat-sidenav>
+          <!--
+            Navigation: the public sections, then the Admin only ones. The nav element stays
+            in the layout while the sections load, since it is the flexible zone that holds
+            the utilities down at the bottom of the sidebar.
+          -->
+          <nav class="dino-sidenav-nav">
+            @if ((isLoading|async) === false) {
+              <mat-nav-list [@loadComponent]>
+                <ng-container
+                  [ngTemplateOutlet]="groupLabelTemplate"
+                  [ngTemplateOutletContext]="{label: userSectionsLabel}"
+                ></ng-container>
+                @for (section of sections$|async; track section.url) {
+                  <div [tourAnchor]="section.url+'-nav'">
+                    <ng-container
+                      [ngTemplateOutlet]="sectionTemplate"
+                      [ngTemplateOutletContext]="{section: section, ariaLabel: 'Section'}"
+                    ></ng-container>
+                  </div>
+                }
+
+                @if (adminSections$|async; as adminSections) {
+                  @if (adminSections.length > 0 && (isAdmin|async)) {
+                    <ng-container
+                      [ngTemplateOutlet]="groupLabelTemplate"
+                      [ngTemplateOutletContext]="{label: adminSectionsLabel}"
+                    ></ng-container>
+                    @for (adminSection of adminSections; track adminSection.url) {
+                      <div>
+                        <ng-container
+                          [ngTemplateOutlet]="sectionTemplate"
+                          [ngTemplateOutletContext]="{section: adminSection, ariaLabel: 'Admin Section'}"
+                        ></ng-container>
+                      </div>
+                    }
+                  }
+                }
+              </mat-nav-list>
+            }
+          </nav>
+
+          <!-- Utilities: sync, the utility icon row and the active user card -->
+          <div class="dino-sidenav-utilities">
+            <!-- In the compact layout sync lives in the top bar instead -->
+            @if (!compact) {
+              <ng-container
+                [ngTemplateOutlet]="syncControl"
+                [ngTemplateOutletContext]="{inBar: false}"
+              ></ng-container>
+            }
+
+            <div class="dino-utility-row">
+              <!-- In the compact layout this already lives in the top bar -->
+              @if (!compact) {
+                <ng-container [ngTemplateOutlet]="newVersionTemplate"></ng-container>
+              }
+              <ng-container [ngTemplateOutlet]="notificationsTemplate"></ng-container>
+              <!-- Too cramped to be usable in the rail; the user menu is the fallback there -->
+              @if ((extendedSidenav|async) || compact) {
+                <dino-theme-switch></dino-theme-switch>
+              }
+
+              @if ((availableTokens|async) !== null) {
+                <button
+                  type="button"
+                  class="dino-utility-button dino-tokens-counter"
+                  [matTooltip]="'Your DINO-AI Credits'|transloco"
+                  (click)="goToUserArea('ai')"
+                >
+                  <mat-icon
+                    aria-hidden="false"
+                    aria-label="DINO-AI Credits"
+                    class="dino-tokens-counter-icon"
+                    [matBadge]="availableTokens|async"
+                    matBadgeColor="primary"
+                    matBadgeSize="small"
+                    >smart_toy</mat-icon
+                  >
+                </button>
+              }
+            </div>
+
+            <!-- Active user card -->
+            <div class="dino-user-card">
+              <!--
+                Always rendered, even before the user data resolves: this button is the only
+                way into the user menu, which now also holds the help link and the build info.
+              -->
+              <button
+                type="button"
+                class="dino-user-card-identity"
+                [matMenuTriggerFor]="userMenu"
+                [matTooltip]="(userDisplayName|async) ?? ('User Area'|transloco)"
+                [attr.aria-label]="(userDisplayName|async) ?? ('User Area'|transloco)"
+                [matTooltipDisabled]="(extendedSidenav|async) || compact"
+              >
+                <span class="dino-user-avatar" aria-hidden="true">
+                  @if (userInitials|async; as initials) {
+                    {{initials}}
+                  } @else {
+                    @if (!userSectionIcon) {
+                      <mat-icon>person</mat-icon>
+                    } @else {
+                      <mat-icon svgIcon="{{userSectionIcon ?? ''}}"></mat-icon>
+                    }
+                  }
+                </span>
+                <span class="dino-user-card-text">
+                  <span class="dino-user-card-name">{{userDisplayName|async}}</span>
+                  <span class="dino-user-card-meta">
+                    @if (userRoleLabel|async; as roleLabel) {
+                      {{roleLabel|transloco}} &middot;
+                    }
+                    {{activeLang|async}}
+                    @if (appVersion) {
+                      &middot; v{{appVersion}}
+                    }
+                  </span>
+                </span>
+              </button>
+
+              @if ((logoutDisabled|async) !== true) {
+                <button
+                  type="button"
+                  class="dino-utility-button dino-logout-button"
+                  [matTooltip]="'Logout'|transloco"
+                  (click)="logout()"
+                >
+                  <mat-icon>logout</mat-icon>
+                </button>
+              }
+            </div>
+
+            <mat-menu #userMenu="matMenu" [class]="'dino-user-menu'">
+              <button mat-menu-item (click)="goToUserArea()">
+                <mat-icon>settings</mat-icon>
+                <span>{{'User Area'|transloco}}</span>
+              </button>
+              <button mat-menu-item [matMenuTriggerFor]="langMenu">
+                <mat-icon>translate</mat-icon>
+                <span>{{'Language'|transloco}}</span>
+              </button>
+
+              <!--
+                The help link and the build info: they are reference material, not everyday
+                controls, so they live here rather than in the sidebar utility row. Entries
+                with a url are links; the one without is the build info, which is not
+                actionable and only carries text.
+              -->
+              @for (linkIcon of linkIcons|async; track linkIcon) {
+                @if (linkIcon.url) {
+                  <a
+                    mat-menu-item
+                    class="dino-link-button"
+                    [href]="linkIcon.url"
+                    target="_blank"
+                  >
+                    <mat-icon>{{linkIcon.icon}}</mat-icon>
+                    <!-- The tooltip is deployment configured free text, so it is not a key -->
+                    <span>{{linkIcon.tooltip || ('Help'|transloco)}}</span>
+                  </a>
+                }
+              }
+
+              <!-- Logout is the dedicated button next to the user card, not a menu entry -->
+
+              <!-- Build info: informational text, so not a menu item -->
+              @for (linkIcon of linkIcons|async; track linkIcon) {
+                @if (!linkIcon.url) {
+                  <div class="dino-user-menu-info" role="none">
+                    <mat-icon>{{linkIcon.icon}}</mat-icon>
+                    <span>{{linkIcon.tooltip}}</span>
+                  </div>
+                }
+              }
+            </mat-menu>
+
+            <mat-menu #langMenu="matMenu">
+              @for (lang of customLanguages; track lang) {
+                <button
+                  mat-menu-item
+                  [class.dino-lang-selected]="lang === (activeLang|async)"
+                  (click)="setLang(lang)"
+                >
+                  {{lang}}
+                </button>
+              }
+            </mat-menu>
+          </div>
+        </div>
+      }
+    </mat-sidenav>
+  }
 
   <mat-sidenav-content
     [ngClass]="'dino-sidenav-content '+(tourService.isTourOngoing.value ? 'dino-sidenav-content-not-scrollable' : '')"
     [class.dino-no-topbar]="(showNav|async) === false"
     [@loadComponent]
   >
-    <ng-container *ngIf="(isLoading|async) === false; else loading">
+    @if ((isLoading|async) === false) {
       <router-outlet [@loadComponent] (activate)="onRouterOutletLoading($event)"></router-outlet>
-    </ng-container>
-    <ng-template #loading>
+    } @else {
       <div class="dino-loading" [@loadComponent]>
-        <ng-container *ngIf="spinnerImagePath; else defaultspinner">
+        @if (spinnerImagePath) {
           <h2 [@loadComponent] class="dino-sync-text">{{"Initializing data"|transloco}}...</h2>
           <dino-loading-spinner
             [@loadComponent]
             [spinnerImagePath]="spinnerImagePath"
           ></dino-loading-spinner>
-        </ng-container>
-        <ng-template #defaultspinner>
+        } @else {
           <h2 [@loadComponent] class="dino-sync-text">{{"Initializing data"|transloco}}...</h2>
           <mat-spinner
             [@loadComponent]
             class="dino-component-load-spinner"
             mode="indeterminate"
             [diameter]="180"
-          ></mat-spinner
-        ></ng-template>
+          ></mat-spinner>
+        }
       </div>
-    </ng-template>
+    }
   </mat-sidenav-content>
 </mat-sidenav-container>
 
@@ -271,15 +293,13 @@
 
 <!-- An uppercase group heading when the sidebar is expanded, a rule when collapsed -->
 <ng-template #groupLabelTemplate let-label="label">
-  <div
-    class="dino-nav-group-label"
-    *ngIf="(extendedSidenav|async) || compact; else groupDividerTemplate"
-  >
-    {{label|transloco}}
-  </div>
-  <ng-template #groupDividerTemplate>
+  @if ((extendedSidenav|async) || compact) {
+    <div class="dino-nav-group-label">
+      {{label|transloco}}
+    </div>
+  } @else {
     <mat-divider class="dino-nav-group-divider"></mat-divider>
-  </ng-template>
+  }
 </ng-template>
 
 <!-- A single navigation entry -->
@@ -296,11 +316,14 @@
     matTooltipPosition="right"
     [attr.data-dino-section]="ariaLabel"
   >
-    <mat-icon *ngIf="!section.svgIcon; else svgSectionIconTemplate">{{section.icon}}</mat-icon>
-    <ng-template #svgSectionIconTemplate>
+    @if (!section.svgIcon) {
+      <mat-icon>{{section.icon}}</mat-icon>
+    } @else {
       <mat-icon svgIcon="{{section.svgIcon ?? ''}}"></mat-icon>
-    </ng-template>
-    <span *ngIf="(extendedSidenav|async) || compact">{{section.label|transloco}}</span>
+    }
+    @if ((extendedSidenav|async) || compact) {
+      <span>{{section.label|transloco}}</span>
+    }
   </a>
 </ng-template>
 
@@ -311,12 +334,12 @@
   both call sites share them.
 -->
 <ng-template #syncControl let-inBar="inBar">
-  <ng-container *ngIf="!isBackendless && (syncSpinnerDisabled|async) !== true">
+  @if (!isBackendless && (syncSpinnerDisabled|async) !== true) {
     <ng-container
       [ngTemplateOutlet]="(networkStatusService.isOnline$|async) ? syncOnline : syncOffline"
       [ngTemplateOutletContext]="{inBar: inBar}"
     ></ng-container>
-  </ng-container>
+  }
 </ng-template>
 
 <ng-template #syncOnline let-inBar="inBar">
@@ -329,18 +352,18 @@
     [matTooltipPosition]="inBar ? 'below' : 'right'"
     (click)="runSync()"
   >
-    <mat-icon
-      *ngIf="!syncIcon; else svgSyncIconTemplate"
-      class="dino-sync-detector"
-      [class.dino-sync-active]="isSyncing|async"
-      [matBadge]="'!'"
-      matBadgeColor="warn"
-      matBadgeSize="small"
-      [matBadgeHidden]="(problemSyncing|async) !== true || (isSyncing|async) === true"
-      >{{(sessionNeedsLogin|async) === true || ((isThereUnsyncedData|async) === true &&
-      (isSyncing|async) === false) ? 'sync_problem' : 'sync'}}</mat-icon
-    >
-    <ng-template #svgSyncIconTemplate>
+    @if (!syncIcon) {
+      <mat-icon
+        class="dino-sync-detector"
+        [class.dino-sync-active]="isSyncing|async"
+        [matBadge]="'!'"
+        matBadgeColor="warn"
+        matBadgeSize="small"
+        [matBadgeHidden]="(problemSyncing|async) !== true || (isSyncing|async) === true"
+        >{{(sessionNeedsLogin|async) === true || ((isThereUnsyncedData|async) === true &&
+        (isSyncing|async) === false) ? 'sync_problem' : 'sync'}}</mat-icon
+      >
+    } @else {
       <mat-icon
         class="dino-sync-detector"
         [class.dino-sync-active]="isSyncing|async"
@@ -350,13 +373,15 @@
         [matBadgeHidden]="(problemSyncing|async) !== true || (isSyncing|async) === true"
         svgIcon="{{syncIcon}}"
       ></mat-icon>
-    </ng-template>
-    <span class="dino-sync-button-text" *ngIf="!inBar && ((extendedSidenav|async) || compact)">
-      <span class="dino-sync-button-label">{{'Synchronize'|transloco}}</span>
-      <span class="dino-sync-button-time"
-        >{{(lastSyncLabel|async) ?? ('Never synchronized'|transloco)}}</span
-      >
-    </span>
+    }
+    @if (!inBar && ((extendedSidenav|async) || compact)) {
+      <span class="dino-sync-button-text">
+        <span class="dino-sync-button-label">{{'Synchronize'|transloco}}</span>
+        <span class="dino-sync-button-time"
+          >{{(lastSyncLabel|async) ?? ('Never synchronized'|transloco)}}</span
+        >
+      </span>
+    }
   </button>
 </ng-template>
 
@@ -370,25 +395,28 @@
     [matTooltipPosition]="inBar ? 'below' : 'right'"
   >
     <mat-icon class="dino-sync-detector">sync_disabled</mat-icon>
-    <span class="dino-sync-button-text" *ngIf="!inBar && ((extendedSidenav|async) || compact)">
-      <span class="dino-sync-button-label">{{'Synchronize'|transloco}}</span>
-      <span class="dino-sync-button-time">{{'Offline'|transloco}}</span>
-    </span>
+    @if (!inBar && ((extendedSidenav|async) || compact)) {
+      <span class="dino-sync-button-text">
+        <span class="dino-sync-button-label">{{'Synchronize'|transloco}}</span>
+        <span class="dino-sync-button-time">{{'Offline'|transloco}}</span>
+      </span>
+    }
   </button>
 </ng-template>
 
 <!-- The 'a new app version is ready' prompt -->
 <ng-template #newVersionTemplate>
-  <button
-    *ngIf="(newVersionReady|async) as newVersion"
-    type="button"
-    class="dino-utility-button dino-new-version-button"
-    aria-label="Toolbar action"
-    [matTooltip]="('New App version ready!'|transloco) + ' - ' + newVersion"
-    (click)="refreshVersion()"
-  >
-    <mat-icon color="accent">download_for_offline</mat-icon>
-  </button>
+  @if ((newVersionReady|async); as newVersion) {
+    <button
+      type="button"
+      class="dino-utility-button dino-new-version-button"
+      aria-label="Toolbar action"
+      [matTooltip]="('New App version ready!'|transloco) + ' - ' + newVersion"
+      (click)="refreshVersion()"
+    >
+      <mat-icon color="accent">download_for_offline</mat-icon>
+    </button>
+  }
 </ng-template>
 
 <!-- The notification bell and its panel -->
@@ -401,20 +429,20 @@
     [matTooltip]="'Notifications'|transloco"
     [attr.aria-label]="'Notifications'|transloco"
   >
-    <mat-icon
-      *ngIf="unreadNotificationsNumber|async as newNotifications; else noBadgeTemplate"
-      class="dino-notifications-icon"
-      [matBadge]="newNotifications"
-      matBadgeColor="warn"
-      matBadgeSize="small"
-      [@.disabled]="newNotifications <= 0"
-      [@notificationRing]="notificationRingState ? 'a' : 'b'"
-    >
-      notifications
-    </mat-icon>
-    <ng-template #noBadgeTemplate>
+    @if (unreadNotificationsNumber|async; as newNotifications) {
+      <mat-icon
+        class="dino-notifications-icon"
+        [matBadge]="newNotifications"
+        matBadgeColor="warn"
+        matBadgeSize="small"
+        [@.disabled]="newNotifications <= 0"
+        [@notificationRing]="notificationRingState ? 'a' : 'b'"
+      >
+        notifications
+      </mat-icon>
+    } @else {
       <mat-icon class="dino-notifications-icon">notifications</mat-icon>
-    </ng-template>
+    }
   </button>
 
   <!--
@@ -426,56 +454,60 @@
     <div class="dino-notifications-panel">
       <div class="dino-notifications-head">
         <span class="dino-notifications-title">{{'Notifications'|transloco}}</span>
-        <span class="dino-notifications-count" *ngIf="lastUnreadNotifications|async as unread">
-          {{'{{count}} unread'|transloco:{count: unread} }}
-        </span>
-        <button
-          type="button"
-          class="dino-notifications-link"
-          *ngIf="((lastUnreadNotifications|async) ?? 0) > 0"
-          (click)="markAllAsRead($event)"
-        >
-          {{'Mark all as read'|transloco}}
-        </button>
+        @if (lastUnreadNotifications|async; as unread) {
+          <span class="dino-notifications-count">
+            {{'{{count}} unread'|transloco:{count: unread} }}
+          </span>
+        }
+        @if (((lastUnreadNotifications|async) ?? 0) > 0) {
+          <button
+            type="button"
+            class="dino-notifications-link"
+            (click)="markAllAsRead($event)"
+          >
+            {{'Mark all as read'|transloco}}
+          </button>
+        }
       </div>
 
       <div class="dino-notifications-list">
-        <ng-container
-          *ngFor="let group of notificationGroups|async; trackBy: trackNotificationGroup"
-        >
+        @for (group of notificationGroups|async; track group.label) {
           <div class="dino-notifications-day">{{group.label|transloco}}</div>
-          <button
-            type="button"
-            class="dino-notification-row"
-            *ngFor="let entry of group.entries; trackBy: trackNotificationEntry"
-            [class.dino-notification-unread]="entry.unread"
-            [class.dino-notification-linked]="entry.notification.redirect_url"
-            [attr.aria-label]="entry.notification.text || ''"
-            (click)="openNotificationEntry($event, entry) && notificationsTrigger.closeMenu()"
-          >
-            <span class="dino-notification-dot" aria-hidden="true"></span>
-            <span class="dino-notification-avatar" aria-hidden="true">
-              <mat-icon>{{entry.notification.icon || 'notifications'}}</mat-icon>
-            </span>
-            <span class="dino-notification-body">
-              <span class="dino-notification-text">{{entry.notification.text}}</span>
-              <span class="dino-notification-repeat" *ngIf="entry.count > 1"
-                >&times;{{entry.count}}</span
-              >
-            </span>
-            <span class="dino-notification-age">
-              {{entry.age.translate ? (entry.age.label|transloco:{count: entry.age.count}) :
-              entry.age.label}}
-            </span>
-            <mat-icon class="dino-notification-link" *ngIf="entry.notification.redirect_url"
-              >arrow_forward</mat-icon
+          @for (entry of group.entries; track entry.id) {
+            <button
+              type="button"
+              class="dino-notification-row"
+              [class.dino-notification-unread]="entry.unread"
+              [class.dino-notification-linked]="entry.notification.redirect_url"
+              [attr.aria-label]="entry.notification.text || ''"
+              (click)="openNotificationEntry($event, entry) && notificationsTrigger.closeMenu()"
             >
-          </button>
-        </ng-container>
+              <span class="dino-notification-dot" aria-hidden="true"></span>
+              <span class="dino-notification-avatar" aria-hidden="true">
+                <mat-icon>{{entry.notification.icon || 'notifications'}}</mat-icon>
+              </span>
+              <span class="dino-notification-body">
+                <span class="dino-notification-text">{{entry.notification.text}}</span>
+                @if (entry.count > 1) {
+                  <span class="dino-notification-repeat">&times;{{entry.count}}</span>
+                }
+              </span>
+              <span class="dino-notification-age">
+                {{entry.age.translate ? (entry.age.label|transloco:{count: entry.age.count}) :
+                entry.age.label}}
+              </span>
+              @if (entry.notification.redirect_url) {
+                <mat-icon class="dino-notification-link">arrow_forward</mat-icon>
+              }
+            </button>
+          }
+        }
 
-        <div class="dino-notifications-empty" *ngIf="(notificationGroups|async)?.length === 0">
-          {{'No notifications'|transloco}}
-        </div>
+        @if ((notificationGroups|async)?.length === 0) {
+          <div class="dino-notifications-empty">
+            {{'No notifications'|transloco}}
+          </div>
+        }
       </div>
 
       <button

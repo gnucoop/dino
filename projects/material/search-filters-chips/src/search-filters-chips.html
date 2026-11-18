@@ -1,21 +1,23 @@
 <mat-chip-listbox [attr.aria-label]="'Applied filters'|transloco">
-  <mat-chip-option *ngFor="let item of chipsFilters|async">
-    <span class="dino-chip-field">
-      {{ chipLabel(item)|transloco|uppercase|slice:0:30 }}
-    </span>
+  @for (item of chipsFilters|async; track item) {
+    <mat-chip-option>
+      <span class="dino-chip-field">
+        {{ chipLabel(item)|transloco|uppercase|slice:0:30 }}
+      </span>
 
-    <ng-container *ngIf="item.isBasicFilter; else advancedValue">
-      {{ chipValue(item)|dinoDateValue }}
-    </ng-container>
+      @if (item.isBasicFilter) {
+        {{ chipValue(item)|dinoDateValue }}
+      } @else {
+        <ng-container>
+          {{ item?.operator?.label ? item?.operator?.label: ' '|transloco}}
 
-    <ng-template #advancedValue>
-      {{ item?.operator?.label ? item?.operator?.label: ' '|transloco}}
+          @if (!isArrayWithNull(item.value)) {
+            {{ item.value|dinoDateValue|json }}
+          }
+        </ng-container>
+      }
 
-      <ng-container *ngIf="!isArrayWithNull(item.value)">
-        {{ item.value|dinoDateValue|json }}
-      </ng-container>
-    </ng-template>
-
-    <mat-icon matChipRemove (click)="removeFilterItem(item)">cancel</mat-icon>
-  </mat-chip-option>
+      <mat-icon matChipRemove (click)="removeFilterItem(item)">cancel</mat-icon>
+    </mat-chip-option>
+  }
 </mat-chip-listbox>
