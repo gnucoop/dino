@@ -16,12 +16,16 @@
   [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
   (exportEvt)="export($event)"
 >
-  <mat-form-field *ngIf="geoFields.length > 0" toolbarActions class="dino-map-pin-source">
-    <span matTextPrefix>{{'Coordinates from'|transloco}}:&nbsp;</span>
-    <mat-select [value]="pinSource.value" (selectionChange)="pinSource.next($event.value)">
-      <mat-option [value]="locationPinSource">{{'Location'|transloco}}</mat-option>
-      <mat-option *ngFor="let field of geoFields" [value]="field.column">{{field.label}}</mat-option>
-    </mat-select>
-  </mat-form-field>
+  @if (geoFields.length > 0) {
+    <mat-form-field toolbarActions class="dino-map-pin-source">
+      <span matTextPrefix>{{'Coordinates from'|transloco}}:&nbsp;</span>
+      <mat-select [value]="pinSource.value" (selectionChange)="pinSource.next($event.value)">
+        <mat-option [value]="locationPinSource">{{'Location'|transloco}}</mat-option>
+        @for (field of geoFields; track field.column) {
+          <mat-option [value]="field.column">{{field.label}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
 </dino-search-filters-bar>
 <div id="mapContainer"></div>

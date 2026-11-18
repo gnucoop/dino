@@ -26,25 +26,27 @@
     [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
     (exportEvt)="dinoList.export($event, 'forms')"
   >
-    <button
-      toolbarActions
-      mat-stroked-button
-      *ngIf="displayAddButton|async"
-      [tourAnchor]="'add-form-floating-button'"
-      (click)="addForm()"
-    >
-      <mat-icon>add</mat-icon>
-      <span>{{'Add New form' | transloco}}</span>
-    </button>
-    <button
-      toolbarActions
-      mat-stroked-button
-      *ngIf="(displayAddButton|async) && displayImportButton"
-      (click)="openImportForms()"
-    >
-      <mat-icon>cloud_upload</mat-icon>
-      <span>{{'Import forms' | transloco}}</span>
-    </button>
+    @if (displayAddButton|async) {
+      <button
+        toolbarActions
+        mat-stroked-button
+        [tourAnchor]="'add-form-floating-button'"
+        (click)="addForm()"
+      >
+        <mat-icon>add</mat-icon>
+        <span>{{'Add New form' | transloco}}</span>
+      </button>
+    }
+    @if ((displayAddButton|async) && displayImportButton) {
+      <button
+        toolbarActions
+        mat-stroked-button
+        (click)="openImportForms()"
+      >
+        <mat-icon>cloud_upload</mat-icon>
+        <span>{{'Import forms' | transloco}}</span>
+      </button>
+    }
   </dino-search-filters-bar>
   <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
 </dino-list>

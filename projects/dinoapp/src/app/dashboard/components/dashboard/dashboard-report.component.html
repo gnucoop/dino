@@ -1,15 +1,14 @@
 <div class="centered-tour-element" tourAnchor="start-tour"></div>
-<dino-edit-report
-  *ngIf="favoriteReportId; else emptydashboard"
-  [hasOptionalMetrics]="optionalMetrics"
-  [setReportId]="favoriteReportId"
-  [steps]="false"
-  (reportInstanceCreatedEvt)="startTourOnReportInstanceReady($event)"
-  [spinnerImagePath]="(spinnerImagePath|async) ?? lightSpinnerPath"
-  ><dino-breadcrumbs breadcrumbs></dino-breadcrumbs
-></dino-edit-report>
-
-<ng-template #emptydashboard>
+@if (favoriteReportId) {
+  <dino-edit-report
+    [hasOptionalMetrics]="optionalMetrics"
+    [setReportId]="favoriteReportId"
+    [steps]="false"
+    (reportInstanceCreatedEvt)="startTourOnReportInstanceReady($event)"
+    [spinnerImagePath]="(spinnerImagePath|async) ?? lightSpinnerPath"
+    ><dino-breadcrumbs breadcrumbs></dino-breadcrumbs
+  ></dino-edit-report>
+} @else {
   <div class="dino-empty-dashboard-message">
     <h1>
       {{'Welcome to DINO'|transloco
@@ -19,4 +18,4 @@
       >
     </h1>
   </div>
-</ng-template>
+}

@@ -19,15 +19,16 @@
     [aggregationFilters]="true"
     [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
   >
-    <button
-      toolbarActions
-      mat-stroked-button
-      *ngIf="aggregationFormCreator"
-      (click)="openFormCreatorDialog()"
-    >
-      <mat-icon>add</mat-icon>
-      <span>{{'Add New form'|transloco}}</span>
-    </button>
+    @if (aggregationFormCreator) {
+      <button
+        toolbarActions
+        mat-stroked-button
+        (click)="openFormCreatorDialog()"
+      >
+        <mat-icon>add</mat-icon>
+        <span>{{'Add New form'|transloco}}</span>
+      </button>
+    }
   </dino-search-filters-bar>
   <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
 </dino-list>

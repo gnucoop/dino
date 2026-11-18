@@ -2,17 +2,22 @@
   <h1>RAG Document Parser</h1>
 
   <select (change)="onNamespaceChange($event)">
-    <option *ngFor="let n of namespaces" [value]="n">
-      {{n === '' ? 'Default' : n}}
-    </option>
+    @for (n of namespaces; track n) {
+      <option [value]="n">
+        {{n === '' ? 'Default' : n}}
+      </option>
+    }
   </select>
   namespace
   <br>
   <input type="file" accept=".txt,.mp3,.jpg,.jpeg,.png,.pdf,.md" (change)="onFileChange($event)">
 
   <div class="status-bar">{{statusMessage}}</div>
-  <a *ngIf="fileUrl" [href]="fileUrl" target="_blank">{{fileUrl}}</a>
-  <span *ngIf="!fileUrl">&nbsp;</span>
+  @if (fileUrl) {
+    <a [href]="fileUrl" target="_blank">{{fileUrl}}</a>
+  } @else {
+    <span>&nbsp;</span>
+  }
 
   <hr>
 
@@ -28,14 +33,18 @@
 </div>
 
 <div>
-  <h1 *ngIf="files.length > 0">Imported Files</h1>
+  @if (files.length > 0) {
+    <h1>Imported Files</h1>
+  }
 
   <table>
-    <tr *ngFor="let file of files">
-      <td>
-        <a [href]="filesUrl+'/'+file.id" target="_blank">{{file.name}}</a>
-      </td>
-    </tr>
+    @for (file of files; track file.id) {
+      <tr>
+        <td>
+          <a [href]="filesUrl+'/'+file.id" target="_blank">{{file.name}}</a>
+        </td>
+      </tr>
+    }
   </table>
 
   <br><br><br><br>

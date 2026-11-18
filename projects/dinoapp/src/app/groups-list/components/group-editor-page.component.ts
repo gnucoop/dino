@@ -348,10 +348,6 @@ export class GroupEditorPage implements OnDestroy {
     return item.itemId;
   }
 
-  trackByTab(_index: number, tab: CategoryTab): string {
-    return tab.type;
-  }
-
   // ---- Navigation -----------------------------------------------------------
   canSave(): boolean {
     return (

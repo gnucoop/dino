@@ -14,21 +14,24 @@
     [presetManager]="true"
     [secondaryMetricFieldsDisplayed]="secondaryMetricFieldsDisplayed"
   >
-    <button
-      toolbarActions
-      mat-stroked-button
-      *ngIf="displayAddButton|async"
-      [matTooltip]="(tooltipMessage|async)!"
-      [tourAnchor]="'add-report-floating-button'"
-      (click)="addReport()"
-    >
-      <mat-icon>add</mat-icon>
-      <span>{{tooltipMessage|async}}</span>
-      <span class="dino-report-cost" *ngIf="reportCost|async as cost">
-        <mat-icon>smart_toy</mat-icon>
-        <span>{{cost}}</span>
-      </span>
-    </button>
+    @if (displayAddButton|async) {
+      <button
+        toolbarActions
+        mat-stroked-button
+        [matTooltip]="(tooltipMessage|async)!"
+        [tourAnchor]="'add-report-floating-button'"
+        (click)="addReport()"
+      >
+        <mat-icon>add</mat-icon>
+        <span>{{tooltipMessage|async}}</span>
+        @if (reportCost|async; as cost) {
+          <span class="dino-report-cost">
+            <mat-icon>smart_toy</mat-icon>
+            <span>{{cost}}</span>
+          </span>
+        }
+      </button>
+    }
   </dino-search-filters-bar>
   <dino-breadcrumbs breadcrumbs></dino-breadcrumbs>
 </dino-list>

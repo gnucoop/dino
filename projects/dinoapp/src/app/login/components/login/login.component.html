@@ -37,14 +37,18 @@
       <div class="dinoapp-login-kicker">{{ 'login_kicker' | transloco }}</div>
       <h1>{{ 'login_title' | transloco }}</h1>
       <p [innerHTML]="'login_description' | transloco"></p>
-      <div *ngIf="showModules" class="dinoapp-login-modules">
-        <ng-container *ngFor="let module of modules | async">
-          <div *ngIf="module.title | transloco as title" class="dinoapp-login-module">
-            <div class="dinoapp-login-module-title">{{ title }}</div>
-            <div class="dinoapp-login-module-body" [innerHTML]="module.body | transloco"></div>
-          </div>
-        </ng-container>
-      </div>
+      @if (showModules) {
+        <div class="dinoapp-login-modules">
+          @for (module of modules | async; track module.title) {
+            @if (module.title | transloco; as title) {
+              <div class="dinoapp-login-module">
+                <div class="dinoapp-login-module-title">{{ title }}</div>
+                <div class="dinoapp-login-module-body" [innerHTML]="module.body | transloco"></div>
+              </div>
+            }
+          }
+        </div>
+      }
     </section>
 
     <section class="dinoapp-login-form">
@@ -54,14 +58,18 @@
         [fullNameLabel]="fullNameLabel"
         (emitActionTrigger)="processActionTrigger($event)"
       >
-        <mat-form-field *ngIf="dynamicConfig" class="dino-platform-dropdown" dropdownSelect>
-          <mat-label>{{ 'Choose your platform' | transloco }}</mat-label>
-          <mat-select #platformselect>
-            <mat-option *ngFor="let set of configurationSets | async" [value]="set">
-              {{ set.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        @if (dynamicConfig) {
+          <mat-form-field class="dino-platform-dropdown" dropdownSelect>
+            <mat-label>{{ 'Choose your platform' | transloco }}</mat-label>
+            <mat-select #platformselect>
+              @for (set of configurationSets | async; track set.name) {
+                <mat-option [value]="set">
+                  {{ set.name }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        }
       </dino-login>
     </section>
   </main>
