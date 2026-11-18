@@ -1,4 +1,4 @@
-import {parseLatLon} from './forms-map';
+import {parseLatLon} from './parse-lat-lon';
 
 describe('parseLatLon', () => {
   it('parses a complete pair', () => {
