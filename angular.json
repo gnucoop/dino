@@ -407,7 +407,9 @@
               "buildTarget": "dinoapp:build:development"
             },
             "e2e": {
-              "buildTarget": "dinoapp:build:e2e"
+              "buildTarget": "dinoapp:build:e2e",
+              "hmr": false,
+              "liveReload": false
             }
           },
           "defaultConfiguration": "development"
