@@ -4,7 +4,7 @@ import * as conf from '../conf';
 @Component({
   selector: 'dinoapp-reset-password',
   templateUrl: 'reset-password.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false,
 })
 export class ResetPasswordComponent {

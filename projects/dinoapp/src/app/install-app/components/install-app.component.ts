@@ -5,7 +5,7 @@ import {MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef} from '@angular/material/bottom
   selector: 'dinoapp-install-app',
   templateUrl: './install-app.component.html',
   styleUrls: ['./install-app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: false
 })
 export class InstallAppComponent {
