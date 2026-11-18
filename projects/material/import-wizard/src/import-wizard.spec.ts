@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {TranslocoModule} from '@jsverse/transloco';
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 
 import {applyMappings, ColumnMapping, ImportField, warningGroup} from './import-model';
 import {ImportWizard} from './import-wizard';
@@ -25,7 +25,7 @@ describe('Import Wizard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, ImportWizardModule, TranslocoModule],
+      imports: [BrowserAnimationsModule, ImportWizardModule, AjfTranslocoModule],
     }).compileComponents();
     fixture = TestBed.createComponent(ImportWizard);
     wizard = fixture.componentInstance;

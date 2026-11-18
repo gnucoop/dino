@@ -1,3 +1,4 @@
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {provideRouter} from '@angular/router';
@@ -32,7 +33,7 @@ describe('Data Chat Chart', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, DataChatModule],
+      imports: [AjfTranslocoModule, BrowserAnimationsModule, DataChatModule],
       providers: [
         provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),

@@ -5,7 +5,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DATA_SERVICE_CONFIG, DataServiceConfig} from '@dino/core/data';
 import {FormDataManager, FormSchema, FormSchemaVisibility} from '@dino/core/forms';
 import {UserData, UserDataManager} from '@dino/core/users';
-import {TranslocoModule} from '@jsverse/transloco';
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxDocument} from 'rxdb';
 import {of} from 'rxjs';
@@ -143,7 +143,7 @@ describe('Export Forms', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, TranslocoModule, BreakpointObserverModule],
+      imports: [BrowserAnimationsModule, AjfTranslocoModule, BreakpointObserverModule],
       providers: [
         UntypedFormBuilder,
         {provide: MatDialogRef, useValue: mockDialogRef},

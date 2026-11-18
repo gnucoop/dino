@@ -1,3 +1,4 @@
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {AuthService, AuthServiceConfig} from '@dino/core/auth';
@@ -62,7 +63,7 @@ describe('Form Creator Hub', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [FormCreatorHubModule],
+    imports: [AjfTranslocoModule, FormCreatorHubModule],
     providers: [
         {provide: MatDialogRef, useValue: mockDialogRef},
         {provide: AuthService, useValue: authServiceMock},

@@ -3,7 +3,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {DataModelManager} from '@dino/core/data';
 import {ErrorHandlerMessageService} from '@dino/core/error-handler';
 import {UserGroupManager} from '@dino/core/users';
-import {TranslocoModule} from '@jsverse/transloco';
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {Observable, of} from 'rxjs';
 
 import {MetricImport} from './metric-import';
@@ -56,7 +56,7 @@ describe('Metric Import', () => {
   beforeEach(() => {
     bulkCalls = [];
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, MetricImportModule, TranslocoModule],
+      imports: [BrowserAnimationsModule, MetricImportModule, AjfTranslocoModule],
       providers: [
         {provide: UserGroupManager, useValue: userGroupManagerMock},
         {provide: ErrorHandlerMessageService, useValue: errorHandlerMock},

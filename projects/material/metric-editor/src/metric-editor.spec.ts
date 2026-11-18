@@ -1,3 +1,4 @@
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
@@ -55,7 +56,7 @@ describe('Metric Editor', () => {
   let httpMock: HttpTestingController;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MetricEditorModule, MatDialogModule, BrowserAnimationsModule],
+      imports: [AjfTranslocoModule, MetricEditorModule, MatDialogModule, BrowserAnimationsModule],
       providers: [
         {provide: AUTH_SERVICE_CONFIG, useValue: authServiceConfig},
         {provide: UserGroupManager, useValue: userGroupManagerMock},

@@ -6,7 +6,7 @@ import {DATA_SERVICE_CONFIG, DataServiceConfig, MetricsService} from '@dino/core
 import {FormDataManager, FormStatusManager} from '@dino/core/forms';
 import {ProjectManager} from '@dino/core/projects';
 import {UserData, UserDataManager} from '@dino/core/users';
-import {TranslocoModule} from '@jsverse/transloco';
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {getRxStorageMemory} from 'rxdb/plugins/storage-memory';
 import {RxDocument} from 'rxdb';
 import {BehaviorSubject, Observable, of} from 'rxjs';
@@ -148,7 +148,7 @@ describe('Import Forms', () => {
     storedProjects = [];
     projectBulkCalls = [];
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, TranslocoModule],
+      imports: [BrowserAnimationsModule, AjfTranslocoModule],
       providers: [
         UntypedFormBuilder,
         {provide: MatDialogRef, useValue: mockDialogRef},

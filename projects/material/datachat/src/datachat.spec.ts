@@ -1,3 +1,4 @@
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import type {Mock} from 'vitest';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -106,7 +107,7 @@ describe('Data Chat', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [BrowserAnimationsModule, DataChatModule],
+      imports: [AjfTranslocoModule, BrowserAnimationsModule, DataChatModule],
       providers: [
         {provide: AuthService, useValue: authServiceMock},
         {provide: DATA_SERVICE_CONFIG, useValue: dataServiceConfig()},

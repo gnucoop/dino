@@ -1,3 +1,4 @@
+import {AjfTranslocoModule} from '@ajf/core/transloco';
 import {EventEmitter} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {AUTH_SERVICE_CONFIG, AuthService, AuthServiceConfig} from '@dino/core/auth';
@@ -87,7 +88,7 @@ describe('Form Metric Selector', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [BrowserAnimationsModule,
+    imports: [AjfTranslocoModule, BrowserAnimationsModule,
         FormMetricSelectorModule,
         MatNativeDateModule],
     providers: [
