@@ -11,10 +11,10 @@
 
 ## Dependencies
 
-- @ajf/calendars (^18.5.0)
-- @ajf/core (^18.5.0)
+- @ajf/calendars (^22.0.0)
+- @ajf/core (^22.0.0)
 - @ajf/icons (1.0.0)
-- @ajf/material (^18.5.0)
+- @ajf/material (^22.0.0)
 - @angular/animations (^18.2.13)
 - @angular/cdk (^18.2.14)
 - @angular/common (^18.2.13)
