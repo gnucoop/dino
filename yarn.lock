@@ -7,17 +7,17 @@
   resolved "https://registry.yarnpkg.com/@acemir/cssom/-/cssom-0.9.32.tgz#057de69a39e7dd8f8a4a051a8e7491d9697233c7"
   integrity sha512-OijrAUu7rrJhSIoHNg6LMPS5e344nwUHA+1EFYYjrh64D+GmytUsfBQjci45TjT+rd5Spsp8B5xsZDT+TgyXXQ==
 
-"@ajf/calendars@^18.5.4":
-  version "18.5.4"
-  resolved "https://registry.yarnpkg.com/@ajf/calendars/-/calendars-18.5.4.tgz#fe3b08c69a65aa2501bf47210fa859ede3ebefa6"
-  integrity sha512-ZbHDnpI7+jCBr63NGJk4IZoueuzz5eYHdirfl+kyfJoKHzyHuBateJq5SEYoOBY1LAjXaqNJZ7dxqa5NHQPGPA==
+"@ajf/calendars@^22.0.0":
+  version "22.0.0"
+  resolved "https://registry.yarnpkg.com/@ajf/calendars/-/calendars-22.0.0.tgz#20cbf766c65f0a31134edf8c1e2270c9ef9abed4"
+  integrity sha512-WH9uJZFmG7CpiWf6Rvx2CLUjzQ8HOck57LdI/xCmIHdpdCksTJkcryL30ftps5Nj/3AT/wn9YFxjmtrl3k1o2A==
   dependencies:
     tslib "^2.3.0"
 
-"@ajf/core@^18.5.4":
-  version "18.5.4"
-  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-18.5.4.tgz#e0471513cd902c1f2e4e7a32f02e4a077cd7b3aa"
-  integrity sha512-IMX4waBCJmUMKXMmOqF8C8ygTZGi/KFnV+wL6hobh4Vf1hfFWQECT4JtPgzyPh6jsVOMSR0aJdeNNwxWZ70e6Q==
+"@ajf/core@^22.0.0":
+  version "22.0.0"
+  resolved "https://registry.yarnpkg.com/@ajf/core/-/core-22.0.0.tgz#96e6c102b0d866fed0f364f26f2176cf35c29f7a"
+  integrity sha512-O8IRu05KGNpE3U57E9IDl6A67DJfOBDPKLREX+++BLGvPy8mF0NkTEkwx7cN3TPeGTClrlSsEWSDrvlMRancFg==
   dependencies:
     tslib "^2.3.0"
 
@@ -26,10 +26,10 @@
   resolved "https://registry.yarnpkg.com/@ajf/icons/-/icons-1.0.0.tgz#33ef4a7fec92f90a9abfbd901d0d92fa5d451e4d"
   integrity sha512-FMq+j6E6UjtwwjPhIl4a80esPLYH55p1ZFp1PAkZe76gANamXhUf9VHS0rGkekuuFlomVVa/vEyqGD9JGQV39Q==
 
-"@ajf/material@^18.5.4":
-  version "18.5.4"
-  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-18.5.4.tgz#c421ce6a0371402fbce3fc02d00de8433c186446"
-  integrity sha512-0ORo00rRPaRK2wAUwFBzrIjSTTt5U5f3/VUck4JP94+6WLGLBO4Nh0Tr4YU/8x4fKuqVX0/mYBSXGfUWoQqrVQ==
+"@ajf/material@^22.0.0":
+  version "22.0.0"
+  resolved "https://registry.yarnpkg.com/@ajf/material/-/material-22.0.0.tgz#a16d9498f17b7aae8bc9fee5b52c37fb2c670da8"
+  integrity sha512-qio1yoxA2vP9DZdgvgo4ePjC/ApFNc+mIw1uDoZ8HoZh2Gr3Ct/PPYJgfr6xo0gTdfr5B9x6OUbkE7FxriTZpA==
   dependencies:
     tslib "^2.3.0"
 
